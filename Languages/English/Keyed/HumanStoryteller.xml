@@ -5,4 +5,5 @@
     <AlertNeedStoryDesc>This won't do, this won't do at all!\n\nWhere is our story gone?\nO, would you human kindly check your connection to the outside world?\n\n(Big stories my take a little while to load, but not more than 2 minutes)</AlertNeedStoryDesc>
     
     <StoryNotFound>Story was not found in the storybook.\nThe creator may have removed the story.\nIf you reloaded this game the last received story will continue playing.</StoryNotFound>
+    <FeaturedStories>Featured story's</FeaturedStories>
 </LanguageData>

@@ -10,13 +10,14 @@ namespace HumanStoryteller.Web {
         private static uint _mPcbTicket;
         private static HAuthTicket _mHAuthTicket;
         private static List<Action<string>> callbackQueue = new List<Action<string>>();
+        private static DateTime lastUpdate = DateTime.Now;
 
         /// <summary>
         /// MUST call callback with encoded ticket
         /// </summary>
         /// <param name="returnCallback"></param>
         public static void GetEncodedTicket(Action<string> returnCallback) {
-            if (_mTicket != null) {
+            if (_mTicket != null && lastUpdate.AddMinutes(3) > DateTime.Now) {
                 OnGetAuthSessionTicketResponse(new GetAuthSessionTicketResponse_t(), returnCallback);
                 return;
             }

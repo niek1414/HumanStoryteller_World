@@ -4,11 +4,9 @@
     <StorytellerDef Class="HumanStoryteller.StorytellerDef_Human" ParentName="BaseStoryteller">
         <defName>Human</defName>
         <label>Human storyteller(s)</label>
-        <populationIntentFactorFromPopCurve>
-            <points>
-                <li>0, 0</li>
-            </points>
-        </populationIntentFactorFromPopCurve>
+        <description>Cassandra creates story events on a classic increasing curve of challenge and tension. She'll push you with dangerous events, then give breathing room, then come back to push once more.</description>
+        <portraitTiny>test</portraitTiny>
+        <portraitLarge>empty</portraitLarge>
         <listOrder>50</listOrder>
         <tutorialMode>false</tutorialMode>
         <disableAdaptiveTraining>false</disableAdaptiveTraining>
@@ -20,15 +18,4 @@
             <li Class="HumanStoryteller.StorytellerCompProperties_HumanThreatCycle" />
         </comps>
     </StorytellerDef>
-    <MainTabDefs>
-
-        <MainTabDef>
-            <defName>ResearchDUPLICATE</defName>
-            <label>test research tab</label>
-            <description>Examine and decide on research projects.</description>
-            <windowClass>MainTabWindow_Research</windowClass>
-            <order>100</order>
-        </MainTabDef>
-
-    </MainTabDefs>
 </Defs>

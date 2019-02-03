@@ -17,7 +17,7 @@ namespace HumanStoryteller {
 
         private bool _missedLastIncidentCheck;
         private int _consecutiveEventCounter;
-        private static StoryComponent StoryComponent => Find.World.GetComponent<StoryComponent>();
+        private static StoryComponent StoryComponent => Find.World?.GetComponent<StoryComponent>();
         private bool _init;
         private readonly Timer _refreshTimer = new Timer();
         
@@ -32,7 +32,7 @@ namespace HumanStoryteller {
             HumanStorytellerGame = false;
             if (!DebugSettings.enableStoryteller) return;
             foreach (var comp in Current.Game.storyteller.storytellerComps) {
-                if (comp.GetType() == typeof(StorytellerComp_HumanThreatCycle)) {
+                if (comp.GetType() == typeof(StorytellerComp_HumanThreatCycle) && Find.TickManager.TicksGame > 0) {
                     ((StorytellerComp_HumanThreatCycle) comp).CycleTick();
                     HumanStorytellerGame = true;
                 }
@@ -44,7 +44,7 @@ namespace HumanStoryteller {
         }
 
         public void CycleTick() {
-            if (!_init && Find.TickManager.TicksGame > 0) {
+            if (!_init) {
                 Init();
                 _init = true;
             }
@@ -60,9 +60,6 @@ namespace HumanStoryteller {
             }
 
             void IncidentLoop() {
-//                Storybook.GetRating(24,i=>{Tell.Err(i.ToString());});
-//                Storybook.SetRating(24,6, () => Tell.Err("set callback"));
-//                Storybook.GetRating(24,i=>{Tell.Err(i.ToString());});
                 foreach (FiringHumanIncident fhi in MakeIntervalIncidents()) {
                     if (fhi?.Worker != null) {
                         fhi.Worker.Execute(fhi.Parms);
@@ -147,7 +144,7 @@ namespace HumanStoryteller {
         }
 
         private void GetStoryCallback(Story story) {
-            if (Current.Game == null || StoryComponent == null) {
+            if (Current.Game == null || StoryComponent == null || !(Find.TickManager.TicksGame > 0)) {
                 _refreshTimer.Enabled = false;
                 Tell.Warn("Tried to get story while not in-game");
                 return;

@@ -60,6 +60,7 @@ namespace HumanStoryteller {
             HarmonyInstance harmony = HarmonyInstance.Create("rimworld.keyboxsoftware.humanstoryteller");
 
             Patch.Main_Patch.Patch(harmony);
+            Patch.StorytellerUI_Patch.Patch(harmony);
         }
     }
 }

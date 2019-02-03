@@ -22,10 +22,9 @@ namespace HumanStoryteller.Web {
                 if (!CheckRequestStatus(response, handle)) {
                     return;
                 }
-
                 callback(Parser.Parser.StoryParser(response.Content));
             } catch (Exception e) {
-                Tell.Err($"Error while parsing story with error: {e.Message}, and content request: ", response);
+                Tell.Err($"Error while parsing story with error: {e.Message}, trace: ___{e.StackTrace}___, and content request: ", response);
                 throw;
             }
         }
@@ -79,7 +78,6 @@ namespace HumanStoryteller.Web {
             SteamAuth.GetEncodedTicket(ticket => { AfterEncodePut(storyId, rating, ticket); });
 
             void AfterEncodePut(long l, int i, string ticket) {
-                i--;
                 Client.Put(
                     $"storybook/story/{l}/rating/{i}",
                     (response, handle) => { SetRatingCallback(response, handle, setRatingCallback); },

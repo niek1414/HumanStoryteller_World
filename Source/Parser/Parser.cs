@@ -18,7 +18,10 @@ namespace HumanStoryteller.Parser {
 
             for (var i = 0; i < stories.Count; i++) {
                 JToken story = stories[i];
-                result[i] = JsonConvert.DeserializeObject<StorySummary>(story.ToString(Formatting.None));
+                result[i] = JsonConvert.DeserializeObject<StorySummary>(story.ToString(Formatting.None), new JsonSerializerSettings {
+                    NullValueHandling = NullValueHandling.Ignore,
+                    Converters = new List<JsonConverter> {new DecimalJsonConverter()}
+                });
             }
 
             return result;
