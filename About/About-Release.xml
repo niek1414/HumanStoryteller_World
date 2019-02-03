@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<ModMetaData>
+    <name>HumanStoryteller</name>
+    <author>Niek1414</author>
+
+    <supportedVersions>
+        <li>1.0</li>
+    </supportedVersions>
+    <description>
+        --WIP--
+        Status: THIS IS NOT YET USABLE
+
+        This mod allows people to create and vote for what your next ingame event sould be.
+        Great for streaming or just to get a group of friends involved in your adventure!
+    </description>
+    <url>https://steamcommunity.com/profiles/76561198057048678/myworkshopfiles/?appid=294100</url>
+</ModMetaData>
