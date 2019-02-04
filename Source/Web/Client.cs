@@ -14,7 +14,21 @@ namespace HumanStoryteller.Web {
 
             restClient.ExecuteAsyncGet(request, callback, "GET");
         }
-        
+
+        public static void GetPagination(string url, Action<IRestResponse, RestRequestAsyncHandle> callback, long start, long amount,
+            String ticket = null) {
+            RestClient restClient = CreateRestClient();
+            RestRequest request = new RestRequest(url, Method.GET);
+            if (ticket != null) {
+                request.AddParameter("ticket", ticket);
+            }
+
+            request.AddParameter("start", start.ToString());
+            request.AddParameter("amount", amount.ToString());
+
+            restClient.ExecuteAsyncGet(request, callback, "GET");
+        }
+
         public static void Put(string url, Action<IRestResponse, RestRequestAsyncHandle> callback, String ticket = null) {
             RestClient restClient = CreateRestClient();
             RestRequest request = new RestRequest(url, Method.PUT);

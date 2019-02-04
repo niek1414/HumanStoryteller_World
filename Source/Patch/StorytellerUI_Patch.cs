@@ -14,13 +14,17 @@ using ThreadPriority = UnityEngine.ThreadPriority;
 
 namespace HumanStoryteller.Patch {
     public class StorytellerUI_Patch {
-        private static int _pageNumber = 0;
+        private const int PAGE_STORY_LIMIT = 5;
+
+        private static int _pageNumber;
         private static StorySummary _selectedSummary;
-        private static bool _loading = true;
+        private static bool _loading;
         private static float _loadingState;
         private static List<StorySummary> storyList = new List<StorySummary>();
         private static List<long> loadingImages = new List<long>();
         private static Dictionary<long, Texture2D> loadedImages = new Dictionary<long, Texture2D>();
+
+        private static Dictionary<long, Vector2> DescriptionScrollList = new Dictionary<long, Vector2>();
 
         public static void Patch(HarmonyInstance harmony) {
             MethodInfo target = AccessTools.Method(typeof(StorytellerUI), "DrawStorytellerSelectionInterface");
@@ -32,21 +36,38 @@ namespace HumanStoryteller.Patch {
         public static void DrawStorytellerSelectionInterface(Rect rect, ref StorytellerDef chosenStoryteller, ref DifficultyDef difficulty,
             Listing_Standard infoListing) {
             if (chosenStoryteller.defName != "Human") return;
+            if (storyList.Count <= 0 && !_loading) {
+                _pageNumber = 0;
+                _loading = true;
+
+                long origin = _pageNumber * PAGE_STORY_LIMIT;
+                Storybook.GetBook(origin, PAGE_STORY_LIMIT, storyArray => {
+                    storyList.Clear();
+                    storyList.AddRange(storyArray);
+                    _loading = false;
+                });
+            }
+
             Rect stories = new Rect(rect.x + 450, rect.y, 530, 630);
             Listing_Standard listing = new Listing_Standard();
             listing.ColumnWidth = stories.width;
             listing.Begin(stories);
             Text.Font = GameFont.Small;
-            listing.Label("FeaturedStories".Translate());
+            listing.Label("StoryList".Translate());
             ListStories(listing, storyList);
             listing.End();
             if (Widgets.ButtonText(new Rect(stories.center.x - 40, stories.yMax - 40, 30, 40), "<", true, false, _pageNumber != 0)) {
-                _loading = true;
-                Storybook.GetBook(storyArray => {
-                    _loading = false;
-                    storyList.Clear();
-                    storyList.AddRange(storyArray);
-                });
+                if (!_loading && _pageNumber != 0) {
+                    _pageNumber--;
+                    _loading = true;
+
+                    long origin = _pageNumber * PAGE_STORY_LIMIT;
+                    Storybook.GetBook(origin, PAGE_STORY_LIMIT, storyArray => {
+                        storyList.Clear();
+                        storyList.AddRange(storyArray);
+                        _loading = false;
+                    });
+                }
             }
 
             string label;
@@ -81,12 +102,17 @@ namespace HumanStoryteller.Patch {
 
             Widgets.Label(new Rect(stories.center.x + 1, stories.yMax - 27, 20, 30), label);
             if (Widgets.ButtonText(new Rect(stories.center.x + 20, stories.yMax - 40, 30, 40), ">")) {
-                _loading = true;
-                Storybook.GetBook(storyArray => {
-                    _loading = false;
-                    storyList.Clear();
-                    storyList.AddRange(storyArray);
-                });
+                if (!_loading) {
+                    _loading = true;
+                    _pageNumber++;
+
+                    long origin = _pageNumber * PAGE_STORY_LIMIT;
+                    Storybook.GetBook(origin, PAGE_STORY_LIMIT, storyArray => {
+                        storyList.Clear();
+                        storyList.AddRange(storyArray);
+                        _loading = false;
+                    });
+                }
             }
         }
 
@@ -106,7 +132,7 @@ namespace HumanStoryteller.Patch {
                     _selectedSummary = story;
                 }
 
-                Rect rect = listing.GetRect(80);
+                Rect rect = listing.GetRect(100);
                 DrawStorySummary(rect, story);
                 flag = true;
             }
@@ -123,6 +149,14 @@ namespace HumanStoryteller.Patch {
             Widgets.DrawOptionBackground(rect, selected);
             MouseoverSounds.DoRegion(rect);
 
+            if (story.Featured) {
+                Widgets.DrawShadowAround(rect);
+                Color color1 = GUI.color;
+                GUI.color = new Color(0.39f, 0.33f, 0.02f);
+                Widgets.DrawBox(rect);
+                GUI.color = color1;
+            }
+
             Rect inner = rect.ContractedBy(4f);
             Text.Font = GameFont.Small;
             Rect title = inner;
@@ -130,13 +164,25 @@ namespace HumanStoryteller.Patch {
             Widgets.Label(title, story.Name);
 
             Text.Font = GameFont.Tiny;
-            Rect description = inner;
-            description.width = inner.width - 90;
+            Rect description = new Rect(inner) {width = inner.width - 90};
             description.y += title.height;
-            description.height -= title.height;
-            Widgets.Label(description, story.Description);
+            description.height -= title.height * 2;
 
-            Rect avatar = new Rect(inner.xMax - 65, inner.y + 7, 55, 55);
+            if (!DescriptionScrollList.ContainsKey(story.Id)) {
+                DescriptionScrollList.Add(story.Id, new Vector2());
+            }
+
+            Vector2 scrollLocation = DescriptionScrollList[story.Id];
+            Widgets.LabelScrollable(description, story.Description, ref scrollLocation, false, false);
+            DescriptionScrollList[story.Id] = scrollLocation;
+
+            Rect rating = new Rect(title);
+            rating.y += description.height + rating.height;
+            GUIStyle alignCenter = Text.CurFontStyle;
+            alignCenter.alignment = TextAnchor.LowerCenter;
+            GUI.Label(rating, $"{story.Featured}Rating: {story.Rating} / Votes: {story.Votes}", alignCenter);
+
+            Rect avatar = new Rect(inner.xMax - 65, inner.y + 18, 55, 55);
 
             Texture2D foundImage = GetImage(story.Avatar, story.Id);
             if (foundImage != null) {

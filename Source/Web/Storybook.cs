@@ -22,6 +22,7 @@ namespace HumanStoryteller.Web {
                 if (!CheckRequestStatus(response, handle)) {
                     return;
                 }
+
                 callback(Parser.Parser.StoryParser(response.Content));
             } catch (Exception e) {
                 Tell.Err($"Error while parsing story with error: {e.Message}, trace: ___{e.StackTrace}___, and content request: ", response);
@@ -30,9 +31,9 @@ namespace HumanStoryteller.Web {
         }
 
 
-        public static void GetBook(Action<StorySummary[]> getSummariesCallback) {
-            //TODO pagination
-            Client.Get("storybook/story", (response, handle) => { GetSummariesCallback(response, handle, getSummariesCallback); });
+        public static void GetBook(long start, long amount, Action<StorySummary[]> getSummariesCallback) {
+            Client.GetPagination("storybook/story", (response, handle) => { GetSummariesCallback(response, handle, getSummariesCallback); }, start,
+                amount);
         }
 
         private static void GetSummariesCallback(IRestResponse response, RestRequestAsyncHandle handle, Action<StorySummary[]> callback) {
@@ -40,7 +41,12 @@ namespace HumanStoryteller.Web {
                 return;
             }
 
-            callback(Parser.Parser.SummaryParser(response.Content));
+            try {
+                callback(Parser.Parser.SummaryParser(response.Content));
+            } catch (Exception e) {
+                Tell.Err($"Error while parsing summary with error: {e.Message}, trace: ___{e.StackTrace}___, and content request: ", response);
+                throw;
+            }
         }
 
         public static void GetCollectionOfCreator(long id, Action<StorySummary[]> getSummariesCallback) {
@@ -52,7 +58,12 @@ namespace HumanStoryteller.Web {
                 return;
             }
 
-            callback(Convert.ToInt32(response.Content));
+            try {
+                callback(Convert.ToInt32(response.Content));
+            } catch (Exception e) {
+                Tell.Err($"Error while parsing rating with error: {e.Message}, trace: ___{e.StackTrace}___, and content request: ", response);
+                throw;
+            }
         }
 
         public static void GetRating(long storyId, Action<int> getRatingCallback) {
@@ -65,15 +76,20 @@ namespace HumanStoryteller.Web {
                     ticket);
             }
         }
-        
+
         private static void SetRatingCallback(IRestResponse response, RestRequestAsyncHandle handle, Action callback) {
             if (!CheckRequestStatus(response, handle)) {
                 return;
             }
 
-            callback();
+            try {
+                callback();
+            } catch (Exception e) {
+                Tell.Err($"Error while calling rating set callback with error: {e.Message}, trace: ___{e.StackTrace}___, and content request: ", response);
+                throw;
+            }
         }
-        
+
         public static void SetRating(long storyId, int rating, Action setRatingCallback) {
             SteamAuth.GetEncodedTicket(ticket => { AfterEncodePut(storyId, rating, ticket); });
 
