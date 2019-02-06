@@ -6,4 +6,7 @@
     
     <StoryNotFound>Story was not found in the storybook.\nThe creator may have removed the story.\nIf you reloaded this game the last received story will continue playing.</StoryNotFound>
     <StoryList>Storybook story's</StoryList>
+    <StoryTitleInput>Story title</StoryTitleInput>
+    <StoryDescriptionInput>Description (single keyword)</StoryDescriptionInput>
+    <StoryCreatorInput>Creator</StoryCreatorInput>
 </LanguageData>

@@ -31,9 +31,9 @@ namespace HumanStoryteller.Web {
         }
 
 
-        public static void GetBook(long start, long amount, Action<StorySummary[]> getSummariesCallback) {
-            Client.GetPagination("storybook/story", (response, handle) => { GetSummariesCallback(response, handle, getSummariesCallback); }, start,
-                amount);
+        public static void GetBook(long start, long amount, string filterName, string filterDescription, string filterCreator, Action<StorySummary[]> getSummariesCallback) {
+            Client.GetByPaginationAndFilter("storybook/story", (response, handle) => { GetSummariesCallback(response, handle, getSummariesCallback); }, start,
+                amount, filterName, filterDescription, filterCreator);
         }
 
         private static void GetSummariesCallback(IRestResponse response, RestRequestAsyncHandle handle, Action<StorySummary[]> callback) {

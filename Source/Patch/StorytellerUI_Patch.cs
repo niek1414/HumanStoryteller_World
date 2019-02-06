@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Threading;
 using Harmony;
 using HumanStoryteller.Model;
@@ -24,6 +25,10 @@ namespace HumanStoryteller.Patch {
         private static List<long> loadingImages = new List<long>();
         private static Dictionary<long, Texture2D> loadedImages = new Dictionary<long, Texture2D>();
 
+        private static string filterName = "";
+        private static string filterCreator = "";
+        private static string filterDescription = "";
+
         private static Dictionary<long, Vector2> DescriptionScrollList = new Dictionary<long, Vector2>();
 
         public static void Patch(HarmonyInstance harmony) {
@@ -36,33 +41,58 @@ namespace HumanStoryteller.Patch {
         public static void DrawStorytellerSelectionInterface(Rect rect, ref StorytellerDef chosenStoryteller, ref DifficultyDef difficulty,
             Listing_Standard infoListing) {
             if (chosenStoryteller.defName != "Human") return;
+            
             if (storyList.Count <= 0 && !_loading) {
                 _pageNumber = 0;
                 _loading = true;
 
                 long origin = _pageNumber * PAGE_STORY_LIMIT;
-                Storybook.GetBook(origin, PAGE_STORY_LIMIT, storyArray => {
+                Storybook.GetBook(origin, PAGE_STORY_LIMIT, filterName, filterDescription, filterCreator, storyArray => {
                     storyList.Clear();
                     storyList.AddRange(storyArray);
                     _loading = false;
                 });
             }
-
+            
+            Rect filter = new Rect(rect.x + 140, rect.y + 440, 310, 190);
+            DrawFilter(filter);
+            
             Rect stories = new Rect(rect.x + 450, rect.y, 530, 630);
-            Listing_Standard listing = new Listing_Standard();
-            listing.ColumnWidth = stories.width;
-            listing.Begin(stories);
-            Text.Font = GameFont.Small;
-            listing.Label("StoryList".Translate());
-            ListStories(listing, storyList);
-            listing.End();
+            DrawStoryList(stories);
+            DrawPagination(stories);
+        }
+
+        private static void DrawFilter(Rect filter) {
+            Widgets.Label(new Rect(filter.x, filter.y, filter.width, 30), "StoryTitleInput".Translate());
+            filterName = Widgets.TextField(new Rect(filter.x, filter.y + 20, filter.width, 30), filterName, 255, new Regex(".*"));
+            
+            Widgets.Label(new Rect(filter.x, filter.y + 60, filter.width, 30), "StoryDescriptionInput".Translate());
+            filterDescription = Widgets.TextField(new Rect(filter.x, filter.y + 80, filter.width, 30), filterDescription, 255, new Regex(".*"));
+            
+            Widgets.Label(new Rect(filter.x, filter.y + 120, filter.width, 30), "StoryCreatorInput".Translate());
+            filterCreator = Widgets.TextField(new Rect(filter.x, filter.y + 140, filter.width, 30), filterCreator, 255, new Regex(".*"));
+            
+            if (Widgets.ButtonText(new Rect(filter.x + filter.width / 3 * 2, filter.y + 150, filter.width / 3, 30), "Search")) {
+                _pageNumber = 0;
+                _loading = true;
+
+                long origin = _pageNumber * PAGE_STORY_LIMIT;
+                Storybook.GetBook(origin, PAGE_STORY_LIMIT, filterName, filterDescription, filterCreator, storyArray => {
+                    storyList.Clear();
+                    storyList.AddRange(storyArray);
+                    _loading = false;
+                });
+            }
+        }
+
+        private static void DrawPagination(Rect stories) {
             if (Widgets.ButtonText(new Rect(stories.center.x - 40, stories.yMax - 40, 30, 40), "<", true, false, _pageNumber != 0)) {
                 if (!_loading && _pageNumber != 0) {
                     _pageNumber--;
                     _loading = true;
 
                     long origin = _pageNumber * PAGE_STORY_LIMIT;
-                    Storybook.GetBook(origin, PAGE_STORY_LIMIT, storyArray => {
+                    Storybook.GetBook(origin, PAGE_STORY_LIMIT, filterName, filterDescription, filterCreator, storyArray => {
                         storyList.Clear();
                         storyList.AddRange(storyArray);
                         _loading = false;
@@ -107,13 +137,22 @@ namespace HumanStoryteller.Patch {
                     _pageNumber++;
 
                     long origin = _pageNumber * PAGE_STORY_LIMIT;
-                    Storybook.GetBook(origin, PAGE_STORY_LIMIT, storyArray => {
+                    Storybook.GetBook(origin, PAGE_STORY_LIMIT, filterName, filterDescription, filterCreator, storyArray => {
                         storyList.Clear();
                         storyList.AddRange(storyArray);
                         _loading = false;
                     });
                 }
             }
+        }
+
+        private static void DrawStoryList(Rect stories) {
+            Listing_Standard listing = new Listing_Standard {ColumnWidth = stories.width};
+            listing.Begin(stories);
+            Text.Font = GameFont.Small;
+            listing.Label("StoryList".Translate());
+            ListStories(listing, storyList);
+            listing.End();
         }
 
         private static void ListStories(Listing_Standard listing, List<StorySummary> stories) {
@@ -212,27 +251,27 @@ namespace HumanStoryteller.Patch {
             }
 
             loadingImages.Add(id);
-            LongEventHandler.ExecuteWhenFinished(() => {
-                string text = GenFilePaths.SafeURIForUnityWWWFromPath(url);
-                WWW val = new WWW(text.Substring(8));
-                try {
-                    val.threadPriority = ThreadPriority.High;
-
-                    while (!val.isDone) {
-                        Thread.Sleep(1);
-                    }
-
-                    if (val.error == null) {
-                        loadedImages.Add(id, val.textureNonReadable);
-                        loadingImages.Remove(id);
-                    } else {
-                        Tell.Warn("Could not load avatar", "storyid: " + id, "Err: " + val.error);
-                        loadingImages.Remove(id);
-                    }
-                } finally {
-                    val.Dispose();
-                }
-            });
+//            LongEventHandler.ExecuteWhenFinished(() => {
+//                string text = GenFilePaths.SafeURIForUnityWWWFromPath(url);
+//                WWW val = new WWW(text.Substring(8));
+//                try {
+//                    val.threadPriority = ThreadPriority.High;
+//
+//                    while (!val.isDone) {
+//                        Thread.Sleep(1);
+//                    }
+//
+//                    if (val.error == null) {
+//                        loadedImages.Add(id, val.textureNonReadable);
+//                        loadingImages.Remove(id);
+//                    } else {
+//                        Tell.Warn("Could not load avatar", "storyid: " + id, "Err: " + val.error);
+//                        loadingImages.Remove(id);
+//                    }
+//                } finally {
+//                    val.Dispose();
+//                }
+//            });
             return null;
         }
     }

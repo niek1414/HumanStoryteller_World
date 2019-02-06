@@ -15,8 +15,8 @@ namespace HumanStoryteller.Web {
             restClient.ExecuteAsyncGet(request, callback, "GET");
         }
 
-        public static void GetPagination(string url, Action<IRestResponse, RestRequestAsyncHandle> callback, long start, long amount,
-            String ticket = null) {
+        public static void GetByPaginationAndFilter(string url, Action<IRestResponse, RestRequestAsyncHandle> callback, long start, long amount,
+            string filterName, string filterDescription, string filterCreator, String ticket = null) {
             RestClient restClient = CreateRestClient();
             RestRequest request = new RestRequest(url, Method.GET);
             if (ticket != null) {
@@ -25,6 +25,9 @@ namespace HumanStoryteller.Web {
 
             request.AddParameter("start", start.ToString());
             request.AddParameter("amount", amount.ToString());
+            request.AddParameter("name", filterName);
+            request.AddParameter("description", filterDescription);
+            request.AddParameter("creator", filterCreator);
 
             restClient.ExecuteAsyncGet(request, callback, "GET");
         }

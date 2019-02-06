@@ -4,7 +4,6 @@
     <StorytellerDef Class="HumanStoryteller.StorytellerDef_Human" ParentName="BaseStoryteller">
         <defName>Human</defName>
         <label>Human storyteller(s)</label>
-        <description>Cassandra creates story events on a classic increasing curve of challenge and tension. She'll push you with dangerous events, then give breathing room, then come back to push once more.</description>
         <portraitTiny>test</portraitTiny>
         <portraitLarge>empty</portraitLarge>
         <listOrder>50</listOrder>

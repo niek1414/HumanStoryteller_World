@@ -4,6 +4,7 @@ using System.Threading;
 using System.Timers;
 using HumanStoryteller.Model;
 using HumanStoryteller.Util;
+using HumanStoryteller.Web;
 using RimWorld;
 using Verse;
 using Timer = System.Timers.Timer;
@@ -140,7 +141,7 @@ namespace HumanStoryteller {
         }
 
         private void CheckStoryRefresh(object source, ElapsedEventArgs e) {
-            HumanStoryteller.RefreshStory(GetStoryCallback);
+            Storybook.GetStory(StoryComponent.StoryId, GetStoryCallback);
         }
 
         private void GetStoryCallback(Story story) {
@@ -173,7 +174,16 @@ namespace HumanStoryteller {
         }
 
         private void Init() {
-            HumanStoryteller.RefreshStory(GetStoryCallback);
+            Tell.Log("INITIALIZE HS GAME", StoryComponent.StoryId);
+            
+            StorytellerDef storyteller = (from d in DefDatabase<StorytellerDef>.AllDefs
+                where d.defName.Contains("Human")
+                select d).First();
+            Tell.Warn("SWITCHED TO TEST STORYTELLER: " + storyteller.defName);
+            Current.Game.storyteller.def = storyteller;
+            Current.Game.storyteller.Notify_DefChanged();
+            
+            Storybook.GetStory(StoryComponent.StoryId, GetStoryCallback);
             _refreshTimer.Elapsed += CheckStoryRefresh;
             _refreshTimer.Interval = 60000;
             _refreshTimer.Enabled = true;
