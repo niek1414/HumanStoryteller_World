@@ -18,10 +18,10 @@ namespace HumanStoryteller {
 
         private bool _missedLastIncidentCheck;
         private int _consecutiveEventCounter;
-        private static StoryComponent StoryComponent => Find.World?.GetComponent<StoryComponent>();
         private bool _init;
         private readonly Timer _refreshTimer = new Timer();
         
+        public static StoryComponent StoryComponent => Tell.AssertNotNull(Find.World?.GetComponent<StoryComponent>(), nameof(StoryComponent), "StorytellerComp_HumanThreatCycle");
         public static bool HumanStorytellerGame;
         public static bool IsNoStory => StoryComponent.Story == null;
         public static long StoryId =>
@@ -76,6 +76,8 @@ namespace HumanStoryteller {
                 _missedLastIncidentCheck = true;
                 yield break;
             }
+            
+            StoryComponent.CurrentNodes.RemoveAll(item => item == null);
 
             int laneCount = StoryComponent.CurrentNodes.Count;
             string laneInfo = laneCount.ToString();
@@ -164,24 +166,23 @@ namespace HumanStoryteller {
                 StoryComponent.CurrentNodes.Add(StoryComponent.Story.StoryGraph.Root);
             } else {
                 for (int i = 0; i < StoryComponent.CurrentNodes.Count; i++) {
-                    StoryComponent.CurrentNodes[i] = StoryComponent.Story.StoryGraph.GetCurrentNode(StoryComponent.CurrentNodes[i].StoryEvent.Uuid);
+                    StoryComponent.CurrentNodes[i] = StoryComponent.Story.StoryGraph.GetCurrentNode(StoryComponent.CurrentNodes[i]?.StoryEvent.Uuid);
                 }
-
                 StoryComponent.CurrentNodes.RemoveAll(item => item == null);
             }
-
             HumanStoryteller.InitiateEventUnsafe = false;
         }
 
         private void Init() {
-            Tell.Log("INITIALIZE HS GAME", StoryComponent.StoryId);
-            
-            StorytellerDef storyteller = (from d in DefDatabase<StorytellerDef>.AllDefs
-                where d.defName.Contains("Human")
-                select d).First();
-            Tell.Warn("SWITCHED TO TEST STORYTELLER: " + storyteller.defName);
-            Current.Game.storyteller.def = storyteller;
-            Current.Game.storyteller.Notify_DefChanged();
+            Tell.Log("INITIALIZE HS GAME", Current.Game.storyteller.def.listOrder);
+            StoryComponent.StoryId = Current.Game.storyteller.def.listOrder;
+//            
+//            StorytellerDef storyteller = (from d in DefDatabase<StorytellerDef>.AllDefs
+//                where d.defName.Contains("Human")
+//                select d).First();
+//            Tell.Warn("SWITCHED TO TEST STORYTELLER: " + storyteller.defName);
+//            Current.Game.storyteller.def = storyteller;
+//            Current.Game.storyteller.Notify_DefChanged();
             
             Storybook.GetStory(StoryComponent.StoryId, GetStoryCallback);
             _refreshTimer.Elapsed += CheckStoryRefresh;

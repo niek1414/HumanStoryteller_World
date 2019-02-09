@@ -67,6 +67,7 @@
   <ItemGroup>
     <Compile Include="Alert\Alert_NeedStory.cs" />
     <Compile Include="CheckConditions\CheckCondition.cs" />
+    <Compile Include="CheckConditions\DialogCheck.cs" />
     <Compile Include="CheckConditions\PawnHealthCheck.cs" />
     <Compile Include="HumanStoryteller.cs" />
     <Compile Include="Incidents\HumanIncidentWorker.cs" />

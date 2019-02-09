@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using HumanStoryteller.Model;
 using HumanStoryteller.Util;
-using RimWorld;
-using RimWorld.Planet;
 using Verse;
 
 namespace HumanStoryteller.CheckConditions {
@@ -30,7 +28,7 @@ namespace HumanStoryteller.CheckConditions {
             _condition = Tell.AssertNotNull(condition, nameof(condition), GetType().Name);
         }
 
-        public override bool Check() {
+        public override bool Check(StoryNode sn) {
             Pawn pawn = PawnUtil.GetPawnByName(_pawnName);
             if (pawn == null) {
                 switch (_condition) {

@@ -32,7 +32,7 @@ namespace HumanStoryteller {
             if (conditions != null) {
                 bool allTrue = true;
                 foreach (var condition in conditions) {
-                    if (condition.Check()) continue;
+                    if (condition.Check(current)) continue;
                     allTrue = false;
                     break;
                 }
@@ -54,6 +54,7 @@ namespace HumanStoryteller {
         }
 
         public StoryNode GetCurrentNode(String uuid) {
+            if (uuid == null) return null;
             return findNodeById(_root, uuid);
         }
 
