@@ -11,10 +11,10 @@ namespace HumanStoryteller.Incidents {
     class HumanIncidentWorker_FarmAnimalsWanderIn : HumanIncidentWorker {
         public const String Name = "FarmAnimalsWanderIn";
 
-        public override void Execute(HumanIncidentParms parms) {
+        public override IncidentResult Execute(HumanIncidentParms parms) {
             if (!(parms is HumanIncidentParams_FarmAnimalsWanderIn)) {
                 Tell.Err("Tried to execute " + GetType() + " but param type was " + parms.GetType());
-                return;
+                return null;
             }
 
             HumanIncidentParams_FarmAnimalsWanderIn allParams = Tell.AssertNotNull((HumanIncidentParams_FarmAnimalsWanderIn) parms, nameof(parms), GetType().Name);
@@ -35,7 +35,7 @@ namespace HumanStoryteller.Incidents {
 
             if (kind == null && !TryFindRandomPawnKind(map, out kind)) {
                 Tell.Err("Failed to find pawn kind for animal to join.");
-                return;
+                return null;
             }
 
             int num;
@@ -60,6 +60,8 @@ namespace HumanStoryteller.Incidents {
             SendLetter(allParams, "LetterLabelFarmAnimalsWanderIn".Translate(kind.GetLabelPlural(-1)).CapitalizeFirst(),
                 "LetterFarmAnimalsWanderIn".Translate(kind.GetLabelPlural(-1)), LetterDefOf.PositiveEvent, new TargetInfo(result, map, false));
             Tell.Log("Finished execution");
+
+            return null;
         }
 
         private bool TryFindRandomPawnKind(Map map, out PawnKindDef kind) {

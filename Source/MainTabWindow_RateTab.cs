@@ -35,7 +35,7 @@ namespace HumanStoryteller {
             Listing listing = new Listing_Standard();
             listing.Begin(viewRect);
             for (int i = 0; i < StorytellerComp_HumanThreatCycle.StoryComponent.CurrentNodes.Count; i++) {
-                StoryNode currentNode = StorytellerComp_HumanThreatCycle.StoryComponent.CurrentNodes[i];
+                StoryEventNode currentNode = StorytellerComp_HumanThreatCycle.StoryComponent.CurrentNodes[i];
                 Rect currentRect = listing.GetRect(50);
                 
                 if (currentNode == null) {
@@ -43,15 +43,17 @@ namespace HumanStoryteller {
                         "Pending...");
                     continue;
                 }
+
+                StoryNode sn = currentNode.StoryNode;
                 
-                if (!ScrollList.ContainsKey(currentNode.StoryEvent.Uuid)) {
-                    ScrollList.Add(currentNode.StoryEvent.Uuid, new Vector2());
+                if (!ScrollList.ContainsKey(sn.StoryEvent.Uuid)) {
+                    ScrollList.Add(sn.StoryEvent.Uuid, new Vector2());
                 }
 
-                Vector2 scrollLocation = ScrollList[currentNode.StoryEvent.Uuid];
+                Vector2 scrollLocation = ScrollList[sn.StoryEvent.Uuid];
                 Widgets.LabelScrollable(new Rect(currentRect.x, currentRect.y, currentRect.width / 2, currentRect.height),
-                    $"{currentNode.StoryEvent.Name}({currentNode.StoryEvent.Uuid})", ref scrollLocation);
-                ScrollList[currentNode.StoryEvent.Uuid] = scrollLocation;
+                    $"{sn.StoryEvent.Name}({sn.StoryEvent.Uuid})", ref scrollLocation);
+                ScrollList[sn.StoryEvent.Uuid] = scrollLocation;
 
                 if (Widgets.ButtonText(new Rect(currentRect.x + currentRect.width / 2 + 5, currentRect.y + 5, currentRect.width / 2 - 5, 40),
                     "destroy")) {
@@ -68,7 +70,7 @@ namespace HumanStoryteller {
             if (Widgets.ButtonText(new Rect(addLaneRect.x + addLaneRect.width / 3 * 2, addLaneRect.y + 20, addLaneRect.width / 3, 30), "Add")) {
                 StoryNode sn = StorytellerComp_HumanThreatCycle.StoryComponent.Story.StoryGraph.GetCurrentNode(_addLane);
                 if (sn != null) {
-                    StorytellerComp_HumanThreatCycle.StoryComponent.CurrentNodes.Add(sn);
+                    StorytellerComp_HumanThreatCycle.StoryComponent.CurrentNodes.Add(new StoryEventNode(sn));
                     _lastMessage = "Added!";
                 } else {
                     _lastMessage = "Could not find node";

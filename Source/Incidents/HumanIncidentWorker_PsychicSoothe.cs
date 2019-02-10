@@ -10,10 +10,10 @@ namespace HumanStoryteller.Incidents {
     class HumanIncidentWorker_PsychicSoothe : HumanIncidentWorker {
         public const String Name = "PsychicSoothe";
 
-        public override void Execute(HumanIncidentParms parms) {
+        public override IncidentResult Execute(HumanIncidentParms parms) {
             if (!(parms is HumanIncidentParams_PsychicSoothe)) {
                 Tell.Err("Tried to execute " + GetType() + " but param type was " + parms.GetType());
-                return;
+                return null;
             }
 
             HumanIncidentParams_PsychicSoothe
@@ -44,6 +44,8 @@ namespace HumanStoryteller.Incidents {
             map.gameConditionManager.RegisterCondition(gameCondition_PsychicEmanation);
             string text = "LetterIncidentPsychicSoothe".Translate(g.ToString().Translate().ToLower());
             SendLetter(allParams, "LetterLabelPsychicSoothe".Translate(), text, LetterDefOf.PositiveEvent, null);
+            
+            return null;
         }
     }
 

@@ -4,8 +4,8 @@ using RimWorld;
 using Verse;
 
 namespace HumanStoryteller.Incidents {
-    public abstract class HumanIncidentWorker : IExposable {
-        public abstract void Execute(HumanIncidentParms parms);
+    public abstract class HumanIncidentWorker : IExposable {//TODO make also ILoadReferenceable
+        public abstract IncidentResult Execute(HumanIncidentParms parms);
 
         protected void SendLetter(HumanIncidentParms parms, String title, String message, LetterDef type, LookTargets target,
             Faction relatedFaction = null, string debugInfo = null) {
@@ -21,6 +21,10 @@ namespace HumanStoryteller.Incidents {
             }
         }
 
+        public virtual void ExposeData() {}
+    }
+
+    public abstract class IncidentResult : IExposable {
         public virtual void ExposeData() {}
     }
 }

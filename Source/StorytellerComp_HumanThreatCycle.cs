@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading;
 using System.Timers;
+using HumanStoryteller.Incidents;
 using HumanStoryteller.Model;
 using HumanStoryteller.Util;
 using HumanStoryteller.Web;
@@ -61,9 +62,10 @@ namespace HumanStoryteller {
             }
 
             void IncidentLoop() {
-                foreach (FiringHumanIncident fhi in MakeIntervalIncidents()) {
-                    if (fhi?.Worker != null) {
-                        fhi.Worker.Execute(fhi.Parms);
+                foreach (StoryEventNode sen in MakeIntervalIncidents()) {
+                    if (sen?.StoryNode?.StoryEvent?.Incident?.Worker != null) {
+                        var incident = sen.StoryNode.StoryEvent.Incident;
+                        sen.Result = incident.Worker.Execute(incident.Parms);
                     } else {
                         Tell.Warn("Returned a incident that was not defined");
                     }
@@ -71,7 +73,7 @@ namespace HumanStoryteller {
             }
         }
 
-        public IEnumerable<FiringHumanIncident> MakeIntervalIncidents() {
+        public IEnumerable<StoryEventNode> MakeIntervalIncidents() {
             if (HumanStoryteller.InitiateEventUnsafe) {
                 _missedLastIncidentCheck = true;
                 yield break;
@@ -83,9 +85,9 @@ namespace HumanStoryteller {
             string laneInfo = laneCount.ToString();
             if (DEBUG) {
                 laneInfo += "\n";
-                foreach (StoryNode node in StoryComponent.CurrentNodes) {
-                    laneInfo += node.StoryEvent.Uuid.Substring(0, 4) + " " + node.StoryEvent.Name +
-                                (node.LeftChild == null && node.RightChild == null ? "[DORMANT]" : "");
+                foreach (StoryEventNode node in StoryComponent.CurrentNodes) {
+                    laneInfo += node.StoryNode.StoryEvent.Uuid.Substring(0, 4) + " " + node.StoryNode.StoryEvent.Name +
+                                (node.StoryNode.LeftChild == null && node.StoryNode.RightChild == null ? "[DORMANT]" : "");
                     laneInfo += "\n";
                 }
             }
@@ -107,34 +109,38 @@ namespace HumanStoryteller {
                     yield break;
                 }
 
-                StoryNode currentNode = StoryComponent.CurrentNodes[i];
+                StoryEventNode currentNode = StoryComponent.CurrentNodes[i];
                 if (currentNode == null) {
                     continue;
                 }
+
+                StoryNode sn = currentNode.StoryNode;
 
                 if (i > 500) {
                     Tell.Err("Limiting lane check, stopped after 500 lanes. Last node: " + currentNode);
                     break;
                 }
 
-                if (currentNode.Divider) {
-                    StoryComponent.CurrentNodes.Add(currentNode.LeftChild?.Node);
-                    StoryComponent.CurrentNodes[i] = currentNode.RightChild?.Node;
+                if (sn.Divider) {
+                    var left = sn.LeftChild != null ? new StoryEventNode(sn.LeftChild?.Node) : null;
+                    var right = sn.RightChild != null ? new StoryEventNode(sn.RightChild?.Node) : null;
+                    StoryComponent.CurrentNodes.Add(left);
+                    StoryComponent.CurrentNodes[i] = right;
                     _missedLastIncidentCheck = true;
-                    yield return currentNode.LeftChild?.Node.StoryEvent.Incident;
+                    yield return left;
                     _missedLastIncidentCheck = true;
                     _consecutiveEventCounter += 2; //Always execute a divider's children together
-                    yield return currentNode.RightChild?.Node.StoryEvent.Incident;
+                    yield return right;
                 } else {
-                    if (laneCount > 400 && currentNode.LeftChild == null && currentNode.RightChild == null) {
+                    if (laneCount > 400 && sn.LeftChild == null && sn.RightChild == null) {
                         StoryComponent.CurrentNodes[i] = null;
                     } else {
                         StoryNode newEvent = StoryComponent.Story.StoryGraph.TryNewEvent(currentNode, IntervalsPassed);
                         if (newEvent == null) continue;
                         _missedLastIncidentCheck = true;
                         _consecutiveEventCounter++;
-                        StoryComponent.CurrentNodes[i] = newEvent;
-                        yield return newEvent.StoryEvent.Incident;
+                        StoryComponent.CurrentNodes[i] = new StoryEventNode(newEvent);
+                        yield return StoryComponent.CurrentNodes[i];
                     }
                 }
             }
@@ -163,10 +169,11 @@ namespace HumanStoryteller {
             Thread.Sleep(1000); //Give some time to finish undergoing event executions
             StoryComponent.Story = story;
             if (StoryComponent.CurrentNodes.Count == 0) {
-                StoryComponent.CurrentNodes.Add(StoryComponent.Story.StoryGraph.Root);
+                StoryComponent.CurrentNodes.Add(new StoryEventNode(StoryComponent.Story.StoryGraph.Root));
             } else {
                 for (int i = 0; i < StoryComponent.CurrentNodes.Count; i++) {
-                    StoryComponent.CurrentNodes[i] = StoryComponent.Story.StoryGraph.GetCurrentNode(StoryComponent.CurrentNodes[i]?.StoryEvent.Uuid);
+                    var foundNode = StoryComponent.Story.StoryGraph.GetCurrentNode(StoryComponent.CurrentNodes[i]?.StoryNode.StoryEvent.Uuid);
+                    StoryComponent.CurrentNodes[i] = foundNode == null ? null : new StoryEventNode(foundNode, StoryComponent.CurrentNodes[i].Result);
                 }
                 StoryComponent.CurrentNodes.RemoveAll(item => item == null);
             }

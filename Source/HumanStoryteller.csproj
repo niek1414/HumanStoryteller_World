@@ -72,10 +72,12 @@
     <Compile Include="HumanStoryteller.cs" />
     <Compile Include="Incidents\HumanIncidentWorker.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_Alphabeavers.cs" />
+    <Compile Include="Incidents\HumanIncidentWorker_Dialog.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_FarmAnimalsWanderIn.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_Nothing.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_PsychicSoothe.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_RaidEnemy.cs" />
+    <Compile Include="Model\StoryEventNode.cs" />
     <Compile Include="NewtonsoftWrapper\DataContractAttribute.cs" />
     <Compile Include="NewtonsoftWrapper\DataMemberAttribute.cs" />
     <Compile Include="NewtonsoftWrapper\Newtonsoft.Json.Bson\BsonArray.cs" />
@@ -260,6 +262,10 @@
     <Compile Include="NewtonsoftWrapper\Newtonsoft.Json\WriteState.cs" />
     <Compile Include="NewtonsoftWrapper\Properties\AssemblyInfo.cs" />
     <Compile Include="Parser\Connection.cs" />
+    <Compile Include="Parser\Converter\ConditionConverter.cs" />
+    <Compile Include="Parser\Converter\DecimalJsonConverter.cs" />
+    <Compile Include="Parser\Converter\IncidentConverter.cs" />
+    <Compile Include="Parser\Converter\LetterTypeConverter.cs" />
     <Compile Include="Parser\Parser.cs" />
     <Compile Include="Parser\Story.cs" />
     <Compile Include="Parser\ParseNode.cs" />

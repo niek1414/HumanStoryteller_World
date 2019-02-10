@@ -17,28 +17,29 @@ namespace HumanStoryteller {
             _root = root;
         }
 
-        public StoryNode TryNewEvent(StoryNode current, int bigTick) {
+        public StoryNode TryNewEvent(StoryEventNode current, int bigTick) {
             int tickPassed = bigTick - _lastTransition;
-            if (current == null
-                || current.LeftChild == null && current.RightChild == null
-                || current.LeftChild != null && current.LeftChild.Offset > tickPassed
-                                             && current.RightChild != null && current.RightChild.Offset > tickPassed) {
+            var storyNode = current?.StoryNode;
+            if (current?.StoryNode == null
+                || storyNode.LeftChild == null && storyNode.RightChild == null
+                || storyNode.LeftChild != null && storyNode.LeftChild.Offset > tickPassed
+                                             && storyNode.RightChild != null && storyNode.RightChild.Offset > tickPassed) {
                 return null;
             }
 
             Connection next;
-            List<CheckCondition> conditions = current.Conditions;
+            List<CheckCondition> conditions = storyNode.Conditions;
 
             if (conditions != null) {
                 bool allTrue = true;
                 foreach (var condition in conditions) {
-                    if (condition.Check(current)) continue;
+                    if (condition.Check(current.Result)) continue;
                     allTrue = false;
                     break;
                 }
-                next = allTrue ? current.LeftChild : current.RightChild;
+                next = allTrue ? storyNode.LeftChild : storyNode.RightChild;
             } else {
-                next = current.LeftChild;
+                next = storyNode.LeftChild;
             }
 
             if (next == null) {

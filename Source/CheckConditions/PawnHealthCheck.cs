@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using HumanStoryteller.Incidents;
 using HumanStoryteller.Model;
 using HumanStoryteller.Util;
 using Verse;
@@ -28,7 +29,7 @@ namespace HumanStoryteller.CheckConditions {
             _condition = Tell.AssertNotNull(condition, nameof(condition), GetType().Name);
         }
 
-        public override bool Check(StoryNode sn) {
+        public override bool Check(IncidentResult result) {
             Pawn pawn = PawnUtil.GetPawnByName(_pawnName);
             if (pawn == null) {
                 switch (_condition) {
@@ -73,12 +74,13 @@ namespace HumanStoryteller.CheckConditions {
             Scribe_Values.Look(ref _condition, "condition");
         }
     }
+    
+    public enum HealthCondition {
+         Alive,
+         Dead,
+         Healthy,
+         InjuredOrDead,
+         InjuredButAlive
+     }
 }
 
-public enum HealthCondition {
-    Alive,
-    Dead,
-    Healthy,
-    InjuredOrDead,
-    InjuredButAlive
-}

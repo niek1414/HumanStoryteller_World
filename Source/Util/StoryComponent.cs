@@ -7,7 +7,7 @@ namespace HumanStoryteller.Util {
     public class StoryComponent : WorldComponent {
         public Story Story;
         public long StoryId;
-        public List<StoryNode> CurrentNodes = new List<StoryNode>();
+        public List<StoryEventNode> CurrentNodes = new List<StoryEventNode>();
         
         public override void ExposeData()
         {

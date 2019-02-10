@@ -13,10 +13,10 @@ namespace HumanStoryteller.Incidents {
     class HumanIncidentWorker_RaidEnemy : HumanIncidentWorker {
         public const String Name = "RaidEnemy";
 
-        public override void Execute(HumanIncidentParms parms) {
+        public override IncidentResult Execute(HumanIncidentParms parms) {
             if (!(parms is HumanIncidentParams_RaidEnemy)) {
                 Tell.Err("Tried to execute " + GetType() + " but param type was " + parms.GetType());
-                return;
+                return null;
             }
 
             HumanIncidentParams_RaidEnemy allParams = Tell.AssertNotNull((HumanIncidentParams_RaidEnemy) parms, nameof(parms), GetType().Name);
@@ -26,28 +26,28 @@ namespace HumanStoryteller.Incidents {
             float points = allParams.Points != -1
                 ? StorytellerUtility.DefaultThreatPointsNow(map) * allParams.Points
                 : StorytellerUtility.DefaultThreatPointsNow(map);
-            Faction faction = null;
+            Faction faction;
             try {
                 faction = Find.FactionManager.AllFactions.First(f => f.def.defName == allParams.Faction);
-            } catch (InvalidOperationException e) {
+            } catch (InvalidOperationException) {
                 if (!PawnGroupMakerUtility.TryGetRandomFactionForCombatPawnGroup(points, out faction, f => FactionCanBeGroupSource(f, map, false),
-                    true, true, true, true)) {
+                    true, true, true)) {
                     faction = null;
                     Tell.Err("3.5");
                 }
 
                 if (faction == null && !PawnGroupMakerUtility.TryGetRandomFactionForCombatPawnGroup(points, out faction,
-                        f => FactionCanBeGroupSource(f, map, true), true, true, true, true)) {
+                        f => FactionCanBeGroupSource(f, map, true), true, true, true)) {
                     Tell.Err("Found no faction that satisfies requirements; p=" + points + " m=" + map, false);
-                    return;
+                    return null;
                 }
             }
 
             PawnGroupKindDef combat = PawnGroupKindDefOf.Combat;
-            RaidStrategyDef strategy = null;
+            RaidStrategyDef strategy;
             try {
                 strategy = (from d in DefDatabase<RaidStrategyDef>.AllDefs where d.defName == allParams.Strategy select d).First();
-            } catch (InvalidOperationException e) {
+            } catch (InvalidOperationException) {
                 if (!(from d in DefDatabase<RaidStrategyDef>.AllDefs
                     where (double) points >= (double) d.Worker.MinimumPoints(faction, combat)
                     select d).TryRandomElementByWeight(d => d.Worker.SelectionWeight(map, points), out strategy)) {
@@ -58,7 +58,7 @@ namespace HumanStoryteller.Incidents {
                 }
             }
 
-            PawnsArrivalModeDef arriveMode = null;
+            PawnsArrivalModeDef arriveMode;
 
             try {
                 arriveMode = (from d in DefDatabase<PawnsArrivalModeDef>.AllDefs where d.defName == allParams.ArriveMode select d).First();
@@ -81,7 +81,7 @@ namespace HumanStoryteller.Incidents {
 
             if (!arriveMode.Worker.TryResolveRaidSpawnCenter(fakeParms)) {
                 Tell.Err("Could not resolve spawn center for raid.");
-                return;
+                return null;
             }
 
             points = AdjustedRaidPoints(points, arriveMode, strategy, faction, combat);
@@ -91,7 +91,7 @@ namespace HumanStoryteller.Incidents {
             List<Pawn> list = PawnGroupMakerUtility.GeneratePawns(defaultPawnGroupMakerParms, true).ToList();
             if (list.Count == 0) {
                 Tell.Err("Got no pawns spawning raid from parms " + fakeParms);
-                return;
+                return null;
             }
 
             arriveMode.Worker.Arrive(list, fakeParms);
@@ -109,7 +109,7 @@ namespace HumanStoryteller.Incidents {
                     }
                 }
 
-                string str = (item.equipment == null || item.equipment.Primary == null) ? "unarmed" : item.equipment.Primary.LabelCap;
+                string str = item.equipment == null || item.equipment.Primary == null ? "unarmed" : item.equipment.Primary.LabelCap;
                 stringBuilder.AppendLine(item.KindLabel + " - " + str);
             }
 
@@ -141,19 +141,21 @@ namespace HumanStoryteller.Incidents {
             if (!PlayerKnowledgeDatabase.IsComplete(ConceptDefOf.ShieldBelts)) {
                 for (int j = 0; j < list.Count; j++) {
                     Pawn pawn = list[j];
-                    if (pawn.apparel.WornApparel.Any((Apparel ap) => ap is ShieldBelt)) {
+                    if (pawn.apparel.WornApparel.Any(ap => ap is ShieldBelt)) {
                         LessonAutoActivator.TeachOpportunity(ConceptDefOf.ShieldBelts, OpportunityType.Critical);
                         break;
                     }
                 }
             }
+
+            return null;
         }
 
         protected string GetLetterText(IncidentParms parms, List<Pawn> pawns) {
             string str = string.Format(parms.raidArrivalMode.textEnemy, parms.faction.def.pawnsPlural, parms.faction.Name);
             str += "\n\n";
             str += parms.raidStrategy.arrivalTextEnemy;
-            Pawn pawn = pawns.Find((Pawn x) => x.Faction.leader == x);
+            Pawn pawn = pawns.Find(x => x.Faction.leader == x);
             if (pawn != null) {
                 str += "\n\n";
                 str += "EnemyRaidLeaderPresent".Translate(pawn.Faction.def.pawnsPlural, pawn.LabelShort, pawn.Named("LEADER"));
@@ -187,7 +189,7 @@ namespace HumanStoryteller.Incidents {
 
             if (!desperate && (!f.def.allowedArrivalTemperatureRange.Includes(map.mapTemperature.OutdoorTemp) ||
                                !f.def.allowedArrivalTemperatureRange.Includes(map.mapTemperature.SeasonalTemp)) &&
-                (GenDate.DaysPassed >= f.def.earliestRaidDays)) {
+                GenDate.DaysPassed >= f.def.earliestRaidDays) {
                 return false;
             }
 
