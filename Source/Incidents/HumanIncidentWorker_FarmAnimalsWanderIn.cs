@@ -59,8 +59,6 @@ namespace HumanStoryteller.Incidents {
 
             SendLetter(allParams, "LetterLabelFarmAnimalsWanderIn".Translate(kind.GetLabelPlural(-1)).CapitalizeFirst(),
                 "LetterFarmAnimalsWanderIn".Translate(kind.GetLabelPlural(-1)), LetterDefOf.PositiveEvent, new TargetInfo(result, map, false));
-            Tell.Log("Finished execution");
-
             return null;
         }
 

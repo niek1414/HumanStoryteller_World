@@ -1,5 +1,6 @@
 using System;
 using System.Globalization;
+using HumanStoryteller.Util;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -9,7 +10,7 @@ namespace HumanStoryteller.Parser.Converter {
         public override bool CanWrite => false;
 
         public override bool CanConvert(Type objectType) {
-            return objectType == typeof(float);
+            return objectType == typeof(float) || objectType == typeof(long);
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer) {
@@ -18,14 +19,33 @@ namespace HumanStoryteller.Parser.Converter {
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer) {
             if (reader.TokenType == JsonToken.Float || reader.TokenType == JsonToken.Integer) {
-                return JToken.ReadFrom(reader).Value<float>();
+                if (objectType == typeof(float)) {
+                    return JToken.ReadFrom(reader).Value<float>();
+                }
+
+                if (objectType == typeof(long)) {
+                    return JToken.ReadFrom(reader).Value<long>();
+                }
             }
 
             if (reader.TokenType == JsonToken.String) {
-                return float.Parse(JToken.ReadFrom(reader).Value<string>(), CultureInfo.InvariantCulture.NumberFormat);
+                var s = JToken.ReadFrom(reader).Value<string>();
+                if (s.Length > 0) {
+                    if (objectType == typeof(float)) {
+                        return float.Parse(s, CultureInfo.InvariantCulture.NumberFormat);
+                    }
+
+                    if (objectType == typeof(long)) {
+                        return long.Parse(s, CultureInfo.InvariantCulture.NumberFormat);
+                    }
+                }
             }
 
-            return -1;
+            if (objectType == typeof(float)) {
+                return -1f;
+            }
+
+            return -1L;
         }
     }
 }

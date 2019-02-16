@@ -66,6 +66,7 @@ namespace HumanStoryteller {
                     if (sen?.StoryNode?.StoryEvent?.Incident?.Worker != null) {
                         var incident = sen.StoryNode.StoryEvent.Incident;
                         sen.Result = incident.Worker.Execute(incident.Parms);
+                        DataBank.ProcessVariableModifications(sen.StoryNode.Modifications);
                     } else {
                         Tell.Warn("Returned a incident that was not defined");
                     }
@@ -92,7 +93,10 @@ namespace HumanStoryteller {
                 }
             }
 
-            Tell.Log("TickOffset: " + IntervalsPassed + ", Concurrent lanes: " + laneInfo);
+            if (Prefs.DevMode) {
+                Tell.Log("TickOffset: " + IntervalsPassed + ", Concurrent lanes: " + laneInfo);
+                Tell.Log("Vars: \n" + DataBank.VariableBankToString());
+            }
 
             if (laneCount > 15) {
                 Tell.Warn("More concurrent lanes then 15, this can hurt performance badly. This is because the storymaker used to much dividers.");
@@ -149,6 +153,11 @@ namespace HumanStoryteller {
         }
 
         private void CheckStoryRefresh(object source, ElapsedEventArgs e) {
+            if (Current.Game == null || StoryComponent == null || !(Find.TickManager.TicksGame > 0)) {
+                _refreshTimer.Enabled = false;
+                Tell.Warn("Tried to get story while not in-game");
+                return;
+            }
             Storybook.GetStory(StoryComponent.StoryId, GetStoryCallback);
         }
 

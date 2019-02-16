@@ -23,7 +23,7 @@ namespace HumanStoryteller.Incidents {
             Tell.Log($"Executing event {Name} with:{allParams}");
 
             Map map = (Map) allParams.GetTarget();
-            float points = allParams.Points != -1
+            float points = allParams.Points >= 0
                 ? StorytellerUtility.DefaultThreatPointsNow(map) * allParams.Points
                 : StorytellerUtility.DefaultThreatPointsNow(map);
             Faction faction;
@@ -33,7 +33,6 @@ namespace HumanStoryteller.Incidents {
                 if (!PawnGroupMakerUtility.TryGetRandomFactionForCombatPawnGroup(points, out faction, f => FactionCanBeGroupSource(f, map, false),
                     true, true, true)) {
                     faction = null;
-                    Tell.Err("3.5");
                 }
 
                 if (faction == null && !PawnGroupMakerUtility.TryGetRandomFactionForCombatPawnGroup(points, out faction,

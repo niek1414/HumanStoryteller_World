@@ -40,7 +40,7 @@ namespace HumanStoryteller.Patch {
             HarmonyMethod draw = new HarmonyMethod(typeof(StorytellerUI_Patch).GetMethod("DrawStorytellerSelectionInterface"));
             HarmonyMethod pre = new HarmonyMethod(typeof(StorytellerUI_Patch).GetMethod("PreOpen"));
             HarmonyMethod post = new HarmonyMethod(typeof(StorytellerUI_Patch).GetMethod("CanDoNext"));
-            
+
             harmony.Patch(targetMain, null, draw);
             harmony.Patch(targetPre, null, pre);
             harmony.Patch(targetPost, null, post);
@@ -50,14 +50,7 @@ namespace HumanStoryteller.Patch {
             DefDatabase<StorytellerDef>.AllDefs.First(a => a.defName == "Human").listOrder = 50;
             storyList.Clear();
             _pageNumber = 0;
-            _loading = true;
-
-            long origin = _pageNumber * PAGE_STORY_LIMIT;
-            Storybook.GetBook(origin, PAGE_STORY_LIMIT, filterName, filterDescription, filterCreator, storyArray => {
-                storyList.Clear();
-                storyList.AddRange(storyArray);
-                _loading = false;
-            });
+            RefreshList(false);
         }
 
         public static void CanDoNext(Page_SelectStoryteller __instance, ref bool __result) {
@@ -65,7 +58,7 @@ namespace HumanStoryteller.Patch {
 
             Current.Game.storyteller.def.listOrder = (int) _selectedSummary.Id;
         }
-        
+
         public static void DrawStorytellerSelectionInterface(Rect rect, ref StorytellerDef chosenStoryteller, ref DifficultyDef difficulty,
             Listing_Standard infoListing) {
             if (chosenStoryteller.defName != "Human") return;
@@ -90,14 +83,7 @@ namespace HumanStoryteller.Patch {
 
             if (Widgets.ButtonText(new Rect(filter.x + filter.width / 3 * 2, filter.y + 140, filter.width / 3, 30), "Search")) {
                 _pageNumber = 0;
-                _loading = true;
-
-                long origin = _pageNumber * PAGE_STORY_LIMIT;
-                Storybook.GetBook(origin, PAGE_STORY_LIMIT, filterName, filterDescription, filterCreator, storyArray => {
-                    storyList.Clear();
-                    storyList.AddRange(storyArray);
-                    _loading = false;
-                });
+                RefreshList(false);
             }
         }
 
@@ -105,14 +91,7 @@ namespace HumanStoryteller.Patch {
             if (Widgets.ButtonText(new Rect(stories.center.x - 40, stories.yMax - 40, 30, 40), "<", true, false, _pageNumber != 0)) {
                 if (!_loading && _pageNumber != 0) {
                     _pageNumber--;
-                    _loading = true;
-
-                    long origin = _pageNumber * PAGE_STORY_LIMIT;
-                    Storybook.GetBook(origin, PAGE_STORY_LIMIT, filterName, filterDescription, filterCreator, storyArray => {
-                        storyList.Clear();
-                        storyList.AddRange(storyArray);
-                        _loading = false;
-                    });
+                    RefreshList();
                 }
             }
 
@@ -149,18 +128,12 @@ namespace HumanStoryteller.Patch {
             Widgets.Label(new Rect(stories.center.x + 1, stories.yMax - 27, 20, 30), label);
             if (Widgets.ButtonText(new Rect(stories.center.x + 20, stories.yMax - 40, 30, 40), ">")) {
                 if (!_loading) {
-                    _loading = true;
                     _pageNumber++;
-
-                    long origin = _pageNumber * PAGE_STORY_LIMIT;
-                    Storybook.GetBook(origin, PAGE_STORY_LIMIT, filterName, filterDescription, filterCreator, storyArray => {
-                        storyList.Clear();
-                        storyList.AddRange(storyArray);
-                        _loading = false;
-                    });
+                    RefreshList();
                 }
             }
-            
+
+            Text.Font = GameFont.Tiny;
             Widgets.Label(new Rect(stories.xMax - 90, stories.yMax - 14, 90, 17), "Picked story: #" + _selectedSummary.Id);
         }
 
@@ -252,7 +225,7 @@ namespace HumanStoryteller.Patch {
             }
         }
 
-        private static Texture2D GetImage(string url, long id) {           
+        private static Texture2D GetImage(string url, long id) {
             if (loadingImages.ContainsKey(id)) {
                 WWW val = loadingImages[id];
                 try {
@@ -264,6 +237,7 @@ namespace HumanStoryteller.Patch {
                             Tell.Warn("Could not load avatar", "storyid: " + id, "Err: " + val.error);
                             loadingImages.Remove(id);
                         }
+
                         val.Dispose();
                     }
                 } catch (Exception e) {
@@ -275,17 +249,35 @@ namespace HumanStoryteller.Patch {
                         // ignored
                     }
                 }
-            } 
-            
+            }
+
             if (loadedImages.ContainsKey(id)) {
                 return loadedImages[id];
-            } 
-            
+            }
+
             if (!loadingImages.ContainsKey(id)) {
                 loadingImages.Add(id, new WWW(GenFilePaths.SafeURIForUnityWWWFromPath(url).Substring(8)));
             }
 
             return null;
+        }
+
+        private static void RefreshList(bool autoFind = true) {
+            _loading = true;
+            long origin = _pageNumber * PAGE_STORY_LIMIT;
+            Storybook.GetBook(origin, PAGE_STORY_LIMIT, filterName, filterDescription, filterCreator, storyArray => {
+                _loading = false;
+
+                if (storyArray.Length > 0) {
+                    storyList.Clear();
+                    storyList.AddRange(storyArray);
+                } else if (autoFind) {
+                    _pageNumber = 0;
+                    RefreshList(false);
+                } else {
+                    storyList.Clear();
+                }
+            });
         }
     }
 }

@@ -13,6 +13,9 @@ namespace HumanStoryteller.Parser {
 
         [JsonConverter(typeof(ConditionConverter))]
         public List<CheckCondition> Conditions { get; set; }
+        
+        [JsonProperty(PropertyName = "storage")]
+        public List<VariableModifications> Modifications { get; set; }
 
         [JsonIgnore]
         public StoryNode RealNode { get; set; }
@@ -21,7 +24,7 @@ namespace HumanStoryteller.Parser {
         public FiringHumanIncident Incident { get; set; }
 
         public override string ToString() {
-            return $"Uuid: {Uuid}, Left: {Left}, Right: {Right}, Condition: {Conditions}, RealNode: {RealNode}, Incident: {Incident}";
+            return $"Uuid: {Uuid}, Name: {Name}, Left: {Left}, Right: {Right}, Conditions: {Conditions}, Modifications: {Modifications}, RealNode: {RealNode}, Incident: {Incident}";
         }
     }
 }

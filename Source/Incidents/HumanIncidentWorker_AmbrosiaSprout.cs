@@ -1,0 +1,113 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using HumanStoryteller.Model;
+using HumanStoryteller.Util;
+using RimWorld;
+using UnityEngine;
+using Verse;
+
+namespace HumanStoryteller.Incidents {
+    class HumanIncidentWorker_AmbrosiaSprout : HumanIncidentWorker {
+        public const String Name = "AmbrosiaSprout";
+
+        private static readonly IntRange CountRange = new IntRange(10, 20);
+
+        public override IncidentResult Execute(HumanIncidentParms parms) {
+            IncidentDef def = DefDatabase<IncidentDef>.GetNamed("AmbrosiaSprout");
+
+            if (!(parms is HumanIncidentParams_AmbrosiaSprout)) {
+                Tell.Err("Tried to execute " + GetType() + " but param type was " + parms.GetType());
+                return null;
+            }
+
+            HumanIncidentParams_AmbrosiaSprout allParams =
+                Tell.AssertNotNull((HumanIncidentParams_AmbrosiaSprout) parms, nameof(parms), GetType().Name);
+            Tell.Log($"Executing event {Name} with:{allParams}");
+
+            Map map = (Map) allParams.GetTarget();
+
+            if (!TryFindRootCell(map, out IntVec3 cell)) {
+                return null;
+            }
+
+            Thing thing = null;
+            int randomInRange;
+            if (allParams.Amount != -1) {
+                randomInRange = (int) allParams.Amount;
+            } else {
+                randomInRange = CountRange.RandomInRange;
+            }
+
+            for (int i = 0; i < randomInRange; i++) {
+                if (!CellFinder.TryRandomClosewalkCellNear(cell, map, (int) (allParams.Range != -1 ? allParams.Range : 6), out IntVec3 result,
+                    x => CanSpawnAt(x, map))) {
+                    break;
+                }
+
+                result.GetPlant(map)?.Destroy();
+                Thing thing2 = GenSpawn.Spawn(ThingDefOf.Plant_Ambrosia, result, map);
+                if (thing == null) {
+                    thing = thing2;
+                }
+            }
+
+            if (thing == null) {
+                return null;
+            }
+
+            SendLetter(allParams, def.letterLabel, def.letterText, def.letterDef, thing);
+            return null;
+        }
+
+        private bool TryFindRootCell(Map map, out IntVec3 cell) {
+            return CellFinderLoose.TryFindRandomNotEdgeCellWith(10,
+                x => CanSpawnAt(x, map) && x.GetRoom(map).CellCount >= 64, map, out cell);
+        }
+
+        private bool CanSpawnAt(IntVec3 c, Map map) {
+            if (!c.Standable(map) || c.Fogged(map) || map.fertilityGrid.FertilityAt(c) < ThingDefOf.Plant_Ambrosia.plant.fertilityMin ||
+                !c.GetRoom(map).PsychologicallyOutdoors || c.GetEdifice(map) != null) {
+                return false;
+            }
+
+            Plant plant = c.GetPlant(map);
+            if (plant != null && plant.def.plant.growDays > 10f) {
+                return false;
+            }
+
+            List<Thing> thingList = c.GetThingList(map);
+            for (int i = 0; i < thingList.Count; i++) {
+                if (thingList[i].def == ThingDefOf.Plant_Ambrosia) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+    }
+
+    public class HumanIncidentParams_AmbrosiaSprout : HumanIncidentParms {
+        public long Amount;
+        public long Range;
+
+        public HumanIncidentParams_AmbrosiaSprout() {
+        }
+
+        public HumanIncidentParams_AmbrosiaSprout(String target, HumanLetter letter, long amount = -1, long range = -1) :
+            base(target, letter) {
+            Amount = amount;
+            Range = range;
+        }
+
+        public override string ToString() {
+            return $"{base.ToString()}, Amount: {Amount}, Range: {Range}";
+        }
+
+        public override void ExposeData() {
+            base.ExposeData();
+            Scribe_Values.Look(ref Amount, "amount");
+            Scribe_Values.Look(ref Range, "range");
+        }
+    }
+}

@@ -8,6 +8,7 @@ namespace HumanStoryteller.Util {
         public Story Story;
         public long StoryId;
         public List<StoryEventNode> CurrentNodes = new List<StoryEventNode>();
+        public Dictionary<string, float> VariableBank = new Dictionary<string, float>();
         
         public override void ExposeData()
         {
@@ -15,6 +16,7 @@ namespace HumanStoryteller.Util {
             Scribe_Deep.Look(ref Story, "story");
             Scribe_Values.Look(ref StoryId, "storyId");
             Scribe_Collections.Look(ref CurrentNodes, "currentNode", LookMode.Deep);
+            Scribe_Collections.Look(ref VariableBank, "variableBank", LookMode.Deep);
         }
 
         public StoryComponent(World world) : base(world) {

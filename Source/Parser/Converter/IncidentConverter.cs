@@ -51,6 +51,22 @@ namespace HumanStoryteller.Parser.Converter {
                     incident = new FiringHumanIncident(new HumanIncidentWorker_RaidEnemy(),
                         new HumanIncidentParams_RaidEnemy(defaultIncidentTarget, defaultLetter));
                     break;
+                case HumanIncidentWorker_Dialog.Name:
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_Dialog(),
+                        new HumanIncidentParams_Dialog(defaultIncidentTarget, defaultLetter));
+                    break;
+                case HumanIncidentWorker_AmbrosiaSprout.Name:
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_AmbrosiaSprout(),
+                        new HumanIncidentParams_AmbrosiaSprout(defaultIncidentTarget, defaultLetter));
+                    break;
+                case HumanIncidentWorker_AnimalInsanityMass.Name:
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_AnimalInsanityMass(),
+                        new HumanIncidentParams_AnimalInsanityMass(defaultIncidentTarget, defaultLetter));
+                    break;
+                case HumanIncidentWorker_AnimalInsanitySingle.Name:
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_AnimalInsanitySingle(),
+                        new HumanIncidentParams_AnimalInsanitySingle(defaultIncidentTarget, defaultLetter));
+                    break;
                 default:
                     Parser.LogParseError("incident", type);
                     return new FiringHumanIncident(null);

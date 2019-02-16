@@ -7,11 +7,10 @@ using Verse;
 namespace HumanStoryteller.CheckConditions {
     public class DialogCheck : CheckCondition {
         public const String Name = "Dialog";
-        
+
         private DialogResponse _response;
-        
-        public static readonly Dictionary<string, DialogResponse> dict = new Dictionary<string, DialogResponse>
-        {
+
+        public static readonly Dictionary<string, DialogResponse> dict = new Dictionary<string, DialogResponse> {
             {"Accepted", DialogResponse.Accepted},
             {"Denied", DialogResponse.Denied},
             {"Pending", DialogResponse.Pending}
@@ -25,13 +24,20 @@ namespace HumanStoryteller.CheckConditions {
         }
 
         public override bool Check(IncidentResult result) {
+            if (result == null) {
+                Tell.Err($"Tried to check {GetType()} but result type was null." +
+                         " Likely the storycreator added a incomparable condition to an event.");
+                return false;
+            }
+
             if (!(result is IncidentResult_Dialog)) {
-                Tell.Err("Tried to check " + GetType() + " but result type was " + result.GetType());
+                Tell.Err($"Tried to check {GetType()} but result type was {result.GetType()}." +
+                         " Likely the storycreator added a incomparable condition to an event.");
                 return false;
             }
 
             IncidentResult_Dialog resultDialog = (IncidentResult_Dialog) result;
-            return resultDialog.LetterAnswer == _response;//TODO AND ALSO: add to parser
+            return resultDialog.LetterAnswer == _response;
         }
 
         public override string ToString() {
@@ -43,7 +49,7 @@ namespace HumanStoryteller.CheckConditions {
             Scribe_Values.Look(ref _response, "response");
         }
     }
-    
+
     public enum DialogResponse {
         Accepted,
         Denied,

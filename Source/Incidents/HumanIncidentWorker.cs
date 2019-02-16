@@ -4,7 +4,7 @@ using RimWorld;
 using Verse;
 
 namespace HumanStoryteller.Incidents {
-    public abstract class HumanIncidentWorker : IExposable {//TODO make also ILoadReferenceable
+    public abstract class HumanIncidentWorker : IExposable {
         public abstract IncidentResult Execute(HumanIncidentParms parms);
 
         protected void SendLetter(HumanIncidentParms parms, String title, String message, LetterDef type, LookTargets target,
@@ -24,7 +24,18 @@ namespace HumanStoryteller.Incidents {
         public virtual void ExposeData() {}
     }
 
-    public abstract class IncidentResult : IExposable {
-        public virtual void ExposeData() {}
+    public abstract class IncidentResult : IExposable, ILoadReferenceable {
+        private int _id;
+
+        protected IncidentResult() {
+            _id = Rand.Int;
+        }
+
+        public virtual void ExposeData() {
+            Scribe_Values.Look(ref _id, "id");
+        }
+        public string GetUniqueLoadID() {
+            return $"IncidentResult_{_id}";
+        }
     }
 }

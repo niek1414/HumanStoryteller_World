@@ -1,11 +1,5 @@
-﻿using System;
-using System.Linq;
-using System.Threading;
+﻿using System.Threading;
 using Harmony;
-using HumanStoryteller.Model;
-using HumanStoryteller.Util;
-using HumanStoryteller.Web;
-using RimWorld;
 using Verse;
 
 namespace HumanStoryteller {

@@ -31,11 +31,22 @@ namespace HumanStoryteller.Incidents {
                 type = parms.Letter.Type;
             }
 
-            ChoiceLetter_Dialog choiceLetter_Dialog = (ChoiceLetter_Dialog) LetterMaker.MakeLetter(title, message, type);
-            choiceLetter_Dialog.title = title;
-            choiceLetter_Dialog.radioMode = true;
-            choiceLetter_Dialog.map = map;
-            choiceLetter_Dialog.fee = allParams.Silver;
+            Letter l = LetterMaker.MakeLetter(title, message, type);
+            ChoiceLetter_Dialog choiceLetter_Dialog = new ChoiceLetter_Dialog {
+                ID = l.ID,
+                def = l.def,
+                label = l.label,
+                lookTargets = l.lookTargets,
+                relatedFaction = l.relatedFaction,
+                arrivalTick = l.arrivalTick,
+                arrivalTime = l.arrivalTime,
+                debugInfo = l.debugInfo,
+                text = message,
+                title = title,
+                radioMode = true,
+                map = map,
+                fee = (int) allParams.Silver
+            };
             choiceLetter_Dialog.report = new IncidentResult_Dialog(choiceLetter_Dialog);
             if (allParams.Duration > 0) {
                 choiceLetter_Dialog.StartTimeout((int) (60000 * allParams.Duration));
@@ -48,13 +59,13 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_Dialog : HumanIncidentParms {
-        public int Silver;
+        public long Silver;
         public float Duration;
 
         public HumanIncidentParams_Dialog() {
         }
 
-        public HumanIncidentParams_Dialog(String target, HumanLetter letter, int silver = 0, float duration = 1) : base(target, letter) {
+        public HumanIncidentParams_Dialog(String target, HumanLetter letter, long silver = 0, float duration = 1) : base(target, letter) {
             Silver = silver;
             Duration = duration;
         }
@@ -72,7 +83,7 @@ namespace HumanStoryteller.Incidents {
     public class IncidentResult_Dialog : IncidentResult {
         public ChoiceLetter_Dialog Letter;
         public DialogResponse LetterAnswer;
-        
+
         public IncidentResult_Dialog() {
         }
 
@@ -84,6 +95,7 @@ namespace HumanStoryteller.Incidents {
         public override void ExposeData() {
             base.ExposeData();
             Scribe_References.Look(ref Letter, "letter");
+            Scribe_Values.Look(ref LetterAnswer, "response");
         }
     }
 
@@ -96,7 +108,7 @@ namespace HumanStoryteller.Incidents {
             get {
                 if (!ArchivedOnly) {
                     DiaOption accept =
-                        new DiaOption("RansomDemand_Accept".Translate() + (fee == 0 ? "" : " (" + fee + " " + "Silver.label".Translate() + ")")) {
+                        new DiaOption("RansomDemand_Accept".Translate() + (fee == 0 ? "" : " (" + fee + " " + ThingDefOf.Silver.label + ")")) {
                             action = delegate {
                                 report.LetterAnswer = DialogResponse.Accepted;
                                 TradeUtility.LaunchSilver(map, fee);
@@ -118,6 +130,8 @@ namespace HumanStoryteller.Incidents {
                     },
                     resolveTree = true
                 };
+
+                yield return Option_Postpone;
             }
         }
 

@@ -10,7 +10,7 @@ namespace HumanStoryteller.Util {
                         continue;
                     }
 
-                    if (p.Name.ToStringFull.Contains(name)) {
+                    if (p.Name.ToStringFull.ToUpper().Contains(name.ToUpper())) {
                         return p;
                     }
                 }
