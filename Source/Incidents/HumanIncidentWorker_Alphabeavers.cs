@@ -12,9 +12,10 @@ namespace HumanStoryteller.Incidents {
         private static readonly FloatRange CountPerColonistRange = new FloatRange(1f, 1.5f);
 
         public override IncidentResult Execute(HumanIncidentParms parms) {
+            IncidentResult ir = new IncidentResult();
             if (!(parms is HumanIncidentParams_Alphabeavers)) {
                 Tell.Err("Tried to execute " + GetType() + " but param type was " + parms.GetType());
-                return null;
+                return ir;
             }
 
             HumanIncidentParams_Alphabeavers allParams = Tell.AssertNotNull((HumanIncidentParams_Alphabeavers) parms, nameof(parms), GetType().Name);
@@ -47,7 +48,7 @@ namespace HumanStoryteller.Incidents {
             SendLetter(allParams, "LetterLabelBeaversArrived".Translate(), "BeaversArrived".Translate(), LetterDefOf.ThreatSmall,
                 new TargetInfo(result, map));
 
-            return null;
+            return ir;
         }
     }
 

@@ -16,12 +16,12 @@ namespace HumanStoryteller.CheckConditions {
         }
 
         public VariableCheck(string variableName, DataBank.CompareType compareType, float constant) {
-            _variableName = variableName;
-            _compareType = compareType;
-            _constant = constant;
+            _variableName = Tell.AssertNotNull(variableName, nameof(variableName), GetType().Name);
+            _compareType = Tell.AssertNotNull(compareType, nameof(compareType), GetType().Name);
+            _constant = Tell.AssertNotNull(constant, nameof(constant), GetType().Name);
         }
 
-        public override bool Check(IncidentResult result) {
+        public override bool Check(IncidentResult result, int checkPosition) {
             return DataBank.CompareVariableWithConst(_variableName, _compareType, _constant);
         }
 

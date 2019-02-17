@@ -8,16 +8,15 @@ using Verse;
 namespace HumanStoryteller.CheckConditions {
     public class PawnHealthCheck : CheckCondition {
         public const String Name = "PawnHealth";
-        
-        public static readonly Dictionary<string, HealthCondition> dict = new Dictionary<string, HealthCondition>
-        {
+
+        public static readonly Dictionary<string, HealthCondition> dict = new Dictionary<string, HealthCondition> {
             {"Alive", HealthCondition.Alive},
             {"Dead", HealthCondition.Dead},
             {"Healthy", HealthCondition.Healthy},
             {"InjuredOrDead", HealthCondition.InjuredOrDead},
             {"InjuredButAlive", HealthCondition.InjuredButAlive}
         };
-        
+
         private String _pawnName;
         private HealthCondition _condition;
 
@@ -29,7 +28,7 @@ namespace HumanStoryteller.CheckConditions {
             _condition = Tell.AssertNotNull(condition, nameof(condition), GetType().Name);
         }
 
-        public override bool Check(IncidentResult result) {
+        public override bool Check(IncidentResult result, int checkPosition) {
             Pawn pawn = PawnUtil.GetPawnByName(_pawnName);
             if (pawn == null) {
                 switch (_condition) {
@@ -73,14 +72,13 @@ namespace HumanStoryteller.CheckConditions {
             Scribe_Values.Look(ref _pawnName, "pawnName");
             Scribe_Values.Look(ref _condition, "condition");
         }
+        
+        public enum HealthCondition {
+            Alive,
+            Dead,
+            Healthy,
+            InjuredOrDead,
+            InjuredButAlive
+        }
     }
-    
-    public enum HealthCondition {
-         Alive,
-         Dead,
-         Healthy,
-         InjuredOrDead,
-         InjuredButAlive
-     }
 }
-

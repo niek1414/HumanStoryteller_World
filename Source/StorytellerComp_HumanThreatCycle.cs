@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Timers;
@@ -199,6 +200,17 @@ namespace HumanStoryteller {
 //            Tell.Warn("SWITCHED TO TEST STORYTELLER: " + storyteller.defName);
 //            Current.Game.storyteller.def = storyteller;
 //            Current.Game.storyteller.Notify_DefChanged();
+            
+//            string str = "";
+//            foreach (PawnKindDef pawnKindDef in (from x in DefDatabase<PawnKindDef>.AllDefs
+//                where x.RaceProps.Animal
+//                select x)) {
+//                str += pawnKindDef.defName + "\n";
+//            }
+//            foreach (var def in PlantUtility.ValidPlantTypesForGrowers(new List<IPlantToGrowSettable>())) {
+//                str += def.defName + "\n";
+//            }
+//            Tell.Log(str);
             
             Storybook.GetStory(StoryComponent.StoryId, GetStoryCallback);
             _refreshTimer.Elapsed += CheckStoryRefresh;

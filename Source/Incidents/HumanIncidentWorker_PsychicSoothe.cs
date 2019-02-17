@@ -11,9 +11,11 @@ namespace HumanStoryteller.Incidents {
         public const String Name = "PsychicSoothe";
 
         public override IncidentResult Execute(HumanIncidentParms parms) {
+            IncidentResult ir = new IncidentResult();
+
             if (!(parms is HumanIncidentParams_PsychicSoothe)) {
                 Tell.Err("Tried to execute " + GetType() + " but param type was " + parms.GetType());
-                return null;
+                return ir;
             }
 
             HumanIncidentParams_PsychicSoothe
@@ -45,7 +47,7 @@ namespace HumanStoryteller.Incidents {
             string text = "LetterIncidentPsychicSoothe".Translate(g.ToString().Translate().ToLower());
             SendLetter(allParams, "LetterLabelPsychicSoothe".Translate(), text, LetterDefOf.PositiveEvent, null);
             
-            return null;
+            return ir;
         }
     }
 

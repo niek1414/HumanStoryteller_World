@@ -11,9 +11,11 @@ namespace HumanStoryteller.Incidents {
         public const String Name = "Dialog";
 
         public override IncidentResult Execute(HumanIncidentParms parms) {
+            IncidentResult ir = new IncidentResult();
+
             if (!(parms is HumanIncidentParams_Dialog)) {
                 Tell.Err("Tried to execute " + GetType() + " but param type was " + parms.GetType());
-                return null;
+                return ir;
             }
 
             HumanIncidentParams_Dialog

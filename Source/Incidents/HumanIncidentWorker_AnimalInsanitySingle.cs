@@ -12,9 +12,11 @@ namespace HumanStoryteller.Incidents {
         public const String Name = "AnimalInsanitySingle";
 
         public override IncidentResult Execute(HumanIncidentParms parms) {
+            IncidentResult ir = new IncidentResult();
+
             if (!(parms is HumanIncidentParams_AnimalInsanitySingle)) {
                 Tell.Err("Tried to execute " + GetType() + " but param type was " + parms.GetType());
-                return null;
+                return ir;
             }
 
             HumanIncidentParams_AnimalInsanitySingle allParams =
@@ -32,7 +34,7 @@ namespace HumanStoryteller.Incidents {
             } 
             if (target == null){
                 if (!TryFindRandomAnimal(map, out Pawn animal)) {
-                    return null;
+                    return ir;
                 }
 
                 target = animal;
@@ -42,7 +44,7 @@ namespace HumanStoryteller.Incidents {
             var text = "AnimalInsanitySingle".Translate(target.Label, target.Named("ANIMAL"));
             var title = "LetterLabelAnimalInsanitySingle".Translate(target.Label, target.Named("ANIMAL"));
             SendLetter(allParams, title, text, LetterDefOf.ThreatSmall, target);
-            return null;
+            return ir;
         }
 
         private bool TryFindRandomAnimal(Map map, out Pawn animal) {

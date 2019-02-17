@@ -32,11 +32,13 @@ namespace HumanStoryteller {
 
             if (conditions != null) {
                 bool allTrue = true;
-                foreach (var condition in conditions) {
-                    if (condition.Check(current.Result)) continue;
+                for (var i = 0; i < conditions.Count; i++) {
+                    var condition = conditions[i];
+                    if (condition.Check(current.Result, i)) continue;
                     allTrue = false;
                     break;
                 }
+
                 next = allTrue ? storyNode.LeftChild : storyNode.RightChild;
             } else {
                 next = storyNode.LeftChild;

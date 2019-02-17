@@ -23,7 +23,7 @@ namespace HumanStoryteller.CheckConditions {
             _response = Tell.AssertNotNull(response, nameof(response), GetType().Name);
         }
 
-        public override bool Check(IncidentResult result) {
+        public override bool Check(IncidentResult result, int checkPosition) {
             if (result == null) {
                 Tell.Err($"Tried to check {GetType()} but result type was null." +
                          " Likely the storycreator added a incomparable condition to an event.");

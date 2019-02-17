@@ -14,9 +14,11 @@ namespace HumanStoryteller.Incidents {
         public const String Name = "RaidEnemy";
 
         public override IncidentResult Execute(HumanIncidentParms parms) {
+            IncidentResult ir = new IncidentResult();
+
             if (!(parms is HumanIncidentParams_RaidEnemy)) {
                 Tell.Err("Tried to execute " + GetType() + " but param type was " + parms.GetType());
-                return null;
+                return ir;
             }
 
             HumanIncidentParams_RaidEnemy allParams = Tell.AssertNotNull((HumanIncidentParams_RaidEnemy) parms, nameof(parms), GetType().Name);
@@ -38,25 +40,35 @@ namespace HumanStoryteller.Incidents {
                 if (faction == null && !PawnGroupMakerUtility.TryGetRandomFactionForCombatPawnGroup(points, out faction,
                         f => FactionCanBeGroupSource(f, map, true), true, true, true)) {
                     Tell.Err("Found no faction that satisfies requirements; p=" + points + " m=" + map, false);
-                    return null;
+                    return ir;
                 }
             }
 
             PawnGroupKindDef combat = PawnGroupKindDefOf.Combat;
+
+            IncidentParms fakeParms = new IncidentParms();
+
+            fakeParms.faction = faction;
+            fakeParms.points = points;
+            fakeParms.target = map;
+
             RaidStrategyDef strategy;
             try {
-                strategy = (from d in DefDatabase<RaidStrategyDef>.AllDefs where d.defName == allParams.Strategy select d).First();
+                fakeParms.raidStrategy = (from d in DefDatabase<RaidStrategyDef>.AllDefs where d.defName == allParams.Strategy select d).First();
             } catch (InvalidOperationException) {
                 if (!(from d in DefDatabase<RaidStrategyDef>.AllDefs
-                    where (double) points >= (double) d.Worker.MinimumPoints(faction, combat)
-                    select d).TryRandomElementByWeight(d => d.Worker.SelectionWeight(map, points), out strategy)) {
-                    Tell.Err("No raid stategy for " + faction + " with points " + points + ", groupKind=" + combat);
+                    where d.Worker.CanUseWith(fakeParms, PawnGroupKindDefOf.Combat) &&
+                          (fakeParms.raidArrivalMode != null || d.arriveModes != null && d.arriveModes.Any(x => x.Worker.CanUseWith(fakeParms)))
+                    select d).TryRandomElementByWeight(d => d.Worker.SelectionWeight(map, fakeParms.points), out fakeParms.raidStrategy)) {
+                    Log.Error("No raid stategy for " + faction + " with points " + points + ", groupKind=" + PawnGroupKindDefOf.Combat + "\nparms=" +
+                              parms);
                     if (!Prefs.DevMode) {
-                        strategy = RaidStrategyDefOf.ImmediateAttack;
+                        fakeParms.raidStrategy = RaidStrategyDefOf.ImmediateAttack;
                     }
                 }
             }
 
+            strategy = fakeParms.raidStrategy;
             PawnsArrivalModeDef arriveMode;
 
             try {
@@ -70,17 +82,11 @@ namespace HumanStoryteller.Incidents {
                 }
             }
 
-            IncidentParms fakeParms = new IncidentParms();
-
-            fakeParms.faction = faction;
-            fakeParms.points = points;
-            fakeParms.target = map;
-            fakeParms.raidStrategy = strategy;
             fakeParms.raidArrivalMode = arriveMode;
 
             if (!arriveMode.Worker.TryResolveRaidSpawnCenter(fakeParms)) {
                 Tell.Err("Could not resolve spawn center for raid.");
-                return null;
+                return ir;
             }
 
             points = AdjustedRaidPoints(points, arriveMode, strategy, faction, combat);
@@ -90,7 +96,7 @@ namespace HumanStoryteller.Incidents {
             List<Pawn> list = PawnGroupMakerUtility.GeneratePawns(defaultPawnGroupMakerParms, true).ToList();
             if (list.Count == 0) {
                 Tell.Err("Got no pawns spawning raid from parms " + fakeParms);
-                return null;
+                return ir;
             }
 
             arriveMode.Worker.Arrive(list, fakeParms);
@@ -147,7 +153,7 @@ namespace HumanStoryteller.Incidents {
                 }
             }
 
-            return null;
+            return ir;
         }
 
         protected string GetLetterText(IncidentParms parms, List<Pawn> pawns) {

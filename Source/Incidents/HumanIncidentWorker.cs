@@ -24,16 +24,19 @@ namespace HumanStoryteller.Incidents {
         public virtual void ExposeData() {}
     }
 
-    public abstract class IncidentResult : IExposable, ILoadReferenceable {
+    public class IncidentResult : IExposable, ILoadReferenceable {
         private int _id;
 
-        protected IncidentResult() {
+        public IncidentResult() {
             _id = Rand.Int;
         }
+
+        public int Id => _id;
 
         public virtual void ExposeData() {
             Scribe_Values.Look(ref _id, "id");
         }
+        
         public string GetUniqueLoadID() {
             return $"IncidentResult_{_id}";
         }

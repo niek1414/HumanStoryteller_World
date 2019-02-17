@@ -5,6 +5,8 @@ using HumanStoryteller.CheckConditions;
 using HumanStoryteller.Util;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using RimWorld;
+using Verse;
 
 namespace HumanStoryteller.Parser.Converter {
     public class ConditionConverter : JsonConverter {
@@ -52,23 +54,42 @@ namespace HumanStoryteller.Parser.Converter {
                         GetNumeralCompareResponse(obj["compareType"].Value<string>()),
                         float.Parse(obj["constant"].Value<string>(), CultureInfo.InvariantCulture.NumberFormat)
                     );
+                case RandomCheck.Name:
+                    return new RandomCheck(float.Parse(obj["chance"].Value<string>()));
+                case DifficultyCheck.Name:
+                    return new DifficultyCheck(GetDifficulty(obj["difficulty"].Value<string>()));
                 default:
                     Parser.LogParseError("condition", type);
                     return null;
             }
         }
 
-        private HealthCondition GetHealthCondition(String type) {
+        private DifficultyDef GetDifficulty(String type) {
+            if (type == null) {
+                Parser.LogParseError("difficulty", type);
+                return DifficultyDefOf.Rough;
+            }
+
+            var def = DefDatabase<DifficultyDef>.GetNamed(type, false);
+            if (def != null) {
+                return def;
+            }
+
+            Parser.LogParseError("difficulty", type);
+            return DifficultyDefOf.Rough;
+        }
+
+        private PawnHealthCheck.HealthCondition GetHealthCondition(String type) {
             if (type == null) {
                 Parser.LogParseError("health condition", type);
-                return HealthCondition.Alive;
+                return PawnHealthCheck.HealthCondition.Alive;
             }
 
             try {
                 return PawnHealthCheck.dict[type];
             } catch (KeyNotFoundException) {
                 Parser.LogParseError("health condition", type);
-                return HealthCondition.Alive;
+                return PawnHealthCheck.HealthCondition.Alive;
             }
         }
 

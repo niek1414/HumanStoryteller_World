@@ -14,11 +14,12 @@ namespace HumanStoryteller.Incidents {
         private static readonly IntRange CountRange = new IntRange(10, 20);
 
         public override IncidentResult Execute(HumanIncidentParms parms) {
+            IncidentResult ir = new IncidentResult();
             IncidentDef def = DefDatabase<IncidentDef>.GetNamed("AmbrosiaSprout");
 
             if (!(parms is HumanIncidentParams_AmbrosiaSprout)) {
                 Tell.Err("Tried to execute " + GetType() + " but param type was " + parms.GetType());
-                return null;
+                return ir;
             }
 
             HumanIncidentParams_AmbrosiaSprout allParams =
@@ -26,9 +27,17 @@ namespace HumanStoryteller.Incidents {
             Tell.Log($"Executing event {Name} with:{allParams}");
 
             Map map = (Map) allParams.GetTarget();
-
-            if (!TryFindRootCell(map, out IntVec3 cell)) {
-                return null;
+            ThingDef plant;
+            try {
+                plant = allParams.Kind == ""
+                    ? ThingDefOf.Plant_Ambrosia
+                    : PlantUtility.ValidPlantTypesForGrowers(new List<IPlantToGrowSettable>()).First(p => p.defName == allParams.Kind);
+            } catch (InvalidOperationException) {
+                plant = ThingDefOf.Plant_Ambrosia;
+            }
+            
+            if (!TryFindRootCell(plant, map, out IntVec3 cell)) {
+                return ir;
             }
 
             Thing thing = null;
@@ -41,32 +50,42 @@ namespace HumanStoryteller.Incidents {
 
             for (int i = 0; i < randomInRange; i++) {
                 if (!CellFinder.TryRandomClosewalkCellNear(cell, map, (int) (allParams.Range != -1 ? allParams.Range : 6), out IntVec3 result,
-                    x => CanSpawnAt(x, map))) {
+                    x => CanSpawnAt(plant, x, map))) {
                     break;
                 }
 
                 result.GetPlant(map)?.Destroy();
-                Thing thing2 = GenSpawn.Spawn(ThingDefOf.Plant_Ambrosia, result, map);
+                Thing thing2 = GenSpawn.Spawn(plant, result, map);
                 if (thing == null) {
                     thing = thing2;
                 }
             }
 
             if (thing == null) {
-                return null;
+                return ir;
             }
 
-            SendLetter(allParams, def.letterLabel, def.letterText, def.letterDef, thing);
-            return null;
+            string title;
+            string message;
+            if (plant == ThingDefOf.Plant_Ambrosia) {
+                title = def.letterLabel;
+                message = def.letterText;
+            } else {
+                title = "PlantSproutTitle".Translate(plant.label.Named("PLANT"));
+                message = "PlantSproutMessage".Translate(plant.label.Named("PLANT"));
+            }
+
+            SendLetter(allParams, title, message, def.letterDef, thing);
+            return ir;
         }
 
-        private bool TryFindRootCell(Map map, out IntVec3 cell) {
+        private bool TryFindRootCell(ThingDef plantDef, Map map, out IntVec3 cell) {
             return CellFinderLoose.TryFindRandomNotEdgeCellWith(10,
-                x => CanSpawnAt(x, map) && x.GetRoom(map).CellCount >= 64, map, out cell);
+                x => CanSpawnAt(plantDef, x, map) && x.GetRoom(map).CellCount >= 64, map, out cell);
         }
 
-        private bool CanSpawnAt(IntVec3 c, Map map) {
-            if (!c.Standable(map) || c.Fogged(map) || map.fertilityGrid.FertilityAt(c) < ThingDefOf.Plant_Ambrosia.plant.fertilityMin ||
+        private bool CanSpawnAt(ThingDef plantDef, IntVec3 c, Map map) {
+            if (!c.Standable(map) || c.Fogged(map) || map.fertilityGrid.FertilityAt(c) < plantDef.plant.fertilityMin ||
                 !c.GetRoom(map).PsychologicallyOutdoors || c.GetEdifice(map) != null) {
                 return false;
             }
@@ -78,7 +97,7 @@ namespace HumanStoryteller.Incidents {
 
             List<Thing> thingList = c.GetThingList(map);
             for (int i = 0; i < thingList.Count; i++) {
-                if (thingList[i].def == ThingDefOf.Plant_Ambrosia) {
+                if (thingList[i].def == plantDef) {
                     return false;
                 }
             }
@@ -90,24 +109,27 @@ namespace HumanStoryteller.Incidents {
     public class HumanIncidentParams_AmbrosiaSprout : HumanIncidentParms {
         public long Amount;
         public long Range;
+        public string Kind;
 
         public HumanIncidentParams_AmbrosiaSprout() {
         }
 
-        public HumanIncidentParams_AmbrosiaSprout(String target, HumanLetter letter, long amount = -1, long range = -1) :
+        public HumanIncidentParams_AmbrosiaSprout(String target, HumanLetter letter, long amount = -1, long range = -1, string kind = "") :
             base(target, letter) {
             Amount = amount;
             Range = range;
+            Kind = kind;
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, Amount: {Amount}, Range: {Range}";
+            return $"{base.ToString()}, Amount: {Amount}, Range: {Range}, Kind: {Kind}";
         }
 
         public override void ExposeData() {
             base.ExposeData();
             Scribe_Values.Look(ref Amount, "amount");
             Scribe_Values.Look(ref Range, "range");
+            Scribe_Values.Look(ref Kind, "kind");
         }
     }
 }

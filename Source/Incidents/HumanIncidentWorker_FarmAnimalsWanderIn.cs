@@ -12,9 +12,11 @@ namespace HumanStoryteller.Incidents {
         public const String Name = "FarmAnimalsWanderIn";
 
         public override IncidentResult Execute(HumanIncidentParms parms) {
+            IncidentResult ir = new IncidentResult();
+
             if (!(parms is HumanIncidentParams_FarmAnimalsWanderIn)) {
                 Tell.Err("Tried to execute " + GetType() + " but param type was " + parms.GetType());
-                return null;
+                return ir;
             }
 
             HumanIncidentParams_FarmAnimalsWanderIn allParams = Tell.AssertNotNull((HumanIncidentParams_FarmAnimalsWanderIn) parms, nameof(parms), GetType().Name);
@@ -22,7 +24,7 @@ namespace HumanStoryteller.Incidents {
 
             Map map = (Map) allParams.GetTarget();
 
-            if (!RCellFinder.TryFindRandomPawnEntryCell(out IntVec3 result, map, CellFinder.EdgeRoadChance_Animal, false, null)) {
+            if (!RCellFinder.TryFindRandomPawnEntryCell(out IntVec3 result, map, CellFinder.EdgeRoadChance_Animal)) {
                 result = CellFinder.RandomEdgeCell(map);
             }
 
@@ -35,7 +37,7 @@ namespace HumanStoryteller.Incidents {
 
             if (kind == null && !TryFindRandomPawnKind(map, out kind)) {
                 Tell.Err("Failed to find pawn kind for animal to join.");
-                return null;
+                return ir;
             }
 
             int num;
@@ -47,25 +49,25 @@ namespace HumanStoryteller.Incidents {
             }
 
             for (int i = 0; i < num; i++) {
-                IntVec3 loc = CellFinder.RandomClosewalkCellNear(result, map, 12, null);
-                Pawn pawn = PawnGenerator.GeneratePawn(kind, null);
+                IntVec3 loc = CellFinder.RandomClosewalkCellNear(result, map, 12);
+                Pawn pawn = PawnGenerator.GeneratePawn(kind);
                 if (i < allParams.Names.Count) {
                     pawn.Name = new NameSingle(allParams.Names[i]);
                 }
 
-                GenSpawn.Spawn(pawn, loc, map, Rot4.Random, WipeMode.Vanish, false);
-                pawn.SetFaction(Faction.OfPlayer, null);
+                GenSpawn.Spawn(pawn, loc, map, Rot4.Random);
+                pawn.SetFaction(Faction.OfPlayer);
             }
 
-            SendLetter(allParams, "LetterLabelFarmAnimalsWanderIn".Translate(kind.GetLabelPlural(-1)).CapitalizeFirst(),
-                "LetterFarmAnimalsWanderIn".Translate(kind.GetLabelPlural(-1)), LetterDefOf.PositiveEvent, new TargetInfo(result, map, false));
-            return null;
+            SendLetter(allParams, "LetterLabelFarmAnimalsWanderIn".Translate(kind.GetLabelPlural()).CapitalizeFirst(),
+                "LetterFarmAnimalsWanderIn".Translate(kind.GetLabelPlural()), LetterDefOf.PositiveEvent, new TargetInfo(result, map));
+            return ir;
         }
 
         private bool TryFindRandomPawnKind(Map map, out PawnKindDef kind) {
             return (from x in DefDatabase<PawnKindDef>.AllDefs
                 where x.RaceProps.Animal && x.RaceProps.wildness < 0.35f && map.mapTemperature.SeasonAndOutdoorTemperatureAcceptableFor(x.race)
-                select x).TryRandomElementByWeight((PawnKindDef k) => 0.420000017f - k.RaceProps.wildness, out kind);
+                select x).TryRandomElementByWeight(k => 0.420000017f - k.RaceProps.wildness, out kind);
         }
     }
 

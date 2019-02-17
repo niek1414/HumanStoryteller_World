@@ -9,14 +9,14 @@ namespace HumanStoryteller.Incidents {
         public const String Name = "Nothing";
 
         public override IncidentResult Execute(HumanIncidentParms parms) {
+            IncidentResult ir = new IncidentResult();
+
             //What? Did you expect a huge file or something?
-            if (parms.Letter != null) {
-                if (parms.Letter.Type != null) {
-                    Find.LetterStack.ReceiveLetter(LetterMaker.MakeLetter(parms.Letter.Title, parms.Letter.Message, parms.Letter.Type));
-                }
+            if (parms.Letter?.Type != null) {
+                Find.LetterStack.ReceiveLetter(LetterMaker.MakeLetter(parms.Letter.Title, parms.Letter.Message, parms.Letter.Type));
             }
 
-            return null;
+            return ir;
         }
     }
 }

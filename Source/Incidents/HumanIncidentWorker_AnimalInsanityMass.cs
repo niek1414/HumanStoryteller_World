@@ -12,9 +12,11 @@ namespace HumanStoryteller.Incidents {
         public const String Name = "AnimalInsanityMass";
 
         public override IncidentResult Execute(HumanIncidentParms parms) {
+            IncidentResult ir = new IncidentResult();
+
             if (!(parms is HumanIncidentParams_AnimalInsanityMass)) {
                 Tell.Err("Tried to execute " + GetType() + " but param type was " + parms.GetType());
-                return null;
+                return ir;
             }
 
             HumanIncidentParams_AnimalInsanityMass allParams =
@@ -50,7 +52,7 @@ namespace HumanStoryteller.Incidents {
             }
 
             if (!source.TryRandomElement(out PawnKindDef animalDef)) {
-                return null;
+                return ir;
             }
 
             List<Pawn> list = (from p in map.mapPawns.AllPawnsSpawned
@@ -73,7 +75,7 @@ namespace HumanStoryteller.Incidents {
             }
 
             if (num == 0f) {
-                return null;
+                return ir;
             }
 
             string label;
@@ -95,7 +97,7 @@ namespace HumanStoryteller.Incidents {
                 Find.CameraDriver.shaker.DoShake(1f);
             }
 
-            return null;
+            return ir;
         }
 
         public static bool AnimalUsable(Pawn p) {

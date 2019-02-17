@@ -9,4 +9,8 @@
     <StoryTitleInput>Story title</StoryTitleInput>
     <StoryDescriptionInput>Description (single keyword)</StoryDescriptionInput>
     <StoryCreatorInput>Creator</StoryCreatorInput>
+    
+    <!--incidents-->
+    <PlantSproutTitle>{PLANT} sprout</PlantSproutTitle>
+    <PlantSproutMessage>A grove of {PLANT}'s has sprouted nearby! If you wait for the plants to grow, you'll be able to harvest them later.</PlantSproutMessage>
 </LanguageData>

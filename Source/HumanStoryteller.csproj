@@ -68,7 +68,9 @@
     <Compile Include="Alert\Alert_NeedStory.cs" />
     <Compile Include="CheckConditions\CheckCondition.cs" />
     <Compile Include="CheckConditions\DialogCheck.cs" />
+    <Compile Include="CheckConditions\DifficultyCheck.cs" />
     <Compile Include="CheckConditions\PawnHealthCheck.cs" />
+    <Compile Include="CheckConditions\RandomCheck.cs" />
     <Compile Include="CheckConditions\VariableCheck.cs" />
     <Compile Include="HumanStoryteller.cs" />
     <Compile Include="Incidents\HumanIncidentWorker.cs" />
@@ -76,7 +78,9 @@
     <Compile Include="Incidents\HumanIncidentWorker_AmbrosiaSprout.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_AnimalInsanityMass.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_AnimalInsanitySingle.cs" />
+    <Compile Include="Incidents\HumanIncidentWorker_Aurora.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_Dialog.cs" />
+    <Compile Include="Incidents\HumanIncidentWorker_Difficulty.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_FarmAnimalsWanderIn.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_Nothing.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_PsychicSoothe.cs" />

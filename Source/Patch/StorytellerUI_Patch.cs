@@ -22,15 +22,31 @@ namespace HumanStoryteller.Patch {
         private static StorySummary _selectedSummary;
         private static bool _loading;
         private static float _loadingState;
-        private static List<StorySummary> storyList = new List<StorySummary>();
-        private static Dictionary<long, WWW> loadingImages = new Dictionary<long, WWW>();
-        private static Dictionary<long, Texture2D> loadedImages = new Dictionary<long, Texture2D>();
 
-        private static string filterName = "";
-        private static string filterCreator = "";
-        private static string filterDescription = "";
+        private static List<StorySummary> _storyList = new List<StorySummary>();
+        private static Dictionary<long, WWW> _loadingImages = new Dictionary<long, WWW>();
+        private static Dictionary<long, Texture2D> _loadedImages = new Dictionary<long, Texture2D>();
+        private static Dictionary<long, Vector2> _descriptionScrollList = new Dictionary<long, Vector2>();
 
-        private static Dictionary<long, Vector2> DescriptionScrollList = new Dictionary<long, Vector2>();
+        private static string _filterName = "";
+        private static string _filterCreator = "";
+        private static string _filterDescription = "";
+
+        public static void reset() {
+            _pageNumber = 0;
+            _selectedSummary = null;
+            _loading = false;
+
+            _filterName = "";
+            _filterCreator = "";
+            _filterDescription = "";
+
+            _storyList.Clear();
+            _loadingImages.Clear();
+            _loadedImages.Clear();
+            _descriptionScrollList.Clear();
+        }
+
 
         public static void Patch(HarmonyInstance harmony) {
             MethodInfo targetMain = AccessTools.Method(typeof(StorytellerUI), "DrawStorytellerSelectionInterface");
@@ -48,15 +64,22 @@ namespace HumanStoryteller.Patch {
 
         public static void PreOpen() {
             DefDatabase<StorytellerDef>.AllDefs.First(a => a.defName == "Human").listOrder = 50;
-            storyList.Clear();
-            _pageNumber = 0;
+            reset();
             RefreshList(false);
         }
 
         public static void CanDoNext(Page_SelectStoryteller __instance, ref bool __result) {
-            if (!__result || Traverse.Create(__instance).Field("storyteller").GetValue<StorytellerDef>().defName != "Human") return;
+            try {
+                if (!__result || Traverse.Create(__instance).Field("storyteller").GetValue<StorytellerDef>().defName != "Human") return;
+                if (_selectedSummary == null) {
+                    __result = false;
+                    return;
+                }
 
-            Current.Game.storyteller.def.listOrder = (int) _selectedSummary.Id;
+                Current.Game.storyteller.def.listOrder = (int) _selectedSummary.Id;
+            } finally {
+                reset();
+            }
         }
 
         public static void DrawStorytellerSelectionInterface(Rect rect, ref StorytellerDef chosenStoryteller, ref DifficultyDef difficulty,
@@ -73,13 +96,13 @@ namespace HumanStoryteller.Patch {
 
         private static void DrawFilter(Rect filter) {
             Widgets.Label(new Rect(filter.x, filter.y, filter.width, 30), "StoryTitleInput".Translate());
-            filterName = Widgets.TextField(new Rect(filter.x, filter.y + 20, filter.width, 30), filterName, 255, new Regex(".*"));
+            _filterName = Widgets.TextField(new Rect(filter.x, filter.y + 20, filter.width, 30), _filterName, 255, new Regex(".*"));
 
             Widgets.Label(new Rect(filter.x, filter.y + 60, filter.width, 30), "StoryDescriptionInput".Translate());
-            filterDescription = Widgets.TextField(new Rect(filter.x, filter.y + 80, filter.width, 30), filterDescription, 255, new Regex(".*"));
+            _filterDescription = Widgets.TextField(new Rect(filter.x, filter.y + 80, filter.width, 30), _filterDescription, 255, new Regex(".*"));
 
             Widgets.Label(new Rect(filter.x, filter.y + 120, filter.width, 30), "StoryCreatorInput".Translate());
-            filterCreator = Widgets.TextField(new Rect(filter.x, filter.y + 140, filter.width / 3 * 2, 30), filterCreator, 255, new Regex(".*"));
+            _filterCreator = Widgets.TextField(new Rect(filter.x, filter.y + 140, filter.width / 3 * 2, 30), _filterCreator, 255, new Regex(".*"));
 
             if (Widgets.ButtonText(new Rect(filter.x + filter.width / 3 * 2, filter.y + 140, filter.width / 3, 30), "Search")) {
                 _pageNumber = 0;
@@ -134,7 +157,8 @@ namespace HumanStoryteller.Patch {
             }
 
             Text.Font = GameFont.Tiny;
-            Widgets.Label(new Rect(stories.xMax - 90, stories.yMax - 14, 90, 17), "Picked story: #" + _selectedSummary.Id);
+            Widgets.Label(new Rect(stories.xMax - 90, stories.yMax - 14, 90, 17),
+                "Picked story: #" + (_selectedSummary == null ? "-" : _selectedSummary.Id.ToString()));
         }
 
         private static void DrawStoryList(Rect stories) {
@@ -142,7 +166,7 @@ namespace HumanStoryteller.Patch {
             listing.Begin(stories);
             Text.Font = GameFont.Small;
             listing.Label("StoryList".Translate());
-            ListStories(listing, storyList);
+            ListStories(listing, _storyList);
             listing.End();
         }
 
@@ -175,7 +199,7 @@ namespace HumanStoryteller.Patch {
         }
 
         private static void DrawStorySummary(Rect rect, StorySummary story) {
-            bool selected = _selectedSummary.Id == story.Id;
+            bool selected = _selectedSummary != null && _selectedSummary.Id == story.Id;
             Widgets.DrawOptionBackground(rect, selected);
             MouseoverSounds.DoRegion(rect);
 
@@ -198,13 +222,13 @@ namespace HumanStoryteller.Patch {
             description.y += title.height;
             description.height -= title.height * 2;
 
-            if (!DescriptionScrollList.ContainsKey(story.Id)) {
-                DescriptionScrollList.Add(story.Id, new Vector2());
+            if (!_descriptionScrollList.ContainsKey(story.Id)) {
+                _descriptionScrollList.Add(story.Id, new Vector2());
             }
 
-            Vector2 scrollLocation = DescriptionScrollList[story.Id];
+            Vector2 scrollLocation = _descriptionScrollList[story.Id];
             Widgets.LabelScrollable(description, story.Description, ref scrollLocation, false, false);
-            DescriptionScrollList[story.Id] = scrollLocation;
+            _descriptionScrollList[story.Id] = scrollLocation;
 
             Rect rating = new Rect(title);
             rating.y += description.height + rating.height;
@@ -226,16 +250,16 @@ namespace HumanStoryteller.Patch {
         }
 
         private static Texture2D GetImage(string url, long id) {
-            if (loadingImages.ContainsKey(id)) {
-                WWW val = loadingImages[id];
+            if (_loadingImages.ContainsKey(id)) {
+                WWW val = _loadingImages[id];
                 try {
                     if (val.isDone) {
                         if (val.error == null) {
-                            loadedImages.Add(id, val.textureNonReadable);
-                            loadingImages.Remove(id);
+                            _loadedImages.Add(id, val.textureNonReadable);
+                            _loadingImages.Remove(id);
                         } else {
                             Tell.Warn("Could not load avatar", "storyid: " + id, "Err: " + val.error);
-                            loadingImages.Remove(id);
+                            _loadingImages.Remove(id);
                         }
 
                         val.Dispose();
@@ -244,19 +268,19 @@ namespace HumanStoryteller.Patch {
                     try {
                         Tell.Warn("Could not load avatar (disposing now)", "storyid: " + id, "Err: " + e.Message + " Stack__ " + e.StackTrace);
                         val.Dispose();
-                        loadingImages.Remove(id);
+                        _loadingImages.Remove(id);
                     } catch (Exception) {
                         // ignored
                     }
                 }
             }
 
-            if (loadedImages.ContainsKey(id)) {
-                return loadedImages[id];
+            if (_loadedImages.ContainsKey(id)) {
+                return _loadedImages[id];
             }
 
-            if (!loadingImages.ContainsKey(id)) {
-                loadingImages.Add(id, new WWW(GenFilePaths.SafeURIForUnityWWWFromPath(url).Substring(8)));
+            if (!_loadingImages.ContainsKey(id)) {
+                _loadingImages.Add(id, new WWW(GenFilePaths.SafeURIForUnityWWWFromPath(url).Substring(8)));
             }
 
             return null;
@@ -265,17 +289,17 @@ namespace HumanStoryteller.Patch {
         private static void RefreshList(bool autoFind = true) {
             _loading = true;
             long origin = _pageNumber * PAGE_STORY_LIMIT;
-            Storybook.GetBook(origin, PAGE_STORY_LIMIT, filterName, filterDescription, filterCreator, storyArray => {
+            Storybook.GetBook(origin, PAGE_STORY_LIMIT, _filterName, _filterDescription, _filterCreator, storyArray => {
                 _loading = false;
 
                 if (storyArray.Length > 0) {
-                    storyList.Clear();
-                    storyList.AddRange(storyArray);
+                    _storyList.Clear();
+                    _storyList.AddRange(storyArray);
                 } else if (autoFind) {
                     _pageNumber = 0;
                     RefreshList(false);
                 } else {
-                    storyList.Clear();
+                    _storyList.Clear();
                 }
             });
         }

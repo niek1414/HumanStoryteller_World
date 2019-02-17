@@ -12,7 +12,7 @@ namespace HumanStoryteller {
             StoryNode b2 = new StoryNode(new StoryEvent("b2", "RaidWithNames", CreateRaidWithNames(storyteller)), new Connection(30, c));
             StoryNode b1 = new StoryNode(new StoryEvent("b1", "PsychicSoothe", CreatePsychicSoothe()), new Connection(30, c));
             StoryNode a = new StoryNode(new StoryEvent("a", "AnimalName", CreateJoinAnimalName()),  new Connection(30, b1),  new Connection(0, b2),
-                new List<CheckCondition> {new PawnHealthCheck("Mike's pet", HealthCondition.Healthy)});
+                new List<CheckCondition> {new PawnHealthCheck("Mike's pet", PawnHealthCheck.HealthCondition.Healthy)});
 
             StoryNode root = new StoryNode(null, new Connection(30, a));
             return new StoryGraph(root);
