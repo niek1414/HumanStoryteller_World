@@ -18,31 +18,37 @@ namespace HumanStoryteller.Parser.Converter {
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer) {
-            if (reader.TokenType == JsonToken.Float || reader.TokenType == JsonToken.Integer) {
-                if (objectType == typeof(float)) {
-                    return JToken.ReadFrom(reader).Value<float>();
-                }
-
-                if (objectType == typeof(long)) {
-                    return JToken.ReadFrom(reader).Value<long>();
-                }
-            }
-
-            if (reader.TokenType == JsonToken.String) {
-                var s = JToken.ReadFrom(reader).Value<string>();
-                if (s.Length > 0) {
+            string s = "";
+            try {
+                if (reader.TokenType == JsonToken.Float || reader.TokenType == JsonToken.Integer) {
                     if (objectType == typeof(float)) {
-                        return float.Parse(s, CultureInfo.InvariantCulture.NumberFormat);
+                        return JToken.ReadFrom(reader).Value<float>();
                     }
 
                     if (objectType == typeof(long)) {
-                        return long.Parse(s, CultureInfo.InvariantCulture.NumberFormat);
+                        return JToken.ReadFrom(reader).Value<long>();
                     }
                 }
-            }
 
-            if (objectType == typeof(float)) {
-                return -1f;
+                if (reader.TokenType == JsonToken.String) {
+                    s = JToken.ReadFrom(reader).Value<string>();
+                    if (s.Length > 0) {
+                        if (objectType == typeof(float)) {
+                            return float.Parse(s, CultureInfo.InvariantCulture.NumberFormat);
+                        }
+
+                        if (objectType == typeof(long)) {
+                            return long.Parse(s, CultureInfo.InvariantCulture.NumberFormat);
+                        }
+                    }
+                }
+
+                if (objectType == typeof(float)) {
+                    return -1f;
+                }
+            } catch (Exception) {
+                Tell.Err("Error in parsing number: expectedType: " + objectType + " JSONtype: " + reader.TokenType + " s: " + s);
+                throw;
             }
 
             return -1L;

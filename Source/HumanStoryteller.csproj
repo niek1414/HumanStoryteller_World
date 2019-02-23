@@ -73,18 +73,31 @@
     <Compile Include="CheckConditions\RandomCheck.cs" />
     <Compile Include="CheckConditions\VariableCheck.cs" />
     <Compile Include="HumanStoryteller.cs" />
+    <Compile Include="Incidents\GameConditions\HumanGameCondition_TempFlux.cs" />
     <Compile Include="Incidents\HumanIncidentWorker.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_Alphabeavers.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_AmbrosiaSprout.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_AnimalInsanityMass.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_AnimalInsanitySingle.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_Aurora.cs" />
+    <Compile Include="Incidents\HumanIncidentWorker_CropBlight.cs" />
+    <Compile Include="Incidents\HumanIncidentWorker_Disease.cs" />
+    <Compile Include="Incidents\HumanIncidentWorker_Eclipse.cs" />
+    <Compile Include="Incidents\HumanIncidentWorker_FlashStorm.cs" />
+    <Compile Include="Incidents\HumanIncidentWorker_HerdMigration.cs" />
+    <Compile Include="Incidents\HumanIncidentWorker_Infestation.cs" />
+    <Compile Include="Incidents\HumanIncidentWorker_ManhunterPack.cs" />
+    <Compile Include="Incidents\HumanIncidentWorker_MeteoriteImpact.cs" />
+    <Compile Include="Incidents\HumanIncidentWorker_PsychicDrone.cs" />
+    <Compile Include="Incidents\HumanIncidentWorker_RefugeeChased.cs" />
+    <Compile Include="Incidents\HumanIncidentWorker_TempFlux.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_Dialog.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_Difficulty.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_FarmAnimalsWanderIn.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_Nothing.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_PsychicSoothe.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_RaidEnemy.cs" />
+    <Compile Include="Incidents\HumanIncidentWorker_TraderArrival.cs" />
     <Compile Include="Model\StoryEventNode.cs" />
     <Compile Include="Model\VariableModifications.cs" />
     <Compile Include="NewtonsoftWrapper\DataContractAttribute.cs" />
@@ -305,6 +318,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\About\Preview.png" />
+    <Content Include="..\Defs\GameConditionDefs\GameConditions_Misc.xml" />
     <Content Include="..\Defs\Misc\MainButtonDefs\MainButtons.xml" />
     <Content Include="..\Defs\StorytellerDefs\HumanStoryteller.xml" />
     <Content Include="NewtonsoftWrapper\Newtonsoft.Json\Dynamic.snk" />

@@ -4,6 +4,7 @@ using HumanStoryteller.CheckConditions;
 using HumanStoryteller.Model;
 using HumanStoryteller.Util;
 using RimWorld;
+using UnityEngine;
 using Verse;
 
 namespace HumanStoryteller.Incidents {
@@ -47,11 +48,11 @@ namespace HumanStoryteller.Incidents {
                 title = title,
                 radioMode = true,
                 map = map,
-                fee = (int) allParams.Silver
+                fee = Mathf.RoundToInt(allParams.Silver)
             };
             choiceLetter_Dialog.report = new IncidentResult_Dialog(choiceLetter_Dialog);
             if (allParams.Duration > 0) {
-                choiceLetter_Dialog.StartTimeout((int) (60000 * allParams.Duration));
+                choiceLetter_Dialog.StartTimeout(Mathf.RoundToInt(60000 * allParams.Duration));
             }
 
             Find.LetterStack.ReceiveLetter(choiceLetter_Dialog);
@@ -61,13 +62,13 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_Dialog : HumanIncidentParms {
-        public long Silver;
+        public float Silver;
         public float Duration;
 
         public HumanIncidentParams_Dialog() {
         }
 
-        public HumanIncidentParams_Dialog(String target, HumanLetter letter, long silver = 0, float duration = 1) : base(target, letter) {
+        public HumanIncidentParams_Dialog(String target, HumanLetter letter, float silver = 0, float duration = 1) : base(target, letter) {
             Silver = silver;
             Duration = duration;
         }
@@ -81,26 +82,7 @@ namespace HumanStoryteller.Incidents {
             Scribe_Values.Look(ref Silver, "silver");
         }
     }
-
-    public class IncidentResult_Dialog : IncidentResult {
-        public ChoiceLetter_Dialog Letter;
-        public DialogResponse LetterAnswer;
-
-        public IncidentResult_Dialog() {
-        }
-
-        public IncidentResult_Dialog(ChoiceLetter_Dialog letter, DialogResponse letterAnswer = DialogResponse.Pending) {
-            Letter = letter;
-            LetterAnswer = letterAnswer;
-        }
-
-        public override void ExposeData() {
-            base.ExposeData();
-            Scribe_References.Look(ref Letter, "letter");
-            Scribe_Values.Look(ref LetterAnswer, "response");
-        }
-    }
-
+    
     public class ChoiceLetter_Dialog : ChoiceLetter {
         public Map map;
         public int fee;

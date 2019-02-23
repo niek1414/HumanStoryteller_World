@@ -13,12 +13,25 @@ using Timer = System.Timers.Timer;
 
 namespace HumanStoryteller {
     public class StorytellerComp_HumanThreatCycle : StorytellerComp {
+        private const int SHORT_REFRESH = 60000 * 2;
+        private const int MEDIUM_REFRESH = 60000 * 10;
+        private const int LONG_REFRESH = 60000 * 60;
+        private const int OFF_REFRESH = Int32.MaxValue;
+        private RefreshRate currentRate = RefreshRate.Long;
+        
+        public enum RefreshRate {
+            Short,
+            Medium,
+            Long,
+            Off
+        }
+        
         protected StorytellerCompProperties_HumanThreatCycle Props =>
             (StorytellerCompProperties_HumanThreatCycle) props;
 
         private int IntervalsPassed => Find.TickManager.TicksGame / 600; // 1/10 of a day
 
-        private bool _missedLastIncidentCheck;
+        private bool _missedLastIncidentCheck = true; //Start game with a first check
         private int _consecutiveEventCounter;
         private bool _init;
         private readonly Timer _refreshTimer = new Timer();
@@ -26,8 +39,7 @@ namespace HumanStoryteller {
         public static StoryComponent StoryComponent => Tell.AssertNotNull(Find.World?.GetComponent<StoryComponent>(), nameof(StoryComponent), "StorytellerComp_HumanThreatCycle");
         public static bool HumanStorytellerGame;
         public static bool IsNoStory => StoryComponent.Story == null;
-        public static long StoryId =>
-            Tell.AssertNotNull(StoryComponent.Story.Id, nameof(StoryComponent.Story.Id), "StorytellerComp_HumanThreatCycle");
+        public static long StoryId => IsNoStory ? -1 : Tell.AssertNotNull(StoryComponent.Story.Id, nameof(StoryComponent.Story.Id), "StorytellerComp_HumanThreatCycle");
         
         public static bool DEBUG => true;
 
@@ -110,7 +122,7 @@ namespace HumanStoryteller {
             }
 
             for (var i = 0; i < laneCount; i++) {
-                if (_consecutiveEventCounter > 5) {
+                if (_consecutiveEventCounter > 10) {
                     yield break;
                 }
 
@@ -189,33 +201,48 @@ namespace HumanStoryteller {
             }
             HumanStoryteller.InitiateEventUnsafe = false;
         }
-
+        
         private void Init() {
             Tell.Log("INITIALIZE HS GAME", Current.Game.storyteller.def.listOrder);
             StoryComponent.StoryId = Current.Game.storyteller.def.listOrder;
-//            
-//            StorytellerDef storyteller = (from d in DefDatabase<StorytellerDef>.AllDefs
-//                where d.defName.Contains("Human")
-//                select d).First();
-//            Tell.Warn("SWITCHED TO TEST STORYTELLER: " + storyteller.defName);
-//            Current.Game.storyteller.def = storyteller;
-//            Current.Game.storyteller.Notify_DefChanged();
+            StoryComponent.ThreatCycle = this;
             
 //            string str = "";
-//            foreach (PawnKindDef pawnKindDef in (from x in DefDatabase<PawnKindDef>.AllDefs
-//                where x.RaceProps.Animal
-//                select x)) {
-//                str += pawnKindDef.defName + "\n";
-//            }
-//            foreach (var def in PlantUtility.ValidPlantTypesForGrowers(new List<IPlantToGrowSettable>())) {
+//            foreach (var def in from x in DefDatabase<GameConditionDef>.AllDefs
+//                select x) {
 //                str += def.defName + "\n";
 //            }
 //            Tell.Log(str);
             
             Storybook.GetStory(StoryComponent.StoryId, GetStoryCallback);
             _refreshTimer.Elapsed += CheckStoryRefresh;
-            _refreshTimer.Interval = 60000;
+            _refreshTimer.Interval = LONG_REFRESH;
             _refreshTimer.Enabled = true;
+        }
+
+        public RefreshRate CurrentRate => currentRate;
+
+        public void SetRefreshRate(RefreshRate rate) {
+            switch (rate) {
+                case RefreshRate.Short:
+                    _refreshTimer.Interval = SHORT_REFRESH;
+                    currentRate = RefreshRate.Short;
+                    break;
+                case RefreshRate.Medium:
+                    _refreshTimer.Interval = MEDIUM_REFRESH;
+                    currentRate = RefreshRate.Medium;
+                    break;
+                case RefreshRate.Long:
+                    _refreshTimer.Interval = LONG_REFRESH;
+                    currentRate = RefreshRate.Long;
+                    break;
+                case RefreshRate.Off:
+                    _refreshTimer.Interval = OFF_REFRESH;
+                    currentRate = RefreshRate.Off;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(rate), rate, null);
+            }
         }
     }
 }

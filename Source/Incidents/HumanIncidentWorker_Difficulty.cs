@@ -32,12 +32,12 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_Difficulty : HumanIncidentParms {
-        public String Difficulty;
+        public string Difficulty;
 
         public HumanIncidentParams_Difficulty() {
         }
 
-        public HumanIncidentParams_Difficulty(String target, HumanLetter letter, String difficulty = "") :
+        public HumanIncidentParams_Difficulty(String target, HumanLetter letter, string difficulty = "") :
             base(target, letter) {
             Difficulty = difficulty;
         }

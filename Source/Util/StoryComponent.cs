@@ -9,7 +9,8 @@ namespace HumanStoryteller.Util {
         public long StoryId;
         public List<StoryEventNode> CurrentNodes = new List<StoryEventNode>();
         public Dictionary<string, float> VariableBank = new Dictionary<string, float>();
-        
+        public StorytellerComp_HumanThreatCycle ThreatCycle = null;
+
         public override void ExposeData()
         {
             base.ExposeData();

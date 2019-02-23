@@ -5,7 +5,6 @@ using HumanStoryteller.Model;
 using HumanStoryteller.Util;
 using RimWorld;
 using Verse;
-using Verse.Sound;
 
 namespace HumanStoryteller.Incidents {
     class HumanIncidentWorker_AnimalInsanitySingle : HumanIncidentWorker {

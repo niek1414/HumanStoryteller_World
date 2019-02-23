@@ -34,7 +34,7 @@ namespace HumanStoryteller.Incidents {
                 float f = freeColonistsCount * randomInRange;
                 num = Mathf.Clamp(GenMath.RoundRandom(f), 1, 10);
             } else {
-                num = (int) allParams.Amount;
+                num = Mathf.RoundToInt(allParams.Amount);
             }
 
             for (int i = 0; i < num; i++) {
@@ -53,12 +53,12 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_Alphabeavers : HumanIncidentParms {
-        public long Amount;
+        public float Amount;
 
         public HumanIncidentParams_Alphabeavers() {
         }
 
-        public HumanIncidentParams_Alphabeavers(String target, HumanLetter letter, long amount = -1) : base(target, letter) {
+        public HumanIncidentParams_Alphabeavers(String target, HumanLetter letter, float amount = -1) : base(target, letter) {
             Amount = amount;
         }
 

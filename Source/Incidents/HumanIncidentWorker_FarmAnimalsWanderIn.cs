@@ -43,7 +43,7 @@ namespace HumanStoryteller.Incidents {
             int num;
 
             if (allParams.Amount != -1) {
-                num = (int) allParams.Amount;
+                num = Mathf.RoundToInt(allParams.Amount);
             } else {
                 num = Mathf.Clamp(GenMath.RoundRandom(2.5f / kind.RaceProps.baseBodySize), 2, 10);
             }
@@ -72,14 +72,14 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_FarmAnimalsWanderIn : HumanIncidentParms {
-        public long Amount;
+        public float Amount;
         public List<string> Names;
         public String Kind;
 
         public HumanIncidentParams_FarmAnimalsWanderIn() {
         }
 
-        public HumanIncidentParams_FarmAnimalsWanderIn(String target, HumanLetter letter, long amount = -1, List<string> names = null,
+        public HumanIncidentParams_FarmAnimalsWanderIn(String target, HumanLetter letter, float amount = -1, List<string> names = null,
             String kind = "") :
             base(target, letter) {
             Amount = amount;

@@ -23,7 +23,7 @@ namespace HumanStoryteller.Incidents {
             Tell.Log($"Executing event {Name} with:{allParams}");
 
             Map map = (Map) allParams.GetTarget();
-            int duration = (int) (allParams.Duration != -1
+            int duration = Mathf.RoundToInt(allParams.Duration != -1
                 ? allParams.Duration * 60000f
                 : IncidentDef.Named("PsychicSoothe").durationDays.RandomInRange * 60000f);
             GameCondition_PsychicEmanation gameCondition_PsychicEmanation =

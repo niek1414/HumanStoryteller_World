@@ -43,13 +43,13 @@ namespace HumanStoryteller.Incidents {
             Thing thing = null;
             int randomInRange;
             if (allParams.Amount != -1) {
-                randomInRange = (int) allParams.Amount;
+                randomInRange = Mathf.RoundToInt(allParams.Amount);
             } else {
                 randomInRange = CountRange.RandomInRange;
             }
 
             for (int i = 0; i < randomInRange; i++) {
-                if (!CellFinder.TryRandomClosewalkCellNear(cell, map, (int) (allParams.Range != -1 ? allParams.Range : 6), out IntVec3 result,
+                if (!CellFinder.TryRandomClosewalkCellNear(cell, map, Mathf.RoundToInt(allParams.Range != -1 ? allParams.Range : 6), out IntVec3 result,
                     x => CanSpawnAt(plant, x, map))) {
                     break;
                 }
@@ -107,14 +107,14 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_AmbrosiaSprout : HumanIncidentParms {
-        public long Amount;
-        public long Range;
+        public float Amount;
+        public float Range;
         public string Kind;
 
         public HumanIncidentParams_AmbrosiaSprout() {
         }
 
-        public HumanIncidentParams_AmbrosiaSprout(String target, HumanLetter letter, long amount = -1, long range = -1, string kind = "") :
+        public HumanIncidentParams_AmbrosiaSprout(String target, HumanLetter letter, float amount = -1, float range = -1, string kind = "") :
             base(target, letter) {
             Amount = amount;
             Range = range;

@@ -55,4 +55,23 @@ namespace HumanStoryteller.CheckConditions {
         Denied,
         Pending
     }
+    
+    public class IncidentResult_Dialog : IncidentResult {
+        public ChoiceLetter_Dialog Letter;
+        public DialogResponse LetterAnswer;
+
+        public IncidentResult_Dialog() {
+        }
+
+        public IncidentResult_Dialog(ChoiceLetter_Dialog letter, DialogResponse letterAnswer = DialogResponse.Pending) {
+            Letter = letter;
+            LetterAnswer = letterAnswer;
+        }
+
+        public override void ExposeData() {
+            base.ExposeData();
+            Scribe_References.Look(ref Letter, "letter");
+            Scribe_Values.Look(ref LetterAnswer, "response");
+        }
+    }
 }

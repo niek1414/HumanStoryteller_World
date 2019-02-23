@@ -78,7 +78,9 @@ namespace HumanStoryteller.Patch {
 
                 Current.Game.storyteller.def.listOrder = (int) _selectedSummary.Id;
             } finally {
-                reset();
+                if (__result) {
+                    reset();
+                }
             }
         }
 

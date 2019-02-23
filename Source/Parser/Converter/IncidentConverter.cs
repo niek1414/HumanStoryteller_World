@@ -75,6 +75,54 @@ namespace HumanStoryteller.Parser.Converter {
                     incident = new FiringHumanIncident(new HumanIncidentWorker_Difficulty(),
                         new HumanIncidentParams_Difficulty(defaultIncidentTarget, defaultLetter));
                     break;
+                case HumanIncidentWorker_CropBlight.Name:
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_CropBlight(),
+                        new HumanIncidentParams_CropBlight(defaultIncidentTarget, defaultLetter));
+                    break;
+                case HumanIncidentWorker_Disease.Name:
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_Disease(),
+                        new HumanIncidentParams_Disease(defaultIncidentTarget, defaultLetter));
+                    break;
+                case HumanIncidentWorker_TempFlux.Name:
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_TempFlux(),
+                        new HumanIncidentParams_TempFlux(defaultIncidentTarget, defaultLetter));
+                    break;
+                case HumanIncidentWorker_Eclipse.Name:
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_Eclipse(),
+                        new HumanIncidentParams_Eclipse(defaultIncidentTarget, defaultLetter));
+                    break;
+                case HumanIncidentWorker_Flashstorm.Name:
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_Flashstorm(),
+                        new HumanIncidentParams_Flashstorm(defaultIncidentTarget, defaultLetter));
+                    break;
+                case HumanIncidentWorker_HerdMigration.Name:
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_HerdMigration(),
+                        new HumanIncidentParams_HerdMigration(defaultIncidentTarget, defaultLetter));
+                    break;
+                case HumanIncidentWorker_Infestation.Name:
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_Infestation(),
+                        new HumanIncidentParams_Infestation(defaultIncidentTarget, defaultLetter));
+                    break;
+                case HumanIncidentWorker_ManhunterPack.Name:
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_ManhunterPack(),
+                        new HumanIncidentParams_ManhunterPack(defaultIncidentTarget, defaultLetter));
+                    break;
+                case HumanIncidentWorker_MeteoriteImpact.Name:
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_MeteoriteImpact(),
+                        new HumanIncidentParams_MeteoriteImpact(defaultIncidentTarget, defaultLetter));
+                    break;
+                case HumanIncidentWorker_TraderArrival.Name:
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_TraderArrival(),
+                        new HumanIncidentParams_TraderArrival(defaultIncidentTarget, defaultLetter));
+                    break;
+                case HumanIncidentWorker_PsychicDrone.Name:
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_PsychicDrone(),
+                        new HumanIncidentParams_PsychicDrone(defaultIncidentTarget, defaultLetter));
+                    break;
+                case HumanIncidentWorker_RefugeeChased.Name:
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_RefugeeChased(),
+                        new HumanIncidentParams_RefugeeChased(defaultIncidentTarget, defaultLetter));
+                    break;
                 default:
                     Parser.LogParseError("incident", type);
                     return new FiringHumanIncident(null);

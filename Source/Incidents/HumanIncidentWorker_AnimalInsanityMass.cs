@@ -110,13 +110,13 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_AnimalInsanityMass : HumanIncidentParms {
-        public long Points;
+        public float Points;
         public string Kind;
 
         public HumanIncidentParams_AnimalInsanityMass() {
         }
 
-        public HumanIncidentParams_AnimalInsanityMass(String target, HumanLetter letter, long points = -1, string kind = "") :
+        public HumanIncidentParams_AnimalInsanityMass(String target, HumanLetter letter, float points = -1, string kind = "") :
             base(target, letter) {
             Points = points;
             Kind = kind;
