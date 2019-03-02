@@ -61,13 +61,13 @@ namespace HumanStoryteller.Incidents {
                 false, false, false, true, false, 20f, false, true, true, false, false, false, false, null, null, null, null, null, null, null);
             Pawn refugee = PawnGenerator.GeneratePawn(request);
             refugee.relations.everSeenByPlayer = true;
-            if (allParams.ChasedName != "") {
+            if (allParams.Name != "") {
                 if (refugee.Name is NameTriple prevNameTriple) {
-                    refugee.Name = new NameTriple(allParams.ChasedName, allParams.ChasedName, prevNameTriple.Last);
+                    refugee.Name = new NameTriple(allParams.Name, allParams.Name, prevNameTriple.Last);
                 } else if (refugee.Name is NameSingle prevNameSingle) {
-                    refugee.Name = new NameTriple(allParams.ChasedName, allParams.ChasedName, prevNameSingle.Name);
+                    refugee.Name = new NameTriple(allParams.Name, allParams.Name, prevNameSingle.Name);
                 } else {
-                    refugee.Name = new NameTriple(allParams.ChasedName, allParams.ChasedName, "");
+                    refugee.Name = new NameTriple(allParams.Name, allParams.Name, "");
                 }
             }
 
@@ -127,24 +127,24 @@ namespace HumanStoryteller.Incidents {
 
     public class HumanIncidentParams_RefugeeChased : HumanIncidentParms {
         public float Points;
-        public string ChasedName;
+        public string Name;
 
         public HumanIncidentParams_RefugeeChased() {
         }
 
-        public HumanIncidentParams_RefugeeChased(String target, HumanLetter letter, float points = -1, string chasedName = "") : base(target, letter) {
+        public HumanIncidentParams_RefugeeChased(String target, HumanLetter letter, float points = -1, string name = "") : base(target, letter) {
             Points = points;
-            ChasedName = chasedName;
+            Name = name;
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, Points: {Points}, ChasedName: {ChasedName}";
+            return $"{base.ToString()}, Points: {Points}, Name: {Name}";
         }
 
         public override void ExposeData() {
             base.ExposeData();
             Scribe_Values.Look(ref Points, "points");
-            Scribe_Values.Look(ref ChasedName, "chasedName");
+            Scribe_Values.Look(ref Name, "name");
         }
     }
 }

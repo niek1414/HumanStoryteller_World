@@ -208,8 +208,9 @@ namespace HumanStoryteller {
             StoryComponent.ThreatCycle = this;
             
 //            string str = "";
-//            foreach (var def in from x in DefDatabase<GameConditionDef>.AllDefs
-//                select x) {
+//            foreach (var def in from d in DefDatabase<ThingDef>.AllDefs
+//                where d.category == ThingCategory.Item
+//                select d) {
 //                str += def.defName + "\n";
 //            }
 //            Tell.Log(str);

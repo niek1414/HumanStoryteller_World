@@ -123,6 +123,46 @@ namespace HumanStoryteller.Parser.Converter {
                     incident = new FiringHumanIncident(new HumanIncidentWorker_RefugeeChased(),
                         new HumanIncidentParams_RefugeeChased(defaultIncidentTarget, defaultLetter));
                     break;
+                case HumanIncidentWorker_ShipPartCrash.Name:
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_ShipPartCrash(),
+                        new HumanIncidentParams_ShipPartCrash(defaultIncidentTarget, defaultLetter));
+                    break;
+                case HumanIncidentWorker_RefugeePodCrash.Name:
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_RefugeePodCrash(),
+                        new HumanIncidentParams_RefugeePodCrash(defaultIncidentTarget, defaultLetter));
+                    break;
+                case HumanIncidentWorker_ResourcePodCrash.Name:
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_ResourcePodCrash(),
+                        new HumanIncidentParams_ResourcePodCrash(defaultIncidentTarget, defaultLetter));
+                    break;
+                case HumanIncidentWorker_SelfTame.Name:
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_SelfTame(),
+                        new HumanIncidentParams_SelfTame(defaultIncidentTarget, defaultLetter));
+                    break;
+                case HumanIncidentWorker_ShortCircuit.Name:
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_ShortCircuit(),
+                        new HumanIncidentParams_ShortCircuit(defaultIncidentTarget, defaultLetter));
+                    break;
+                case HumanIncidentWorker_VisitorGroup.Name:
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_VisitorGroup(),
+                        new HumanIncidentParams_VisitorGroup(defaultIncidentTarget, defaultLetter));
+                    break;
+                case HumanIncidentWorker_WildManWandersIn.Name:
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_WildManWandersIn(),
+                        new HumanIncidentParams_WildManWandersIn(defaultIncidentTarget, defaultLetter));
+                    break;
+                case HumanIncidentWorker_ToxicFallout.Name:
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_ToxicFallout(),
+                        new HumanIncidentParams_ToxicFallout(defaultIncidentTarget, defaultLetter));
+                    break;
+                case HumanIncidentWorker_VolcanicWinter.Name:
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_VolcanicWinter(),
+                        new HumanIncidentParams_VolcanicWinter(defaultIncidentTarget, defaultLetter));
+                    break;
+                case HumanIncidentWorker_Planetkiller.Name:
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_Planetkiller(),
+                        new HumanIncidentParams_Planetkiller(defaultIncidentTarget, defaultLetter));
+                    break;
                 default:
                     Parser.LogParseError("incident", type);
                     return new FiringHumanIncident(null);

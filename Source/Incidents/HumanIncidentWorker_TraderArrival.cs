@@ -29,7 +29,7 @@ namespace HumanStoryteller.Incidents {
             TraderKindDef kindDef;
             try {
                 kindDef = (from x in DefDatabase<TraderKindDef>.AllDefs
-                    where x.defName == allParams.Kind
+                    where x.defName == allParams.TraderKind
                     select x).First();
             } catch (InvalidOperationException) {
                 kindDef = null;
@@ -43,6 +43,7 @@ namespace HumanStoryteller.Incidents {
 
                 kindDef = result;
             }
+
             if (kindDef.orbital) {
                 TradeShip tradeShip = new TradeShip(kindDef);
                 if (map.listerBuildings.allBuildingsColonist.Any(b => b.def.IsCommsConsole && b.GetComp<CompPowerTrader>().PowerOn)) {
@@ -53,33 +54,39 @@ namespace HumanStoryteller.Incidents {
                 map.passingShipManager.AddShip(tradeShip);
                 tradeShip.GenerateThings();
             } else {
-                if (!(from f in Find.FactionManager.AllFactions where !f.HostileTo(Faction.OfPlayer) select f).TryRandomElement(out Faction factionResult)) {
+                if (!CandidateFactions(kindDef, map).TryRandomElement(out var factionResult) &&
+                    !CandidateFactions(kindDef, map, true).TryRandomElement(out factionResult)) {
                     return ir;
                 }
 
-                var fakeParm = new IncidentParms();
-                fakeParm.faction = factionResult;
-                fakeParm.points = StorytellerUtility.DefaultThreatPointsNow(map);
+                var fakeParm = new IncidentParms {
+                    faction = factionResult,
+                    points = TraderCaravanUtility.GenerateGuardPoints()
+                };
                 if (!RCellFinder.TryFindRandomPawnEntryCell(out IntVec3 cellResult, map, CellFinder.EdgeRoadChance_Friendly)) {
                     fakeParm.spawnCenter = CellFinder.RandomEdgeCell(map);
                 } else {
                     fakeParm.spawnCenter = cellResult;
                 }
+
+                fakeParm.forced = true;
                 fakeParm.target = map;
                 fakeParm.traderKind = kindDef;
                 List<Pawn> list = SpawnPawns(map, kindDef, allParams.Names, fakeParm);
-                if (list.Count == 0){
+                if (list.Count == 0) {
                     return ir;
                 }
+
                 foreach (var t in list) {
-                    if (t.needs != null && t.needs.food != null)
-                    {
+                    if (t.needs != null && t.needs.food != null) {
                         t.needs.food.CurLevel = t.needs.food.MaxLevel;
                     }
                 }
+
                 string letterLabel = "LetterLabelTraderCaravanArrival".Translate(factionResult.Name, kindDef.label).CapitalizeFirst();
                 string letterText = "LetterTraderCaravanArrival".Translate(factionResult.Name, kindDef.label).CapitalizeFirst();
-                PawnRelationUtility.Notify_PawnsSeenByPlayer_Letter(list, ref letterLabel, ref letterText, "LetterRelatedPawnsNeutralGroup".Translate(Faction.OfPlayer.def.pawnsPlural), true);
+                PawnRelationUtility.Notify_PawnsSeenByPlayer_Letter(list, ref letterLabel, ref letterText,
+                    "LetterRelatedPawnsNeutralGroup".Translate(Faction.OfPlayer.def.pawnsPlural), true);
                 SendLetter(allParams, letterLabel, letterText, LetterDefOf.PositiveEvent, list[0], factionResult);
                 RCellFinder.TryFindRandomSpotJustOutsideColony(list[0], out IntVec3 result);
                 LordJob_TradeWithColony lordJob = new LordJob_TradeWithColony(factionResult, result);
@@ -89,9 +96,9 @@ namespace HumanStoryteller.Incidents {
             return ir;
         }
 
-        private List<Pawn> SpawnPawns(Map map, TraderKindDef def, List<String> names, IncidentParms parms)
-        {
-            PawnGroupMakerParms defaultPawnGroupMakerParms = IncidentParmsUtility.GetDefaultPawnGroupMakerParms(PawnGroupKindDefOf.Peaceful, parms, true);
+        private List<Pawn> SpawnPawns(Map map, TraderKindDef def, List<String> names, IncidentParms parms) {
+            PawnGroupMakerParms defaultPawnGroupMakerParms =
+                IncidentParmsUtility.GetDefaultPawnGroupMakerParms(PawnGroupKindDefOf.Trader, parms, true);
             defaultPawnGroupMakerParms.traderKind = def;
             List<Pawn> list = PawnGroupMakerUtility.GeneratePawns(defaultPawnGroupMakerParms, false).ToList();
             for (var i = 0; i < list.Count; i++) {
@@ -111,31 +118,57 @@ namespace HumanStoryteller.Incidents {
 
             return list;
         }
+
+        private IEnumerable<Faction> CandidateFactions(TraderKindDef def, Map map, bool desperate = false) {
+            return from f in Find.FactionManager.AllFactions
+                where FactionCanBeGroupSource(def, f, map, desperate)
+                select f;
+        }
+
+        private bool FactionCanBeGroupSource(TraderKindDef def, Faction f, Map map, bool desperate = false) {
+            if (f.IsPlayer) {
+                return false;
+            }
+            if (f.def.hidden || f.HostileTo(Faction.OfPlayer) || NeutralGroupIncidentUtility.AnyBlockingHostileLord(map, f)) {
+                return false;
+            }
+
+            if (f.defeated) {
+                return false;
+            }
+
+            if (!desperate && (!f.def.allowedArrivalTemperatureRange.Includes(map.mapTemperature.OutdoorTemp) ||
+                               !f.def.allowedArrivalTemperatureRange.Includes(map.mapTemperature.SeasonalTemp))) {
+                return false;
+            }
+
+            return f.def.caravanTraderKinds.Any() && f.def.caravanTraderKinds.Contains(def);
+        }
     }
 
     public class HumanIncidentParams_TraderArrival : HumanIncidentParms {
         public float Points;
-        public string Kind;
+        public string TraderKind;
         public List<String> Names;
 
         public HumanIncidentParams_TraderArrival() {
         }
 
-        public HumanIncidentParams_TraderArrival(String target, HumanLetter letter, float points = -1, string kind = "", List<String> names = null) :
+        public HumanIncidentParams_TraderArrival(String target, HumanLetter letter, float points = -1, string traderKind = "", List<String> names = null) :
             base(target, letter) {
             Points = points;
-            Kind = kind;
+            TraderKind = traderKind;
             Names = names ?? new List<string>();
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, Points: {Points}, Kind: {Kind}, Names: {Names}";
+            return $"{base.ToString()}, Points: {Points}, TraderKind: {TraderKind}, Names: {Names}";
         }
 
         public override void ExposeData() {
             base.ExposeData();
             Scribe_Values.Look(ref Points, "points");
-            Scribe_Values.Look(ref Kind, "kind");
+            Scribe_Values.Look(ref TraderKind, "traderKind");
             Scribe_Collections.Look(ref Names, "names", LookMode.Value);
         }
     }

@@ -29,9 +29,9 @@ namespace HumanStoryteller.Incidents {
             }
 
             PawnKindDef kind = null;
-            if (allParams.Kind != "") {
+            if (allParams.AnimalKind != "") {
                 kind = (from x in DefDatabase<PawnKindDef>.AllDefs
-                    where x.RaceProps.Animal && x.defName == allParams.Kind
+                    where x.RaceProps.Animal && x.defName == allParams.AnimalKind
                     select x).First();
             }
 
@@ -74,28 +74,28 @@ namespace HumanStoryteller.Incidents {
     public class HumanIncidentParams_FarmAnimalsWanderIn : HumanIncidentParms {
         public float Amount;
         public List<string> Names;
-        public String Kind;
+        public String AnimalKind;
 
         public HumanIncidentParams_FarmAnimalsWanderIn() {
         }
 
         public HumanIncidentParams_FarmAnimalsWanderIn(String target, HumanLetter letter, float amount = -1, List<string> names = null,
-            String kind = "") :
+            String animalKind = "") :
             base(target, letter) {
             Amount = amount;
             Names = names ?? new List<string>();
-            Kind = kind;
+            AnimalKind = animalKind;
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, Amount: {Amount}, Names: {Names}, Kind: {Kind}";
+            return $"{base.ToString()}, Amount: {Amount}, Names: {Names}, Kind: {AnimalKind}";
         }
         
         public override void ExposeData() {
             base.ExposeData();
             Scribe_Values.Look(ref Amount, "amount");
             Scribe_Values.Look(ref Names, "names");
-            Scribe_Values.Look(ref Kind, "kind");
+            Scribe_Values.Look(ref AnimalKind, "animalKind");
         }
     }
 }

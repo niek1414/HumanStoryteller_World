@@ -29,12 +29,12 @@ namespace HumanStoryteller.Incidents {
 
             int num;
             if (allParams.Amount != -1) {
+                num = Mathf.RoundToInt(allParams.Amount);
+            } else {
                 int freeColonistsCount = map.mapPawns.FreeColonistsCount;
                 float randomInRange = CountPerColonistRange.RandomInRange;
                 float f = freeColonistsCount * randomInRange;
                 num = Mathf.Clamp(GenMath.RoundRandom(f), 1, 10);
-            } else {
-                num = Mathf.RoundToInt(allParams.Amount);
             }
 
             for (int i = 0; i < num; i++) {

@@ -29,9 +29,9 @@ namespace HumanStoryteller.Incidents {
             Map map = (Map) allParams.GetTarget();
             ThingDef plant;
             try {
-                plant = allParams.Kind == ""
+                plant = allParams.PlantKind == ""
                     ? ThingDefOf.Plant_Ambrosia
-                    : PlantUtility.ValidPlantTypesForGrowers(new List<IPlantToGrowSettable>()).First(p => p.defName == allParams.Kind);
+                    : PlantUtility.ValidPlantTypesForGrowers(new List<IPlantToGrowSettable>()).First(p => p.defName == allParams.PlantKind);
             } catch (InvalidOperationException) {
                 plant = ThingDefOf.Plant_Ambrosia;
             }
@@ -109,27 +109,27 @@ namespace HumanStoryteller.Incidents {
     public class HumanIncidentParams_AmbrosiaSprout : HumanIncidentParms {
         public float Amount;
         public float Range;
-        public string Kind;
+        public string PlantKind;
 
         public HumanIncidentParams_AmbrosiaSprout() {
         }
 
-        public HumanIncidentParams_AmbrosiaSprout(String target, HumanLetter letter, float amount = -1, float range = -1, string kind = "") :
+        public HumanIncidentParams_AmbrosiaSprout(String target, HumanLetter letter, float amount = -1, float range = -1, string plantKind = "") :
             base(target, letter) {
             Amount = amount;
             Range = range;
-            Kind = kind;
+            PlantKind = plantKind;
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, Amount: {Amount}, Range: {Range}, Kind: {Kind}";
+            return $"{base.ToString()}, Amount: {Amount}, Range: {Range}, Kind: {PlantKind}";
         }
 
         public override void ExposeData() {
             base.ExposeData();
             Scribe_Values.Look(ref Amount, "amount");
             Scribe_Values.Look(ref Range, "range");
-            Scribe_Values.Look(ref Kind, "kind");
+            Scribe_Values.Look(ref PlantKind, "plantKind");
         }
     }
 }

@@ -31,7 +31,7 @@ namespace HumanStoryteller.Incidents {
             Room room = plant.GetRoom();
             plant.CropBlighted();
             int i = 0;
-            for (int num = GenRadial.NumCellsInRadius(allParams.Radius); i < num; i++)
+            for (int num = GenRadial.NumCellsInRadius(Mathf.Min(allParams.Radius, 56)); i < num; i++)
             {
                 IntVec3 intVec = plant.Position + GenRadial.RadialPattern[i];
                 if (intVec.InBounds(map) && intVec.GetRoom(map) == room)

@@ -37,9 +37,9 @@ namespace HumanStoryteller.Incidents {
             }
 
             IEnumerable<PawnKindDef> source = null;
-            if (allParams.Kind != "") {
+            if (allParams.AnimalKind != "") {
                 source = from x in DefDatabase<PawnKindDef>.AllDefs
-                    where x.RaceProps.Animal && x.defName == allParams.Kind
+                    where x.RaceProps.Animal && x.defName == allParams.AnimalKind
                     select x;
             }
 
@@ -111,25 +111,25 @@ namespace HumanStoryteller.Incidents {
 
     public class HumanIncidentParams_AnimalInsanityMass : HumanIncidentParms {
         public float Points;
-        public string Kind;
+        public string AnimalKind;
 
         public HumanIncidentParams_AnimalInsanityMass() {
         }
 
-        public HumanIncidentParams_AnimalInsanityMass(String target, HumanLetter letter, float points = -1, string kind = "") :
+        public HumanIncidentParams_AnimalInsanityMass(String target, HumanLetter letter, float points = -1, string animalKind = "") :
             base(target, letter) {
             Points = points;
-            Kind = kind;
+            AnimalKind = animalKind;
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, Points: {Points}, Kind: {Kind}";
+            return $"{base.ToString()}, Points: {Points}, Kind: {AnimalKind}";
         }
 
         public override void ExposeData() {
             base.ExposeData();
             Scribe_Values.Look(ref Points, "points");
-            Scribe_Values.Look(ref Kind, "kind");
+            Scribe_Values.Look(ref AnimalKind, "animalKind");
         }
     }
 }

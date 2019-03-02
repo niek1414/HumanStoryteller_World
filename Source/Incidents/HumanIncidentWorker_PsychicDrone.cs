@@ -29,7 +29,7 @@ namespace HumanStoryteller.Incidents {
             GameCondition_PsychicEmanation gameCondition_PsychicEmanation = (GameCondition_PsychicEmanation)GameConditionMaker.MakeCondition(GameConditionDefOf.PsychicDrone, duration);
 
             PsychicDroneLevel l;
-            switch (allParams.Level) {
+            switch (allParams.PsyLevel) {
                 case "LOW":
                     l = PsychicDroneLevel.BadLow;
                     break;
@@ -63,8 +63,8 @@ namespace HumanStoryteller.Incidents {
 
             gameCondition_PsychicEmanation.gender = g != Gender.None ? g : map.mapPawns.FreeColonists.RandomElement().gender;
             map.gameConditionManager.RegisterCondition(gameCondition_PsychicEmanation);
-            string text = "LetterIncidentPsychicDrone".Translate(g.ToString().Translate().ToLower(), l.ToString().Translate().ToLower());
-            SendLetter(allParams, "LetterLabelPsychicDrone".Translate(), text, LetterDefOf.PositiveEvent, null);
+            string text = "LetterIncidentPsychicDrone".Translate(g.ToString().Translate().ToLower(), l.GetLabel());
+            SendLetter(allParams, "LetterLabelPsychicDrone".Translate(), text, LetterDefOf.NegativeEvent, null);
             
             return ir;
         }
@@ -73,27 +73,27 @@ namespace HumanStoryteller.Incidents {
     public class HumanIncidentParams_PsychicDrone : HumanIncidentParms {
         public float Duration;
         public string Gender;
-        public string Level;
+        public string PsyLevel;
 
         public HumanIncidentParams_PsychicDrone() {
         }
 
-        public HumanIncidentParams_PsychicDrone(String target, HumanLetter letter, float duration = -1, String gender = "", String level = "") : base(target,
+        public HumanIncidentParams_PsychicDrone(String target, HumanLetter letter, float duration = -1, String gender = "", String psyLevel = "") : base(target,
             letter) {
             Duration = duration;
             Gender = gender;
-            Level = level;
+            PsyLevel = psyLevel;
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, Duration: {Duration}, Gender: {Gender}, Level: {Level}";
+            return $"{base.ToString()}, Duration: {Duration}, Gender: {Gender}, PsyLevel: {PsyLevel}";
         }
         
         public override void ExposeData() {
              base.ExposeData();
              Scribe_Values.Look(ref Duration, "duration");
              Scribe_Values.Look(ref Gender, "gender");
-             Scribe_Values.Look(ref Level, "level");
+             Scribe_Values.Look(ref PsyLevel, "psyLevel");
          }
     }
 }

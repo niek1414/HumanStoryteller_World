@@ -30,8 +30,8 @@ namespace HumanStoryteller.Incidents {
 
             Map map = (Map) allParams.GetTarget();
             PawnKindDef kindDef;
-            if (allParams.Kind != "") {
-                kindDef = PawnKindDef.Named(allParams.Kind);
+            if (allParams.AnimalKind != "") {
+                kindDef = PawnKindDef.Named(allParams.AnimalKind);
             } else {
                 if (!TryFindAnimalKind(map.Tile, out PawnKindDef animalKind)) {
                     return ir;
@@ -112,26 +112,26 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_HerdMigration : HumanIncidentParms {
-        public string Kind;
+        public string AnimalKind;
         public float Amount;
 
         public HumanIncidentParams_HerdMigration() {
         }
 
-        public HumanIncidentParams_HerdMigration(String target, HumanLetter letter, string kind = "", float amount = -1) :
+        public HumanIncidentParams_HerdMigration(String target, HumanLetter letter, string animalKind = "", float amount = -1) :
             base(target, letter) {
             Amount = amount;
-            Kind = kind;
+            AnimalKind = animalKind;
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, Amount: {Amount}, Kind: {Kind}";
+            return $"{base.ToString()}, Amount: {Amount}, Kind: {AnimalKind}";
         }
 
         public override void ExposeData() {
             base.ExposeData();
             Scribe_Values.Look(ref Amount, "amount");
-            Scribe_Values.Look(ref Kind, "kind");
+            Scribe_Values.Look(ref AnimalKind, "animalKind");
         }
     }
 }

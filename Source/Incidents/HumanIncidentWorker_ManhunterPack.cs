@@ -33,8 +33,8 @@ namespace HumanStoryteller.Incidents {
                 ? StorytellerUtility.DefaultThreatPointsNow(map) * allParams.Points
                 : StorytellerUtility.DefaultThreatPointsNow(map);
 
-            if (allParams.Kind != "") {
-                kindDef = PawnKindDef.Named(allParams.Kind);
+            if (allParams.AnimalKind != "") {
+                kindDef = PawnKindDef.Named(allParams.AnimalKind);
             } else {
                 if (!ManhunterPackIncidentUtility.TryFindManhunterAnimalKind(points, map.Tile, out PawnKindDef animalKind)) {
                     return ir;
@@ -68,26 +68,26 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_ManhunterPack : HumanIncidentParms {
-        public string Kind;
+        public string AnimalKind;
         public float Points;
 
         public HumanIncidentParams_ManhunterPack() {
         }
 
-        public HumanIncidentParams_ManhunterPack(String target, HumanLetter letter, string kind = "", float points = -1) :
+        public HumanIncidentParams_ManhunterPack(String target, HumanLetter letter, string animalKind = "", float points = -1) :
             base(target, letter) {
             Points = points;
-            Kind = kind;
+            AnimalKind = animalKind;
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, Points: {Points}, Kind: {Kind}";
+            return $"{base.ToString()}, Points: {Points}, Kind: {AnimalKind}";
         }
 
         public override void ExposeData() {
             base.ExposeData();
             Scribe_Values.Look(ref Points, "points");
-            Scribe_Values.Look(ref Kind, "kind");
+            Scribe_Values.Look(ref AnimalKind, "animalKind");
         }
     }
 }

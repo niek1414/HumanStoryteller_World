@@ -88,8 +88,14 @@
     <Compile Include="Incidents\HumanIncidentWorker_Infestation.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_ManhunterPack.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_MeteoriteImpact.cs" />
+    <Compile Include="Incidents\HumanIncidentWorker_PlanetKiller.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_PsychicDrone.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_RefugeeChased.cs" />
+    <Compile Include="Incidents\HumanIncidentWorker_RefugeePodCrash.cs" />
+    <Compile Include="Incidents\HumanIncidentWorker_ResourcePodCrash.cs" />
+    <Compile Include="Incidents\HumanIncidentWorker_SelfTame.cs" />
+    <Compile Include="Incidents\HumanIncidentWorker_ShipPartCrash.cs" />
+    <Compile Include="Incidents\HumanIncidentWorker_ShortCircuit.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_TempFlux.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_Dialog.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_Difficulty.cs" />
@@ -97,7 +103,11 @@
     <Compile Include="Incidents\HumanIncidentWorker_Nothing.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_PsychicSoothe.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_RaidEnemy.cs" />
+    <Compile Include="Incidents\HumanIncidentWorker_ToxicFallout.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_TraderArrival.cs" />
+    <Compile Include="Incidents\HumanIncidentWorker_VisitorGroup.cs" />
+    <Compile Include="Incidents\HumanIncidentWorker_VolcanicWinter.cs" />
+    <Compile Include="Incidents\HumanIncidentWorker_WildManWandersIn.cs" />
     <Compile Include="Model\StoryEventNode.cs" />
     <Compile Include="Model\VariableModifications.cs" />
     <Compile Include="NewtonsoftWrapper\DataContractAttribute.cs" />
