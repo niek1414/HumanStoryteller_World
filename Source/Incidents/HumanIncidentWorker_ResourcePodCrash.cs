@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using HumanStoryteller.Model;
 using HumanStoryteller.Util;
 using RimWorld;
@@ -29,53 +30,51 @@ namespace HumanStoryteller.Incidents {
                 ThingDef droppable = ThingDef.Named(allParams.Item);
                 things = new List<Thing>();
                 if (droppable.stackLimit <= 0) return ir;
-                var qc = allParams.ItemQuality != "" ? GetCategory(allParams.ItemQuality) : QualityCategory.Normal;
+                ThingDef stuff = null;
+                if (droppable.MadeFromStuff) {
+                    try {
+                        if (allParams.Stuff != "") {
+                            stuff = (from d in DefDatabase<ThingDef>.AllDefs
+                                where d.IsStuff && d.defName.Equals(allParams.Stuff)
+                                select d).First();
+                        }
+                    } catch (InvalidOperationException) {
+                        
+                    }
+                }
+                var qc = allParams.ItemQuality != "" ? ItemUtil.GetCategory(allParams.ItemQuality) : QualityCategory.Normal;
                 while (num > 0) {
-                    var stack = ThingMaker.MakeThing(droppable);
-                    TrySetQuality(stack,
+                    var stack = ThingMaker.MakeThing(droppable, stuff);
+                    ItemUtil.TrySetQuality(stack,
                         allParams.ItemQuality != "" ? qc : QualityUtility.GenerateQualityRandomEqualChance());
                     var amount = Mathf.Min(stack.def.stackLimit, num);
                     num -= amount;
                     stack.stackCount = amount;
+                    stack = ItemUtil.TryMakeMinified(stack);
                     things.Add(stack);
                 }
             } else {
                 things = ThingSetMakerDefOf.ResourcePod.root.Generate();
             }
 
-            IntVec3 intVec = DropCellFinder.RandomDropSpot(map);
-            DropPodUtility.DropThingsNear(intVec, map, things, 110, false, true);
+            IntVec3 intVec;
+            switch (allParams.Location) {
+                case "RandomEdge":
+                    intVec = CellFinder.RandomEdgeCell(map);
+                    break;
+                case "Center":
+                    intVec = RCellFinder.TryFindRandomCellNearWith(map.Center, null, map, out var result) ? result : DropCellFinder.RandomDropSpot(map);
+                    break;
+                default:
+                    intVec = DropCellFinder.RandomDropSpot(map);
+                    break;
+            }
 
+            DropPodUtility.DropThingsNear(intVec, map, things, 110, allParams.InstaPlace, true);
             SendLetter(allParams, "LetterLabelCargoPodCrash".Translate(), "CargoPodCrash".Translate(), LetterDefOf.PositiveEvent,
                 new TargetInfo(intVec, map));
 
             return ir;
-        }
-
-        private static QualityCategory GetCategory(string q) {
-            switch (q) {
-                case "Awful":
-                    return QualityCategory.Awful;
-                case "Poor":
-                    return QualityCategory.Poor;
-                case "Normal":
-                    return QualityCategory.Normal;
-                case "Good":
-                    return QualityCategory.Good;
-                case "Excellent":
-                    return QualityCategory.Excellent;
-                case "Masterwork ":
-                    return QualityCategory.Masterwork;
-                default:
-                    return QualityUtility.GenerateQualityRandomEqualChance();
-            }
-        }
-
-        private static void TrySetQuality(Thing t, QualityCategory qc) {
-            CompQuality compQuality = t is MinifiedThing minifiedThing
-                ? minifiedThing.InnerThing.TryGetComp<CompQuality>()
-                : t.TryGetComp<CompQuality>();
-            compQuality?.SetQuality(qc, ArtGenerationContext.Colony);
         }
     }
 
@@ -83,19 +82,25 @@ namespace HumanStoryteller.Incidents {
         public float Amount;
         public string Item;
         public string ItemQuality;
+        public string Stuff;
+        public bool InstaPlace;
+        public string Location;
 
         public HumanIncidentParams_ResourcePodCrash() {
         }
 
-        public HumanIncidentParams_ResourcePodCrash(String target, HumanLetter letter, float amount = -1, string item = "", string itemQuality = "") :
+        public HumanIncidentParams_ResourcePodCrash(String target, HumanLetter letter, float amount = -1, string item = "", string itemQuality = "", string stuff = "", bool instaPlace = false, string location = "") :
             base(target, letter) {
             Amount = amount;
             Item = item;
             ItemQuality = itemQuality;
+            Stuff = stuff;
+            InstaPlace = instaPlace;
+            Location = location;
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, Amount: {Amount}, Item: {Item}, Quality: {ItemQuality}";
+            return $"{base.ToString()}, Amount: {Amount}, Item: {Item}, ItemQuality: {ItemQuality}, Stuff: {Stuff}, InstaPlace: {InstaPlace}";
         }
 
         public override void ExposeData() {
@@ -103,6 +108,9 @@ namespace HumanStoryteller.Incidents {
             Scribe_Values.Look(ref Amount, "amount");
             Scribe_Values.Look(ref Item, "item");
             Scribe_Values.Look(ref ItemQuality, "itemQuality");
+            Scribe_Values.Look(ref Stuff, "stuff");
+            Scribe_Values.Look(ref InstaPlace, "instaPlace");
+            Scribe_Values.Look(ref Location, "location");
         }
     }
 }

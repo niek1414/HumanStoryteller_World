@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using HumanStoryteller.CheckConditions;
 using HumanStoryteller.Util;
 using Newtonsoft.Json;
@@ -58,10 +59,64 @@ namespace HumanStoryteller.Parser.Converter {
                     return new RandomCheck(float.Parse(obj["chance"].Value<string>()));
                 case DifficultyCheck.Name:
                     return new DifficultyCheck(GetDifficulty(obj["difficulty"].Value<string>()));
+                case TimeCheck.Name:
+                    return new TimeCheck(GetTimeList(obj, "hours"), GetTimeList(obj, "days"), GetTimeList(obj, "quadrums"),
+                        GetTimeList(obj, "years"));
+                case RelationCheck.Name:
+                    return new RelationCheck(
+                        Find.FactionManager.AllFactions.First(f => f.def.defName == obj["faction"].Value<string>()),
+                        GetNumeralCompareResponse(obj["compareType"].Value<string>()),
+                        float.Parse(obj["constant"].Value<string>(), CultureInfo.InvariantCulture.NumberFormat)
+                    );
+                case ItemMapCheck.Name:
+                    return new ItemMapCheck(
+                        ThingDef.Named(obj["item"].Value<string>()),
+                        GetNumeralCompareResponse(obj["compareType"].Value<string>()),
+                        float.Parse(obj["constant"].Value<string>(), CultureInfo.InvariantCulture.NumberFormat)
+                    );
+                case ItemColonyCheck.Name:
+                    return new ItemColonyCheck(
+                        ThingDef.Named(obj["item"].Value<string>()),
+                        GetNumeralCompareResponse(obj["compareType"].Value<string>()),
+                        float.Parse(obj["constant"].Value<string>(), CultureInfo.InvariantCulture.NumberFormat)
+                    );
+                case TemperatureCheck.Name:
+                    return new TemperatureCheck(
+                        GetNumeralCompareResponse(obj["compareType"].Value<string>()),
+                        float.Parse(obj["constant"].Value<string>(), CultureInfo.InvariantCulture.NumberFormat)
+                    );
+                case ColonistsCheck.Name:
+                    return new ColonistsCheck(
+                        GetNumeralCompareResponse(obj["compareType"].Value<string>()),
+                        float.Parse(obj["constant"].Value<string>(), CultureInfo.InvariantCulture.NumberFormat)
+                    );
+                case BiomeCheck.Name:
+                    return new BiomeCheck(obj["biomes"]!= null?obj["biomes"].Values<string>().ToList():new List<string>());
+                case AudioCheck.Name:
+                    return new AudioCheck();
+                case CheatCheck.Name:
+                    return new CheatCheck();
                 default:
                     Parser.LogParseError("condition", type);
                     return null;
             }
+        }
+
+        private List<int> GetTimeList(JObject obj, string timeType) {
+            var token = obj[timeType];
+            if (token == null) {
+                return new List<int>();
+            }
+            IEnumerable<string> list = token.Values<string>();
+            if (list == null) {
+                Parser.LogParseError("time - " + timeType, null);
+                return new List<int>();
+            }
+
+            List<int> r = new List<int>();
+            list.ToList().ForEach(item => { r.Add(int.Parse(item, CultureInfo.InvariantCulture.NumberFormat)); });
+
+            return r;
         }
 
         private DifficultyDef GetDifficulty(String type) {

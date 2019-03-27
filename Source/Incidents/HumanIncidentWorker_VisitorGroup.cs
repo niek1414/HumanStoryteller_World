@@ -35,7 +35,9 @@ namespace HumanStoryteller.Incidents {
                 return ir;
             }
 
-            IntVec3 spawnCenter = !RCellFinder.TryFindRandomPawnEntryCell(out IntVec3 cellResult, map, CellFinder.EdgeRoadChance_Friendly) ? CellFinder.RandomEdgeCell(map) : cellResult;
+            IntVec3 spawnCenter = !RCellFinder.TryFindRandomPawnEntryCell(out IntVec3 cellResult, map, CellFinder.EdgeRoadChance_Friendly)
+                ? CellFinder.RandomEdgeCell(map)
+                : cellResult;
 
             var fakeParams = new IncidentParms {
                 faction = factionResult,
@@ -44,11 +46,11 @@ namespace HumanStoryteller.Incidents {
                 forced = true,
                 target = map
             };
-            List<Pawn> list = SpawnPawns(map, fakeParams);
-            if (list.Count == 0)
-            {
+            List<Pawn> list = SpawnPawns(map, allParams.Names, fakeParams);
+            if (list.Count == 0) {
                 return ir;
             }
+
             RCellFinder.TryFindRandomSpotJustOutsideColony(list[0], out IntVec3 result);
             LordJob_VisitColony lordJob = new LordJob_VisitColony(factionResult, result);
             LordMaker.MakeNewLord(factionResult, lordJob, map, list);
@@ -58,17 +60,22 @@ namespace HumanStoryteller.Incidents {
             string letterText;
             if (list.Count == 1) {
                 string value = string.Empty;
-                string value2 = pawn == null ? string.Empty : "\n\n" + "SingleVisitorArrivesLeaderInfo".Translate(list[0].Named("PAWN")).AdjustedFor(list[0]);
+                string value2 = pawn == null
+                    ? string.Empty
+                    : "\n\n" + "SingleVisitorArrivesLeaderInfo".Translate(list[0].Named("PAWN")).AdjustedFor(list[0]);
                 letterLabel = "LetterLabelSingleVisitorArrives".Translate();
-                letterText = "SingleVisitorArrives".Translate(list[0].story.Title, factionResult.Name, list[0].Name.ToStringFull, value, value2, list[0].Named("PAWN")).AdjustedFor(list[0]);
-            }
-            else {
+                letterText = "SingleVisitorArrives"
+                    .Translate(list[0].story.Title, factionResult.Name, list[0].Name.ToStringFull, value, value2, list[0].Named("PAWN"))
+                    .AdjustedFor(list[0]);
+            } else {
                 string value3 = string.Empty;
                 string value4 = pawn == null ? string.Empty : "\n\n" + "GroupVisitorsArriveLeaderInfo".Translate(pawn.LabelShort, pawn);
                 letterLabel = "LetterLabelGroupVisitorsArrive".Translate();
                 letterText = "GroupVisitorsArrive".Translate(factionResult.Name, value3, value4);
             }
-            PawnRelationUtility.Notify_PawnsSeenByPlayer_Letter(list, ref letterLabel, ref letterText, "LetterRelatedPawnsNeutralGroup".Translate(Faction.OfPlayer.def.pawnsPlural), true);
+
+            PawnRelationUtility.Notify_PawnsSeenByPlayer_Letter(list, ref letterLabel, ref letterText,
+                "LetterRelatedPawnsNeutralGroup".Translate(Faction.OfPlayer.def.pawnsPlural), true);
             SendLetter(allParams, letterLabel, letterText, LetterDefOf.PositiveEvent, null);
             return ir;
         }
@@ -93,18 +100,33 @@ namespace HumanStoryteller.Incidents {
                 return false;
             }
 
-            return desperate || f.def.allowedArrivalTemperatureRange.Includes(map.mapTemperature.OutdoorTemp) && f.def.allowedArrivalTemperatureRange.Includes(map.mapTemperature.SeasonalTemp);
+            return desperate || f.def.allowedArrivalTemperatureRange.Includes(map.mapTemperature.OutdoorTemp) &&
+                   f.def.allowedArrivalTemperatureRange.Includes(map.mapTemperature.SeasonalTemp);
         }
-        
-        private List<Pawn> SpawnPawns(Map map, IncidentParms fakeParams)
-        {
-            PawnGroupMakerParms defaultPawnGroupMakerParms = IncidentParmsUtility.GetDefaultPawnGroupMakerParms(PawnGroupKindDefOf.Peaceful, fakeParams, true);
+
+        private List<Pawn> SpawnPawns(Map map, List<String> names, IncidentParms fakeParams) {
+            PawnGroupMakerParms defaultPawnGroupMakerParms =
+                IncidentParmsUtility.GetDefaultPawnGroupMakerParms(PawnGroupKindDefOf.Peaceful, fakeParams, true);
             List<Pawn> list = PawnGroupMakerUtility.GeneratePawns(defaultPawnGroupMakerParms, false).ToList();
-            foreach (Pawn item in list)
-            {
+            for (var i = 0; i < list.Count; i++) {
+                Pawn item = list[i];
                 IntVec3 loc = CellFinder.RandomClosewalkCellNear(fakeParams.spawnCenter, map, 5);
                 GenSpawn.Spawn(item, loc, map);
+                if (i < names.Count) {
+                    switch (item.Name) {
+                        case NameTriple prevNameTriple:
+                            item.Name = new NameTriple(names[i], names[i], prevNameTriple.Last);
+                            break;
+                        case NameSingle prevNameSingle:
+                            item.Name = new NameTriple(names[i], names[i], prevNameSingle.Name);
+                            break;
+                        default:
+                            item.Name = new NameTriple(names[i], names[i], "");
+                            break;
+                    }
+                }
             }
+
             return list;
         }
     }

@@ -34,15 +34,16 @@ namespace HumanStoryteller.Incidents {
             if (allParams.Name != "") {
                 switch (pawn.Name) {
                     case NameTriple prevNameTriple:
-                        pawn.Name = new NameTriple(allParams.Name, allParams.Name, prevNameTriple.Last);
+                        pawn.Name = new NameTriple(allParams.Name, prevNameTriple.Nick, prevNameTriple.Last);
                         break;
-                    case NameSingle prevNameSingle:
-                        pawn.Name = new NameTriple(allParams.Name, allParams.Name, prevNameSingle.Name);
+                    case NameSingle _:
+                        pawn.Name = new NameSingle(allParams.Name);
                         break;
                     default:
                         pawn.Name = new NameTriple(allParams.Name, allParams.Name, "");
                         break;
                 }
+                PawnUtil.SavePawnByName(allParams.Name, pawn);
             }
             
             pawn.guest.getRescuedThoughtOnUndownedBecauseOfPlayer = true;

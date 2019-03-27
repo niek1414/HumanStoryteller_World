@@ -14,7 +14,10 @@ namespace HumanStoryteller.Incidents {
                 if (parms.Letter.Type == null) {
                     l = LetterMaker.MakeLetter(title, message, type, target, relatedFaction);
                 } else {
-                    l = LetterMaker.MakeLetter(parms.Letter.Title, parms.Letter.Message, parms.Letter.Type);
+                    if (parms.Letter.Shake) {
+                        Find.CameraDriver.shaker.DoShake(1f);
+                    }
+                    l = LetterMaker.MakeLetter(parms.Letter.Title, parms.Letter.Message, parms.Letter.Type, target, relatedFaction);
                 }
 
                 Find.LetterStack.ReceiveLetter(l, debugInfo);

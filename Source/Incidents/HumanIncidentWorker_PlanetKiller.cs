@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using HumanStoryteller.Model;
 using HumanStoryteller.Util;
 using RimWorld;
@@ -23,14 +24,16 @@ namespace HumanStoryteller.Incidents {
             Tell.Log($"Executing event {Name} with:{allParams}");
 
             Map map = (Map) allParams.GetTarget();
-            var def = IncidentDef.Named("Planetkiller");
+            var def = GameConditionDef.Named("Planetkiller");
             int duration = Mathf.RoundToInt(allParams.Duration != -1
                 ? allParams.Duration * 60000f
-                : def.durationDays.RandomInRange * 60000f);
+                : (from x in DefDatabase<ScenPartDef>.AllDefs
+                where x.defName == "GameCondition_Planetkiller"
+                select x).First().durationRandomRange.RandomInRange * 60000f);
             GameCondition_Planetkiller gameCondition_Planetkiller =
-                (GameCondition_Planetkiller) GameConditionMaker.MakeCondition(GameConditionDef.Named("Planetkiller"), duration);
+                (GameCondition_Planetkiller) GameConditionMaker.MakeCondition(def, duration);
             map.gameConditionManager.RegisterCondition(gameCondition_Planetkiller);
-            SendLetter(allParams, def.letterLabel, def.letterText, def.letterDef, null);
+            SendLetter(allParams, def.label, def.description, LetterDefOf.NegativeEvent, null);
             return ir;
         }
     }

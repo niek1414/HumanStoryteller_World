@@ -48,18 +48,7 @@ namespace HumanStoryteller.Incidents {
             }
 			gameCondition_PsychicEmanation.level = l;
             
-            Gender g;
-            switch (allParams.Gender) {
-                case "MALE":
-                    g = Gender.Male;
-                    break;
-                case "FEMALE":
-                    g = Gender.Female;
-                    break;
-                default:
-                    g = Gender.None;
-                    break;
-            }
+            Gender g = PawnUtil.GetGender(allParams.Gender);
 
             gameCondition_PsychicEmanation.gender = g != Gender.None ? g : map.mapPawns.FreeColonists.RandomElement().gender;
             map.gameConditionManager.RegisterCondition(gameCondition_PsychicEmanation);

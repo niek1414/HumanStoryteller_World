@@ -9,6 +9,7 @@ namespace HumanStoryteller.Util {
         public long StoryId;
         public List<StoryEventNode> CurrentNodes = new List<StoryEventNode>();
         public Dictionary<string, float> VariableBank = new Dictionary<string, float>();
+        public Dictionary<string, Pawn> PawnBank = new Dictionary<string, Pawn>();
         public StorytellerComp_HumanThreatCycle ThreatCycle = null;
 
         public override void ExposeData()
@@ -18,6 +19,7 @@ namespace HumanStoryteller.Util {
             Scribe_Values.Look(ref StoryId, "storyId");
             Scribe_Collections.Look(ref CurrentNodes, "currentNode", LookMode.Deep);
             Scribe_Collections.Look(ref VariableBank, "variableBank", LookMode.Deep);
+            Scribe_Collections.Look(ref PawnBank, "pawnBank", LookMode.Reference);
         }
 
         public StoryComponent(World world) : base(world) {

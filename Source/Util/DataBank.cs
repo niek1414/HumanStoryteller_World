@@ -46,21 +46,29 @@ namespace HumanStoryteller.Util {
         }
 
         public static bool CompareVariableWithConst(string variable, CompareType type, float constant) {
+            return CompareValueWithConst(GetValueFromVariable(variable), type, constant);
+        }
+
+        public static float GetValueFromVariable(string variable) {
             Dictionary<string, float> variableBank = StorytellerComp_HumanThreatCycle.StoryComponent.VariableBank;
 
             if (!variableBank.ContainsKey(variable)) {
                 variableBank.Add(variable, 0);
             }
-            
+
+            return variableBank[variable];
+        }
+
+        public static bool CompareValueWithConst(float value, CompareType type, float constant) {
             switch (type) {
                 case CompareType.Less:
-                    return variableBank[variable] < constant;
+                    return value < constant;
                 case CompareType.More:
-                    return variableBank[variable] > constant;
+                    return value > constant;
                 case CompareType.Equal:
-                    return Math.Abs(variableBank[variable] - constant) < 0.001;
+                    return Math.Abs(value - constant) < 0.001;
                 default:
-                    Tell.Err("Variable compare type not present or known");
+                    Tell.Err("Variable compare type not present or known", type);
                     return false;
             }
         }

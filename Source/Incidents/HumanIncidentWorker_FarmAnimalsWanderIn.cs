@@ -53,6 +53,7 @@ namespace HumanStoryteller.Incidents {
                 Pawn pawn = PawnGenerator.GeneratePawn(kind);
                 if (i < allParams.Names.Count) {
                     pawn.Name = new NameSingle(allParams.Names[i]);
+                    PawnUtil.SavePawnByName(allParams.Names[i], pawn);
                 }
 
                 GenSpawn.Spawn(pawn, loc, map, Rot4.Random);
@@ -93,7 +94,7 @@ namespace HumanStoryteller.Incidents {
         
         public override void ExposeData() {
             base.ExposeData();
-            Scribe_Values.Look(ref Amount, "amount");
+            Scribe_Deep.Look(ref Amount, "amount");
             Scribe_Values.Look(ref Names, "names");
             Scribe_Values.Look(ref AnimalKind, "animalKind");
         }

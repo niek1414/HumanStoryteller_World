@@ -18,14 +18,14 @@ namespace HumanStoryteller {
         private const int LONG_REFRESH = 60000 * 60;
         private const int OFF_REFRESH = Int32.MaxValue;
         private RefreshRate currentRate = RefreshRate.Long;
-        
+
         public enum RefreshRate {
             Short,
             Medium,
             Long,
             Off
         }
-        
+
         protected StorytellerCompProperties_HumanThreatCycle Props =>
             (StorytellerCompProperties_HumanThreatCycle) props;
 
@@ -35,12 +35,16 @@ namespace HumanStoryteller {
         private int _consecutiveEventCounter;
         private bool _init;
         private readonly Timer _refreshTimer = new Timer();
-        
-        public static StoryComponent StoryComponent => Tell.AssertNotNull(Find.World?.GetComponent<StoryComponent>(), nameof(StoryComponent), "StorytellerComp_HumanThreatCycle");
+
+        public static StoryComponent StoryComponent => Tell.AssertNotNull(Find.World?.GetComponent<StoryComponent>(), nameof(StoryComponent),
+            "StorytellerComp_HumanThreatCycle");
+
         public static bool HumanStorytellerGame;
         public static bool IsNoStory => StoryComponent.Story == null;
-        public static long StoryId => IsNoStory ? -1 : Tell.AssertNotNull(StoryComponent.Story.Id, nameof(StoryComponent.Story.Id), "StorytellerComp_HumanThreatCycle");
-        
+
+        public static long StoryId =>
+            IsNoStory ? -1 : Tell.AssertNotNull(StoryComponent.Story.Id, nameof(StoryComponent.Story.Id), "StorytellerComp_HumanThreatCycle");
+
         public static bool DEBUG => true;
 
         public static void Tick() {
@@ -92,7 +96,7 @@ namespace HumanStoryteller {
                 _missedLastIncidentCheck = true;
                 yield break;
             }
-            
+
             StoryComponent.CurrentNodes.RemoveAll(item => item == null);
 
             int laneCount = StoryComponent.CurrentNodes.Count;
@@ -154,8 +158,10 @@ namespace HumanStoryteller {
                     } else {
                         StoryNode newEvent = StoryComponent.Story.StoryGraph.TryNewEvent(currentNode, IntervalsPassed);
                         if (newEvent == null) continue;
-                        _missedLastIncidentCheck = true;
-                        _consecutiveEventCounter++;
+                        if (!newEvent.StoryEvent.Uuid.Equals(currentNode.StoryNode.StoryEvent.Uuid)){
+                            _missedLastIncidentCheck = true;
+                            _consecutiveEventCounter++;
+                        }
                         StoryComponent.CurrentNodes[i] = new StoryEventNode(newEvent);
                         yield return StoryComponent.CurrentNodes[i];
                     }
@@ -171,6 +177,7 @@ namespace HumanStoryteller {
                 Tell.Warn("Tried to get story while not in-game");
                 return;
             }
+
             Storybook.GetStory(StoryComponent.StoryId, GetStoryCallback);
         }
 
@@ -197,24 +204,50 @@ namespace HumanStoryteller {
                     var foundNode = StoryComponent.Story.StoryGraph.GetCurrentNode(StoryComponent.CurrentNodes[i]?.StoryNode.StoryEvent.Uuid);
                     StoryComponent.CurrentNodes[i] = foundNode == null ? null : new StoryEventNode(foundNode, StoryComponent.CurrentNodes[i].Result);
                 }
+
                 StoryComponent.CurrentNodes.RemoveAll(item => item == null);
             }
+
             HumanStoryteller.InitiateEventUnsafe = false;
         }
-        
+
         private void Init() {
             Tell.Log("INITIALIZE HS GAME", Current.Game.storyteller.def.listOrder);
             StoryComponent.StoryId = Current.Game.storyteller.def.listOrder;
             StoryComponent.ThreatCycle = this;
-            
-//            string str = "";
+
+            string str = "";
 //            foreach (var def in from d in DefDatabase<ThingDef>.AllDefs
-//                where d.category == ThingCategory.Item
+//                where d.selectable
 //                select d) {
 //                str += def.defName + "\n";
 //            }
 //            Tell.Log(str);
-            
+            str = "";
+            foreach (var def in from d in DefDatabase<ThoughtDef>.AllDefs
+                select d) {
+                str += def.defName + "\n";
+            }
+
+            Tell.Log(str);
+            str = "";
+            foreach (var def in from d in DefDatabase<ThoughtDef>.AllDefs
+                select d) {
+                bool found = false;
+                foreach (var stage in def.stages) {
+                    if (stage != null && stage.visible) {
+                        str += stage.label + "\n";
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found)
+                    str += "\n";
+            }
+
+            Tell.Log(str);
+
             Storybook.GetStory(StoryComponent.StoryId, GetStoryCallback);
             _refreshTimer.Elapsed += CheckStoryRefresh;
             _refreshTimer.Interval = LONG_REFRESH;

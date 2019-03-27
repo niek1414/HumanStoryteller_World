@@ -163,6 +163,50 @@ namespace HumanStoryteller.Parser.Converter {
                     incident = new FiringHumanIncident(new HumanIncidentWorker_Planetkiller(),
                         new HumanIncidentParams_Planetkiller(defaultIncidentTarget, defaultLetter));
                     break;
+                case HumanIncidentWorker_CreatePawn.Name:
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_CreatePawn(),
+                        new HumanIncidentParams_CreatePawn(defaultIncidentTarget, defaultLetter));
+                    break;
+                case HumanIncidentWorker_KillPawn.Name:
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_KillPawn(),
+                        new HumanIncidentParams_KillPawn(defaultIncidentTarget, defaultLetter));
+                    break;
+                case HumanIncidentWorker_TimeTravel.Name:
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_TimeTravel(),
+                        new HumanIncidentParams_TimeTravel(defaultIncidentTarget, defaultLetter));
+                    break;
+                case HumanIncidentWorker_SetRelation.Name:
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_SetRelation(),
+                        new HumanIncidentParams_SetRelation(defaultIncidentTarget, defaultLetter));
+                    break;
+                case HumanIncidentWorker_HealPawn.Name:
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_HealPawn(),
+                        new HumanIncidentParams_HealPawn(defaultIncidentTarget, defaultLetter));
+                    break;
+                case HumanIncidentWorker_PawnHealth.Name:
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_PawnHealth(),
+                        new HumanIncidentParams_PawnHealth(defaultIncidentTarget, defaultLetter));
+                    break;
+                case HumanIncidentWorker_GiveThought.Name:
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_GiveThought(),
+                        new HumanIncidentParams_GiveThought(defaultIncidentTarget, defaultLetter));
+                    break;
+                case HumanIncidentWorker_RenamePawn.Name:
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_RenamePawn(),
+                        new HumanIncidentParams_RenamePawn(defaultIncidentTarget, defaultLetter));
+                    break;
+                case HumanIncidentWorker_PlayAudio.Name:
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_PlayAudio(),
+                        new HumanIncidentParams_PlayAudio(defaultIncidentTarget, defaultLetter));
+                    break;
+                case HumanIncidentWorker_SolarFlare.Name:
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_SolarFlare(),
+                        new HumanIncidentParams_SolarFlare(defaultIncidentTarget, defaultLetter));
+                    break;
+                case HumanIncidentWorker_EditPawn.Name:
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_EditPawn(),
+                        new HumanIncidentParams_EditPawn(defaultIncidentTarget, defaultLetter));
+                    break;
                 default:
                     Parser.LogParseError("incident", type);
                     return new FiringHumanIncident(null);

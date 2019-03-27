@@ -44,6 +44,9 @@
       <HintPath>..\..\..\RimWorldWin64_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="NAudio, Version=1.7.3.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\..\..\RimWorldWin64_Data\Managed\NAudio.dll</HintPath>
+    </Reference>
     <Reference Include="RestSharp Version=105.2.4.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\Assemblies\RestSharp.dll</HintPath>
     </Reference>
@@ -66,11 +69,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Alert\Alert_NeedStory.cs" />
+    <Compile Include="CheckConditions\AudioCheck.cs" />
+    <Compile Include="CheckConditions\BiomeCheck.cs" />
+    <Compile Include="CheckConditions\CheatCheck.cs" />
     <Compile Include="CheckConditions\CheckCondition.cs" />
+    <Compile Include="CheckConditions\ColonistsCheck.cs" />
     <Compile Include="CheckConditions\DialogCheck.cs" />
     <Compile Include="CheckConditions\DifficultyCheck.cs" />
+    <Compile Include="CheckConditions\ItemColonyCheck.cs" />
+    <Compile Include="CheckConditions\ItemMapCheck.cs" />
     <Compile Include="CheckConditions\PawnHealthCheck.cs" />
     <Compile Include="CheckConditions\RandomCheck.cs" />
+    <Compile Include="CheckConditions\RelationCheck.cs" />
+    <Compile Include="CheckConditions\TemperatureCheck.cs" />
+    <Compile Include="CheckConditions\TimeCheck.cs" />
     <Compile Include="CheckConditions\VariableCheck.cs" />
     <Compile Include="HumanStoryteller.cs" />
     <Compile Include="Incidents\GameConditions\HumanGameCondition_TempFlux.cs" />
@@ -80,22 +92,32 @@
     <Compile Include="Incidents\HumanIncidentWorker_AnimalInsanityMass.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_AnimalInsanitySingle.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_Aurora.cs" />
+    <Compile Include="Incidents\HumanIncidentWorker_CreatePawn.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_CropBlight.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_Disease.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_Eclipse.cs" />
+    <Compile Include="Incidents\HumanIncidentWorker_EditPawn.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_FlashStorm.cs" />
+    <Compile Include="Incidents\HumanIncidentWorker_GiveThought.cs" />
+    <Compile Include="Incidents\HumanIncidentWorker_HealPawn.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_HerdMigration.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_Infestation.cs" />
+    <Compile Include="Incidents\HumanIncidentWorker_KillPawn.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_ManhunterPack.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_MeteoriteImpact.cs" />
+    <Compile Include="Incidents\HumanIncidentWorker_PawnHealth.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_PlanetKiller.cs" />
+    <Compile Include="Incidents\HumanIncidentWorker_PlayAudio.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_PsychicDrone.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_RefugeeChased.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_RefugeePodCrash.cs" />
+    <Compile Include="Incidents\HumanIncidentWorker_RenamePawn.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_ResourcePodCrash.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_SelfTame.cs" />
+    <Compile Include="Incidents\HumanIncidentWorker_SetRelation.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_ShipPartCrash.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_ShortCircuit.cs" />
+    <Compile Include="Incidents\HumanIncidentWorker_SolarFlare.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_TempFlux.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_Dialog.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_Difficulty.cs" />
@@ -103,6 +125,7 @@
     <Compile Include="Incidents\HumanIncidentWorker_Nothing.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_PsychicSoothe.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_RaidEnemy.cs" />
+    <Compile Include="Incidents\HumanIncidentWorker_TimeTravel.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_ToxicFallout.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_TraderArrival.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_VisitorGroup.cs" />
@@ -318,6 +341,9 @@
     <Compile Include="Model\StoryNode.cs" />
     <Compile Include="Model\StorySummary.cs" />
     <Compile Include="Util\DataBank.cs" />
+    <Compile Include="Util\ItemUtil.cs" />
+    <Compile Include="Util\Number.cs" />
+    <Compile Include="Util\SoundGrain.cs" />
     <Compile Include="Util\Tell.cs" />
     <Compile Include="Util\ObjectDumper.cs" />
     <Compile Include="Util\PawnUtil.cs" />
