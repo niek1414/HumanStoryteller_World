@@ -33,8 +33,8 @@ namespace HumanStoryteller.Incidents {
                     thought = (Thought_Memory) ThoughtMaker.MakeThought(ThoughtDefOf.DebugGood);
                     thought.CurStage.label = allParams.ThoughtLabel;
                     thought.CurStage.description = allParams.ThoughtDescription;
-                    thought.CurStage.baseMoodEffect = allParams.ThoughtEffect;
-                    thought.def.durationDays = allParams.ThoughtDuration;
+                    thought.CurStage.baseMoodEffect = allParams.ThoughtEffect.GetValue();
+                    thought.def.durationDays = allParams.ThoughtDuration.GetValue();
                 } else {
                     thought = (Thought_Memory) ThoughtMaker.MakeThought(def);
                     thought.otherPawn = PawnUtil.GetPawnByName(allParams.OtherPawn);
@@ -44,6 +44,9 @@ namespace HumanStoryteller.Incidents {
             }
 
             if (parms.Letter?.Type != null) {
+                if (parms.Letter.Shake) {
+                    Find.CameraDriver.shaker.DoShake(4f);
+                }
                 Find.LetterStack.ReceiveLetter(LetterMaker.MakeLetter(parms.Letter.Title, parms.Letter.Message, parms.Letter.Type));
             }
 
@@ -52,15 +55,25 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_GiveThought : HumanIncidentParms {
+        public Number ThoughtEffect;
+        public Number ThoughtDuration;
         public List<String> Names;
         public string ThoughtType;
         public string ThoughtLabel;
         public string ThoughtDescription;
-        public float ThoughtEffect;
-        public float ThoughtDuration;
         public string OtherPawn;
 
         public HumanIncidentParams_GiveThought() {
+        }
+
+        public HumanIncidentParams_GiveThought(string target, HumanLetter letter, Number thoughtEffect, Number thoughtDuration, List<string> names, string thoughtType, string thoughtLabel, string thoughtDescription, string otherPawn) : base(target, letter) {
+            ThoughtEffect = thoughtEffect;
+            ThoughtDuration = thoughtDuration;
+            Names = names ?? new List<string>();
+            ThoughtType = thoughtType;
+            ThoughtLabel = thoughtLabel;
+            ThoughtDescription = thoughtDescription;
+            OtherPawn = otherPawn;
         }
 
         public HumanIncidentParams_GiveThought(String target, HumanLetter letter,
@@ -68,27 +81,18 @@ namespace HumanStoryteller.Incidents {
             string thoughtType = "",
             string thoughtLabel = "",
             string thoughtDescription = "",
-            float thoughtEffect = 0,
-            float thoughtDuration = 1,
             string otherPawn = "") :
-            base(target, letter) {
-            Names = names ?? new List<string>();
-            ThoughtType = thoughtType;
-            ThoughtLabel = thoughtLabel;
-            ThoughtDescription = thoughtDescription;
-            ThoughtEffect = thoughtEffect;
-            ThoughtDuration = thoughtDuration;
-            OtherPawn = otherPawn;
+            this(target, letter, new Number(0), new Number(1), names, thoughtType, thoughtLabel, thoughtDescription, otherPawn) {
         }
 
         public override void ExposeData() {
             base.ExposeData();
+            Scribe_Deep.Look(ref ThoughtEffect, "thoughtEffect");
+            Scribe_Deep.Look(ref ThoughtDuration, "thoughtDuration");
             Scribe_Collections.Look(ref Names, "names", LookMode.Value);
             Scribe_Values.Look(ref ThoughtType, "thoughtType");
             Scribe_Values.Look(ref ThoughtLabel, "thoughtLabel");
             Scribe_Values.Look(ref ThoughtDescription, "thoughtDescription");
-            Scribe_Values.Look(ref ThoughtEffect, "thoughtEffect");
-            Scribe_Values.Look(ref ThoughtDuration, "thoughtDuration");
             Scribe_Values.Look(ref OtherPawn, "otherPawn");
         }
     }

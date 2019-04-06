@@ -207,6 +207,26 @@ namespace HumanStoryteller.Parser.Converter {
                     incident = new FiringHumanIncident(new HumanIncidentWorker_EditPawn(),
                         new HumanIncidentParams_EditPawn(defaultIncidentTarget, defaultLetter));
                     break;
+                case HumanIncidentWorker_Rules.Name:
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_Rules(),
+                        new HumanIncidentParams_Rules(defaultIncidentTarget, defaultLetter));
+                    break;
+                case HumanIncidentWorker_Research.Name:
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_Research(),
+                        new HumanIncidentParams_Research(defaultIncidentTarget, defaultLetter));
+                    break;
+                case HumanIncidentWorker_DeleteItems.Name:
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_DeleteItems(),
+                        new HumanIncidentParams_DeleteItems(defaultIncidentTarget, defaultLetter));
+                    break;
+                case HumanIncidentWorker_OrbitalStrike.Name:
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_OrbitalStrike(),
+                        new HumanIncidentParams_OrbitalStrike(defaultIncidentTarget, defaultLetter));
+                    break;
+                case HumanIncidentWorker_MentalBreak.Name:
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_MentalBreak(),
+                        new HumanIncidentParams_MentalBreak(defaultIncidentTarget, defaultLetter));
+                    break;
                 default:
                     Parser.LogParseError("incident", type);
                     return new FiringHumanIncident(null);

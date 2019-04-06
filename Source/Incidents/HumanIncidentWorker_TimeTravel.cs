@@ -21,25 +21,31 @@ namespace HumanStoryteller.Incidents {
             HumanIncidentParams_TimeTravel allParams = Tell.AssertNotNull((HumanIncidentParams_TimeTravel) parms, nameof(parms), GetType().Name);
             Tell.Log($"Executing event {Name} with:{allParams}");
 
-            
-            Find.TickManager.DebugSetTicksGame(Mathf.RoundToInt(Find.TickManager.TicksGame + 2500 * allParams.HourChange));
-            
+
+            Find.TickManager.DebugSetTicksGame(Mathf.RoundToInt(Find.TickManager.TicksGame + 2500 * allParams.HourChange.GetValue()));
+
             if (parms.Letter?.Type != null) {
+                if (parms.Letter.Shake) {
+                    Find.CameraDriver.shaker.DoShake(4f);
+                }
                 Find.LetterStack.ReceiveLetter(LetterMaker.MakeLetter(parms.Letter.Title, parms.Letter.Message, parms.Letter.Type));
             }
+
             return ir;
         }
     }
 
     public class HumanIncidentParams_TimeTravel : HumanIncidentParms {
-        public float HourChange;
+        public Number HourChange;
 
         public HumanIncidentParams_TimeTravel() {
         }
 
-        public HumanIncidentParams_TimeTravel(String target, HumanLetter letter, float hourChange = 0) : base(target,
-            letter) {
+        public HumanIncidentParams_TimeTravel(String target, HumanLetter letter, Number hourChange) : base(target, letter) {
             HourChange = hourChange;
+        }
+
+        public HumanIncidentParams_TimeTravel(string target, HumanLetter letter) : this(target, letter, new Number(0)) {
         }
 
         public override string ToString() {
@@ -48,7 +54,7 @@ namespace HumanStoryteller.Incidents {
 
         public override void ExposeData() {
             base.ExposeData();
-            Scribe_Values.Look(ref HourChange, "hourChange");
+            Scribe_Deep.Look(ref HourChange, "hourChange");
         }
     }
 }

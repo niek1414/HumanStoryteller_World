@@ -31,9 +31,9 @@ namespace HumanStoryteller.Incidents {
             Tell.Log($"Executing event {Name} with:{allParams}");
             var filePath = "http://freesound.org/data/previews/" + allParams.File;
             WebClient client = new WebClient();
-            
+
             IncidentResult_Audio irAudio = new IncidentResult_Audio();
-            
+
             client.DownloadDataAsync(new Uri(filePath));
             client.DownloadDataCompleted += (sender1, e1) => {
                 MemoryStream stream = new MemoryStream(e1.Result);
@@ -87,10 +87,11 @@ namespace HumanStoryteller.Incidents {
                 sustainStartSound = o.sustainStartSound,
                 sustainStopSound = o.sustainStopSound
             };
+            var volume = allParams.Volume.GetValue();
             soundDef.subSounds = new List<SubSoundDef> {
                 new SubSoundDef {
                     grains = new List<AudioGrain> {new SoundGrain(audioClip)},
-                    volumeRange = new FloatRange(allParams.Volume * 30, allParams.Volume * 30),
+                    volumeRange = new FloatRange(volume * 30, volume * 30),
                     filters = o.subSounds[0].filters,
                     name = "subsound_" + Guid.NewGuid(),
                     distRange = o.subSounds[0].distRange,
@@ -118,7 +119,7 @@ namespace HumanStoryteller.Incidents {
             SongDef songDef = new SongDef {
                 defName = "CustomSong_" + Guid.NewGuid(),
                 label = "Audio by " + allParams.Author,
-                volume = allParams.Volume,
+                volume = allParams.Volume.GetValue(),
                 clip = audioClip,
                 clipPath = filePath,
                 debugRandomId = 7759,
@@ -144,17 +145,21 @@ namespace HumanStoryteller.Incidents {
         public string File;
         public string Author;
         public bool IsSong;
-        public float Volume;
+        public Number Volume;
 
         public HumanIncidentParams_PlayAudio() {
         }
 
-        public HumanIncidentParams_PlayAudio(String target, HumanLetter letter, string file = "", string author = "", bool isSong = false,
-            float volume = 1f) : base(target, letter) {
+        public HumanIncidentParams_PlayAudio(String target, HumanLetter letter,
+            Number volume, string file, string author, bool isSong) : base(target, letter) {
             File = file;
             Author = author;
             IsSong = isSong;
             Volume = volume;
+        }
+
+        public HumanIncidentParams_PlayAudio(string target, HumanLetter letter, string file = "", string author = "", bool isSong = false) : this(
+            target, letter, new Number(1F), file, author, isSong) {
         }
 
         public override string ToString() {
@@ -166,7 +171,7 @@ namespace HumanStoryteller.Incidents {
             Scribe_Values.Look(ref File, "file");
             Scribe_Values.Look(ref Author, "author");
             Scribe_Values.Look(ref IsSong, "isSong");
-            Scribe_Values.Look(ref Volume, "volume");
+            Scribe_Deep.Look(ref Volume, "volume");
         }
     }
 }

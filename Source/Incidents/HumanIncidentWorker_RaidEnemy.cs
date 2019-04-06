@@ -25,8 +25,9 @@ namespace HumanStoryteller.Incidents {
             Tell.Log($"Executing event {Name} with:{allParams}");
 
             Map map = (Map) allParams.GetTarget();
-            float points = allParams.Points >= 0
-                ? StorytellerUtility.DefaultThreatPointsNow(map) * allParams.Points
+            var paramsPoints = allParams.Points.GetValue();
+            float points = paramsPoints >= 0
+                ? StorytellerUtility.DefaultThreatPointsNow(map) * paramsPoints
                 : StorytellerUtility.DefaultThreatPointsNow(map);
             Faction faction;
             try {
@@ -207,7 +208,7 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_RaidEnemy : HumanIncidentParms {
-        public float Points;
+        public Number Points;
         public String Faction;
         public String Strategy;
         public String ArriveMode;
@@ -216,9 +217,13 @@ namespace HumanStoryteller.Incidents {
         public HumanIncidentParams_RaidEnemy() {
         }
 
-        public HumanIncidentParams_RaidEnemy(String target, HumanLetter letter, float points = -1, String faction = "",
-            String strategy = "",
-            String arriveMode = "", List<String> names = null) : base(target, letter) {
+        public HumanIncidentParams_RaidEnemy(String target, HumanLetter letter, String faction = "",
+            String strategy = "", String arriveMode = "", List<String> names = null) : this(target, letter, new Number(), faction, strategy,
+            arriveMode, names) {
+        }
+
+        public HumanIncidentParams_RaidEnemy(string target, HumanLetter letter, Number points, string faction, string strategy, string arriveMode,
+            List<string> names) : base(target, letter) {
             Points = points;
             Faction = faction;
             Strategy = strategy;
@@ -232,7 +237,7 @@ namespace HumanStoryteller.Incidents {
 
         public override void ExposeData() {
             base.ExposeData();
-            Scribe_Values.Look(ref Points, "points");
+            Scribe_Deep.Look(ref Points, "points");
             Scribe_Values.Look(ref Faction, "faction");
             Scribe_Values.Look(ref Strategy, "strategy");
             Scribe_Values.Look(ref ArriveMode, "arriveMode");

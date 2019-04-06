@@ -29,6 +29,9 @@ namespace HumanStoryteller.Incidents {
             LetterDef type = LetterDefOf.NeutralEvent;
 
             if (parms.Letter?.Type != null) {
+                if (parms.Letter.Shake) {
+                    Find.CameraDriver.shaker.DoShake(4f);
+                }
                 title = parms.Letter.Title;
                 message = parms.Letter.Message;
                 type = parms.Letter.Type;
@@ -48,11 +51,12 @@ namespace HumanStoryteller.Incidents {
                 title = title,
                 radioMode = true,
                 map = map,
-                fee = Mathf.RoundToInt(allParams.Silver)
+                fee = Mathf.RoundToInt(allParams.Silver.GetValue())
             };
             choiceLetter_Dialog.report = new IncidentResult_Dialog(choiceLetter_Dialog);
-            if (allParams.Duration > 0) {
-                choiceLetter_Dialog.StartTimeout(Mathf.RoundToInt(60000 * allParams.Duration));
+            var duration = allParams.Duration.GetValue();
+            if (duration > 0) {
+                choiceLetter_Dialog.StartTimeout(Mathf.RoundToInt(60000 * duration));
             }
 
             Find.LetterStack.ReceiveLetter(choiceLetter_Dialog);
@@ -62,15 +66,18 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_Dialog : HumanIncidentParms {
-        public float Silver;
-        public float Duration;
+        public Number Silver;
+        public Number Duration;
 
         public HumanIncidentParams_Dialog() {
         }
 
-        public HumanIncidentParams_Dialog(String target, HumanLetter letter, float silver = 0, float duration = 1) : base(target, letter) {
+        public HumanIncidentParams_Dialog(String target, HumanLetter letter, Number silver, Number duration) : base(target, letter) {
             Silver = silver;
             Duration = duration;
+        }
+        
+        public HumanIncidentParams_Dialog(String target, HumanLetter letter) : this(target, letter, new Number(0), new Number(1)) {
         }
 
         public override string ToString() {
@@ -79,7 +86,8 @@ namespace HumanStoryteller.Incidents {
 
         public override void ExposeData() {
             base.ExposeData();
-            Scribe_Values.Look(ref Silver, "silver");
+            Scribe_Deep.Look(ref Silver, "silver");
+            Scribe_Deep.Look(ref Duration, "duration");
         }
     }
     

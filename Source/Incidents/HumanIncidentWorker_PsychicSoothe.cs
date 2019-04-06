@@ -23,8 +23,9 @@ namespace HumanStoryteller.Incidents {
             Tell.Log($"Executing event {Name} with:{allParams}");
 
             Map map = (Map) allParams.GetTarget();
-            int duration = Mathf.RoundToInt(allParams.Duration != -1
-                ? allParams.Duration * 60000f
+            var paramsDuration = allParams.Duration.GetValue();
+            int duration = Mathf.RoundToInt(paramsDuration != -1
+                ? paramsDuration * 60000f
                 : IncidentDef.Named("PsychicSoothe").durationDays.RandomInRange * 60000f);
             GameCondition_PsychicEmanation gameCondition_PsychicEmanation =
                 (GameCondition_PsychicEmanation) GameConditionMaker.MakeCondition(GameConditionDefOf.PsychicSoothe, duration, 0);
@@ -35,20 +36,22 @@ namespace HumanStoryteller.Incidents {
             map.gameConditionManager.RegisterCondition(gameCondition_PsychicEmanation);
             string text = "LetterIncidentPsychicSoothe".Translate(g.ToString().Translate().ToLower());
             SendLetter(allParams, "LetterLabelPsychicSoothe".Translate(), text, LetterDefOf.PositiveEvent, null);
-            
+
             return ir;
         }
     }
 
     public class HumanIncidentParams_PsychicSoothe : HumanIncidentParms {
-        public float Duration;
+        public Number Duration;
         public string Gender;
 
         public HumanIncidentParams_PsychicSoothe() {
         }
 
-        public HumanIncidentParams_PsychicSoothe(String target, HumanLetter letter, float duration = -1, String gender = "") : base(target,
-            letter) {
+        public HumanIncidentParams_PsychicSoothe(String target, HumanLetter letter, String gender = "") : this(target, letter, new Number(), gender) {
+        }
+
+        public HumanIncidentParams_PsychicSoothe(string target, HumanLetter letter, Number duration, string gender) : base(target, letter) {
             Duration = duration;
             Gender = gender;
         }
@@ -56,11 +59,11 @@ namespace HumanStoryteller.Incidents {
         public override string ToString() {
             return $"{base.ToString()}, Duration: {Duration}, Gender: {Gender}";
         }
-        
+
         public override void ExposeData() {
-             base.ExposeData();
-             Scribe_Values.Look(ref Duration, "duration");
-             Scribe_Values.Look(ref Gender, "gender");
-         }
+            base.ExposeData();
+            Scribe_Deep.Look(ref Duration, "duration");
+            Scribe_Values.Look(ref Gender, "gender");
+        }
     }
 }

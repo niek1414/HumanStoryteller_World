@@ -4,7 +4,6 @@ using HumanStoryteller.Util;
 using RimWorld;
 using UnityEngine;
 using Verse;
-using Random = System.Random;
 
 namespace HumanStoryteller.Incidents {
     class HumanIncidentWorker_PsychicDrone : HumanIncidentWorker {
@@ -23,10 +22,12 @@ namespace HumanStoryteller.Incidents {
             Tell.Log($"Executing event {Name} with:{allParams}");
 
             Map map = (Map) allParams.GetTarget();
-            int duration = Mathf.RoundToInt(allParams.Duration != -1
-                ? allParams.Duration * 60000f
+            var paramsDuration = allParams.Duration.GetValue();
+            int duration = Mathf.RoundToInt(paramsDuration != -1
+                ? paramsDuration * 60000f
                 : IncidentDef.Named("PsychicDrone").durationDays.RandomInRange * 60000f);
-            GameCondition_PsychicEmanation gameCondition_PsychicEmanation = (GameCondition_PsychicEmanation)GameConditionMaker.MakeCondition(GameConditionDefOf.PsychicDrone, duration);
+            GameCondition_PsychicEmanation gameCondition_PsychicEmanation =
+                (GameCondition_PsychicEmanation) GameConditionMaker.MakeCondition(GameConditionDefOf.PsychicDrone, duration);
 
             PsychicDroneLevel l;
             switch (allParams.PsyLevel) {
@@ -46,28 +47,32 @@ namespace HumanStoryteller.Incidents {
                     l = PsychicDroneLevel.BadMedium;
                     break;
             }
-			gameCondition_PsychicEmanation.level = l;
-            
+
+            gameCondition_PsychicEmanation.level = l;
+
             Gender g = PawnUtil.GetGender(allParams.Gender);
 
             gameCondition_PsychicEmanation.gender = g != Gender.None ? g : map.mapPawns.FreeColonists.RandomElement().gender;
             map.gameConditionManager.RegisterCondition(gameCondition_PsychicEmanation);
             string text = "LetterIncidentPsychicDrone".Translate(g.ToString().Translate().ToLower(), l.GetLabel());
             SendLetter(allParams, "LetterLabelPsychicDrone".Translate(), text, LetterDefOf.NegativeEvent, null);
-            
+
             return ir;
         }
     }
 
     public class HumanIncidentParams_PsychicDrone : HumanIncidentParms {
-        public float Duration;
+        public Number Duration;
         public string Gender;
         public string PsyLevel;
 
         public HumanIncidentParams_PsychicDrone() {
         }
 
-        public HumanIncidentParams_PsychicDrone(String target, HumanLetter letter, float duration = -1, String gender = "", String psyLevel = "") : base(target,
+        public HumanIncidentParams_PsychicDrone(String target, HumanLetter letter, String gender = "", String psyLevel = "") : this(target, letter, new Number(), gender, psyLevel) {
+        }
+
+        public HumanIncidentParams_PsychicDrone(string target, HumanLetter letter, Number duration, string gender, string psyLevel) : base(target,
             letter) {
             Duration = duration;
             Gender = gender;
@@ -77,12 +82,12 @@ namespace HumanStoryteller.Incidents {
         public override string ToString() {
             return $"{base.ToString()}, Duration: {Duration}, Gender: {Gender}, PsyLevel: {PsyLevel}";
         }
-        
+
         public override void ExposeData() {
-             base.ExposeData();
-             Scribe_Values.Look(ref Duration, "duration");
-             Scribe_Values.Look(ref Gender, "gender");
-             Scribe_Values.Look(ref PsyLevel, "psyLevel");
-         }
+            base.ExposeData();
+            Scribe_Deep.Look(ref Duration, "duration");
+            Scribe_Values.Look(ref Gender, "gender");
+            Scribe_Values.Look(ref PsyLevel, "psyLevel");
+        }
     }
 }

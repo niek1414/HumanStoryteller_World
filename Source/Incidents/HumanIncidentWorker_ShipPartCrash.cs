@@ -30,7 +30,8 @@ namespace HumanStoryteller.Incidents {
                 part = ThingDefOf.CrashedPsychicEmanatorShipPart;
             }
 
-            int countToSpawn = allParams.Amount != -1 ? Mathf.RoundToInt(allParams.Amount) : 1;
+            var amount = allParams.Amount.GetValue();
+            int countToSpawn = amount != -1 ? Mathf.RoundToInt(amount) : 1;
 
             List<TargetInfo> list = new List<TargetInfo>();
             float shrapnelDirection = Rand.Range(0f, 360f);
@@ -66,13 +67,16 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_ShipPartCrash : HumanIncidentParms {
-        public float Amount;
+        public Number Amount;
         public string ShipCrashedPart;
 
         public HumanIncidentParams_ShipPartCrash() {
         }
 
-        public HumanIncidentParams_ShipPartCrash(String target, HumanLetter letter, float amount = -1, string shipCrashedPart = "") : base(target, letter) {
+        public HumanIncidentParams_ShipPartCrash(String target, HumanLetter letter, string shipCrashedPart = "") : this(target, letter, new Number(), shipCrashedPart) {
+        }
+
+        public HumanIncidentParams_ShipPartCrash(string target, HumanLetter letter, Number amount, string shipCrashedPart) : base(target, letter) {
             Amount = amount;
             ShipCrashedPart = shipCrashedPart;
         }
@@ -83,7 +87,7 @@ namespace HumanStoryteller.Incidents {
 
         public override void ExposeData() {
             base.ExposeData();
-            Scribe_Values.Look(ref Amount, "amount");
+            Scribe_Deep.Look(ref Amount, "amount");
             Scribe_Values.Look(ref ShipCrashedPart, "shipCrashedPart");
         }
     }

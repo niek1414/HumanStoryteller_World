@@ -11,11 +11,6 @@ namespace HumanStoryteller.Incidents {
     class HumanIncidentWorker_VisitorGroup : HumanIncidentWorker {
         public const String Name = "VisitorGroup";
 
-        private static readonly SimpleCurve PointsCurve = new SimpleCurve {
-            new CurvePoint(45f, 0f), new CurvePoint(50f, 1f), new CurvePoint(100f, 1f), new CurvePoint(200f, 0.25f), new CurvePoint(300f, 0.1f),
-            new CurvePoint(500f, 0f)
-        };
-
         public override IncidentResult Execute(HumanIncidentParms parms) {
             IncidentResult ir = new IncidentResult();
 

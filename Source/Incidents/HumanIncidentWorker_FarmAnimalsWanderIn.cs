@@ -42,8 +42,9 @@ namespace HumanStoryteller.Incidents {
 
             int num;
 
-            if (allParams.Amount != -1) {
-                num = Mathf.RoundToInt(allParams.Amount);
+            var amount = allParams.Amount.GetValue();
+            if (amount != -1) {
+                num = Mathf.RoundToInt(amount);
             } else {
                 num = Mathf.Clamp(GenMath.RoundRandom(2.5f / kind.RaceProps.baseBodySize), 2, 10);
             }
@@ -73,19 +74,22 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_FarmAnimalsWanderIn : HumanIncidentParms {
-        public float Amount;
+        public Number Amount;
         public List<string> Names;
         public String AnimalKind;
 
         public HumanIncidentParams_FarmAnimalsWanderIn() {
         }
 
-        public HumanIncidentParams_FarmAnimalsWanderIn(String target, HumanLetter letter, float amount = -1, List<string> names = null,
-            String animalKind = "") :
+        public HumanIncidentParams_FarmAnimalsWanderIn(String target, HumanLetter letter, Number amount, List<string> names,
+            String animalKind) :
             base(target, letter) {
             Amount = amount;
             Names = names ?? new List<string>();
             AnimalKind = animalKind;
+        }
+
+        public HumanIncidentParams_FarmAnimalsWanderIn(string target, HumanLetter letter, List<string> names = null, string animalKind = "") : this(target, letter, new Number(), names, animalKind) {
         }
 
         public override string ToString() {
@@ -95,7 +99,7 @@ namespace HumanStoryteller.Incidents {
         public override void ExposeData() {
             base.ExposeData();
             Scribe_Deep.Look(ref Amount, "amount");
-            Scribe_Values.Look(ref Names, "names");
+            Scribe_Collections.Look(ref Names, "names", LookMode.Value);
             Scribe_Values.Look(ref AnimalKind, "animalKind");
         }
     }

@@ -1,5 +1,6 @@
 using System;
 using HumanStoryteller.Model;
+using HumanStoryteller.Util;
 using RimWorld;
 using Verse;
 
@@ -15,7 +16,7 @@ namespace HumanStoryteller.Incidents {
                     l = LetterMaker.MakeLetter(title, message, type, target, relatedFaction);
                 } else {
                     if (parms.Letter.Shake) {
-                        Find.CameraDriver.shaker.DoShake(1f);
+                        Find.CameraDriver.shaker.DoShake(4f);
                     }
                     l = LetterMaker.MakeLetter(parms.Letter.Title, parms.Letter.Message, parms.Letter.Type, target, relatedFaction);
                 }

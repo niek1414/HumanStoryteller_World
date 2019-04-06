@@ -7,6 +7,11 @@ namespace HumanStoryteller.Util {
         private string _variable;
         private bool isVariable;
 
+        public Number() {
+            _value = -1;
+            isVariable = false;
+        }
+
         public Number(float value = -1) {
             _value = value;
             isVariable = false;
@@ -22,7 +27,7 @@ namespace HumanStoryteller.Util {
         }
 
         public override string ToString() {
-            return "Nmbr: " + GetValue() + (isVariable ? "var: " + _variable : "");
+            return "Nmbr: " + GetValue() + (isVariable ? "var: " + _variable + " " : " ");
         }
 
         public void ExposeData() {

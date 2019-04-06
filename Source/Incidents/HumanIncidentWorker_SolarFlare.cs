@@ -24,8 +24,9 @@ namespace HumanStoryteller.Incidents {
 
             Map map = (Map) allParams.GetTarget();
             var def = IncidentDefOf.SolarFlare;
-            int duration = Mathf.RoundToInt(allParams.Duration != -1
-                ? allParams.Duration * 60000f
+            var paramsDuration = allParams.Duration.GetValue();
+            int duration = Mathf.RoundToInt(paramsDuration != -1
+                ? paramsDuration * 60000f
                 : def.durationDays.RandomInRange * 60000f);
             GameCondition gameCondition_SolarFlare =
                 GameConditionMaker.MakeCondition(GameConditionDefOf.SolarFlare, duration);
@@ -36,13 +37,15 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_SolarFlare : HumanIncidentParms {
-        public float Duration;
+        public Number Duration;
 
         public HumanIncidentParams_SolarFlare() {
         }
 
-        public HumanIncidentParams_SolarFlare(String target, HumanLetter letter, float duration = -1) : base(target,
-            letter) {
+        public HumanIncidentParams_SolarFlare(String target, HumanLetter letter) : this(target, letter, new Number()) {
+        }
+
+        public HumanIncidentParams_SolarFlare(string target, HumanLetter letter, Number duration) : base(target, letter) {
             Duration = duration;
         }
 
@@ -52,7 +55,7 @@ namespace HumanStoryteller.Incidents {
 
         public override void ExposeData() {
             base.ExposeData();
-            Scribe_Values.Look(ref Duration, "duration");
+            Scribe_Deep.Look(ref Duration, "duration");
         }
     }
 }

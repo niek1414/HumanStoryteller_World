@@ -28,7 +28,7 @@ namespace HumanStoryteller.Parser {
             JObject mainStory = JObject.Parse(json);
             var story = JsonConvert.DeserializeObject<Story>(mainStory["storyline"].ToString(Formatting.None), new JsonSerializerSettings {
                 NullValueHandling = NullValueHandling.Ignore,
-                Converters = new List<JsonConverter> {new DecimalJsonConverter()}
+                Converters = new List<JsonConverter> {new NumberJsonConverter(), new DecimalJsonConverter()}
             });
 
             var nodesDictionary = new Dictionary<string, ParseNode>();

@@ -42,7 +42,7 @@ namespace HumanStoryteller.CheckConditions {
 
         public override void ExposeData() {
             base.ExposeData();
-            Scribe_References.Look(ref EndAfter, "endAfter");
+            Scribe_Values.Look(ref EndAfter, "endAfter");
         }
     }
 }

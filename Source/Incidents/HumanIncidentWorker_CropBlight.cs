@@ -24,56 +24,58 @@ namespace HumanStoryteller.Incidents {
             Tell.Log($"Executing event {Name} with:{allParams}");
 
             Map map = (Map) allParams.GetTarget();
-            if (!TryFindRandomBlightablePlant(map, out Plant plant))
-            {
+            if (!TryFindRandomBlightablePlant(map, out Plant plant)) {
                 return ir;
             }
+
             Room room = plant.GetRoom();
             plant.CropBlighted();
             int i = 0;
-            for (int num = GenRadial.NumCellsInRadius(Mathf.Min(allParams.Radius, 56)); i < num; i++)
-            {
+            for (int num = GenRadial.NumCellsInRadius(Mathf.Min(allParams.Radius.GetValue(), 56)); i < num; i++) {
                 IntVec3 intVec = plant.Position + GenRadial.RadialPattern[i];
-                if (intVec.InBounds(map) && intVec.GetRoom(map) == room)
-                {
+                if (intVec.InBounds(map) && intVec.GetRoom(map) == room) {
                     Plant firstBlightableNowPlant = BlightUtility.GetFirstBlightableNowPlant(intVec, map);
-                    if (firstBlightableNowPlant != null && firstBlightableNowPlant != plant && Rand.Chance(allParams.Chance * BlightChanceFactor(firstBlightableNowPlant.Position, plant.Position)))
-                    {
+                    if (firstBlightableNowPlant != null && firstBlightableNowPlant != plant &&
+                        Rand.Chance(allParams.Chance.GetValue() * BlightChanceFactor(firstBlightableNowPlant.Position, plant.Position))) {
                         firstBlightableNowPlant.CropBlighted();
                     }
                 }
             }
-            Find.LetterStack.ReceiveLetter("LetterLabelCropBlight".Translate(), "LetterCropBlight".Translate(), LetterDefOf.NegativeEvent, new TargetInfo(plant.Position, map));
+
+            Find.LetterStack.ReceiveLetter("LetterLabelCropBlight".Translate(), "LetterCropBlight".Translate(), LetterDefOf.NegativeEvent,
+                new TargetInfo(plant.Position, map));
             return ir;
         }
 
-        private bool TryFindRandomBlightablePlant(Map map, out Plant plant)
-        {
+        private bool TryFindRandomBlightablePlant(Map map, out Plant plant) {
             Thing result;
             bool result2 = (from x in map.listerThings.ThingsInGroup(ThingRequestGroup.Plant)
-                where ((Plant)x).BlightableNow
+                where ((Plant) x).BlightableNow
                 select x).TryRandomElement(out result);
-            plant = (Plant)result;
+            plant = (Plant) result;
             return result2;
         }
 
-        private float BlightChanceFactor(IntVec3 c, IntVec3 root)
-        {
+        private float BlightChanceFactor(IntVec3 c, IntVec3 root) {
             return Mathf.InverseLerp(15f, 7.5f, c.DistanceTo(root));
         }
     }
 
     public class HumanIncidentParams_CropBlight : HumanIncidentParms {
-        public float Radius;
-        public float Chance;
+        public Number Radius;
+        public Number Chance;
 
         public HumanIncidentParams_CropBlight() {
         }
 
-        public HumanIncidentParams_CropBlight(String target, HumanLetter letter, float radius = 15, float chance = 0.4f) :
+        public HumanIncidentParams_CropBlight(String target, HumanLetter letter, Number radius, Number chance) :
             base(target, letter) {
             Radius = radius;
             Chance = chance;
+        }
+
+        public HumanIncidentParams_CropBlight(String target, HumanLetter letter) :
+            this(target, letter, new Number(15), new Number(0.4f)) {
         }
 
         public override string ToString() {
@@ -82,8 +84,8 @@ namespace HumanStoryteller.Incidents {
 
         public override void ExposeData() {
             base.ExposeData();
-            Scribe_Values.Look(ref Radius, "radius");
-            Scribe_Values.Look(ref Chance, "chance");
+            Scribe_Deep.Look(ref Radius, "radius");
+            Scribe_Deep.Look(ref Chance, "chance");
         }
     }
 }

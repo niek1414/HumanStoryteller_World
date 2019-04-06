@@ -7,19 +7,19 @@ using RimWorld;
 using Verse;
 
 namespace HumanStoryteller.Incidents {
-    class HumanIncidentWorker_HealPawn : HumanIncidentWorker {
-        public const String Name = "HealPawn";
+    class HumanIncidentWorker_MentalBreak : HumanIncidentWorker {
+        public const String Name = "MentalBreak";
 
         public override IncidentResult Execute(HumanIncidentParms parms) {
             IncidentResult ir = new IncidentResult();
 
-            if (!(parms is HumanIncidentParams_HealPawn)) {
+            if (!(parms is HumanIncidentParams_MentalBreak)) {
                 Tell.Err("Tried to execute " + GetType() + " but param type was " + parms.GetType());
                 return ir;
             }
 
-            HumanIncidentParams_HealPawn allParams =
-                Tell.AssertNotNull((HumanIncidentParams_HealPawn) parms, nameof(parms), GetType().Name);
+            HumanIncidentParams_MentalBreak allParams =
+                Tell.AssertNotNull((HumanIncidentParams_MentalBreak) parms, nameof(parms), GetType().Name);
             Tell.Log($"Executing event {Name} with:{allParams}");
 
             foreach (var name in allParams.Names) {
@@ -28,18 +28,7 @@ namespace HumanStoryteller.Incidents {
                     continue;
                 }
 
-                IEnumerable<Hediff_Injury> injuries;
-                if (allParams.Miracle) {
-                    injuries = from x in pawn.health.hediffSet.GetHediffs<Hediff_Injury>()
-                        select x;
-                } else {
-                    injuries = from x in pawn.health.hediffSet.GetHediffs<Hediff_Injury>()
-                        where x.CanHealNaturally() || x.CanHealFromTending()
-                        select x;
-                }
-                foreach (var injury in injuries) {
-                    injury.Heal(injury.Severity);
-                }
+                DefDatabase<MentalBreakDef>.GetNamed(allParams.MentalBreak).Worker.TryStart(pawn, null, false);
             }
 
             if (parms.Letter?.Type != null) {
@@ -53,27 +42,27 @@ namespace HumanStoryteller.Incidents {
         }
     }
 
-    public class HumanIncidentParams_HealPawn : HumanIncidentParms {
+    public class HumanIncidentParams_MentalBreak : HumanIncidentParms {
         public List<String> Names;
-        public bool Miracle;
+        public string MentalBreak;
 
-        public HumanIncidentParams_HealPawn() {
+        public HumanIncidentParams_MentalBreak() {
         }
 
-        public HumanIncidentParams_HealPawn(String target, HumanLetter letter, List<String> names = null, bool miracle = false) :
+        public HumanIncidentParams_MentalBreak(String target, HumanLetter letter, List<String> names = null, string mentalBreak = "") :
             base(target, letter) {
             Names = names ?? new List<string>();
-            Miracle = miracle;
+            MentalBreak = mentalBreak;
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, Names: {Names}, Miracle: {Miracle}";
+            return $"{base.ToString()}, Names: {Names}, MentalBreak: {MentalBreak}";
         }
 
         public override void ExposeData() {
             base.ExposeData();
             Scribe_Collections.Look(ref Names, "names", LookMode.Value);
-            Scribe_Values.Look(ref Miracle, "miracle");
+            Scribe_Values.Look(ref MentalBreak, "mentalBreak");
         }
     }
 }

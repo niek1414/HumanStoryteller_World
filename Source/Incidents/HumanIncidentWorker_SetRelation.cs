@@ -25,11 +25,14 @@ namespace HumanStoryteller.Incidents {
             Faction faction;
             try {
                 faction = Find.FactionManager.AllFactions.First(f => f.def.defName == allParams.Faction);
-                faction.TryAffectGoodwillWith(Faction.OfPlayer, Mathf.RoundToInt(allParams.FactionRelation), false, true, null, null);
+                faction.TryAffectGoodwillWith(Faction.OfPlayer, Mathf.RoundToInt(allParams.FactionRelation.GetValue()), false, true, null, null);
             } catch (InvalidOperationException) {
             }
 
             if (parms.Letter?.Type != null) {
+                if (parms.Letter.Shake) {
+                    Find.CameraDriver.shaker.DoShake(4f);
+                }
                 Find.LetterStack.ReceiveLetter(LetterMaker.MakeLetter(parms.Letter.Title, parms.Letter.Message, parms.Letter.Type));
             }
 
@@ -38,25 +41,28 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_SetRelation : HumanIncidentParms {
-        public float FactionRelation;
+        public Number FactionRelation;
         public string Faction;
 
         public HumanIncidentParams_SetRelation() {
         }
 
-        public HumanIncidentParams_SetRelation(String target, HumanLetter letter, float factionRelation = 0, string faction = "") : base(target,
-            letter) {
+        public HumanIncidentParams_SetRelation(String target, HumanLetter letter, string faction = "") :
+            this(target, letter, new Number(0), faction) {
+        }
+
+        public HumanIncidentParams_SetRelation(string target, HumanLetter letter, Number factionRelation, string faction) : base(target, letter) {
             FactionRelation = factionRelation;
             Faction = faction;
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, FactionRelation: {FactionRelation}";
+            return $"{base.ToString()}, FactionRelation: {FactionRelation}, Faction: {Faction}";
         }
 
         public override void ExposeData() {
             base.ExposeData();
-            Scribe_Values.Look(ref FactionRelation, "factionRelation");
+            Scribe_Deep.Look(ref FactionRelation, "factionRelation");
         }
     }
 }

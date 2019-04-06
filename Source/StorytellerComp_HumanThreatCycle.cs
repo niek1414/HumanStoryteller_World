@@ -70,7 +70,12 @@ namespace HumanStoryteller {
 
             if (StoryComponent.Story == null) return;
 
-            if (Find.TickManager.TicksGame % 600 == 0) {
+            var interval =
+                Find.TickManager.CurTimeSpeed == TimeSpeed.Superfast ||
+                Find.TickManager.CurTimeSpeed == TimeSpeed.Ultrafast
+                    ? 600
+                    : 300;
+            if (Find.TickManager.TicksGame % interval == 0) {
                 _consecutiveEventCounter = 0;
                 IncidentLoop();
             } else if (_missedLastIncidentCheck && _consecutiveEventCounter <= 5) {
@@ -158,10 +163,11 @@ namespace HumanStoryteller {
                     } else {
                         StoryNode newEvent = StoryComponent.Story.StoryGraph.TryNewEvent(currentNode, IntervalsPassed);
                         if (newEvent == null) continue;
-                        if (!newEvent.StoryEvent.Uuid.Equals(currentNode.StoryNode.StoryEvent.Uuid)){
+                        if (!newEvent.StoryEvent.Uuid.Equals(currentNode.StoryNode.StoryEvent.Uuid)) {
                             _missedLastIncidentCheck = true;
                             _consecutiveEventCounter++;
                         }
+
                         StoryComponent.CurrentNodes[i] = new StoryEventNode(newEvent);
                         yield return StoryComponent.CurrentNodes[i];
                     }
@@ -197,6 +203,7 @@ namespace HumanStoryteller {
             HumanStoryteller.InitiateEventUnsafe = true;
             Thread.Sleep(1000); //Give some time to finish undergoing event executions
             StoryComponent.Story = story;
+            StoryComponent.AllNodes = StoryComponent.Story.StoryGraph.GetAllNodes();
             if (StoryComponent.CurrentNodes.Count == 0) {
                 StoryComponent.CurrentNodes.Add(new StoryEventNode(StoryComponent.Story.StoryGraph.Root));
             } else {
@@ -212,40 +219,30 @@ namespace HumanStoryteller {
         }
 
         private void Init() {
-            Tell.Log("INITIALIZE HS GAME", Current.Game.storyteller.def.listOrder);
-            StoryComponent.StoryId = Current.Game.storyteller.def.listOrder;
+            if (!StoryComponent.Initialised) {
+                StoryComponent.Initialised = true;
+                var storyId = Current.Game.storyteller.def.listOrder;
+                StoryComponent.StoryId = storyId;
+                Tell.Log("INITIALIZE HS GAME", storyId);
+                Current.Game.Scenario = Current.Game.Scenario.CopyForEditing();
+                Tell.Log("COPIED SCENARIO");
+            } else {
+                Tell.Log("CONTINUING HS GAME", StoryComponent.StoryId);
+            }
             StoryComponent.ThreatCycle = this;
 
             string str = "";
-//            foreach (var def in from d in DefDatabase<ThingDef>.AllDefs
-//                where d.selectable
-//                select d) {
-//                str += def.defName + "\n";
-//            }
-//            Tell.Log(str);
-            str = "";
-            foreach (var def in from d in DefDatabase<ThoughtDef>.AllDefs
+            foreach (var def in from d in DefDatabase<MentalBreakDef>.AllDefs
                 select d) {
                 str += def.defName + "\n";
             }
 
             Tell.Log(str);
             str = "";
-            foreach (var def in from d in DefDatabase<ThoughtDef>.AllDefs
+            foreach (var def in from d in DefDatabase<MentalBreakDef>.AllDefs
                 select d) {
-                bool found = false;
-                foreach (var stage in def.stages) {
-                    if (stage != null && stage.visible) {
-                        str += stage.label + "\n";
-                        found = true;
-                        break;
-                    }
-                }
-
-                if (!found)
-                    str += "\n";
+                str += def.label + "\n";
             }
-
             Tell.Log(str);
 
             Storybook.GetStory(StoryComponent.StoryId, GetStoryCallback);

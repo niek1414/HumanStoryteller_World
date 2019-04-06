@@ -22,13 +22,15 @@ namespace HumanStoryteller.Incidents {
             Tell.Log($"Executing event {Name} with:{allParams}");
 
             Map map = (Map) allParams.GetTarget();
-            IncidentDef def = IncidentDef.Named(allParams.TempChange < 0 ? "ColdSnap" : "HeatWave");
-            int duration = Mathf.RoundToInt(allParams.Duration != -1
-                ? allParams.Duration * 60000f
+            var tempChange = allParams.TempChange.GetValue();
+            IncidentDef def = IncidentDef.Named(tempChange < 0 ? "ColdSnap" : "HeatWave");
+            var paramsDuration = allParams.Duration.GetValue();
+            int duration = Mathf.RoundToInt(paramsDuration != -1
+                ? paramsDuration * 60000f
                 : def.durationDays.RandomInRange * 60000f);
             HumanGameCondition_TempFlux tempFlux =
                 (HumanGameCondition_TempFlux) GameConditionMaker.MakeCondition(GameConditionDef.Named("TempFlux"), duration);
-            tempFlux.MaxTempOffset = allParams.TempChange;
+            tempFlux.MaxTempOffset = tempChange;
             map.gameConditionManager.RegisterCondition(tempFlux);
             SendLetter(allParams, def.letterLabel, def.letterText, def.letterDef, null);
             return ir;
@@ -36,14 +38,16 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_TempFlux : HumanIncidentParms {
-        public float Duration;
-        public float TempChange;
+        public Number Duration;
+        public Number TempChange;
 
         public HumanIncidentParams_TempFlux() {
         }
 
-        public HumanIncidentParams_TempFlux(String target, HumanLetter letter, float duration = -1, float tempChange = -20) : base(target,
-            letter) {
+        public HumanIncidentParams_TempFlux(String target, HumanLetter letter) : this(target, letter, new Number(), new Number(-20)) {
+        }
+
+        public HumanIncidentParams_TempFlux(string target, HumanLetter letter, Number duration, Number tempChange) : base(target, letter) {
             Duration = duration;
             TempChange = tempChange;
         }
@@ -54,8 +58,8 @@ namespace HumanStoryteller.Incidents {
 
         public override void ExposeData() {
             base.ExposeData();
-            Scribe_Values.Look(ref Duration, "duration");
-            Scribe_Values.Look(ref TempChange, "tempChange");
+            Scribe_Deep.Look(ref Duration, "duration");
+            Scribe_Deep.Look(ref TempChange, "tempChange");
         }
     }
 }

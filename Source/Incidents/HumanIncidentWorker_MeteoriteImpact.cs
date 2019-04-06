@@ -28,7 +28,8 @@ namespace HumanStoryteller.Incidents {
             ThingDef mineableDef = allParams.MineableRock != "" ? ThingDef.Named(allParams.MineableRock) : FindRandomMineableDef();
             
             List<Thing> list = null;
-            int num = allParams.Amount != -1 ? Mathf.RoundToInt(allParams.Amount) : 1;
+            var amount = allParams.Amount.GetValue();
+            int num = amount != -1 ? Mathf.RoundToInt(amount) : 1;
             IntVec3 lastCell = IntVec3.Zero;
             for (int i = 0; i < num; i++) {
                 if (!TryFindCell(out IntVec3 cell, map)) {
@@ -99,15 +100,18 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_MeteoriteImpact : HumanIncidentParms {
-        public float Amount;
+        public Number Amount;
         public string MineableRock;
 
         public HumanIncidentParams_MeteoriteImpact() {
         }
 
-        public HumanIncidentParams_MeteoriteImpact(String target, HumanLetter letter, float amount = -1, string mineableRock = "") : base(target, letter) {
+        public HumanIncidentParams_MeteoriteImpact(String target, HumanLetter letter, Number amount, string mineableRock) : base(target, letter) {
             Amount = amount;
             MineableRock = mineableRock;
+        }
+
+        public HumanIncidentParams_MeteoriteImpact(string target, HumanLetter letter, string mineableRock = "") : this(target, letter, new Number(), mineableRock) {
         }
 
         public override string ToString() {
@@ -116,7 +120,7 @@ namespace HumanStoryteller.Incidents {
 
         public override void ExposeData() {
             base.ExposeData();
-            Scribe_Values.Look(ref Amount, "amount");
+            Scribe_Deep.Look(ref Amount, "amount");
             Scribe_Values.Look(ref MineableRock, "mineableRock");
         }
     }

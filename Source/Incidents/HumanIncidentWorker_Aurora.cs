@@ -24,8 +24,9 @@ namespace HumanStoryteller.Incidents {
 
             Map map = (Map) allParams.GetTarget();
             var def = IncidentDef.Named("Aurora");
-            int duration = Mathf.RoundToInt(allParams.Duration != -1
-                ? allParams.Duration * 60000f
+            var parmDuration = allParams.Duration.GetValue();
+            int duration = Mathf.RoundToInt(parmDuration != -1
+                ? parmDuration * 60000f
                 : def.durationDays.RandomInRange * 60000f);
             GameCondition_Aurora gameCondition_aurora =
                 (GameCondition_Aurora) GameConditionMaker.MakeCondition(GameConditionDefOf.Aurora, duration);
@@ -36,15 +37,20 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_Aurora : HumanIncidentParms {
-        public float Duration;
+        public Number Duration;
 
         public HumanIncidentParams_Aurora() {
         }
 
-        public HumanIncidentParams_Aurora(String target, HumanLetter letter, float duration = -1) : base(target,
+        public HumanIncidentParams_Aurora(String target, HumanLetter letter, Number duration) : base(target,
             letter) {
             Duration = duration;
         }
+
+        public HumanIncidentParams_Aurora(String target, HumanLetter letter) : this(target, letter, new Number()) {
+        }
+        
+        
 
         public override string ToString() {
             return $"{base.ToString()}, Duration: {Duration}";
@@ -52,7 +58,7 @@ namespace HumanStoryteller.Incidents {
 
         public override void ExposeData() {
             base.ExposeData();
-            Scribe_Values.Look(ref Duration, "duration");
+            Scribe_Deep.Look(ref Duration, "duration");
         }
     }
 }

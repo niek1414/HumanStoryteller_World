@@ -53,90 +53,109 @@ namespace HumanStoryteller.Incidents {
                                 ? result
                                 : DropCellFinder.RandomDropSpot(map);
                             break;
+                        case "Random":
+                            intVec = DropCellFinder.RandomDropSpot(map);
+                            break;
                         default:
                             intVec = DropCellFinder.RandomDropSpot(map);
                             break;
                     }
 
-                    pawn.SetPositionDirect(intVec);
+                    pawn.Position = intVec;
                 }
-
+                
+                if (allParams.SetDrafted) {
+                    pawn.drafter.Drafted = true;
+                }
+                
                 if (allParams.Banish) {
                     PawnBanishUtility.Banish(pawn);
                 }
 
-                if (allParams.SetDrafted) {
-                    pawn.drafter.Drafted = true;
-                }
- 
-                if (allParams.AgeBioYear != -1){
-                    pawn.ageTracker.AgeBiologicalTicks = Mathf.RoundToInt(allParams.AgeBioYear * 3600000L);
+                var bioYear = allParams.AgeBioYear.GetValue();
+                if (bioYear != -1) {
+                    pawn.ageTracker.AgeBiologicalTicks = Mathf.RoundToInt(bioYear * 3600000L);
                 }
 
-                if (allParams.SkillAnimals != -1) {
+                var skillAnimals = allParams.SkillAnimals.GetValue();
+                if (skillAnimals != -1) {
                     pawn.skills.GetSkill(SkillDefOf.Animals).Level =
-                        Mathf.RoundToInt((allParams.SkillAdd ? pawn.skills.GetSkill(SkillDefOf.Animals).Level : 0) + allParams.SkillAnimals);
+                        Mathf.RoundToInt((allParams.SkillAdd ? pawn.skills.GetSkill(SkillDefOf.Animals).Level : 0) + skillAnimals);
                 }
 
-                if (allParams.SkillArtistic != -1) {
+                var skillArtistic = allParams.SkillArtistic.GetValue();
+                if (skillArtistic != -1) {
                     pawn.skills.GetSkill(SkillDefOf.Artistic).Level =
-                        Mathf.RoundToInt((allParams.SkillAdd ? pawn.skills.GetSkill(SkillDefOf.Artistic).Level : 0) + allParams.SkillArtistic);
+                        Mathf.RoundToInt((allParams.SkillAdd ? pawn.skills.GetSkill(SkillDefOf.Artistic).Level : 0) + skillArtistic);
                 }
 
-                if (allParams.SkillConstruction != -1) {
+                var skillConstruction = allParams.SkillConstruction.GetValue();
+                if (skillConstruction != -1) {
                     pawn.skills.GetSkill(SkillDefOf.Construction).Level =
                         Mathf.RoundToInt((allParams.SkillAdd ? pawn.skills.GetSkill(SkillDefOf.Construction).Level : 0) +
-                                         allParams.SkillConstruction);
+                                         skillConstruction);
                 }
 
-                if (allParams.SkillCooking != -1) {
+                var skillCooking = allParams.SkillCooking.GetValue();
+                if (skillCooking != -1) {
                     pawn.skills.GetSkill(SkillDefOf.Cooking).Level =
-                        Mathf.RoundToInt((allParams.SkillAdd ? pawn.skills.GetSkill(SkillDefOf.Cooking).Level : 0) + allParams.SkillCooking);
+                        Mathf.RoundToInt((allParams.SkillAdd ? pawn.skills.GetSkill(SkillDefOf.Cooking).Level : 0) + skillCooking);
                 }
 
-                if (allParams.SkillCrafting != -1) {
+                var skillCrafting = allParams.SkillCrafting.GetValue();
+                if (skillCrafting != -1) {
                     pawn.skills.GetSkill(SkillDefOf.Crafting).Level =
-                        Mathf.RoundToInt((allParams.SkillAdd ? pawn.skills.GetSkill(SkillDefOf.Crafting).Level : 0) + allParams.SkillCrafting);
+                        Mathf.RoundToInt((allParams.SkillAdd ? pawn.skills.GetSkill(SkillDefOf.Crafting).Level : 0) + skillCrafting);
                 }
 
-                if (allParams.SkillPlants != -1) {
+                var skillPlants = allParams.SkillPlants.GetValue();
+                if (skillPlants != -1) {
                     pawn.skills.GetSkill(SkillDefOf.Plants).Level =
-                        Mathf.RoundToInt((allParams.SkillAdd ? pawn.skills.GetSkill(SkillDefOf.Plants).Level : 0) + allParams.SkillPlants);
+                        Mathf.RoundToInt((allParams.SkillAdd ? pawn.skills.GetSkill(SkillDefOf.Plants).Level : 0) + skillPlants);
                 }
 
-                if (allParams.SkillMedicine != -1) {
+                var skillMedicine = allParams.SkillMedicine.GetValue();
+                if (skillMedicine != -1) {
                     pawn.skills.GetSkill(SkillDefOf.Medicine).Level =
-                        Mathf.RoundToInt((allParams.SkillAdd ? pawn.skills.GetSkill(SkillDefOf.Medicine).Level : 0) + allParams.SkillMedicine);
+                        Mathf.RoundToInt((allParams.SkillAdd ? pawn.skills.GetSkill(SkillDefOf.Medicine).Level : 0) + skillMedicine);
                 }
 
-                if (allParams.SkillMelee != -1) {
+                var skillMelee = allParams.SkillMelee.GetValue();
+                if (skillMelee != -1) {
                     pawn.skills.GetSkill(SkillDefOf.Melee).Level =
-                        Mathf.RoundToInt((allParams.SkillAdd ? pawn.skills.GetSkill(SkillDefOf.Melee).Level : 0) + allParams.SkillMelee);
+                        Mathf.RoundToInt((allParams.SkillAdd ? pawn.skills.GetSkill(SkillDefOf.Melee).Level : 0) + skillMelee);
                 }
 
-                if (allParams.SkillMining != -1) {
+                var skillMining = allParams.SkillMining.GetValue();
+                if (skillMining != -1) {
                     pawn.skills.GetSkill(SkillDefOf.Mining).Level =
-                        Mathf.RoundToInt((allParams.SkillAdd ? pawn.skills.GetSkill(SkillDefOf.Mining).Level : 0) + allParams.SkillMining);
+                        Mathf.RoundToInt((allParams.SkillAdd ? pawn.skills.GetSkill(SkillDefOf.Mining).Level : 0) + skillMining);
                 }
 
-                if (allParams.SkillIntellectual != -1) {
+                var skillIntellectual = allParams.SkillIntellectual.GetValue();
+                if (skillIntellectual != -1) {
                     pawn.skills.GetSkill(SkillDefOf.Intellectual).Level =
                         Mathf.RoundToInt((allParams.SkillAdd ? pawn.skills.GetSkill(SkillDefOf.Intellectual).Level : 0) +
-                                         allParams.SkillIntellectual);
+                                         skillIntellectual);
                 }
 
-                if (allParams.SkillShooting != -1) {
+                var skillShooting = allParams.SkillShooting.GetValue();
+                if (skillShooting != -1) {
                     pawn.skills.GetSkill(SkillDefOf.Shooting).Level =
-                        Mathf.RoundToInt((allParams.SkillAdd ? pawn.skills.GetSkill(SkillDefOf.Shooting).Level : 0) + allParams.SkillShooting);
+                        Mathf.RoundToInt((allParams.SkillAdd ? pawn.skills.GetSkill(SkillDefOf.Shooting).Level : 0) + skillShooting);
                 }
 
-                if (allParams.SkillSocial != -1) {
+                var skillSocial = allParams.SkillSocial.GetValue();
+                if (skillSocial != -1) {
                     pawn.skills.GetSkill(SkillDefOf.Social).Level =
-                        Mathf.RoundToInt((allParams.SkillAdd ? pawn.skills.GetSkill(SkillDefOf.Social).Level : 0) + allParams.SkillSocial);
+                        Mathf.RoundToInt((allParams.SkillAdd ? pawn.skills.GetSkill(SkillDefOf.Social).Level : 0) + skillSocial);
                 }
             }
 
             if (parms.Letter?.Type != null) {
+                if (parms.Letter.Shake) {
+                    Find.CameraDriver.shaker.DoShake(4f);
+                }
                 Find.LetterStack.ReceiveLetter(LetterMaker.MakeLetter(parms.Letter.Title, parms.Letter.Message, parms.Letter.Type));
             }
 
@@ -145,66 +164,38 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_EditPawn : HumanIncidentParms {
+        public Number SkillAnimals;
+        public Number SkillArtistic;
+        public Number SkillConstruction;
+        public Number SkillCooking;
+        public Number SkillCrafting;
+        public Number SkillPlants;
+        public Number SkillMedicine;
+        public Number SkillMelee;
+        public Number SkillMining;
+        public Number SkillIntellectual;
+        public Number SkillShooting;
+        public Number SkillSocial;
+        public Number AgeBioYear;
+
+        public bool SkillAdd;
+
         public List<String> Names;
         public bool Strip;
         public bool ClearMind;
         public bool Banish;
         public bool SetDrafted;
-        public float AgeBioYear;
         public string Faction;
-        public string Location;
 
-        public bool SkillAdd;
-        public float SkillAnimals;
-        public float SkillArtistic;
-        public float SkillConstruction;
-        public float SkillCooking;
-        public float SkillCrafting;
-        public float SkillPlants;
-        public float SkillMedicine;
-        public float SkillMelee;
-        public float SkillMining;
-        public float SkillIntellectual;
-        public float SkillShooting;
-        public float SkillSocial;
+        public string Location;
 
         public HumanIncidentParams_EditPawn() {
         }
 
-        public HumanIncidentParams_EditPawn(String target, HumanLetter letter,
-            List<String> names = null,
-            bool strip = false,
-            bool clearMind = false,
-            bool banish = false,
-            bool setDrafted = false,
-            float ageBioYear = -1,
-            string faction = "",
-            string location = "",
-            bool skillAdd = false,
-            float skillAnimals = -1,
-            float skillArtistic = -1,
-            float skillConstruction = -1,
-            float skillCooking = -1,
-            float skillCrafting = -1,
-            float skillPlants = -1,
-            float skillMedicine = -1,
-            float skillMelee = -1,
-            float skillMining = -1,
-            float skillIntellectual = -1,
-            float skillShooting = -1,
-            float skillSocial = -1
-        ) :
-            base(target, letter) {
-            Names = names ?? new List<string>();
-            Strip = strip;
-            ClearMind = clearMind;
-            Banish = banish;
-            SetDrafted = setDrafted;
-            AgeBioYear = ageBioYear;
-            Faction = faction;
-            Location = location;
-
-            SkillAdd = skillAdd;
+        public HumanIncidentParams_EditPawn(string target, HumanLetter letter, Number skillAnimals, Number skillArtistic, Number skillConstruction,
+            Number skillCooking, Number skillCrafting, Number skillPlants, Number skillMedicine, Number skillMelee, Number skillMining,
+            Number skillIntellectual, Number skillShooting, Number skillSocial, Number ageBioYear, bool skillAdd, List<string> names, bool strip,
+            bool clearMind, bool banish, bool drafted, string faction, string location) : base(target, letter) {
             SkillAnimals = skillAnimals;
             SkillArtistic = skillArtistic;
             SkillConstruction = skillConstruction;
@@ -217,8 +208,26 @@ namespace HumanStoryteller.Incidents {
             SkillIntellectual = skillIntellectual;
             SkillShooting = skillShooting;
             SkillSocial = skillSocial;
+            AgeBioYear = ageBioYear;
+            SkillAdd = skillAdd;
+            Names = names ?? new List<string>();;
+            Strip = strip;
+            ClearMind = clearMind;
+            Banish = banish;
+            SetDrafted = drafted;
+            Faction = faction;
+            Location = location;
         }
 
+        public HumanIncidentParams_EditPawn(string target, HumanLetter letter, bool skillAdd = false, List<string> names = null, bool strip = false,
+            bool clearMind = false, bool banish = false, bool drafted = false, string faction = "", string location = "") : this(target, letter,
+            new Number(), new Number(), new Number(), new Number(), new Number(), new Number(), new Number(), new Number(), new Number(),
+            new Number(), new Number(), new Number(), new Number(), skillAdd, names, strip, clearMind, banish, drafted, faction, location) {
+        }
+
+        public override string ToString() {
+            return $"{base.ToString()}, SkillAnimals: {SkillAnimals}, SkillArtistic: {SkillArtistic}, SkillConstruction: {SkillConstruction}, SkillCooking: {SkillCooking}, SkillCrafting: {SkillCrafting}, SkillPlants: {SkillPlants}, SkillMedicine: {SkillMedicine}, SkillMelee: {SkillMelee}, SkillMining: {SkillMining}, SkillIntellectual: {SkillIntellectual}, SkillShooting: {SkillShooting}, SkillSocial: {SkillSocial}, AgeBioYear: {AgeBioYear}, SkillAdd: {SkillAdd}, Names: {Names}, Strip: {Strip}, ClearMind: {ClearMind}, Banish: {Banish}, SetDrafted: {SetDrafted}, Faction: {Faction}, Location: {Location}";
+        }
 
         public override void ExposeData() {
             base.ExposeData();
@@ -227,23 +236,23 @@ namespace HumanStoryteller.Incidents {
             Scribe_Values.Look(ref ClearMind, "clearMind");
             Scribe_Values.Look(ref Banish, "banish");
             Scribe_Values.Look(ref SetDrafted, "setDrafted");
-            Scribe_Values.Look(ref AgeBioYear, "ageBioYear");
+            Scribe_Deep.Look(ref AgeBioYear, "ageBioYear");
             Scribe_Values.Look(ref Faction, "faction");
             Scribe_Values.Look(ref Location, "location");
 
             Scribe_Values.Look(ref SkillAdd, "skillAdd");
-            Scribe_Values.Look(ref SkillAnimals, "skillAnimals");
-            Scribe_Values.Look(ref SkillArtistic, "skillArtistic");
-            Scribe_Values.Look(ref SkillConstruction, "skillConstruction");
-            Scribe_Values.Look(ref SkillCooking, "skillCooking");
-            Scribe_Values.Look(ref SkillCrafting, "skillCrafting");
-            Scribe_Values.Look(ref SkillPlants, "skillPlants");
-            Scribe_Values.Look(ref SkillMedicine, "skillMedicine");
-            Scribe_Values.Look(ref SkillMelee, "skillMelee");
-            Scribe_Values.Look(ref SkillMining, "skillMining");
-            Scribe_Values.Look(ref SkillIntellectual, "skillIntellectual");
-            Scribe_Values.Look(ref SkillShooting, "skillShooting");
-            Scribe_Values.Look(ref SkillSocial, "skillSocial");
+            Scribe_Deep.Look(ref SkillAnimals, "skillAnimals");
+            Scribe_Deep.Look(ref SkillArtistic, "skillArtistic");
+            Scribe_Deep.Look(ref SkillConstruction, "skillConstruction");
+            Scribe_Deep.Look(ref SkillCooking, "skillCooking");
+            Scribe_Deep.Look(ref SkillCrafting, "skillCrafting");
+            Scribe_Deep.Look(ref SkillPlants, "skillPlants");
+            Scribe_Deep.Look(ref SkillMedicine, "skillMedicine");
+            Scribe_Deep.Look(ref SkillMelee, "skillMelee");
+            Scribe_Deep.Look(ref SkillMining, "skillMining");
+            Scribe_Deep.Look(ref SkillIntellectual, "skillIntellectual");
+            Scribe_Deep.Look(ref SkillShooting, "skillShooting");
+            Scribe_Deep.Look(ref SkillSocial, "skillSocial");
         }
     }
 }

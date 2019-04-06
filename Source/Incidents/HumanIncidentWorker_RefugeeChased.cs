@@ -43,7 +43,8 @@ namespace HumanStoryteller.Incidents {
             IncidentResult_Dialog irDialog = new IncidentResult_Dialog(null);
             int @int = Rand.Int;
             IncidentParms raidParms = StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.ThreatBig, map);
-            float points = allParams.Points >= 0 ? raidParms.points * allParams.Points : raidParms.points;
+            var paramsPoints = allParams.Points.GetValue();
+            float points = paramsPoints >= 0 ? raidParms.points * paramsPoints : raidParms.points;
             raidParms.forced = true;
             raidParms.faction = enemyFac;
             raidParms.raidStrategy = RaidStrategyDefOf.ImmediateAttack;
@@ -78,6 +79,9 @@ namespace HumanStoryteller.Incidents {
 
             string title = "RefugeeChasedTitle".Translate(map.Parent.Label);
             if (parms.Letter?.Type != null) {
+                if (parms.Letter.Shake) {
+                    Find.CameraDriver.shaker.DoShake(4f);
+                }
                 title = parms.Letter.Title;
                 text = parms.Letter.Message;
             }
@@ -126,13 +130,16 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_RefugeeChased : HumanIncidentParms {
-        public float Points;
+        public Number Points;
         public string Name;
 
         public HumanIncidentParams_RefugeeChased() {
         }
 
-        public HumanIncidentParams_RefugeeChased(String target, HumanLetter letter, float points = -1, string name = "") : base(target, letter) {
+        public HumanIncidentParams_RefugeeChased(String target, HumanLetter letter, string name = "") : this(target, letter, new Number(), name) {
+        }
+
+        public HumanIncidentParams_RefugeeChased(string target, HumanLetter letter, Number points, string name) : base(target, letter) {
             Points = points;
             Name = name;
         }
@@ -143,7 +150,7 @@ namespace HumanStoryteller.Incidents {
 
         public override void ExposeData() {
             base.ExposeData();
-            Scribe_Values.Look(ref Points, "points");
+            Scribe_Deep.Look(ref Points, "points");
             Scribe_Values.Look(ref Name, "name");
         }
     }

@@ -24,8 +24,9 @@ namespace HumanStoryteller.Incidents {
 
             Map map = (Map) allParams.GetTarget();
             var def = IncidentDef.Named("VolcanicWinter");
-            int duration = Mathf.RoundToInt(allParams.Duration != -1
-                ? allParams.Duration * 60000f
+            var paramsDuration = allParams.Duration.GetValue();
+            int duration = Mathf.RoundToInt(paramsDuration != -1
+                ? paramsDuration * 60000f
                 : def.durationDays.RandomInRange * 60000f);
             GameCondition_VolcanicWinter gameCondition_VolcanicWinter =
                 (GameCondition_VolcanicWinter) GameConditionMaker.MakeCondition(GameConditionDefOf.VolcanicWinter, duration);
@@ -36,14 +37,17 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_VolcanicWinter : HumanIncidentParms {
-        public float Duration;
+        public Number Duration;
 
         public HumanIncidentParams_VolcanicWinter() {
         }
 
-        public HumanIncidentParams_VolcanicWinter(String target, HumanLetter letter, float duration = -1) : base(target,
+        public HumanIncidentParams_VolcanicWinter(String target, HumanLetter letter, Number duration) : base(target,
             letter) {
             Duration = duration;
+        }
+
+        public HumanIncidentParams_VolcanicWinter(string target, HumanLetter letter) : this(target, letter, new Number()) {
         }
 
         public override string ToString() {
@@ -52,7 +56,7 @@ namespace HumanStoryteller.Incidents {
 
         public override void ExposeData() {
             base.ExposeData();
-            Scribe_Values.Look(ref Duration, "duration");
+            Scribe_Deep.Look(ref Duration, "duration");
         }
     }
 }

@@ -19,7 +19,7 @@ namespace HumanStoryteller.Model {
         }
         
         public void ExposeData() {
-            Scribe_Deep.Look(ref Node, "node");
+            Scribe_References.Look(ref Node, "node");
             Scribe_Values.Look(ref Offset, "offset");
         }
     }

@@ -29,8 +29,9 @@ namespace HumanStoryteller.Incidents {
             Map map = (Map) allParams.GetTarget();
             PawnKindDef kindDef;
 
-            float points = allParams.Points >= 0
-                ? StorytellerUtility.DefaultThreatPointsNow(map) * allParams.Points
+            var paramsPoints = allParams.Points.GetValue();
+            float points = paramsPoints >= 0
+                ? StorytellerUtility.DefaultThreatPointsNow(map) * paramsPoints
                 : StorytellerUtility.DefaultThreatPointsNow(map);
 
             if (allParams.AnimalKind != "") {
@@ -69,14 +70,18 @@ namespace HumanStoryteller.Incidents {
 
     public class HumanIncidentParams_ManhunterPack : HumanIncidentParms {
         public string AnimalKind;
-        public float Points;
+        public Number Points;
 
         public HumanIncidentParams_ManhunterPack() {
         }
 
-        public HumanIncidentParams_ManhunterPack(String target, HumanLetter letter, string animalKind = "", float points = -1) :
+        public HumanIncidentParams_ManhunterPack(String target, HumanLetter letter, Number points, string animalKind) :
             base(target, letter) {
             Points = points;
+            AnimalKind = animalKind;
+        }
+
+        public HumanIncidentParams_ManhunterPack(string target, HumanLetter letter, string animalKind = "") : this(target, letter, new Number(), animalKind) {
             AnimalKind = animalKind;
         }
 
@@ -86,7 +91,7 @@ namespace HumanStoryteller.Incidents {
 
         public override void ExposeData() {
             base.ExposeData();
-            Scribe_Values.Look(ref Points, "points");
+            Scribe_Deep.Look(ref Points, "points");
             Scribe_Values.Look(ref AnimalKind, "animalKind");
         }
     }

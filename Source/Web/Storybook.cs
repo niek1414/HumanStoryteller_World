@@ -31,8 +31,21 @@ namespace HumanStoryteller.Web {
         }
 
 
-        public static void GetBook(long start, long amount, string filterName, string filterDescription, string filterCreator, Action<StorySummary[]> getSummariesCallback) {
-            Client.GetByPaginationAndFilter("storybook/story", (response, handle) => { GetSummariesCallback(response, handle, getSummariesCallback); }, start,
+        public static void GetBookRandom(Action<StorySummary[]> getSummariesCallback) {
+            Client.GetByPaginationAndFilter("storybook/story/random",
+                (response, handle) => { GetSummariesCallback(response, handle, getSummariesCallback); },
+                0,
+                0,
+                "",
+                "",
+                "");
+        }
+
+
+        public static void GetBook(long start, long amount, string filterName, string filterDescription, string filterCreator,
+            Action<StorySummary[]> getSummariesCallback) {
+            Client.GetByPaginationAndFilter("storybook/story",
+                (response, handle) => { GetSummariesCallback(response, handle, getSummariesCallback); }, start,
                 amount, filterName, filterDescription, filterCreator);
         }
 
@@ -85,7 +98,8 @@ namespace HumanStoryteller.Web {
             try {
                 callback();
             } catch (Exception e) {
-                Tell.Err($"Error while calling rating set callback with error: {e.Message}, trace: ___{e.StackTrace}___, and content request: ", response);
+                Tell.Err($"Error while calling rating set callback with error: {e.Message}, trace: ___{e.StackTrace}___, and content request: ",
+                    response);
                 throw;
             }
         }

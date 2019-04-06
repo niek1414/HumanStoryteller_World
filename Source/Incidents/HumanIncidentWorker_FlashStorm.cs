@@ -24,8 +24,9 @@ namespace HumanStoryteller.Incidents {
 
             Map map = (Map) allParams.GetTarget();
             var def = IncidentDef.Named("Flashstorm");
-            int duration = Mathf.RoundToInt(allParams.Duration != -1
-                ? allParams.Duration * 60000f
+            var number = allParams.Duration.GetValue();
+            int duration = Mathf.RoundToInt(number != -1
+                ? number * 60000f
                 : def.durationDays.RandomInRange * 60000f);
             GameCondition_Flashstorm gameCondition_Flashstorm =
                 (GameCondition_Flashstorm) GameConditionMaker.MakeCondition(GameConditionDefOf.Flashstorm, duration);
@@ -41,14 +42,17 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_Flashstorm : HumanIncidentParms {
-        public float Duration;
+        public Number Duration;
 
         public HumanIncidentParams_Flashstorm() {
         }
 
-        public HumanIncidentParams_Flashstorm(String target, HumanLetter letter, float duration = -1) : base(target,
+        public HumanIncidentParams_Flashstorm(String target, HumanLetter letter, Number duration) : base(target,
             letter) {
             Duration = duration;
+        }
+
+        public HumanIncidentParams_Flashstorm(string target, HumanLetter letter) : this(target, letter, new Number()) {
         }
 
         public override string ToString() {
@@ -57,7 +61,7 @@ namespace HumanStoryteller.Incidents {
 
         public override void ExposeData() {
             base.ExposeData();
-            Scribe_Values.Look(ref Duration, "duration");
+            Scribe_Deep.Look(ref Duration, "duration");
         }
     }
 }

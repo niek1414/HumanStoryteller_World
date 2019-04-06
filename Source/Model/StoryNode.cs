@@ -4,7 +4,7 @@ using HumanStoryteller.Util;
 using Verse;
 
 namespace HumanStoryteller.Model {
-    public class StoryNode : IExposable {
+    public class StoryNode : IExposable, ILoadReferenceable {
         private StoryEvent _storyEvent;
         private Connection _leftChild;
         private Connection _rightChild;
@@ -48,6 +48,10 @@ namespace HumanStoryteller.Model {
 
         public override string ToString() {
             return $"StoryEvent: {_storyEvent}, LeftChild: {_leftChild}, RightChild: {_rightChild}, Conditions: {_conditions}, Modifications: {_modifications}, Divider: {Divider}";
+        }
+
+        public string GetUniqueLoadID() {
+            return "HS_SN_" + _storyEvent.Uuid;
         }
 
         public void ExposeData() {

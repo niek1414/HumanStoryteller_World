@@ -26,7 +26,8 @@ namespace HumanStoryteller.Incidents {
             List<Thing> things;
             if (allParams.Item != "") {
                 int num;
-                num = allParams.Amount != -1 ? Mathf.RoundToInt(allParams.Amount) : 20;
+                var paramsAmount = allParams.Amount.GetValue();
+                num = paramsAmount != -1 ? Mathf.RoundToInt(paramsAmount) : 20;
                 ThingDef droppable = ThingDef.Named(allParams.Item);
                 things = new List<Thing>();
                 if (droppable.stackLimit <= 0) return ir;
@@ -39,9 +40,9 @@ namespace HumanStoryteller.Incidents {
                                 select d).First();
                         }
                     } catch (InvalidOperationException) {
-                        
                     }
                 }
+
                 var qc = allParams.ItemQuality != "" ? ItemUtil.GetCategory(allParams.ItemQuality) : QualityCategory.Normal;
                 while (num > 0) {
                     var stack = ThingMaker.MakeThing(droppable, stuff);
@@ -60,10 +61,16 @@ namespace HumanStoryteller.Incidents {
             IntVec3 intVec;
             switch (allParams.Location) {
                 case "RandomEdge":
-                    intVec = CellFinder.RandomEdgeCell(map);
+                    if (DropCellFinder.TryFindDropSpotNear(CellFinder.RandomEdgeCell(map), map, out var outResult, false, true)) {
+                        intVec = outResult;
+                    } else {
+                        intVec = DropCellFinder.RandomDropSpot(map);
+                    }
                     break;
                 case "Center":
-                    intVec = RCellFinder.TryFindRandomCellNearWith(map.Center, null, map, out var result) ? result : DropCellFinder.RandomDropSpot(map);
+                    intVec = RCellFinder.TryFindRandomCellNearWith(map.Center, null, map, out var result)
+                        ? result
+                        : DropCellFinder.RandomDropSpot(map);
                     break;
                 default:
                     intVec = DropCellFinder.RandomDropSpot(map);
@@ -79,7 +86,7 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_ResourcePodCrash : HumanIncidentParms {
-        public float Amount;
+        public Number Amount;
         public string Item;
         public string ItemQuality;
         public string Stuff;
@@ -89,8 +96,13 @@ namespace HumanStoryteller.Incidents {
         public HumanIncidentParams_ResourcePodCrash() {
         }
 
-        public HumanIncidentParams_ResourcePodCrash(String target, HumanLetter letter, float amount = -1, string item = "", string itemQuality = "", string stuff = "", bool instaPlace = false, string location = "") :
-            base(target, letter) {
+        public HumanIncidentParams_ResourcePodCrash(String target, HumanLetter letter, string item = "", string itemQuality = "", string stuff = "",
+            bool instaPlace = false, string location = "") :
+            this(target, letter, new Number(), item, itemQuality, stuff, instaPlace, location) {
+        }
+
+        public HumanIncidentParams_ResourcePodCrash(string target, HumanLetter letter, Number amount, string item, string itemQuality, string stuff,
+            bool instaPlace, string location) : base(target, letter) {
             Amount = amount;
             Item = item;
             ItemQuality = itemQuality;
@@ -100,12 +112,12 @@ namespace HumanStoryteller.Incidents {
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, Amount: {Amount}, Item: {Item}, ItemQuality: {ItemQuality}, Stuff: {Stuff}, InstaPlace: {InstaPlace}";
+            return $"{base.ToString()}, Amount: {Amount}, Item: {Item}, ItemQuality: {ItemQuality}, Stuff: {Stuff}, InstaPlace: {InstaPlace}, Location: {Location}";
         }
 
         public override void ExposeData() {
             base.ExposeData();
-            Scribe_Values.Look(ref Amount, "amount");
+            Scribe_Deep.Look(ref Amount, "amount");
             Scribe_Values.Look(ref Item, "item");
             Scribe_Values.Look(ref ItemQuality, "itemQuality");
             Scribe_Values.Look(ref Stuff, "stuff");

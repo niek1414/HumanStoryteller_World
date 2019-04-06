@@ -59,9 +59,12 @@ namespace HumanStoryteller.Incidents {
                     return ir;
                 }
 
+                var points = allParams.Points.GetValue();
                 var fakeParm = new IncidentParms {
                     faction = factionResult,
-                    points = TraderCaravanUtility.GenerateGuardPoints()
+                    points = points != -1 ?
+                        TraderCaravanUtility.GenerateGuardPoints() * points :
+                        TraderCaravanUtility.GenerateGuardPoints()
                 };
                 if (!RCellFinder.TryFindRandomPawnEntryCell(out IntVec3 cellResult, map, CellFinder.EdgeRoadChance_Friendly)) {
                     fakeParm.spawnCenter = CellFinder.RandomEdgeCell(map);
@@ -129,6 +132,7 @@ namespace HumanStoryteller.Incidents {
             if (f.IsPlayer) {
                 return false;
             }
+
             if (f.def.hidden || f.HostileTo(Faction.OfPlayer) || NeutralGroupIncidentUtility.AnyBlockingHostileLord(map, f)) {
                 return false;
             }
@@ -147,14 +151,18 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_TraderArrival : HumanIncidentParms {
-        public float Points;
+        public Number Points;
         public string TraderKind;
         public List<String> Names;
 
         public HumanIncidentParams_TraderArrival() {
         }
 
-        public HumanIncidentParams_TraderArrival(String target, HumanLetter letter, float points = -1, string traderKind = "", List<String> names = null) :
+        public HumanIncidentParams_TraderArrival(String target, HumanLetter letter, string traderKind = "", List<String> names = null) :
+            this(target, letter, new Number(), traderKind, names) {
+        }
+
+        public HumanIncidentParams_TraderArrival(string target, HumanLetter letter, Number points, string traderKind, List<string> names) :
             base(target, letter) {
             Points = points;
             TraderKind = traderKind;
@@ -167,7 +175,7 @@ namespace HumanStoryteller.Incidents {
 
         public override void ExposeData() {
             base.ExposeData();
-            Scribe_Values.Look(ref Points, "points");
+            Scribe_Deep.Look(ref Points, "points");
             Scribe_Values.Look(ref TraderKind, "traderKind");
             Scribe_Collections.Look(ref Names, "names", LookMode.Value);
         }

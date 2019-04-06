@@ -35,21 +35,24 @@ namespace HumanStoryteller.Incidents {
             } catch (InvalidOperationException) {
                 plant = ThingDefOf.Plant_Ambrosia;
             }
-            
+
             if (!TryFindRootCell(plant, map, out IntVec3 cell)) {
                 return ir;
             }
 
             Thing thing = null;
             int randomInRange;
-            if (allParams.Amount != -1) {
-                randomInRange = Mathf.RoundToInt(allParams.Amount);
+            var amount = allParams.Amount.GetValue();
+            if (amount != -1) {
+                randomInRange = Mathf.RoundToInt(amount);
             } else {
                 randomInRange = CountRange.RandomInRange;
             }
 
             for (int i = 0; i < randomInRange; i++) {
-                if (!CellFinder.TryRandomClosewalkCellNear(cell, map, Mathf.RoundToInt(allParams.Range != -1 ? allParams.Range : 6), out IntVec3 result,
+                var range = allParams.Range.GetValue();
+                if (!CellFinder.TryRandomClosewalkCellNear(cell, map, Mathf.RoundToInt(range != -1 ? range : 6),
+                    out IntVec3 result,
                     x => CanSpawnAt(plant, x, map))) {
                     break;
                 }
@@ -107,18 +110,22 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_AmbrosiaSprout : HumanIncidentParms {
-        public float Amount;
-        public float Range;
+        public Number Amount;
+        public Number Range;
         public string PlantKind;
 
         public HumanIncidentParams_AmbrosiaSprout() {
         }
 
-        public HumanIncidentParams_AmbrosiaSprout(String target, HumanLetter letter, float amount = -1, float range = -1, string plantKind = "") :
+        public HumanIncidentParams_AmbrosiaSprout(String target, HumanLetter letter, Number amount, Number range, string plantKind) :
             base(target, letter) {
             Amount = amount;
             Range = range;
             PlantKind = plantKind;
+        }
+
+        public HumanIncidentParams_AmbrosiaSprout(string target, HumanLetter letter, string plantKind = "")
+            : this(target, letter, new Number(), new Number(), plantKind) {
         }
 
         public override string ToString() {
@@ -127,8 +134,8 @@ namespace HumanStoryteller.Incidents {
 
         public override void ExposeData() {
             base.ExposeData();
-            Scribe_Values.Look(ref Amount, "amount");
-            Scribe_Values.Look(ref Range, "range");
+            Scribe_Deep.Look(ref Amount, "amount");
+            Scribe_Deep.Look(ref Range, "range");
             Scribe_Values.Look(ref PlantKind, "plantKind");
         }
     }

@@ -96,6 +96,8 @@ namespace HumanStoryteller.Parser.Converter {
                     return new AudioCheck();
                 case CheatCheck.Name:
                     return new CheatCheck();
+                case ResearchCheck.Name:
+                    return new ResearchCheck(GetResearchProject(obj["project"].Value<string>()));
                 default:
                     Parser.LogParseError("condition", type);
                     return null;
@@ -117,6 +119,21 @@ namespace HumanStoryteller.Parser.Converter {
             list.ToList().ForEach(item => { r.Add(int.Parse(item, CultureInfo.InvariantCulture.NumberFormat)); });
 
             return r;
+        }
+
+        private ResearchProjectDef GetResearchProject(String type) {
+            if (type == null) {
+                Parser.LogParseError("research project", type);
+                return ResearchProjectDefOf.CarpetMaking;
+            }
+
+            var def = DefDatabase<ResearchProjectDef>.GetNamed(type, false);
+            if (def != null) {
+                return def;
+            }
+
+            Parser.LogParseError("research project", type);
+            return ResearchProjectDefOf.CarpetMaking;
         }
 
         private DifficultyDef GetDifficulty(String type) {

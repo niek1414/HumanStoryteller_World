@@ -25,8 +25,9 @@ namespace HumanStoryteller.Incidents {
 
             Map map = (Map) allParams.GetTarget();
 
-            float points = allParams.Points >= 0
-                ? StorytellerUtility.DefaultThreatPointsNow(map) * allParams.Points
+            var parmPoints = allParams.Points.GetValue();
+            float points = parmPoints >= 0
+                ? StorytellerUtility.DefaultThreatPointsNow(map) * parmPoints
                 : StorytellerUtility.DefaultThreatPointsNow(map);
 
             float adjustedPoints = points;
@@ -110,15 +111,19 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_AnimalInsanityMass : HumanIncidentParms {
-        public float Points;
+        public Number Points;
         public string AnimalKind;
 
         public HumanIncidentParams_AnimalInsanityMass() {
         }
 
-        public HumanIncidentParams_AnimalInsanityMass(String target, HumanLetter letter, float points = -1, string animalKind = "") :
+        public HumanIncidentParams_AnimalInsanityMass(String target, HumanLetter letter, Number points, string animalKind) :
             base(target, letter) {
             Points = points;
+            AnimalKind = animalKind;
+        }
+
+        public HumanIncidentParams_AnimalInsanityMass(string target, HumanLetter letter, string animalKind = "") : this(target, letter, new Number(), animalKind) {
             AnimalKind = animalKind;
         }
 
@@ -128,7 +133,7 @@ namespace HumanStoryteller.Incidents {
 
         public override void ExposeData() {
             base.ExposeData();
-            Scribe_Values.Look(ref Points, "points");
+            Scribe_Deep.Look(ref Points, "points");
             Scribe_Values.Look(ref AnimalKind, "animalKind");
         }
     }

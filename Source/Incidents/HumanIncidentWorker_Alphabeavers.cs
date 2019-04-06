@@ -28,8 +28,9 @@ namespace HumanStoryteller.Incidents {
             }
 
             int num;
-            if (allParams.Amount != -1) {
-                num = Mathf.RoundToInt(allParams.Amount);
+            var amount = allParams.Amount.GetValue();
+            if (amount != -1) {
+                num = Mathf.RoundToInt(amount);
             } else {
                 int freeColonistsCount = map.mapPawns.FreeColonistsCount;
                 float randomInRange = CountPerColonistRange.RandomInRange;
@@ -71,7 +72,7 @@ namespace HumanStoryteller.Incidents {
         
         public override void ExposeData() {
             base.ExposeData();
-            Scribe_Values.Look(ref Amount, "amount");
+            Scribe_Deep.Look(ref Amount, "amount");
         }
     }
 }

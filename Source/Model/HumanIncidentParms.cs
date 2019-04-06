@@ -16,7 +16,7 @@ namespace HumanStoryteller.Model {
         }
 
         public override string ToString() {
-            return $"Target: {Target}, Letter: {Letter}";
+            return "";
         }
         
         public IIncidentTarget GetTarget() {

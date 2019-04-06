@@ -25,8 +25,9 @@ namespace HumanStoryteller.Incidents {
 
             Map map = (Map) allParams.GetTarget();
             var def = GameConditionDef.Named("Planetkiller");
-            int duration = Mathf.RoundToInt(allParams.Duration != -1
-                ? allParams.Duration * 60000f
+            var paramsDuration = allParams.Duration.GetValue();
+            int duration = Mathf.RoundToInt(paramsDuration != -1
+                ? paramsDuration * 60000f
                 : (from x in DefDatabase<ScenPartDef>.AllDefs
                 where x.defName == "GameCondition_Planetkiller"
                 select x).First().durationRandomRange.RandomInRange * 60000f);
@@ -39,14 +40,17 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_Planetkiller : HumanIncidentParms {
-        public float Duration;
+        public Number Duration;
 
         public HumanIncidentParams_Planetkiller() {
         }
 
-        public HumanIncidentParams_Planetkiller(String target, HumanLetter letter, float duration = -1) : base(target,
+        public HumanIncidentParams_Planetkiller(String target, HumanLetter letter, Number duration) : base(target,
             letter) {
             Duration = duration;
+        }
+
+        public HumanIncidentParams_Planetkiller(string target, HumanLetter letter) : this(target, letter, new Number()) {
         }
 
         public override string ToString() {
@@ -55,7 +59,7 @@ namespace HumanStoryteller.Incidents {
 
         public override void ExposeData() {
             base.ExposeData();
-            Scribe_Values.Look(ref Duration, "duration");
+            Scribe_Deep.Look(ref Duration, "duration");
         }
     }
 }

@@ -24,8 +24,8 @@ namespace HumanStoryteller.Patch {
         private static float _loadingState;
 
         private static List<StorySummary> _storyList = new List<StorySummary>();
-        private static Dictionary<long, WWW> _loadingImages = new Dictionary<long, WWW>();
-        private static Dictionary<long, Texture2D> _loadedImages = new Dictionary<long, Texture2D>();
+        private static Dictionary<string, WWW> _loadingImages = new Dictionary<string, WWW>();
+        private static Dictionary<string, Texture2D> _loadedImages = new Dictionary<string, Texture2D>();
         private static Dictionary<long, Vector2> _descriptionScrollList = new Dictionary<long, Vector2>();
 
         private static string _filterName = "";
@@ -113,6 +113,13 @@ namespace HumanStoryteller.Patch {
         }
 
         private static void DrawPagination(Rect stories) {
+            if (Widgets.ButtonText(new Rect(stories.center.x - 150, stories.yMax - 40, 90, 40), "Random 5")) {
+                if (!_loading) {
+                    _pageNumber = 0;
+                    RefreshListRandom();
+                }
+            }
+            
             if (Widgets.ButtonText(new Rect(stories.center.x - 40, stories.yMax - 40, 30, 40), "<", true, false, _pageNumber != 0)) {
                 if (!_loading && _pageNumber != 0) {
                     _pageNumber--;
@@ -157,7 +164,7 @@ namespace HumanStoryteller.Patch {
                     RefreshList();
                 }
             }
-
+            
             Text.Font = GameFont.Tiny;
             Widgets.Label(new Rect(stories.xMax - 90, stories.yMax - 14, 90, 17),
                 "Picked story: #" + (_selectedSummary == null ? "-" : _selectedSummary.Id.ToString()));
@@ -240,7 +247,7 @@ namespace HumanStoryteller.Patch {
 
             Rect avatar = new Rect(inner.xMax - 65, inner.y + 18, 55, 55);
 
-            Texture2D foundImage = GetImage(story.Avatar, story.Id);
+            Texture2D foundImage = GetImage(story.Avatar);
             if (foundImage != null) {
                 GUI.DrawTexture(avatar, foundImage, ScaleMode.ScaleToFit);
             }
@@ -251,38 +258,38 @@ namespace HumanStoryteller.Patch {
             }
         }
 
-        private static Texture2D GetImage(string url, long id) {
-            if (_loadingImages.ContainsKey(id)) {
-                WWW val = _loadingImages[id];
+        private static Texture2D GetImage(string url) {
+            if (_loadingImages.ContainsKey(url)) {
+                WWW val = _loadingImages[url];
                 try {
                     if (val.isDone) {
                         if (val.error == null) {
-                            _loadedImages.Add(id, val.textureNonReadable);
-                            _loadingImages.Remove(id);
+                            _loadedImages.Add(url, val.textureNonReadable);
+                            _loadingImages.Remove(url);
                         } else {
-                            Tell.Warn("Could not load avatar", "storyid: " + id, "Err: " + val.error);
-                            _loadingImages.Remove(id);
+                            Tell.Warn("Could not load avatar", "url: " + url, "Err: " + val.error);
+                            _loadingImages.Remove(url);
                         }
 
                         val.Dispose();
                     }
                 } catch (Exception e) {
                     try {
-                        Tell.Warn("Could not load avatar (disposing now)", "storyid: " + id, "Err: " + e.Message + " Stack__ " + e.StackTrace);
+                        Tell.Warn("Could not load avatar (disposing now)", "url: " + url, "Err: " + e.Message + " Stack__ " + e.StackTrace);
                         val.Dispose();
-                        _loadingImages.Remove(id);
+                        _loadingImages.Remove(url);
                     } catch (Exception) {
                         // ignored
                     }
                 }
             }
 
-            if (_loadedImages.ContainsKey(id)) {
-                return _loadedImages[id];
+            if (_loadedImages.ContainsKey(url)) {
+                return _loadedImages[url];
             }
 
-            if (!_loadingImages.ContainsKey(id)) {
-                _loadingImages.Add(id, new WWW(GenFilePaths.SafeURIForUnityWWWFromPath(url).Substring(8)));
+            if (!_loadingImages.ContainsKey(url)) {
+                _loadingImages.Add(url, new WWW(GenFilePaths.SafeURIForUnityWWWFromPath(url).Substring(8)));
             }
 
             return null;
@@ -302,6 +309,21 @@ namespace HumanStoryteller.Patch {
                     RefreshList(false);
                 } else {
                     _storyList.Clear();
+                }
+            });
+        }
+
+        private static void RefreshListRandom() {
+            _loading = true;
+            Storybook.GetBookRandom(storyArray => {
+                _loading = false;
+
+                if (storyArray.Length > 0) {
+                    _storyList.Clear();
+                    _storyList.AddRange(storyArray);
+                } else {
+                    _pageNumber = 0;
+                    RefreshList(false);
                 }
             });
         }

@@ -26,7 +26,7 @@ namespace HumanStoryteller.Model {
         }
 
         public void ExposeData() {
-            Scribe_Deep.Look(ref _storyNode, "storyNode");
+            Scribe_References.Look(ref _storyNode, "storyNode");
             Scribe_Deep.Look(ref _result, "result");
         }
     }

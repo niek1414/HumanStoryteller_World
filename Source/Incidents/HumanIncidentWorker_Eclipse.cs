@@ -24,8 +24,9 @@ namespace HumanStoryteller.Incidents {
 
             Map map = (Map) allParams.GetTarget();
             var def = IncidentDef.Named("Eclipse");
-            int duration = Mathf.RoundToInt(allParams.Duration != -1
-                ? allParams.Duration * 60000f
+            var allParamsDuration = allParams.Duration.GetValue();
+            int duration = Mathf.RoundToInt(allParamsDuration != -1
+                ? allParamsDuration * 60000f
                 : def.durationDays.RandomInRange * 60000f);
             GameCondition_Eclipse gameCondition_Eclipse =
                 (GameCondition_Eclipse) GameConditionMaker.MakeCondition(GameConditionDefOf.Eclipse, duration);
@@ -36,14 +37,17 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_Eclipse : HumanIncidentParms {
-        public float Duration;
+        public Number Duration;
 
         public HumanIncidentParams_Eclipse() {
         }
 
-        public HumanIncidentParams_Eclipse(String target, HumanLetter letter, float duration = -1) : base(target,
+        public HumanIncidentParams_Eclipse(String target, HumanLetter letter, Number duration) : base(target,
             letter) {
             Duration = duration;
+        }
+
+        public HumanIncidentParams_Eclipse(String target, HumanLetter letter) : this(target, letter, new Number()) {
         }
 
         public override string ToString() {
@@ -52,7 +56,7 @@ namespace HumanStoryteller.Incidents {
 
         public override void ExposeData() {
             base.ExposeData();
-            Scribe_Values.Look(ref Duration, "duration");
+            Scribe_Deep.Look(ref Duration, "duration");
         }
     }
 }

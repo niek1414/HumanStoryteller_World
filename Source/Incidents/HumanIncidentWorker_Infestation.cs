@@ -21,8 +21,9 @@ namespace HumanStoryteller.Incidents {
 
             Map map = (Map) allParams.GetTarget();
 
-            float points = allParams.Points >= 0
-                ? StorytellerUtility.DefaultThreatPointsNow(map) * allParams.Points
+            var paramsPoints = allParams.Points.GetValue();
+            float points = paramsPoints >= 0
+                ? StorytellerUtility.DefaultThreatPointsNow(map) * paramsPoints
                 : StorytellerUtility.DefaultThreatPointsNow(map);
             
             Thing t = SpawnTunnels(Mathf.Max(GenMath.RoundRandom(points / 220f), 1), map);
@@ -52,13 +53,16 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_Infestation : HumanIncidentParms {
-        public float Points;
+        public Number Points;
 
         public HumanIncidentParams_Infestation() {
         }
 
-        public HumanIncidentParams_Infestation(String target, HumanLetter letter, float points = -1) : base(target, letter) {
+        public HumanIncidentParams_Infestation(String target, HumanLetter letter, Number points) : base(target, letter) {
             Points = points;
+        }
+
+        public HumanIncidentParams_Infestation(string target, HumanLetter letter) : this(target, letter, new Number()) {
         }
 
         public override string ToString() {
@@ -67,7 +71,7 @@ namespace HumanStoryteller.Incidents {
 
         public override void ExposeData() {
             base.ExposeData();
-            Scribe_Values.Look(ref Points, "points");
+            Scribe_Deep.Look(ref Points, "points");
         }
     }
 }

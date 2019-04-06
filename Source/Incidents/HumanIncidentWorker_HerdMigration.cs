@@ -47,8 +47,9 @@ namespace HumanStoryteller.Incidents {
             Rot4 rot = Rot4.FromAngleFlat((map.Center - start).AngleFlat);
 
             int randomInRange;
-            if (allParams.Amount != -1) {
-                randomInRange = Mathf.RoundToInt(allParams.Amount);
+            var amount = allParams.Amount.GetValue();
+            if (amount != -1) {
+                randomInRange = Mathf.RoundToInt(amount);
             } else {
                 randomInRange = AnimalsCount.RandomInRange;
                 randomInRange = Mathf.Max(randomInRange, Mathf.CeilToInt(4f / kindDef.RaceProps.baseBodySize));
@@ -112,16 +113,19 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_HerdMigration : HumanIncidentParms {
+        public Number Amount;
         public string AnimalKind;
-        public float Amount;
 
         public HumanIncidentParams_HerdMigration() {
         }
 
-        public HumanIncidentParams_HerdMigration(String target, HumanLetter letter, string animalKind = "", float amount = -1) :
-            base(target, letter) {
-            Amount = amount;
+        public HumanIncidentParams_HerdMigration(String target, HumanLetter letter, string animalKind = "") :
+            this(target, letter, new Number(), animalKind) {
+        }
+
+        public HumanIncidentParams_HerdMigration(string target, HumanLetter letter, Number amount, string animalKind) : base(target, letter) {
             AnimalKind = animalKind;
+            Amount = amount;
         }
 
         public override string ToString() {
@@ -130,7 +134,7 @@ namespace HumanStoryteller.Incidents {
 
         public override void ExposeData() {
             base.ExposeData();
-            Scribe_Values.Look(ref Amount, "amount");
+            Scribe_Deep.Look(ref Amount, "amount");
             Scribe_Values.Look(ref AnimalKind, "animalKind");
         }
     }

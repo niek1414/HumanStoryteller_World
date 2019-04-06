@@ -33,6 +33,7 @@ namespace HumanStoryteller.Incidents {
                         HealthUtility.TryAnesthetize(pawn);
                         break;
                     case "DamageTillDowned":
+                        Tell.Warn(pawn.Name.ToStringFull);
                         HealthUtility.DamageUntilDowned(pawn);
                         break;
                     case "Immobilize":
@@ -51,6 +52,9 @@ namespace HumanStoryteller.Incidents {
             }
 
             if (parms.Letter?.Type != null) {
+                if (parms.Letter.Shake) {
+                    Find.CameraDriver.shaker.DoShake(4f);
+                }
                 Find.LetterStack.ReceiveLetter(LetterMaker.MakeLetter(parms.Letter.Title, parms.Letter.Message, parms.Letter.Type));
             }
 
@@ -73,6 +77,9 @@ namespace HumanStoryteller.Incidents {
             BodyPart = bodyPart;
         }
 
+        public override string ToString() {
+            return $"{base.ToString()}, Names: {Names}, HealthAction: {HealthAction}, BodyPart: {BodyPart}";
+        }
 
         public override void ExposeData() {
             base.ExposeData();
