@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using System.Threading;
 using Harmony;
 using HumanStoryteller.Model;
 using HumanStoryteller.Util;
@@ -12,7 +11,6 @@ using RimWorld;
 using UnityEngine;
 using Verse;
 using Verse.Sound;
-using ThreadPriority = UnityEngine.ThreadPriority;
 
 namespace HumanStoryteller.Patch {
     public class StorytellerUI_Patch {

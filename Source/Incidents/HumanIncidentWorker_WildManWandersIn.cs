@@ -37,18 +37,10 @@ namespace HumanStoryteller.Incidents {
             }
             Pawn pawn = PawnGenerator.GeneratePawn(PawnKindDefOf.WildMan, formerFaction);
             pawn.SetFaction(null);
+            if (allParams.Gender != ""){
+                pawn.gender = PawnUtil.GetGender(allParams.Gender);
+            }
             if (allParams.Name != "") {
-                switch (pawn.Name) {
-                    case NameTriple prevNameTriple:
-                        pawn.Name = new NameTriple(allParams.Name, prevNameTriple.Nick, prevNameTriple.Last);
-                        break;
-                    case NameSingle _:
-                        pawn.Name = new NameSingle(allParams.Name);
-                        break;
-                    default:
-                        pawn.Name = new NameTriple(allParams.Name, allParams.Name, "");
-                        break;
-                }
                 PawnUtil.SavePawnByName(allParams.Name, pawn);
             }
             GenSpawn.Spawn(pawn, cell, map);
@@ -64,21 +56,24 @@ namespace HumanStoryteller.Incidents {
 
     public class HumanIncidentParams_WildManWandersIn : HumanIncidentParms {
         public string Name;
+        public string Gender;
 
         public HumanIncidentParams_WildManWandersIn() {
         }
 
-        public HumanIncidentParams_WildManWandersIn(String target, HumanLetter letter, string name = "") : base(target, letter) {
+        public HumanIncidentParams_WildManWandersIn(String target, HumanLetter letter, string name = "", string gender = "") : base(target, letter) {
             Name = name;
+            Gender = gender;
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, Name: {Name}";
+            return $"{base.ToString()}, Name: {Name}, Gender: {Gender}";
         }
 
         public override void ExposeData() {
             base.ExposeData();
             Scribe_Values.Look(ref Name, "name");
+            Scribe_Values.Look(ref Gender, "gender");
         }
     }
 }

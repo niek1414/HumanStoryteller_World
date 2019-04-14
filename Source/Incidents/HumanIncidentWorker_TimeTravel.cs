@@ -24,12 +24,7 @@ namespace HumanStoryteller.Incidents {
 
             Find.TickManager.DebugSetTicksGame(Mathf.RoundToInt(Find.TickManager.TicksGame + 2500 * allParams.HourChange.GetValue()));
 
-            if (parms.Letter?.Type != null) {
-                if (parms.Letter.Shake) {
-                    Find.CameraDriver.shaker.DoShake(4f);
-                }
-                Find.LetterStack.ReceiveLetter(LetterMaker.MakeLetter(parms.Letter.Title, parms.Letter.Message, parms.Letter.Type));
-            }
+            SendLetter(parms);
 
             return ir;
         }

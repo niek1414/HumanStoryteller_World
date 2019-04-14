@@ -29,12 +29,7 @@ namespace HumanStoryteller.Incidents {
             } catch (InvalidOperationException) {
             }
 
-            if (parms.Letter?.Type != null) {
-                if (parms.Letter.Shake) {
-                    Find.CameraDriver.shaker.DoShake(4f);
-                }
-                Find.LetterStack.ReceiveLetter(LetterMaker.MakeLetter(parms.Letter.Title, parms.Letter.Message, parms.Letter.Type));
-            }
+            SendLetter(parms);
 
             return ir;
         }

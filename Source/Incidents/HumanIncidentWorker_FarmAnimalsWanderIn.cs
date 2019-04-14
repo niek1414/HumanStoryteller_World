@@ -53,7 +53,6 @@ namespace HumanStoryteller.Incidents {
                 IntVec3 loc = CellFinder.RandomClosewalkCellNear(result, map, 12);
                 Pawn pawn = PawnGenerator.GeneratePawn(kind);
                 if (i < allParams.Names.Count) {
-                    pawn.Name = new NameSingle(allParams.Names[i]);
                     PawnUtil.SavePawnByName(allParams.Names[i], pawn);
                 }
 

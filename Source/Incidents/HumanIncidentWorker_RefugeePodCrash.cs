@@ -32,17 +32,6 @@ namespace HumanStoryteller.Incidents {
             Pawn pawn = FindPawn(things);
             
             if (allParams.Name != "") {
-                switch (pawn.Name) {
-                    case NameTriple prevNameTriple:
-                        pawn.Name = new NameTriple(allParams.Name, prevNameTriple.Nick, prevNameTriple.Last);
-                        break;
-                    case NameSingle _:
-                        pawn.Name = new NameSingle(allParams.Name);
-                        break;
-                    default:
-                        pawn.Name = new NameTriple(allParams.Name, allParams.Name, "");
-                        break;
-                }
                 PawnUtil.SavePawnByName(allParams.Name, pawn);
             }
             

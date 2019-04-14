@@ -48,6 +48,13 @@ namespace HumanStoryteller.Parser.Converter {
                 case PawnHealthCheck.Name:
                     return new PawnHealthCheck(obj["pawnName"].Value<string>(),
                         GetHealthCondition(obj["healthCondition"].Value<string>()));
+                case MapCreatedCheck.Name:
+                    return new MapCreatedCheck(obj["mapName"].Value<string>());
+                case ColonistsOnMapCheck.Name:
+                    return new ColonistsOnMapCheck(obj["mapName"].Value<string>(),
+                        GetNumeralCompareResponse(obj["compareType"].Value<string>()),
+                        float.Parse(obj["constant"].Value<string>(), CultureInfo.InvariantCulture.NumberFormat)
+                    );
                 case DialogCheck.Name:
                     return new DialogCheck(GetDialogResponse(obj["response"].Value<string>()));
                 case VariableCheck.Name:
@@ -85,13 +92,18 @@ namespace HumanStoryteller.Parser.Converter {
                         GetNumeralCompareResponse(obj["compareType"].Value<string>()),
                         float.Parse(obj["constant"].Value<string>(), CultureInfo.InvariantCulture.NumberFormat)
                     );
+                case ColoniesCheck.Name:
+                    return new ColoniesCheck(
+                        GetNumeralCompareResponse(obj["compareType"].Value<string>()),
+                        float.Parse(obj["constant"].Value<string>(), CultureInfo.InvariantCulture.NumberFormat)
+                    );
                 case ColonistsCheck.Name:
                     return new ColonistsCheck(
                         GetNumeralCompareResponse(obj["compareType"].Value<string>()),
                         float.Parse(obj["constant"].Value<string>(), CultureInfo.InvariantCulture.NumberFormat)
                     );
                 case BiomeCheck.Name:
-                    return new BiomeCheck(obj["biomes"]!= null?obj["biomes"].Values<string>().ToList():new List<string>());
+                    return new BiomeCheck(obj["biomes"] != null ? obj["biomes"].Values<string>().ToList() : new List<string>());
                 case AudioCheck.Name:
                     return new AudioCheck();
                 case CheatCheck.Name:
@@ -109,6 +121,7 @@ namespace HumanStoryteller.Parser.Converter {
             if (token == null) {
                 return new List<int>();
             }
+
             IEnumerable<string> list = token.Values<string>();
             if (list == null) {
                 Parser.LogParseError("time - " + timeType, null);

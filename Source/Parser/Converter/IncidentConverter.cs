@@ -10,7 +10,7 @@ namespace HumanStoryteller.Parser.Converter {
         public override bool CanWrite => false;
         public override bool CanRead => true;
 
-        private String defaultIncidentTarget = "OfPlayer";
+        private String defaultIncidentTarget = "FirstOfPlayer";
         private HumanLetter defaultLetter = null;
 
         public override bool CanConvert(Type objectType) {
@@ -226,6 +226,18 @@ namespace HumanStoryteller.Parser.Converter {
                 case HumanIncidentWorker_MentalBreak.Name:
                     incident = new FiringHumanIncident(new HumanIncidentWorker_MentalBreak(),
                         new HumanIncidentParams_MentalBreak(defaultIncidentTarget, defaultLetter));
+                    break;
+                case HumanIncidentWorker_Quest.Name:
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_Quest(),
+                        new HumanIncidentParams_Quest(defaultIncidentTarget, defaultLetter));
+                    break;
+                case HumanIncidentWorker_TradeRequest.Name:
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_TradeRequest(),
+                        new HumanIncidentParams_TradeRequest(defaultIncidentTarget, defaultLetter));
+                    break;
+                case HumanIncidentWorker_CreateSettlement.Name:
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_CreateSettlement(),
+                        new HumanIncidentParams_CreateSettlement(defaultIncidentTarget, defaultLetter));
                     break;
                 default:
                     Parser.LogParseError("incident", type);

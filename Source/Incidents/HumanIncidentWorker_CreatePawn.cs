@@ -78,18 +78,6 @@ namespace HumanStoryteller.Incidents {
                 Find.StoryWatcher.watcherPopAdaptation.Notify_PawnEvent(pawn, PopAdaptationEvent.GainedColonist);
 
             if (allParams.Name != "") {
-                switch (pawn.Name) {
-                    case NameTriple prevNameTriple:
-                        pawn.Name = new NameTriple(allParams.Name, prevNameTriple.Nick, prevNameTriple.Last);
-                        break;
-                    case NameSingle _:
-                        pawn.Name = new NameSingle(allParams.Name);
-                        break;
-                    default:
-                        pawn.Name = new NameTriple(allParams.Name, allParams.Name, "");
-                        break;
-                }
-
                 PawnUtil.SavePawnByName(allParams.Name, pawn);
             }
 
@@ -126,13 +114,8 @@ namespace HumanStoryteller.Incidents {
             fakeParms.pawnGroups = new Dictionary<Pawn, int> {{pawn, 0}};
             fakeParms.raidStrategy = RaidStrategyDefOf.ImmediateAttack;
             RaidStrategyDefOf.ImmediateAttack.Worker.MakeLords(fakeParms, new List<Pawn> {pawn});
-            if (parms.Letter?.Type != null) {
-                if (parms.Letter.Shake) {
-                    Find.CameraDriver.shaker.DoShake(4f);
-                }
-                Find.LetterStack.ReceiveLetter(LetterMaker.MakeLetter(parms.Letter.Title, parms.Letter.Message, parms.Letter.Type));
-            }
 
+            SendLetter(parms);
             return ir;
         }
     }
@@ -176,7 +159,8 @@ namespace HumanStoryteller.Incidents {
         }
 
         public HumanIncidentParams_CreatePawn(string target, HumanLetter letter, string pawnKind = "", string name = "", string faction = "",
-            bool newBorn = false, bool mustBeCapableOfViolence = false, string gender = "", string weapon = "", string itemQuality = "", string stuff = "")
+            bool newBorn = false, bool mustBeCapableOfViolence = false, string gender = "", string weapon = "", string itemQuality = "",
+            string stuff = "")
             : this(target, letter, new Number(), new Number(),
                 new Number(), new Number(), new Number(), pawnKind, name, faction, newBorn, mustBeCapableOfViolence, gender, weapon, itemQuality,
                 stuff) {

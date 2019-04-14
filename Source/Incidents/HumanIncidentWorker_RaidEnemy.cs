@@ -61,11 +61,9 @@ namespace HumanStoryteller.Incidents {
                     where d.Worker.CanUseWith(fakeParms, PawnGroupKindDefOf.Combat) &&
                           (fakeParms.raidArrivalMode != null || d.arriveModes != null && d.arriveModes.Any(x => x.Worker.CanUseWith(fakeParms)))
                     select d).TryRandomElementByWeight(d => d.Worker.SelectionWeight(map, fakeParms.points), out fakeParms.raidStrategy)) {
-                    Log.Error("No raid stategy for " + faction + " with points " + points + ", groupKind=" + PawnGroupKindDefOf.Combat + "\nparms=" +
+                    Log.Warning("No raid stategy for " + faction + " with points " + points + ", groupKind=" + PawnGroupKindDefOf.Combat + "\nparms=" +
                               parms);
-                    if (!Prefs.DevMode) {
-                        fakeParms.raidStrategy = RaidStrategyDefOf.ImmediateAttack;
-                    }
+                    fakeParms.raidStrategy = RaidStrategyDefOf.ImmediateAttack;
                 }
             }
 
@@ -93,8 +91,16 @@ namespace HumanStoryteller.Incidents {
             points = AdjustedRaidPoints(points, arriveMode, strategy, faction, combat);
             fakeParms.points = points;
 
-            PawnGroupMakerParms defaultPawnGroupMakerParms = IncidentParmsUtility.GetDefaultPawnGroupMakerParms(combat, fakeParms, false);
-            List<Pawn> list = PawnGroupMakerUtility.GeneratePawns(defaultPawnGroupMakerParms, true).ToList();
+            PawnGroupMakerParms defaultPawnGroupMakerParms = IncidentParmsUtility.GetDefaultPawnGroupMakerParms(combat, fakeParms);
+            List<Pawn> list = new List<Pawn>();
+            var amount = Mathf.RoundToInt(allParams.Amount.GetValue());
+            while (amount > list.Count) {
+                list.AddRange(PawnGroupMakerUtility.GeneratePawns(defaultPawnGroupMakerParms).ToList());
+            }
+
+            if (amount != -1 && amount != list.Count) {
+                list = list.Take(amount).ToList();
+            }
             if (list.Count == 0) {
                 Tell.Err("Got no pawns spawning raid from parms " + fakeParms);
                 return ir;
@@ -125,7 +131,7 @@ namespace HumanStoryteller.Incidents {
             List<TargetInfo> list2 = new List<TargetInfo>();
             if (fakeParms.pawnGroups != null) {
                 List<List<Pawn>> list3 = IncidentParmsUtility.SplitIntoGroups(list, fakeParms.pawnGroups);
-                List<Pawn> list4 = list3.MaxBy((List<Pawn> x) => x.Count);
+                List<Pawn> list4 = list3.MaxBy(x => x.Count);
                 if (list4.Any()) {
                     list2.Add(list4[0]);
                 }
@@ -209,6 +215,7 @@ namespace HumanStoryteller.Incidents {
 
     public class HumanIncidentParams_RaidEnemy : HumanIncidentParms {
         public Number Points;
+        public Number Amount;
         public String Faction;
         public String Strategy;
         public String ArriveMode;
@@ -218,13 +225,14 @@ namespace HumanStoryteller.Incidents {
         }
 
         public HumanIncidentParams_RaidEnemy(String target, HumanLetter letter, String faction = "",
-            String strategy = "", String arriveMode = "", List<String> names = null) : this(target, letter, new Number(), faction, strategy,
+            String strategy = "", String arriveMode = "", List<String> names = null) : this(target, letter, new Number(), new Number(), faction, strategy,
             arriveMode, names) {
         }
 
-        public HumanIncidentParams_RaidEnemy(string target, HumanLetter letter, Number points, string faction, string strategy, string arriveMode,
+        public HumanIncidentParams_RaidEnemy(string target, HumanLetter letter, Number points, Number amount, string faction, string strategy, string arriveMode,
             List<string> names) : base(target, letter) {
             Points = points;
+            Amount = amount;
             Faction = faction;
             Strategy = strategy;
             ArriveMode = arriveMode;
@@ -232,12 +240,13 @@ namespace HumanStoryteller.Incidents {
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, Points: {Points}, Faction: {Faction}, Strategy: {Strategy}, ArriveMode: {ArriveMode}, Names: {Names}";
+            return $"{base.ToString()}, Points: {Points}, Amount: {Amount}, Faction: {Faction}, Strategy: {Strategy}, ArriveMode: {ArriveMode}, Names: {Names}";
         }
 
         public override void ExposeData() {
             base.ExposeData();
             Scribe_Deep.Look(ref Points, "points");
+            Scribe_Deep.Look(ref Amount, "amount");
             Scribe_Values.Look(ref Faction, "faction");
             Scribe_Values.Look(ref Strategy, "strategy");
             Scribe_Values.Look(ref ArriveMode, "arriveMode");

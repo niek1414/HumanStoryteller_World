@@ -24,7 +24,7 @@ namespace HumanStoryteller.CheckConditions {
         }
 
         public override bool Check(IncidentResult result, int checkPosition) {
-            Map map = Find.Maps.FindAll(x => x.ParentFaction.IsPlayer).RandomElement();
+            Map map = Find.Maps.Find(x => x.ParentFaction.IsPlayer);
             if (_hours.Count > 0) {
                 if (!_hours.Contains(GenLocalDate.HourOfDay(map))) {
                     return false;

@@ -12,10 +12,25 @@ namespace HumanStoryteller.Util {
         public List<StoryNode> AllNodes = new List<StoryNode>();
         public Dictionary<string, float> VariableBank = new Dictionary<string, float>();
         public Dictionary<string, Pawn> PawnBank = new Dictionary<string, Pawn>();
+        public Dictionary<string, MapParent> MapBank = new Dictionary<string, MapParent>();
         public StorytellerComp_HumanThreatCycle ThreatCycle = null;
 
-        private List<string> reservedKeysWorkingList;
-        private List<Pawn> reservedValuesWorkingList;
+        private Map _firstMapOfPlayer;
+        public Map FirstMapOfPlayer {
+            get => _firstMapOfPlayer ?? Find.Maps.FindAll(x => x.ParentFaction.IsPlayer).RandomElement();
+            set => _firstMapOfPlayer = value;
+        }
+
+        private Map _sameAsLastEvent;
+        public Map SameAsLastEvent {
+            get => _sameAsLastEvent ?? FirstMapOfPlayer;
+            set => _sameAsLastEvent = value;
+        }
+
+        private List<string> reservedPawnKeysWorkingList;
+        private List<Pawn> reservedPawnValuesWorkingList;
+        private List<string> reservedMapKeysWorkingList;
+        private List<MapParent> reservedMapValuesWorkingList;
 
         public override void ExposeData()
         {
@@ -26,7 +41,11 @@ namespace HumanStoryteller.Util {
             Scribe_Collections.Look(ref CurrentNodes, "currentNode", LookMode.Deep);
             Scribe_Collections.Look(ref AllNodes, "allNodes", LookMode.Deep);
             Scribe_Collections.Look(ref VariableBank, "variableBank", LookMode.Value, LookMode.Value);
-            Scribe_Collections.Look(ref PawnBank, "pawnBank", LookMode.Value, LookMode.Reference, ref reservedKeysWorkingList, ref reservedValuesWorkingList);
+            Scribe_Collections.Look(ref PawnBank, "pawnBank", LookMode.Value, LookMode.Reference, ref reservedPawnKeysWorkingList, ref reservedPawnValuesWorkingList);
+            Scribe_Collections.Look(ref MapBank, "mapBank", LookMode.Value, LookMode.Reference, ref reservedMapKeysWorkingList, ref reservedMapValuesWorkingList);
+            
+            Scribe_References.Look(ref _firstMapOfPlayer, "firstMapOfPlayer");
+            Scribe_References.Look(ref _sameAsLastEvent, "sameAsLastEvent");
         }
 
         public StoryComponent(World world) : base(world) {

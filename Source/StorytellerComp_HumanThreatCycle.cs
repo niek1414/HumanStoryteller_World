@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Timers;
-using HumanStoryteller.Incidents;
 using HumanStoryteller.Model;
 using HumanStoryteller.Util;
 using HumanStoryteller.Web;
@@ -87,6 +86,7 @@ namespace HumanStoryteller {
                 foreach (StoryEventNode sen in MakeIntervalIncidents()) {
                     if (sen?.StoryNode?.StoryEvent?.Incident?.Worker != null) {
                         var incident = sen.StoryNode.StoryEvent.Incident;
+                        incident.Worker.PreExecute(incident.Parms);
                         sen.Result = incident.Worker.Execute(incident.Parms);
                         DataBank.ProcessVariableModifications(sen.StoryNode.Modifications);
                     } else {
@@ -223,27 +223,30 @@ namespace HumanStoryteller {
                 StoryComponent.Initialised = true;
                 var storyId = Current.Game.storyteller.def.listOrder;
                 StoryComponent.StoryId = storyId;
-                Tell.Log("INITIALIZE HS GAME", storyId);
+                Tell.Log("STORYTELLER AWOKEN", storyId);
                 Current.Game.Scenario = Current.Game.Scenario.CopyForEditing();
-                Tell.Log("COPIED SCENARIO");
+                Tell.Log("SPLITTING UNIVERSE");
+                StoryComponent.FirstMapOfPlayer = Find.Maps.Find(x => x.ParentFaction.IsPlayer);
+                StoryComponent.SameAsLastEvent = StoryComponent.FirstMapOfPlayer;
+                Tell.Log("RECORDED HISTORY");
             } else {
                 Tell.Log("CONTINUING HS GAME", StoryComponent.StoryId);
             }
             StoryComponent.ThreatCycle = this;
 
-            string str = "";
-            foreach (var def in from d in DefDatabase<MentalBreakDef>.AllDefs
-                select d) {
-                str += def.defName + "\n";
-            }
-
-            Tell.Log(str);
-            str = "";
-            foreach (var def in from d in DefDatabase<MentalBreakDef>.AllDefs
-                select d) {
-                str += def.label + "\n";
-            }
-            Tell.Log(str);
+//            string str = "";
+//            foreach (var def in from d in DefDatabase<MentalBreakDef>.AllDefs
+//                select d) {
+//                str += def.defName + "\n";
+//            }
+//
+//            Tell.Log(str);
+//            str = "";
+//            foreach (var def in from d in DefDatabase<MentalBreakDef>.AllDefs
+//                select d) {
+//                str += def.label + "\n";
+//            }
+//            Tell.Log(str);
 
             Storybook.GetStory(StoryComponent.StoryId, GetStoryCallback);
             _refreshTimer.Elapsed += CheckStoryRefresh;
