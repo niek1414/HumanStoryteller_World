@@ -5,8 +5,12 @@
     <AlertNeedStoryDesc>This won't do, this won't do at all!\n\nWhere is our story gone?\nO, would you human kindly check your connection to the outside world?\n\n(Big stories my take a little while to load, but not more than 2 minutes)</AlertNeedStoryDesc>
     
     <StoryNotFound>Story was not found in the storybook.\nThe creator may have removed the story.\nIf you reloaded this game the last received story will continue playing.</StoryNotFound>
+    <LoadingStory>Browsing storybook</LoadingStory>
+    <LoadingStoryFailed>This Book was lost..\n\nIt seems that the story can not be found.\nThe creator may have removed the story or something went wrong while pre-reading the story.\nPlease notify the mod dev if there is a error.</LoadingStoryFailed>
     <StoryList>Storybook story's</StoryList>
     <StoryTitleInput>Story title</StoryTitleInput>
+    <ParametersOverriden>Settings are defined by the story and can not be changed.</ParametersOverriden>
+    <LocationOverriden>Landing site is defined by the story and can not be changed</LocationOverriden>
     <StoryDescriptionInput>Description (single keyword)</StoryDescriptionInput>
     <StoryCreatorInput>Creator</StoryCreatorInput>
     

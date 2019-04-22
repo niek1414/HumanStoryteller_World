@@ -12,18 +12,7 @@ using Timer = System.Timers.Timer;
 
 namespace HumanStoryteller {
     public class StorytellerComp_HumanThreatCycle : StorytellerComp {
-        private const int SHORT_REFRESH = 60000 * 2;
-        private const int MEDIUM_REFRESH = 60000 * 10;
-        private const int LONG_REFRESH = 60000 * 60;
-        private const int OFF_REFRESH = Int32.MaxValue;
-        private RefreshRate currentRate = RefreshRate.Long;
-
-        public enum RefreshRate {
-            Short,
-            Medium,
-            Long,
-            Off
-        }
+        private HumanStoryteller.RefreshRate currentRate = HumanStoryteller.RefreshRate.Long;
 
         protected StorytellerCompProperties_HumanThreatCycle Props =>
             (StorytellerCompProperties_HumanThreatCycle) props;
@@ -33,41 +22,33 @@ namespace HumanStoryteller {
         private bool _missedLastIncidentCheck = true; //Start game with a first check
         private int _consecutiveEventCounter;
         private bool _init;
-        private readonly Timer _refreshTimer = new Timer();
-
-        public static StoryComponent StoryComponent => Tell.AssertNotNull(Find.World?.GetComponent<StoryComponent>(), nameof(StoryComponent),
-            "StorytellerComp_HumanThreatCycle");
-
-        public static bool HumanStorytellerGame;
-        public static bool IsNoStory => StoryComponent.Story == null;
-
-        public static long StoryId =>
-            IsNoStory ? -1 : Tell.AssertNotNull(StoryComponent.Story.Id, nameof(StoryComponent.Story.Id), "StorytellerComp_HumanThreatCycle");
-
-        public static bool DEBUG => true;
+        public readonly Timer RefreshTimer = new Timer();
 
         public static void Tick() {
-            HumanStorytellerGame = false;
+            HumanStoryteller.HumanStorytellerGame = false;
             if (!DebugSettings.enableStoryteller) return;
             foreach (var comp in Current.Game.storyteller.storytellerComps) {
                 if (comp.GetType() == typeof(StorytellerComp_HumanThreatCycle) && Find.TickManager.TicksGame > 0) {
                     ((StorytellerComp_HumanThreatCycle) comp).CycleTick();
-                    HumanStorytellerGame = true;
+                    HumanStoryteller.HumanStorytellerGame = true;
                 }
             }
 
             if (Find.TickManager.TicksGame % 50 != 0) return;
             var buttonDef = DefDatabase<MainButtonDef>.AllDefs.First(x => x.defName == "RateTab");
-            buttonDef.buttonVisible = !IsNoStory;
+            buttonDef.buttonVisible = !HumanStoryteller.IsNoStory;
         }
 
         public void CycleTick() {
             if (!_init) {
                 Init();
                 _init = true;
+            } else if (HumanStoryteller.StoryComponent.ForcedUpdate) {
+                HumanStoryteller.StoryComponent.Reset();
+                Init();
             }
 
-            if (StoryComponent.Story == null) return;
+            if (HumanStoryteller.StoryComponent.Story == null) return;
 
             var interval =
                 Find.TickManager.CurTimeSpeed == TimeSpeed.Superfast ||
@@ -77,7 +58,7 @@ namespace HumanStoryteller {
             if (Find.TickManager.TicksGame % interval == 0) {
                 _consecutiveEventCounter = 0;
                 IncidentLoop();
-            } else if (_missedLastIncidentCheck && _consecutiveEventCounter <= 5) {
+            } else if (_missedLastIncidentCheck && _consecutiveEventCounter <= 10) {
                 _missedLastIncidentCheck = false;
                 IncidentLoop();
             }
@@ -102,13 +83,13 @@ namespace HumanStoryteller {
                 yield break;
             }
 
-            StoryComponent.CurrentNodes.RemoveAll(item => item == null);
+            HumanStoryteller.StoryComponent.CurrentNodes.RemoveAll(item => item == null);
 
-            int laneCount = StoryComponent.CurrentNodes.Count;
+            int laneCount = HumanStoryteller.StoryComponent.CurrentNodes.Count;
             string laneInfo = laneCount.ToString();
-            if (DEBUG) {
+            if (HumanStoryteller.DEBUG) {
                 laneInfo += "\n";
-                foreach (StoryEventNode node in StoryComponent.CurrentNodes) {
+                foreach (StoryEventNode node in HumanStoryteller.StoryComponent.CurrentNodes) {
                     laneInfo += node.StoryNode.StoryEvent.Uuid.Substring(0, 4) + " " + node.StoryNode.StoryEvent.Name +
                                 (node.StoryNode.LeftChild == null && node.StoryNode.RightChild == null ? "[DORMANT]" : "");
                     laneInfo += "\n";
@@ -135,7 +116,7 @@ namespace HumanStoryteller {
                     yield break;
                 }
 
-                StoryEventNode currentNode = StoryComponent.CurrentNodes[i];
+                StoryEventNode currentNode = HumanStoryteller.StoryComponent.CurrentNodes[i];
                 if (currentNode == null) {
                     continue;
                 }
@@ -148,10 +129,10 @@ namespace HumanStoryteller {
                 }
 
                 if (sn.Divider) {
-                    var left = sn.LeftChild != null ? new StoryEventNode(sn.LeftChild?.Node) : null;
-                    var right = sn.RightChild != null ? new StoryEventNode(sn.RightChild?.Node) : null;
-                    StoryComponent.CurrentNodes.Add(left);
-                    StoryComponent.CurrentNodes[i] = right;
+                    var left = sn.LeftChild != null ? new StoryEventNode(sn.LeftChild?.Node, IntervalsPassed) : null;
+                    var right = sn.RightChild != null ? new StoryEventNode(sn.RightChild?.Node, IntervalsPassed) : null;
+                    HumanStoryteller.StoryComponent.CurrentNodes.Add(left);
+                    HumanStoryteller.StoryComponent.CurrentNodes[i] = right;
                     _missedLastIncidentCheck = true;
                     yield return left;
                     _missedLastIncidentCheck = true;
@@ -159,80 +140,52 @@ namespace HumanStoryteller {
                     yield return right;
                 } else {
                     if (laneCount > 400 && sn.LeftChild == null && sn.RightChild == null) {
-                        StoryComponent.CurrentNodes[i] = null;
+                        HumanStoryteller.StoryComponent.CurrentNodes[i] = null;
                     } else {
-                        StoryNode newEvent = StoryComponent.Story.StoryGraph.TryNewEvent(currentNode, IntervalsPassed);
+                        StoryNode newEvent = HumanStoryteller.StoryComponent.Story.StoryGraph.TryNewEvent(currentNode, IntervalsPassed - currentNode.ExecuteTick);
                         if (newEvent == null) continue;
                         if (!newEvent.StoryEvent.Uuid.Equals(currentNode.StoryNode.StoryEvent.Uuid)) {
                             _missedLastIncidentCheck = true;
                             _consecutiveEventCounter++;
                         }
 
-                        StoryComponent.CurrentNodes[i] = new StoryEventNode(newEvent);
-                        yield return StoryComponent.CurrentNodes[i];
+                        HumanStoryteller.StoryComponent.CurrentNodes[i] = new StoryEventNode(newEvent, IntervalsPassed);
+                        yield return HumanStoryteller.StoryComponent.CurrentNodes[i];
                     }
                 }
             }
 
-            StoryComponent.CurrentNodes.RemoveAll(item => item == null);
+            HumanStoryteller.StoryComponent.CurrentNodes.RemoveAll(item => item == null);
         }
 
         private void CheckStoryRefresh(object source, ElapsedEventArgs e) {
-            if (Current.Game == null || StoryComponent == null || !(Find.TickManager.TicksGame > 0)) {
-                _refreshTimer.Enabled = false;
+            if (Current.Game == null || HumanStoryteller.StoryComponent == null || !(Find.TickManager.TicksGame > 0)) {
+                RefreshTimer.Enabled = false;
                 Tell.Warn("Tried to get story while not in-game");
                 return;
             }
 
-            Storybook.GetStory(StoryComponent.StoryId, GetStoryCallback);
-        }
-
-        private void GetStoryCallback(Story story) {
-            if (Current.Game == null || StoryComponent == null || !(Find.TickManager.TicksGame > 0)) {
-                _refreshTimer.Enabled = false;
-                Tell.Warn("Tried to get story while not in-game");
-                return;
-            }
-
-            if (story == null) {
-                _refreshTimer.Enabled = false;
-                Messages.Message(Translator.Translate("StoryNotFound"), MessageTypeDefOf.NegativeEvent, false);
-                return;
-            }
-
-            HumanStoryteller.InitiateEventUnsafe = true;
-            Thread.Sleep(1000); //Give some time to finish undergoing event executions
-            StoryComponent.Story = story;
-            StoryComponent.AllNodes = StoryComponent.Story.StoryGraph.GetAllNodes();
-            if (StoryComponent.CurrentNodes.Count == 0) {
-                StoryComponent.CurrentNodes.Add(new StoryEventNode(StoryComponent.Story.StoryGraph.Root));
-            } else {
-                for (int i = 0; i < StoryComponent.CurrentNodes.Count; i++) {
-                    var foundNode = StoryComponent.Story.StoryGraph.GetCurrentNode(StoryComponent.CurrentNodes[i]?.StoryNode.StoryEvent.Uuid);
-                    StoryComponent.CurrentNodes[i] = foundNode == null ? null : new StoryEventNode(foundNode, StoryComponent.CurrentNodes[i].Result);
-                }
-
-                StoryComponent.CurrentNodes.RemoveAll(item => item == null);
-            }
-
-            HumanStoryteller.InitiateEventUnsafe = false;
+            Storybook.GetStory(HumanStoryteller.StoryComponent.StoryId, story => HumanStoryteller.GetStoryCallback(story, this));
         }
 
         private void Init() {
-            if (!StoryComponent.Initialised) {
-                StoryComponent.Initialised = true;
-                var storyId = Current.Game.storyteller.def.listOrder;
-                StoryComponent.StoryId = storyId;
-                Tell.Log("STORYTELLER AWOKEN", storyId);
+            if (!HumanStoryteller.StoryComponent.Initialised) {
+                HumanStoryteller.StoryComponent.Initialised = true;
+                Tell.Log("STORYTELLER AWOKEN", HumanStoryteller.StoryComponent.StoryId);
                 Current.Game.Scenario = Current.Game.Scenario.CopyForEditing();
                 Tell.Log("SPLITTING UNIVERSE");
-                StoryComponent.FirstMapOfPlayer = Find.Maps.Find(x => x.ParentFaction.IsPlayer);
-                StoryComponent.SameAsLastEvent = StoryComponent.FirstMapOfPlayer;
+                HumanStoryteller.StoryComponent.FirstMapOfPlayer = Find.Maps.Find(x => x.ParentFaction.IsPlayer);
+                HumanStoryteller.StoryComponent.SameAsLastEvent = HumanStoryteller.StoryComponent.FirstMapOfPlayer;
                 Tell.Log("RECORDED HISTORY");
             } else {
-                Tell.Log("CONTINUING HS GAME", StoryComponent.StoryId);
+                Tell.Log("CONTINUING HS GAME", HumanStoryteller.StoryComponent.StoryId);
             }
-            StoryComponent.ThreatCycle = this;
+
+            HumanStoryteller.StoryComponent.ThreatCycle = this;
+
+            Messages.Message(
+                $"HumanStoryteller story: #{HumanStoryteller.StoryComponent.StoryId}, ALPHA BUILD: {HumanStoryteller.VERSION_NAME} ({HumanStoryteller.VERSION})",
+                MessageTypeDefOf.PositiveEvent);
 
 //            string str = "";
 //            foreach (var def in from d in DefDatabase<MentalBreakDef>.AllDefs
@@ -248,31 +201,34 @@ namespace HumanStoryteller {
 //            }
 //            Tell.Log(str);
 
-            Storybook.GetStory(StoryComponent.StoryId, GetStoryCallback);
-            _refreshTimer.Elapsed += CheckStoryRefresh;
-            _refreshTimer.Interval = LONG_REFRESH;
-            _refreshTimer.Enabled = true;
+            if (HumanStoryteller.IsNoStory) {
+                Storybook.GetStory(HumanStoryteller.StoryComponent.StoryId, story => HumanStoryteller.GetStoryCallback(story, this));
+            }
+
+            RefreshTimer.Elapsed += CheckStoryRefresh;
+            RefreshTimer.Interval = HumanStoryteller.LONG_REFRESH;
+            RefreshTimer.Enabled = true;
         }
 
-        public RefreshRate CurrentRate => currentRate;
+        public HumanStoryteller.RefreshRate CurrentRate => currentRate;
 
-        public void SetRefreshRate(RefreshRate rate) {
+        public void SetRefreshRate(HumanStoryteller.RefreshRate rate) {
             switch (rate) {
-                case RefreshRate.Short:
-                    _refreshTimer.Interval = SHORT_REFRESH;
-                    currentRate = RefreshRate.Short;
+                case HumanStoryteller.RefreshRate.Short:
+                    RefreshTimer.Interval = HumanStoryteller.SHORT_REFRESH;
+                    currentRate = HumanStoryteller.RefreshRate.Short;
                     break;
-                case RefreshRate.Medium:
-                    _refreshTimer.Interval = MEDIUM_REFRESH;
-                    currentRate = RefreshRate.Medium;
+                case HumanStoryteller.RefreshRate.Medium:
+                    RefreshTimer.Interval = HumanStoryteller.MEDIUM_REFRESH;
+                    currentRate = HumanStoryteller.RefreshRate.Medium;
                     break;
-                case RefreshRate.Long:
-                    _refreshTimer.Interval = LONG_REFRESH;
-                    currentRate = RefreshRate.Long;
+                case HumanStoryteller.RefreshRate.Long:
+                    RefreshTimer.Interval = HumanStoryteller.LONG_REFRESH;
+                    currentRate = HumanStoryteller.RefreshRate.Long;
                     break;
-                case RefreshRate.Off:
-                    _refreshTimer.Interval = OFF_REFRESH;
-                    currentRate = RefreshRate.Off;
+                case HumanStoryteller.RefreshRate.Off:
+                    RefreshTimer.Interval = HumanStoryteller.OFF_REFRESH;
+                    currentRate = HumanStoryteller.RefreshRate.Off;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(rate), rate, null);

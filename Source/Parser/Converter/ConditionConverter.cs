@@ -50,6 +50,9 @@ namespace HumanStoryteller.Parser.Converter {
                         GetHealthCondition(obj["healthCondition"].Value<string>()));
                 case MapCreatedCheck.Name:
                     return new MapCreatedCheck(obj["mapName"].Value<string>());
+                case ColonistOnMapCheck.Name:
+                    return new ColonistOnMapCheck(obj["mapName"].Value<string>(),
+                        obj["pawnName"].Value<string>());
                 case ColonistsOnMapCheck.Name:
                     return new ColonistsOnMapCheck(obj["mapName"].Value<string>(),
                         GetNumeralCompareResponse(obj["compareType"].Value<string>()),

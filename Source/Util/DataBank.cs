@@ -6,7 +6,7 @@ namespace HumanStoryteller.Util {
     public class DataBank {
         public static void ProcessVariableModifications(List<VariableModifications> mods) {
             if (mods == null || mods.Count < 1) return;
-            Dictionary<string, float> variableBank = StorytellerComp_HumanThreatCycle.StoryComponent.VariableBank;
+            Dictionary<string, float> variableBank = HumanStoryteller.StoryComponent.VariableBank;
             foreach (var mod in mods) {
                 if (!variableBank.ContainsKey(mod.Name)) {
                     variableBank.Add(mod.Name, 0);
@@ -29,6 +29,9 @@ namespace HumanStoryteller.Util {
                     case ModificationType.Equal:
                         variableBank[mod.Name] = mod.Constant;
                         break;
+                    case ModificationType.EqualVar:
+                        variableBank[mod.Name] = GetValueFromVariable(mod.NewVar);
+                        break;
                     default:
                         Tell.Err("Variable modification type not present or known");
                         break;
@@ -38,7 +41,7 @@ namespace HumanStoryteller.Util {
 
         public static string VariableBankToString() {
             var result = "";
-            foreach (var pair in StorytellerComp_HumanThreatCycle.StoryComponent.VariableBank) {
+            foreach (var pair in HumanStoryteller.StoryComponent.VariableBank) {
                 result += $"{pair.Key} = {pair.Value}\n";
             }
 
@@ -50,7 +53,7 @@ namespace HumanStoryteller.Util {
         }
 
         public static float GetValueFromVariable(string variable) {
-            Dictionary<string, float> variableBank = StorytellerComp_HumanThreatCycle.StoryComponent.VariableBank;
+            Dictionary<string, float> variableBank = HumanStoryteller.StoryComponent.VariableBank;
 
             if (!variableBank.ContainsKey(variable)) {
                 variableBank.Add(variable, 0);

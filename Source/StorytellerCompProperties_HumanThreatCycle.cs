@@ -5,7 +5,7 @@ namespace HumanStoryteller {
     public class StorytellerCompProperties_HumanThreatCycle : StorytellerCompProperties {
         public StorytellerCompProperties_HumanThreatCycle() {
             compClass = typeof(StorytellerComp_HumanThreatCycle);
-            Tell.Log("Init - version 0.0.1");
+            Tell.Log("Init - version " + HumanStoryteller.VERSION + " " + HumanStoryteller.VERSION_NAME);
         }
 
         //TODO add config??

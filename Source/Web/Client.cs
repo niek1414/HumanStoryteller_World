@@ -15,6 +15,12 @@ namespace HumanStoryteller.Web {
             restClient.ExecuteAsyncGet(request, callback, "GET");
         }
 
+        public static IRestResponse Get(string url) {
+            RestClient restClient = CreateRestClient();
+            RestRequest request = new RestRequest(url, Method.GET);
+            return restClient.ExecuteAsGet(request, "GET");
+        }
+
         public static void GetByPaginationAndFilter(string url, Action<IRestResponse, RestRequestAsyncHandle> callback, long start, long amount,
             string filterName, string filterDescription, string filterCreator, String ticket = null) {
             RestClient restClient = CreateRestClient();

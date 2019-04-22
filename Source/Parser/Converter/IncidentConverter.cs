@@ -31,6 +31,10 @@ namespace HumanStoryteller.Parser.Converter {
             }
 
             switch (type) {
+                case HumanIncidentWorker_Root.Name:
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_Root(),
+                        new HumanIncidentParams_Root(defaultIncidentTarget, defaultLetter));
+                    break;
                 case HumanIncidentWorker_Nothing.Name:
                     incident = new FiringHumanIncident(new HumanIncidentWorker_Nothing(),
                         new HumanIncidentParms(defaultIncidentTarget, defaultLetter));

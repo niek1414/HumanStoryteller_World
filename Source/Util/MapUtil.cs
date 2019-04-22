@@ -10,7 +10,7 @@ namespace HumanStoryteller.Util {
         private const int CleanupCounterMax = 10;
 
         public static Map GetMapByName(String name, bool warn = true) {
-            var mapBank = StorytellerComp_HumanThreatCycle.StoryComponent.MapBank;
+            var mapBank = HumanStoryteller.StoryComponent.MapBank;
 
             _cleanupCounter++;
             if (_cleanupCounter >= CleanupCounterMax) {
@@ -45,27 +45,27 @@ namespace HumanStoryteller.Util {
         }
 
         public static Map FirstOfPlayer() {
-            return StorytellerComp_HumanThreatCycle.StoryComponent.FirstMapOfPlayer;
+            return HumanStoryteller.StoryComponent.FirstMapOfPlayer;
         }
 
         public static Map SameAsLastEvent() {
-            return StorytellerComp_HumanThreatCycle.StoryComponent.SameAsLastEvent;
+            return HumanStoryteller.StoryComponent.SameAsLastEvent;
         }
 
         public static void SaveMapByName(String name, MapParent map) {
-            if (StorytellerComp_HumanThreatCycle.StoryComponent.PawnBank.ContainsKey(name)) {
+            if (HumanStoryteller.StoryComponent.PawnBank.ContainsKey(name)) {
                 RemoveName(name);
             }
 
-            StorytellerComp_HumanThreatCycle.StoryComponent.MapBank.Add(name, map);
+            HumanStoryteller.StoryComponent.MapBank.Add(name, map);
         }
 
         public static void RemoveName(string name) {
-            StorytellerComp_HumanThreatCycle.StoryComponent.MapBank.Remove(name);
+            HumanStoryteller.StoryComponent.MapBank.Remove(name);
         }
 
         public static bool MapExists(Map map) {
-            var mapBank = StorytellerComp_HumanThreatCycle.StoryComponent.MapBank;
+            var mapBank = HumanStoryteller.StoryComponent.MapBank;
             foreach (var pair in mapBank) {
                 if (pair.Value?.Map == map) {
                     return true;

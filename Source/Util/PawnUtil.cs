@@ -9,7 +9,7 @@ namespace HumanStoryteller.Util {
         private const int CleanupCounterMax = 100;
 
         public static Pawn GetPawnByName(String name) {
-            var pawnBank = StorytellerComp_HumanThreatCycle.StoryComponent.PawnBank;
+            var pawnBank = HumanStoryteller.StoryComponent.PawnBank;
             
             _cleanupCounter++;
             if (_cleanupCounter >= CleanupCounterMax) {
@@ -45,14 +45,14 @@ namespace HumanStoryteller.Util {
                     break;
             }
 
-            if (StorytellerComp_HumanThreatCycle.StoryComponent.PawnBank.ContainsKey(name)) {
+            if (HumanStoryteller.StoryComponent.PawnBank.ContainsKey(name)) {
                 RemoveName(name);
             }
-            StorytellerComp_HumanThreatCycle.StoryComponent.PawnBank.Add(name, pawn);
+            HumanStoryteller.StoryComponent.PawnBank.Add(name, pawn);
         }
 
         public static void RemoveName(string name) {
-            StorytellerComp_HumanThreatCycle.StoryComponent.PawnBank.Remove(name);
+            HumanStoryteller.StoryComponent.PawnBank.Remove(name);
         }
 
         public static Gender GetGender(string genderString) {
@@ -67,7 +67,7 @@ namespace HumanStoryteller.Util {
         }
 
         public static bool PawnExists(Pawn pawn) {
-            var pawnBank = StorytellerComp_HumanThreatCycle.StoryComponent.PawnBank;
+            var pawnBank = HumanStoryteller.StoryComponent.PawnBank;
             foreach (var pair in pawnBank) {
                 if (pair.Value == pawn) {
                     return true;

@@ -61,7 +61,6 @@ namespace HumanStoryteller.Patch {
         }
 
         public static void PreOpen() {
-            DefDatabase<StorytellerDef>.AllDefs.First(a => a.defName == "Human").listOrder = 50;
             reset();
             RefreshList(false);
         }
@@ -74,12 +73,27 @@ namespace HumanStoryteller.Patch {
                     return;
                 }
 
-                Current.Game.storyteller.def.listOrder = (int) _selectedSummary.Id;
+                HumanStoryteller.StoryComponent.StoryId = (int) _selectedSummary.Id;
+                LongEventHandler.QueueLongEvent(
+                    delegate { HumanStoryteller.GetStoryCallback(Storybook.GetStory(HumanStoryteller.StoryComponent.StoryId)); }, "LoadingStory",
+                    true, ErrorWhileLoadingStory);
             } finally {
                 if (__result) {
                     reset();
                 }
             }
+        }
+
+        public static void ErrorWhileLoadingStory(Exception e) {
+            Tell.Err("Failed to load story, " + e.Message + " __TRACE__ " + e.StackTrace);
+            string text = "LoadingStoryFailed".Translate() + "\n\nError:" + e.Message + " More info in console ";
+            string loadedModsSummary;
+            string runningModsSummary;
+            if (!ScribeMetaHeaderUtility.LoadedModsMatchesActiveMods(out loadedModsSummary, out runningModsSummary))
+                text = text + "\n\n" + "ModsMismatchWarningText".Translate((NamedArgument) loadedModsSummary, (NamedArgument) runningModsSummary);
+            DelayedErrorWindowRequest.Add(text, "ErrorWhileLoadingMapTitle".Translate());
+            Scribe.ForceStop();
+            GenScene.GoToMainMenu();
         }
 
         public static void DrawStorytellerSelectionInterface(Rect rect, ref StorytellerDef chosenStoryteller, ref DifficultyDef difficulty,
@@ -117,7 +131,7 @@ namespace HumanStoryteller.Patch {
                     RefreshListRandom();
                 }
             }
-            
+
             if (Widgets.ButtonText(new Rect(stories.center.x - 40, stories.yMax - 40, 30, 40), "<", true, false, _pageNumber != 0)) {
                 if (!_loading && _pageNumber != 0) {
                     _pageNumber--;
@@ -162,7 +176,7 @@ namespace HumanStoryteller.Patch {
                     RefreshList();
                 }
             }
-            
+
             Text.Font = GameFont.Tiny;
             Widgets.Label(new Rect(stories.xMax - 90, stories.yMax - 14, 90, 17),
                 "Picked story: #" + (_selectedSummary == null ? "-" : _selectedSummary.Id.ToString()));
@@ -252,6 +266,10 @@ namespace HumanStoryteller.Patch {
 
             if (!selected && Widgets.ButtonInvisible(rect)) {
                 _selectedSummary = story;
+                if (HumanStoryteller.StoryComponent.Initialised) {
+                    HumanStoryteller.StoryComponent.StoryId = story.Id;
+                    HumanStoryteller.StoryComponent.ForcedUpdate = true;
+                }
                 SoundDefOf.Click.PlayOneShotOnCamera();
             }
         }

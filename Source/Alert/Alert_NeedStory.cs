@@ -13,7 +13,7 @@ namespace HumanStoryteller
 
 		public override RimWorld.AlertReport GetReport()
 		{
-			return StorytellerComp_HumanThreatCycle.IsNoStory && StorytellerComp_HumanThreatCycle.HumanStorytellerGame;
+			return HumanStoryteller.IsNoStory && HumanStoryteller.HumanStorytellerGame;
 		}
 	}
 }

@@ -78,7 +78,7 @@ namespace HumanStoryteller.Parser {
 
         public static void LogParseError(String type, String value) {
             Tell.Err("Unknown " + type + " type while parsing (type = null), consider updating the mod. Value was " +
-                      (value == null ? "null" : value));
+                      (value ?? "null"));
         }
     }
 }

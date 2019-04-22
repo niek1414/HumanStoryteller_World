@@ -23,8 +23,8 @@ namespace HumanStoryteller.Incidents {
             Tell.Log($"Executing event {Name} with:{allParams}");
 
             Map map = (Map) allParams.GetTarget();
-            SiteCoreDef siteCoreDef = DefDatabase<SiteCoreDef>.GetNamed(allParams.QuestType);
-            SitePartDef sitePartDef = DefDatabase<SitePartDef>.GetNamed(allParams.ThreatType);
+            SiteCoreDef siteCoreDef = DefDatabase<SiteCoreDef>.GetNamed(allParams.QuestType, false);
+            SitePartDef sitePartDef = DefDatabase<SitePartDef>.GetNamed(allParams.ThreatType, false);
 
             if (siteCoreDef == null) {
                 siteCoreDef = SiteCoreDefOf.Nothing;

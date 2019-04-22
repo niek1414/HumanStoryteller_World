@@ -41,10 +41,11 @@ namespace HumanStoryteller.Incidents {
                 if (faction == null && !PawnGroupMakerUtility.TryGetRandomFactionForCombatPawnGroup(points, out faction,
                         f => FactionCanBeGroupSource(f, map, true), true, true, true)) {
                     Tell.Err("Found no faction that satisfies requirements; p=" + points + " m=" + map, false);
-                    return ir;
+                    faction = Find.FactionManager.RandomEnemyFaction();
                 }
             }
 
+            Tell.Warn(faction.Name);
             PawnGroupKindDef combat = PawnGroupKindDefOf.Combat;
 
             IncidentParms fakeParms = new IncidentParms();
@@ -61,8 +62,9 @@ namespace HumanStoryteller.Incidents {
                     where d.Worker.CanUseWith(fakeParms, PawnGroupKindDefOf.Combat) &&
                           (fakeParms.raidArrivalMode != null || d.arriveModes != null && d.arriveModes.Any(x => x.Worker.CanUseWith(fakeParms)))
                     select d).TryRandomElementByWeight(d => d.Worker.SelectionWeight(map, fakeParms.points), out fakeParms.raidStrategy)) {
-                    Log.Warning("No raid stategy for " + faction + " with points " + points + ", groupKind=" + PawnGroupKindDefOf.Combat + "\nparms=" +
-                              parms);
+                    Log.Warning("No raid stategy for " + faction + " with points " + points + ", groupKind=" + PawnGroupKindDefOf.Combat +
+                                "\nparms=" +
+                                parms);
                     fakeParms.raidStrategy = RaidStrategyDefOf.ImmediateAttack;
                 }
             }
@@ -85,7 +87,7 @@ namespace HumanStoryteller.Incidents {
 
             if (!arriveMode.Worker.TryResolveRaidSpawnCenter(fakeParms)) {
                 Tell.Err("Could not resolve spawn center for raid.");
-                return ir;
+                fakeParms.spawnCenter = CellFinder.RandomEdgeCell(map);
             }
 
             points = AdjustedRaidPoints(points, arriveMode, strategy, faction, combat);
@@ -94,15 +96,20 @@ namespace HumanStoryteller.Incidents {
             PawnGroupMakerParms defaultPawnGroupMakerParms = IncidentParmsUtility.GetDefaultPawnGroupMakerParms(combat, fakeParms);
             List<Pawn> list = new List<Pawn>();
             var amount = Mathf.RoundToInt(allParams.Amount.GetValue());
-            while (amount > list.Count) {
+            if (amount == -1) {
                 list.AddRange(PawnGroupMakerUtility.GeneratePawns(defaultPawnGroupMakerParms).ToList());
+            } else {
+                while (amount > list.Count) {
+                    list.AddRange(PawnGroupMakerUtility.GeneratePawns(defaultPawnGroupMakerParms).ToList());
+                }
+
+                if (amount != list.Count) {
+                    list = list.Take(amount).ToList();
+                }
             }
 
-            if (amount != -1 && amount != list.Count) {
-                list = list.Take(amount).ToList();
-            }
             if (list.Count == 0) {
-                Tell.Err("Got no pawns spawning raid from parms " + fakeParms);
+                Tell.Err("Got no pawns spawning raid from parms " + fakeParms, fakeParms);
                 return ir;
             }
 
@@ -225,11 +232,13 @@ namespace HumanStoryteller.Incidents {
         }
 
         public HumanIncidentParams_RaidEnemy(String target, HumanLetter letter, String faction = "",
-            String strategy = "", String arriveMode = "", List<String> names = null) : this(target, letter, new Number(), new Number(), faction, strategy,
+            String strategy = "", String arriveMode = "", List<String> names = null) : this(target, letter, new Number(), new Number(), faction,
+            strategy,
             arriveMode, names) {
         }
 
-        public HumanIncidentParams_RaidEnemy(string target, HumanLetter letter, Number points, Number amount, string faction, string strategy, string arriveMode,
+        public HumanIncidentParams_RaidEnemy(string target, HumanLetter letter, Number points, Number amount, string faction, string strategy,
+            string arriveMode,
             List<string> names) : base(target, letter) {
             Points = points;
             Amount = amount;
@@ -240,7 +249,8 @@ namespace HumanStoryteller.Incidents {
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, Points: {Points}, Amount: {Amount}, Faction: {Faction}, Strategy: {Strategy}, ArriveMode: {ArriveMode}, Names: {Names}";
+            return
+                $"{base.ToString()}, Points: {Points}, Amount: {Amount}, Faction: {Faction}, Strategy: {Strategy}, ArriveMode: {ArriveMode}, Names: {Names}";
         }
 
         public override void ExposeData() {

@@ -2,14 +2,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using HumanStoryteller.CheckConditions;
+using HumanStoryteller.Incidents;
 using HumanStoryteller.Model;
+using HumanStoryteller.Util;
 using RimWorld;
 using Verse;
 
 namespace HumanStoryteller {
     public class StoryGraph : IExposable {
         private StoryNode _root;
-        private int _lastTransition;
 
         public StoryGraph() {
         }
@@ -18,8 +19,7 @@ namespace HumanStoryteller {
             _root = root;
         }
 
-        public StoryNode TryNewEvent(StoryEventNode current, int bigTick) {
-            int tickPassed = bigTick - _lastTransition;
+        public StoryNode TryNewEvent(StoryEventNode current, int tickPassed) {
             var storyNode = current?.StoryNode;
             if (current?.StoryNode == null
                 || storyNode.LeftChild == null && storyNode.RightChild == null
@@ -50,7 +50,6 @@ namespace HumanStoryteller {
             }
 
             if (next.Offset <= tickPassed) {
-                _lastTransition = bigTick;
                 return next.Node;
             }
 
@@ -108,13 +107,20 @@ namespace HumanStoryteller {
 
         public StoryNode Root => _root;
 
+        public HumanIncidentParams_Root InitParams() {
+            if (Root.StoryEvent.Incident.Parms is HumanIncidentParams_Root rootParams) {
+                return rootParams;
+            }
+            Tell.Log("Root event should be of type 'HumanIncidentParams_Root' but is: " + Root.StoryEvent.Incident.Parms.GetType());
+            return null;
+        }
+
         public override string ToString() {
-            return $"Root: {_root}, LastTransition: {_lastTransition}";
+            return $"Root: {_root}";
         }
         
         public void ExposeData() {
             Scribe_References.Look(ref _root, "storyNode");
-            Scribe_Values.Look(ref _lastTransition, "lastTransaction");
         }
     }
 }

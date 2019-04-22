@@ -22,10 +22,18 @@ namespace HumanStoryteller.Incidents {
             HumanIncidentParams_SetRelation allParams = Tell.AssertNotNull((HumanIncidentParams_SetRelation) parms, nameof(parms), GetType().Name);
             Tell.Log($"Executing event {Name} with:{allParams}");
 
+
             Faction faction;
             try {
                 faction = Find.FactionManager.AllFactions.First(f => f.def.defName == allParams.Faction);
-                faction.TryAffectGoodwillWith(Faction.OfPlayer, Mathf.RoundToInt(allParams.FactionRelation.GetValue()), false, true, null, null);
+                var relationFlux = allParams.FactionRelation.GetValue();
+                if (relationFlux != 0) {
+                    faction.TryAffectGoodwillWith(Faction.OfPlayer, Mathf.RoundToInt(relationFlux), false, true, null, null);
+                }
+
+                if (allParams.NewName != "") {
+                    faction.Name = allParams.NewName;
+                }
             } catch (InvalidOperationException) {
             }
 
@@ -38,26 +46,30 @@ namespace HumanStoryteller.Incidents {
     public class HumanIncidentParams_SetRelation : HumanIncidentParms {
         public Number FactionRelation;
         public string Faction;
+        public string NewName;
 
         public HumanIncidentParams_SetRelation() {
         }
 
-        public HumanIncidentParams_SetRelation(String target, HumanLetter letter, string faction = "") :
-            this(target, letter, new Number(0), faction) {
+        public HumanIncidentParams_SetRelation(String target, HumanLetter letter, string faction = "", string newName = "") :
+            this(target, letter, new Number(0), faction, newName) {
         }
 
-        public HumanIncidentParams_SetRelation(string target, HumanLetter letter, Number factionRelation, string faction) : base(target, letter) {
+        public HumanIncidentParams_SetRelation(string target, HumanLetter letter, Number factionRelation, string faction, string newName) : base(target, letter) {
             FactionRelation = factionRelation;
             Faction = faction;
+            NewName = newName;
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, FactionRelation: {FactionRelation}, Faction: {Faction}";
+            return $"{base.ToString()}, FactionRelation: {FactionRelation}, Faction: {Faction}, NewName: {NewName}";
         }
 
         public override void ExposeData() {
             base.ExposeData();
             Scribe_Deep.Look(ref FactionRelation, "factionRelation");
+            Scribe_Values.Look(ref Faction, "faction");
+            Scribe_Values.Look(ref NewName, "newName");
         }
     }
 }

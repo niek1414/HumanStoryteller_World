@@ -25,12 +25,13 @@ namespace HumanStoryteller.Incidents {
                 allParams = Tell.AssertNotNull((HumanIncidentParams_RenamePawn) parms, nameof(parms), GetType().Name);
             Tell.Log($"Executing event {Name} with:{allParams}");
 
+            Map map = (Map) allParams.GetTarget();
+            
             Pawn pawn = null;
             if (allParams.Name != "") {
                 pawn = PawnUtil.GetPawnByName(allParams.Name);
             } else {
-                if (PawnsFinder.AllMapsCaravansAndTravelingTransportPods_Alive_FreeColonists_NoCryptosleep.Where(p => !PawnUtil.PawnExists(p))
-                    .TryRandomElement(out Pawn result)) {
+                if (map.mapPawns.FreeColonists.Where(p => !PawnUtil.PawnExists(p)).TryRandomElement(out Pawn result)) {
                     pawn = result;
                 }
             }

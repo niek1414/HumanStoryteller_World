@@ -74,6 +74,7 @@
     <Compile Include="CheckConditions\CheatCheck.cs" />
     <Compile Include="CheckConditions\CheckCondition.cs" />
     <Compile Include="CheckConditions\ColoniesCheck.cs" />
+    <Compile Include="CheckConditions\ColonistOnMapCheck.cs" />
     <Compile Include="CheckConditions\ColonistsCheck.cs" />
     <Compile Include="CheckConditions\ColonistsOnMapCheck.cs" />
     <Compile Include="CheckConditions\DialogCheck.cs" />
@@ -123,6 +124,7 @@
     <Compile Include="Incidents\HumanIncidentWorker_RenamePawn.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_Research.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_ResourcePodCrash.cs" />
+    <Compile Include="Incidents\HumanIncidentWorker_Root.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_Rules.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_SelfTame.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_SetRelation.cs" />
@@ -337,7 +339,9 @@
     <Compile Include="Parser\Parser.cs" />
     <Compile Include="Parser\Story.cs" />
     <Compile Include="Parser\ParseNode.cs" />
+    <Compile Include="Patch\CreateWorldUI_Patch.cs" />
     <Compile Include="Patch\Main_Patch.cs" />
+    <Compile Include="Patch\SelectStartingSiteUI_Patch.cs" />
     <Compile Include="Patch\StorytellerUI_Patch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MainTabWindow_RateTab.cs" />

@@ -7,7 +7,7 @@ using Verse;
 namespace HumanStoryteller.Incidents {
     public abstract class HumanIncidentWorker : IExposable {
         public void PreExecute(HumanIncidentParms parms) {
-            StorytellerComp_HumanThreatCycle.StoryComponent.SameAsLastEvent = (Map) parms.GetTarget();
+            HumanStoryteller.StoryComponent.SameAsLastEvent = (Map) parms.GetTarget();
         }
 
         public abstract IncidentResult Execute(HumanIncidentParms parms);
