@@ -83,6 +83,7 @@
     <Compile Include="CheckConditions\ItemMapCheck.cs" />
     <Compile Include="CheckConditions\MapCreatedCheck.cs" />
     <Compile Include="CheckConditions\PawnHealthCheck.cs" />
+    <Compile Include="CheckConditions\QuestCheck.cs" />
     <Compile Include="CheckConditions\RandomCheck.cs" />
     <Compile Include="CheckConditions\RelationCheck.cs" />
     <Compile Include="CheckConditions\ResearchCheck.cs" />
@@ -109,6 +110,7 @@
     <Compile Include="Incidents\HumanIncidentWorker_HealPawn.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_HerdMigration.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_Infestation.cs" />
+    <Compile Include="Incidents\HumanIncidentWorker_IntentGiver.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_KillPawn.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_ManhunterPack.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_MentalBreak.cs" />

@@ -53,6 +53,8 @@ namespace HumanStoryteller.Parser.Converter {
                 case ColonistOnMapCheck.Name:
                     return new ColonistOnMapCheck(obj["mapName"].Value<string>(),
                         obj["pawnName"].Value<string>());
+                case QuestCheck.Name:
+                    return new QuestCheck(GetQuestResponse(obj["questState"].Value<string>()));
                 case ColonistsOnMapCheck.Name:
                     return new ColonistsOnMapCheck(obj["mapName"].Value<string>(),
                         GetNumeralCompareResponse(obj["compareType"].Value<string>()),
@@ -178,6 +180,20 @@ namespace HumanStoryteller.Parser.Converter {
             } catch (KeyNotFoundException) {
                 Parser.LogParseError("health condition", type);
                 return PawnHealthCheck.HealthCondition.Alive;
+            }
+        }
+
+        private QuestResponse GetQuestResponse(String type) {
+            if (type == null) {
+                Parser.LogParseError("quest state", type);
+                return QuestResponse.Pending;
+            }
+
+            try {
+                return QuestCheck.dict[type];
+            } catch (KeyNotFoundException) {
+                Parser.LogParseError("quest state", type);
+                return QuestResponse.Pending;
             }
         }
 

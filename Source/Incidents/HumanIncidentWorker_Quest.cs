@@ -73,8 +73,8 @@ namespace HumanStoryteller.Incidents {
             site.GetComponent<TimeoutComp>().StartTimeout(Mathf.RoundToInt(duration * 60000));
             Pawn pawn;
             IncidentDef def;
-            string label = "";
-            string desc = "";
+            string label = "A location";
+            string desc = "A location has been uncovered.";
             switch (siteCoreDef.defName) {
                 case "DownedRefugee":
                     pawn = DownedRefugeeQuestUtility.GenerateRefugee(tile);
