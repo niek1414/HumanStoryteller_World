@@ -4,8 +4,6 @@ using System.Linq;
 using HumanStoryteller.Model;
 using HumanStoryteller.Util;
 using RimWorld;
-using RimWorld.Planet;
-using UnityEngine;
 using Verse;
 using Verse.AI;
 using Verse.AI.Group;
@@ -111,18 +109,35 @@ namespace HumanStoryteller.Incidents {
                 case "SleepThenAssaultColony":
                     return new LordJob_SleepThenAssaultColony(list[0].Faction, true);
                 case "TravelAndExit":
-                    return new LordJob_TravelAndExit();
+                    return new LordJob_TravelAndExit(MapUtil.FindLocationByName(allParams.FirstStringParam, map));
                 case "Travel":
-                    return new LordJob_Travel();
+                    return new LordJob_Travel(MapUtil.FindLocationByName(allParams.FirstStringParam, map));
                 case "ExitMapBest":
-                    return new LordJob_ExitMapBest();
-                case "ExitMapNear":
-                    return new LordJob_ExitMapNear();
+                    return new LordJob_ExitMapBest(GetUrgencyFromString(allParams.FirstStringParam));
                 case "DefendPoint":
-                    return new LordJob_DefendPoint();
+                    return new LordJob_DefendPoint(MapUtil.FindLocationByName(allParams.FirstStringParam, map));
+                default:
+                    return null;
             }
         }
 
+        private static LocomotionUrgency GetUrgencyFromString(string str) {
+            switch (str) {
+                case "None":
+                    return LocomotionUrgency.None;
+                case "Amble":
+                    return LocomotionUrgency.Amble;
+                case "Walk":
+                    return LocomotionUrgency.Walk;
+                case "Jog":
+                    return LocomotionUrgency.Jog;
+                case "Sprint":
+                    return LocomotionUrgency.Sprint;
+                default:
+                    return LocomotionUrgency.Walk;
+            }
+        }
+        
         private static bool TryFindGroupUpLoc(List<Pawn> escapingPrisoners, IntVec3 exitPoint, out IntVec3 groupUpLoc) {
             groupUpLoc = IntVec3.Invalid;
             Map map = escapingPrisoners[0].Map;
@@ -156,7 +171,6 @@ namespace HumanStoryteller.Incidents {
         public string FirstStringParam;
         public string SecondStringParam;
         public Number FirstNumberParam;
-        public Number SecondNumberParam;
 
         public HumanIncidentParams_IntentGiver() {
             Names = new List<string>();
@@ -164,7 +178,6 @@ namespace HumanStoryteller.Incidents {
             FirstStringParam = "";
             SecondStringParam = "";
             FirstNumberParam = new Number();
-            SecondNumberParam = new Number();
         }
 
         public HumanIncidentParams_IntentGiver(string target, HumanLetter letter) : base(target, letter) {
@@ -173,7 +186,6 @@ namespace HumanStoryteller.Incidents {
             FirstStringParam = "";
             SecondStringParam = "";
             FirstNumberParam = new Number();
-            SecondNumberParam = new Number();
         }
 
         public override void ExposeData() {
@@ -183,7 +195,6 @@ namespace HumanStoryteller.Incidents {
             Scribe_Values.Look(ref FirstStringParam, "firstStringParam");
             Scribe_Values.Look(ref SecondStringParam, "secondStringParam");
             Scribe_Deep.Look(ref FirstNumberParam, "firstNumberParam");
-            Scribe_Deep.Look(ref SecondNumberParam, "secondNumberParam");
         }
     }
 }

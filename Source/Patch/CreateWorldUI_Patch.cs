@@ -30,6 +30,13 @@ namespace HumanStoryteller.Patch {
                 Traverse.Create(page).Field("temperature").SetValue(SeverityToTemperature(initParams.Rainfall.GetValue()));
 
                 Widgets.Label(new Rect(rect.x, rect.y + 250, rect.width, 30), "ParametersOverriden".Translate());
+
+                var value = initParams.PawnAmount.GetValue();
+                if (value != -1) {
+                    Find.GameInitData.startingPawnCount = Mathf.RoundToInt(value);
+                }
+
+                Find.GameInitData.startingPawnCount = Mathf.RoundToInt(initParams.PawnAmount.GetValue());
             }
         }
 

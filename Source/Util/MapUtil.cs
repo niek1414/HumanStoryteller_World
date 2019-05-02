@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RimWorld;
 using RimWorld.Planet;
 using Verse;
 
@@ -73,6 +74,37 @@ namespace HumanStoryteller.Util {
             }
 
             return false;
+        }
+
+        public static IntVec3 FindLocationByName(string loc, Map map) {
+            switch (loc) {
+                case "RandomEdge":
+                    if (DropCellFinder.TryFindDropSpotNear(CellFinder.RandomEdgeCell(map), map, out var outResult, false, true)) {
+                        return outResult;
+                    } else {
+                        return DropCellFinder.RandomDropSpot(map);
+                    }
+
+                case "Center":
+                    return RCellFinder.TryFindRandomCellNearWith(map.Center, null, map, out var result)
+                        ? result
+                        : DropCellFinder.RandomDropSpot(map);
+                case "OutsideColony":
+                    return RCellFinder.TryFindRandomSpotJustOutsideColony(map.Center, map, out var result2)
+                        ? result2
+                        : DropCellFinder.RandomDropSpot(map);
+                case "Siege":
+                    return RCellFinder.FindSiegePositionFrom(map.Center, map);
+                case "Random":
+                    return DropCellFinder.RandomDropSpot(map);
+                default:
+                    Pawn p = PawnUtil.GetPawnByName(loc);
+                    if (p == null || p.Map != map) {
+                        return DropCellFinder.RandomDropSpot(map);
+                    }
+
+                    return p.Position;
+            }
         }
     }
 }

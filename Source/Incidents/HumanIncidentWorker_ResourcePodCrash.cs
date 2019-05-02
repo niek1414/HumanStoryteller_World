@@ -58,24 +58,7 @@ namespace HumanStoryteller.Incidents {
                 things = ThingSetMakerDefOf.ResourcePod.root.Generate();
             }
 
-            IntVec3 intVec;
-            switch (allParams.Location) {
-                case "RandomEdge":
-                    if (DropCellFinder.TryFindDropSpotNear(CellFinder.RandomEdgeCell(map), map, out var outResult, false, true)) {
-                        intVec = outResult;
-                    } else {
-                        intVec = DropCellFinder.RandomDropSpot(map);
-                    }
-                    break;
-                case "Center":
-                    intVec = RCellFinder.TryFindRandomCellNearWith(map.Center, null, map, out var result)
-                        ? result
-                        : DropCellFinder.RandomDropSpot(map);
-                    break;
-                default:
-                    intVec = DropCellFinder.RandomDropSpot(map);
-                    break;
-            }
+            IntVec3 intVec = MapUtil.FindLocationByName(allParams.Location, map);
 
             DropPodUtility.DropThingsNear(intVec, map, things, 110, allParams.InstaPlace, true);
             SendLetter(allParams, "LetterLabelCargoPodCrash".Translate(), "CargoPodCrash".Translate(), LetterDefOf.PositiveEvent,
