@@ -9,7 +9,7 @@ namespace HumanStoryteller.Incidents {
     class HumanIncidentWorker_Root : HumanIncidentWorker {
         public const String Name = "Root";
 
-        public override IncidentResult Execute(HumanIncidentParms parms) {
+        protected override IncidentResult Execute(HumanIncidentParms parms) {
             Tell.Err("Root object should NEVER be executed!");
             throw new InvalidOperationException("HS_ Root object should NEVER be executed!");
         }

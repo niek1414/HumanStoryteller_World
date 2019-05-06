@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HumanStoryteller.CheckConditions;
 using HumanStoryteller.Model;
 using HumanStoryteller.Util;
 using RimWorld;
@@ -12,7 +13,7 @@ namespace HumanStoryteller.Incidents {
     class HumanIncidentWorker_Quest : HumanIncidentWorker {
         public const String Name = "Quest";
 
-        public override IncidentResult Execute(HumanIncidentParms parms) {
+        protected override IncidentResult Execute(HumanIncidentParms parms) {
             IncidentResult ir = new IncidentResult();
             if (!(parms is HumanIncidentParams_Quest)) {
                 Tell.Err("Tried to execute " + GetType() + " but param type was " + parms.GetType());
@@ -23,6 +24,7 @@ namespace HumanStoryteller.Incidents {
             Tell.Log($"Executing event {Name} with:{allParams}");
 
             Map map = (Map) allParams.GetTarget();
+            
             SiteCoreDef siteCoreDef = DefDatabase<SiteCoreDef>.GetNamed(allParams.QuestType, false);
             SitePartDef sitePartDef = DefDatabase<SitePartDef>.GetNamed(allParams.ThreatType, false);
 
@@ -59,7 +61,7 @@ namespace HumanStoryteller.Incidents {
             Site site = SiteMaker.MakeSite(siteCoreDef, sitePartDef, tile, enemy, true, points);
             site.sitePartsKnown = true;
             if (allParams.KillReward) {
-                List<Thing> list = allParams.RewardItem != ""
+                List<Thing> list = allParams.RewardItem == ""
                     ? GenerateRewards(SiteTuning.BanditCampQuestRewardMarketValueRange, points)
                     : GenerateRewards(allParams.RewardAmount, allParams.RewardItem, allParams.RewardStuff, allParams.RewardItemQuality);
                 site.GetComponent<DefeatAllEnemiesQuestComp>().StartQuest(ally, Mathf.RoundToInt(allParams.RewardFactionRelation.GetValue()), list);
@@ -175,8 +177,7 @@ namespace HumanStoryteller.Incidents {
             }
 
             SendLetter(allParams, label, desc, LetterDefOf.PositiveEvent, site, enemy);
-
-            return ir;
+            return new IncidentResult_Quest(site, sitePartDef != null);
         }
 
         private List<Thing> GenerateRewards(FloatRange type, float siteThreatPoints) {

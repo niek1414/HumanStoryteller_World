@@ -19,9 +19,7 @@ namespace HumanStoryteller.CheckConditions {
         }
 
         public override bool Check(IncidentResult result, int checkPosition) {
-            Map map = Find.Maps.FindAll(x => x.ParentFaction.IsPlayer).RandomElement();
-
-            return DataBank.CompareValueWithConst(map.mapTemperature.OutdoorTemp, _compareType, _constant);
+            return DataBank.CompareValueWithConst(result.GetTarget().mapTemperature.OutdoorTemp, _compareType, _constant);
         }
 
         public override string ToString() {

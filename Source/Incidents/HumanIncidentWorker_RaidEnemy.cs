@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,7 +12,7 @@ namespace HumanStoryteller.Incidents {
     class HumanIncidentWorker_RaidEnemy : HumanIncidentWorker {
         public const String Name = "RaidEnemy";
 
-        public override IncidentResult Execute(HumanIncidentParms parms) {
+        protected override IncidentResult Execute(HumanIncidentParms parms) {
             IncidentResult ir = new IncidentResult();
 
             if (!(parms is HumanIncidentParams_RaidEnemy)) {
@@ -45,7 +44,6 @@ namespace HumanStoryteller.Incidents {
                 }
             }
 
-            Tell.Warn(faction.Name);
             PawnGroupKindDef combat = PawnGroupKindDefOf.Combat;
 
             IncidentParms fakeParms = new IncidentParms();
@@ -117,19 +115,13 @@ namespace HumanStoryteller.Incidents {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.AppendLine("Points = " + points.ToString("F0"));
             for (var i = 0; i < list.Count; i++) {
-                Pawn item = list[i];
+                Pawn p = list[i];
                 if (i < allParams.Names.Count) {
-                    if (item.Name is NameTriple prevNameTriple) {
-                        item.Name = new NameTriple(allParams.Names[i], allParams.Names[i], prevNameTriple.Last);
-                    } else if (item.Name is NameSingle prevNameSingle) {
-                        item.Name = new NameTriple(allParams.Names[i], allParams.Names[i], prevNameSingle.Name);
-                    } else {
-                        item.Name = new NameTriple(allParams.Names[i], allParams.Names[i], "");
-                    }
+                    PawnUtil.SavePawnByName(allParams.Names[i], p);
                 }
 
-                string str = item.equipment == null || item.equipment.Primary == null ? "unarmed" : item.equipment.Primary.LabelCap;
-                stringBuilder.AppendLine(item.KindLabel + " - " + str);
+                string str = p.equipment == null || p.equipment.Primary == null ? "unarmed" : p.equipment.Primary.LabelCap;
+                stringBuilder.AppendLine(p.KindLabel + " - " + str);
             }
 
             string letterText = GetLetterText(fakeParms, list);

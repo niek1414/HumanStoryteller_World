@@ -10,15 +10,12 @@ namespace HumanStoryteller.Util {
 
         public static Pawn GetPawnByName(String name) {
             var pawnBank = HumanStoryteller.StoryComponent.PawnBank;
-            
+
             _cleanupCounter++;
             if (_cleanupCounter >= CleanupCounterMax) {
                 _cleanupCounter = 0;
                 foreach (var item in pawnBank.Where(pair =>
-                    pair.Value == null
-                    || pair.Value.Dead
-                    || pair.Value.Destroyed
-                    || !pair.Value.Spawned).ToList()) {
+                    pair.Value == null || pair.Value.Destroyed).ToList()) {
                     pawnBank.Remove(item.Key);
                 }
             }
@@ -28,7 +25,7 @@ namespace HumanStoryteller.Util {
                     return pair.Value;
                 }
             }
-            
+
             return null;
         }
 
@@ -48,6 +45,7 @@ namespace HumanStoryteller.Util {
             if (HumanStoryteller.StoryComponent.PawnBank.ContainsKey(name)) {
                 RemoveName(name);
             }
+
             HumanStoryteller.StoryComponent.PawnBank.Add(name, pawn);
         }
 

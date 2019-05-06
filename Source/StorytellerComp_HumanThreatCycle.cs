@@ -7,6 +7,7 @@ using HumanStoryteller.Model;
 using HumanStoryteller.Util;
 using HumanStoryteller.Web;
 using RimWorld;
+using UnityEngine;
 using Verse;
 using Timer = System.Timers.Timer;
 
@@ -53,8 +54,8 @@ namespace HumanStoryteller {
             var interval =
                 Find.TickManager.CurTimeSpeed == TimeSpeed.Superfast ||
                 Find.TickManager.CurTimeSpeed == TimeSpeed.Ultrafast
-                    ? 600
-                    : 300;
+                    ? 30
+                    : 15;
             if (Find.TickManager.TicksGame % interval == 0) {
                 _consecutiveEventCounter = 0;
                 IncidentLoop();
@@ -67,8 +68,7 @@ namespace HumanStoryteller {
                 foreach (StoryEventNode sen in MakeIntervalIncidents()) {
                     if (sen?.StoryNode?.StoryEvent?.Incident?.Worker != null) {
                         var incident = sen.StoryNode.StoryEvent.Incident;
-                        incident.Worker.PreExecute(incident.Parms);
-                        sen.Result = incident.Worker.Execute(incident.Parms);
+                        sen.Result = incident.Worker.ExecuteIncident(incident.Parms);
                         DataBank.ProcessVariableModifications(sen.StoryNode.Modifications);
                     } else {
                         Tell.Warn("Returned a incident that was not defined");
@@ -87,7 +87,7 @@ namespace HumanStoryteller {
 
             int laneCount = HumanStoryteller.StoryComponent.CurrentNodes.Count;
             string laneInfo = laneCount.ToString();
-            if (HumanStoryteller.DEBUG) {
+            if (Prefs.DevMode && HumanStoryteller.DEBUG) {
                 laneInfo += "\n";
                 foreach (StoryEventNode node in HumanStoryteller.StoryComponent.CurrentNodes) {
                     laneInfo += node.StoryNode.StoryEvent.Uuid.Substring(0, 4) + " " + node.StoryNode.StoryEvent.Name +
@@ -96,7 +96,7 @@ namespace HumanStoryteller {
                 }
             }
 
-            if (Prefs.DevMode) {
+            if (Prefs.DevMode && Find.TickManager.TicksGame % 500 == 0) {
                 Tell.Log("TickOffset: " + IntervalsPassed + ", Concurrent lanes: " + laneInfo);
                 Tell.Log("Vars: \n" + DataBank.VariableBankToString());
             }
@@ -142,7 +142,8 @@ namespace HumanStoryteller {
                     if (laneCount > 400 && sn.LeftChild == null && sn.RightChild == null) {
                         HumanStoryteller.StoryComponent.CurrentNodes[i] = null;
                     } else {
-                        StoryNode newEvent = HumanStoryteller.StoryComponent.Story.StoryGraph.TryNewEvent(currentNode, IntervalsPassed - currentNode.ExecuteTick);
+                        StoryNode newEvent =
+                            HumanStoryteller.StoryComponent.Story.StoryGraph.TryNewEvent(currentNode, IntervalsPassed - currentNode.ExecuteTick);
                         if (newEvent == null) continue;
                         if (!newEvent.StoryEvent.Uuid.Equals(currentNode.StoryNode.StoryEvent.Uuid)) {
                             _missedLastIncidentCheck = true;
@@ -172,10 +173,9 @@ namespace HumanStoryteller {
             if (!HumanStoryteller.StoryComponent.Initialised) {
                 HumanStoryteller.StoryComponent.Initialised = true;
                 Tell.Log("STORYTELLER AWOKEN", HumanStoryteller.StoryComponent.StoryId);
-                Current.Game.Scenario = Current.Game.Scenario.CopyForEditing();
-                Tell.Log("SPLITTING UNIVERSE");
                 HumanStoryteller.StoryComponent.FirstMapOfPlayer = Find.Maps.Find(x => x.ParentFaction.IsPlayer);
                 HumanStoryteller.StoryComponent.SameAsLastEvent = HumanStoryteller.StoryComponent.FirstMapOfPlayer;
+                HumanStoryteller.StoryComponent.LastColonizedMap = HumanStoryteller.StoryComponent.FirstMapOfPlayer;
                 Tell.Log("RECORDED HISTORY");
             } else {
                 Tell.Log("CONTINUING HS GAME", HumanStoryteller.StoryComponent.StoryId);

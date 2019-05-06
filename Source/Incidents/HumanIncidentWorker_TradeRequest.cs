@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HumanStoryteller.CheckConditions;
 using HumanStoryteller.Model;
 using HumanStoryteller.Util;
 using RimWorld;
@@ -30,7 +31,7 @@ namespace HumanStoryteller.Incidents {
 
         public const String Name = "TradeRequest";
 
-        public override IncidentResult Execute(HumanIncidentParms parms) {
+        protected override IncidentResult Execute(HumanIncidentParms parms) {
             IncidentResult ir = new IncidentResult();
             if (!(parms is HumanIncidentParams_TradeRequest)) {
                 Tell.Err("Tried to execute " + GetType() + " but param type was " + parms.GetType());
@@ -99,7 +100,7 @@ namespace HumanStoryteller.Incidents {
             GenThing.TryAppendSingleRewardInfo(ref text, component.rewards);
             SendLetter(allParams, "LetterLabelCaravanRequest".Translate(), text, LetterDefOf.PositiveEvent, settlementBase, settlementBase.Faction);
 
-            return ir;
+            return new IncidentResult_Trade(map.Parent);
         }
 
         private List<Thing> GenerateRewards(Number number, string item, string stuff, string quality) {

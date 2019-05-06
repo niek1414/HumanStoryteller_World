@@ -6,11 +6,22 @@ using Verse;
 
 namespace HumanStoryteller.Incidents {
     public abstract class HumanIncidentWorker : IExposable {
-        public void PreExecute(HumanIncidentParms parms) {
+        private void PreExecute(HumanIncidentParms parms) {
             HumanStoryteller.StoryComponent.SameAsLastEvent = (Map) parms.GetTarget();
         }
+        
+        private void PostExecute(HumanIncidentParms parms, IncidentResult incidentResult) {
+            incidentResult.Target = parms.Target;
+        }
 
-        public abstract IncidentResult Execute(HumanIncidentParms parms);
+        public IncidentResult ExecuteIncident(HumanIncidentParms parms) {
+            PreExecute(parms);
+            IncidentResult ir = Execute(parms);
+            PostExecute(parms, ir);
+            return ir;
+        }
+        
+        protected abstract IncidentResult Execute(HumanIncidentParms parms);
 
         protected void SendLetter(HumanIncidentParms parms, String title, String message, LetterDef type, LookTargets target,
             Faction relatedFaction = null, string debugInfo = null) {
@@ -54,6 +65,7 @@ namespace HumanStoryteller.Incidents {
 
     public class IncidentResult : IExposable, ILoadReferenceable {
         private int _id;
+        public string Target;
 
         public IncidentResult() {
             _id = Rand.Int;
@@ -61,8 +73,13 @@ namespace HumanStoryteller.Incidents {
 
         public int Id => _id;
 
+        public Map GetTarget() {
+            return MapUtil.GetTarget(Target);
+        }
+        
         public virtual void ExposeData() {
             Scribe_Values.Look(ref _id, "id");
+            Scribe_Values.Look(ref Target, "target");
         }
 
         public string GetUniqueLoadID() {

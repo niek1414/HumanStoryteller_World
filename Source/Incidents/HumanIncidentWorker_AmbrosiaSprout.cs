@@ -13,7 +13,7 @@ namespace HumanStoryteller.Incidents {
 
         private static readonly IntRange CountRange = new IntRange(10, 20);
 
-        public override IncidentResult Execute(HumanIncidentParms parms) {
+        protected override IncidentResult Execute(HumanIncidentParms parms) {
             IncidentResult ir = new IncidentResult();
             IncidentDef def = DefDatabase<IncidentDef>.GetNamed("AmbrosiaSprout");
 

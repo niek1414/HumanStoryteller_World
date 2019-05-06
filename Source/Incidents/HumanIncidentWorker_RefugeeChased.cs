@@ -17,7 +17,7 @@ namespace HumanStoryteller.Incidents {
 
         private static readonly FloatRange RaidPointsFactorRange = new FloatRange(1f, 1.6f);
 
-        public override IncidentResult Execute(HumanIncidentParms parms) {
+        protected override IncidentResult Execute(HumanIncidentParms parms) {
             IncidentResult ir = new IncidentResult();
 
             if (!(parms is HumanIncidentParams_RefugeeChased)) {

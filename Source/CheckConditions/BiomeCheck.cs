@@ -18,8 +18,7 @@ namespace HumanStoryteller.CheckConditions {
         }
 
         public override bool Check(IncidentResult result, int checkPosition) {
-            Map map = Find.Maps.FindAll(x => x.ParentFaction.IsPlayer).RandomElement();
-            return _biomes.Contains(map.Biome.defName);
+            return _biomes.Contains(result.GetTarget().Biome.defName);
         }
 
         public override string ToString() {

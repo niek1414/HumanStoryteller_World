@@ -16,7 +16,7 @@ namespace HumanStoryteller.Incidents {
 
         private static readonly IntRange AnimalsCount = new IntRange(3, 5);
 
-        public override IncidentResult Execute(HumanIncidentParms parms) {
+        protected override IncidentResult Execute(HumanIncidentParms parms) {
             IncidentResult ir = new IncidentResult();
 
             if (!(parms is HumanIncidentParams_HerdMigration)) {

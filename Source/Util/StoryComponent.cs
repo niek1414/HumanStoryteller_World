@@ -14,13 +14,20 @@ namespace HumanStoryteller.Util {
         public Dictionary<string, float> VariableBank = new Dictionary<string, float>();
         public Dictionary<string, Pawn> PawnBank = new Dictionary<string, Pawn>();
         public Dictionary<string, MapParent> MapBank = new Dictionary<string, MapParent>();
-        public StorytellerComp_HumanThreatCycle ThreatCycle = null;
+        public StorytellerComp_HumanThreatCycle ThreatCycle;
 
         private Map _firstMapOfPlayer;
 
         public Map FirstMapOfPlayer {
             get => _firstMapOfPlayer ?? Find.Maps.FindAll(x => x.ParentFaction.IsPlayer).RandomElement();
             set => _firstMapOfPlayer = value;
+        }
+        
+        private Map _lastColonizedMap;
+
+        public Map LastColonizedMap {
+            get => _lastColonizedMap ?? FirstMapOfPlayer;
+            set => _lastColonizedMap = value;
         }
 
         private Map _sameAsLastEvent;
@@ -51,6 +58,7 @@ namespace HumanStoryteller.Util {
             ThreatCycle = null;
             _firstMapOfPlayer = null;
             _sameAsLastEvent = null;
+            _lastColonizedMap = null;
         }
         
         public override void ExposeData() {
@@ -68,6 +76,7 @@ namespace HumanStoryteller.Util {
 
             Scribe_References.Look(ref _firstMapOfPlayer, "firstMapOfPlayer");
             Scribe_References.Look(ref _sameAsLastEvent, "sameAsLastEvent");
+            Scribe_References.Look(ref _lastColonizedMap, "lastColonizedMap");
             if (Scribe.mode == LoadSaveMode.LoadingVars && Prefs.DevMode) {
                 Tell.Log("StoryComponent Loaded:" + ToString());
             }

@@ -11,7 +11,7 @@ namespace HumanStoryteller.Incidents {
 
         private static readonly FloatRange CountPerColonistRange = new FloatRange(1f, 1.5f);
 
-        public override IncidentResult Execute(HumanIncidentParms parms) {
+        protected override IncidentResult Execute(HumanIncidentParms parms) {
             IncidentResult ir = new IncidentResult();
             if (!(parms is HumanIncidentParams_Alphabeavers)) {
                 Tell.Err("Tried to execute " + GetType() + " but param type was " + parms.GetType());

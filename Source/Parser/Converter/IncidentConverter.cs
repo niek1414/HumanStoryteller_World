@@ -243,6 +243,10 @@ namespace HumanStoryteller.Parser.Converter {
                     incident = new FiringHumanIncident(new HumanIncidentWorker_CreateSettlement(),
                         new HumanIncidentParams_CreateSettlement(defaultIncidentTarget, defaultLetter));
                     break;
+                case HumanIncidentWorker_IntentGiver.Name:
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_IntentGiver(),
+                        new HumanIncidentParams_IntentGiver(defaultIncidentTarget, defaultLetter));
+                    break;
                 default:
                     Parser.LogParseError("incident", type);
                     return new FiringHumanIncident(null);

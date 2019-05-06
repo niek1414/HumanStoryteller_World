@@ -10,7 +10,7 @@ namespace HumanStoryteller.Incidents {
     class HumanIncidentWorker_KillPawn : HumanIncidentWorker {
         public const String Name = "KillPawn";
 
-        public override IncidentResult Execute(HumanIncidentParms parms) {
+        protected override IncidentResult Execute(HumanIncidentParms parms) {
             IncidentResult ir = new IncidentResult();
 
             if (!(parms is HumanIncidentParams_KillPawn)) {

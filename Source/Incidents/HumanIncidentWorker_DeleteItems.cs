@@ -11,7 +11,7 @@ namespace HumanStoryteller.Incidents {
     class HumanIncidentWorker_DeleteItems : HumanIncidentWorker {
         public const String Name = "DeleteItems";
 
-        public override IncidentResult Execute(HumanIncidentParms parms) {
+        protected override IncidentResult Execute(HumanIncidentParms parms) {
             IncidentResult ir = new IncidentResult();
             if (!(parms is HumanIncidentParams_DeleteItems)) {
                 Tell.Err("Tried to execute " + GetType() + " but param type was " + parms.GetType());

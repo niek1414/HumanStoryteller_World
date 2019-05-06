@@ -24,8 +24,7 @@ namespace HumanStoryteller.CheckConditions {
         }
 
         public override bool Check(IncidentResult result, int checkPosition) {
-            Map map = Find.Maps.FindAll(x => x.ParentFaction.IsPlayer).RandomElement();
-            int count = map.listerThings.ThingsMatching(new ThingRequest {
+            int count = result.GetTarget().listerThings.ThingsMatching(new ThingRequest {
                 singleDef = _item,
                 group = ThingRequestGroup.HaulableEverOrMinifiable
             }).Count;

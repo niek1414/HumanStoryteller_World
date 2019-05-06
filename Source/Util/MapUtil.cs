@@ -53,6 +53,10 @@ namespace HumanStoryteller.Util {
             return HumanStoryteller.StoryComponent.SameAsLastEvent;
         }
 
+        public static Map LastColonized() {
+            return HumanStoryteller.StoryComponent.LastColonizedMap;
+        }
+
         public static void SaveMapByName(String name, MapParent map) {
             if (HumanStoryteller.StoryComponent.PawnBank.ContainsKey(name)) {
                 RemoveName(name);
@@ -98,12 +102,38 @@ namespace HumanStoryteller.Util {
                 case "Random":
                     return DropCellFinder.RandomDropSpot(map);
                 default:
+                    string[] splinted = loc.Split(':');
+                    if (splinted.Length == 3) {
+                        if (!int.TryParse(splinted[0], out var x)
+                            || !int.TryParse(splinted[1], out var y)
+                            || !int.TryParse(splinted[2], out var z)) {
+                            Tell.Warn("Tried to parse location with :'s but got x:" + splinted[0] + " y:" + splinted[1] + " z:" + splinted[2]);
+                            return DropCellFinder.RandomDropSpot(map);
+                        }
+                        return new IntVec3(x, y, z);
+                    }
+
                     Pawn p = PawnUtil.GetPawnByName(loc);
                     if (p == null || p.Map != map) {
                         return DropCellFinder.RandomDropSpot(map);
                     }
 
                     return p.Position;
+            }
+        }
+        
+        public static Map GetTarget(string target) {
+            switch (target) {
+                case "FirstOfPlayer":
+                    return FirstOfPlayer();
+                case "RandomOfPlayer":
+                    return Find.Maps.FindAll(x => x.ParentFaction.IsPlayer).RandomElement();
+                case "SameAsLastEvent":
+                    return SameAsLastEvent();
+                case "LastColonized":
+                    return LastColonized();
+                default: // With name?
+                    return GetMapByName(target) ?? FirstOfPlayer();
             }
         }
     }

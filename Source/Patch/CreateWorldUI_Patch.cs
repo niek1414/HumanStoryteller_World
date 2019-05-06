@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using System.Reflection;
 using Harmony;
 using RimWorld;
@@ -27,16 +29,27 @@ namespace HumanStoryteller.Patch {
                 Traverse.Create(page).Field("seedString").SetValue(initParams.Seed == "" ? GenText.RandomSeedString() : initParams.Seed);
                 Traverse.Create(page).Field("planetCoverage").SetValue(initParams.Coverage.GetValue() == -1 ? 1 : initParams.Coverage.GetValue());
                 Traverse.Create(page).Field("rainfall").SetValue(SeverityToRainfall(initParams.Rainfall.GetValue()));
-                Traverse.Create(page).Field("temperature").SetValue(SeverityToTemperature(initParams.Rainfall.GetValue()));
+                Traverse.Create(page).Field("temperature").SetValue(SeverityToTemperature(initParams.Temperature.GetValue()));
 
                 Widgets.Label(new Rect(rect.x, rect.y + 250, rect.width, 30), "ParametersOverriden".Translate());
 
                 var value = initParams.PawnAmount.GetValue();
                 if (value != -1) {
-                    Find.GameInitData.startingPawnCount = Mathf.RoundToInt(value);
+                    try {
+                        if (Current.Game.Scenario.AllParts.First(o => typeof(ScenPart_ConfigPage_ConfigureStartingPawns) == o.GetType()) is
+                            ScenPart_ConfigPage_ConfigureStartingPawns part) part.pawnCount = Mathf.RoundToInt(value);
+                    } catch (InvalidOperationException) {
+                    }
                 }
 
-                Find.GameInitData.startingPawnCount = Mathf.RoundToInt(initParams.PawnAmount.GetValue());
+                var open = initParams.Opening;
+                if (open != "") {
+                    try {
+                        if (Current.Game.Scenario.AllParts.First(o => typeof(ScenPart_GameStartDialog) == o.GetType()) is
+                            ScenPart_GameStartDialog part) Traverse.Create(part).Field("text").SetValue(open);
+                    } catch (InvalidOperationException) {
+                    }
+                }
             }
         }
 

@@ -367,7 +367,7 @@ namespace Newtonsoft.Json.Serialization
 			{
 				return CreateISerializable(reader, jsonISerializableContract, text);
 			}
-			throw new JsonSerializationException("Cannot deserialize JSON object into type '{0}'.".FormatWith(CultureInfo.InvariantCulture, objectType));
+			throw new JsonSerializationException("Cannot deserialize JSON object into type '{0}' in '{1}'.".FormatWith(CultureInfo.InvariantCulture, objectType, member?.PropertyName));
 		}
 
 		private JsonArrayContract EnsureArrayContract(Type objectType, JsonContract contract)

@@ -9,7 +9,7 @@ namespace HumanStoryteller.Incidents {
     class HumanIncidentWorker_PsychicDrone : HumanIncidentWorker {
         public const String Name = "PsychicDrone";
 
-        public override IncidentResult Execute(HumanIncidentParms parms) {
+        protected override IncidentResult Execute(HumanIncidentParms parms) {
             IncidentResult ir = new IncidentResult();
 
             if (!(parms is HumanIncidentParams_PsychicDrone)) {

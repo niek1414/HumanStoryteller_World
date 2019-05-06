@@ -11,7 +11,7 @@ namespace HumanStoryteller.Incidents {
     class HumanIncidentWorker_AnimalInsanityMass : HumanIncidentWorker {
         public const String Name = "AnimalInsanityMass";
 
-        public override IncidentResult Execute(HumanIncidentParms parms) {
+        protected override IncidentResult Execute(HumanIncidentParms parms) {
             IncidentResult ir = new IncidentResult();
 
             if (!(parms is HumanIncidentParams_AnimalInsanityMass)) {

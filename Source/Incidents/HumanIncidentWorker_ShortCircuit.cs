@@ -14,7 +14,7 @@ namespace HumanStoryteller.Incidents {
 
         private static List<IntVec3> _tmpCells = new List<IntVec3>();
 
-        public override IncidentResult Execute(HumanIncidentParms parms) {
+        protected override IncidentResult Execute(HumanIncidentParms parms) {
             IncidentResult ir = new IncidentResult();
             if (!(parms is HumanIncidentParams_ShortCircuit)) {
                 Tell.Err("Tried to execute " + GetType() + " but param type was " + parms.GetType());

@@ -48,6 +48,9 @@ namespace HumanStoryteller.Parser.Converter {
                 case PawnHealthCheck.Name:
                     return new PawnHealthCheck(obj["pawnName"].Value<string>(),
                         GetHealthCondition(obj["healthCondition"].Value<string>()));
+                case PawnStateCheck.Name:
+                    return new PawnStateCheck(obj["pawnName"].Value<string>(),
+                        GetPawnCondition(obj["pawnCondition"].Value<string>()));
                 case MapCreatedCheck.Name:
                     return new MapCreatedCheck(obj["mapName"].Value<string>());
                 case ColonistOnMapCheck.Name:
@@ -55,6 +58,8 @@ namespace HumanStoryteller.Parser.Converter {
                         obj["pawnName"].Value<string>());
                 case QuestCheck.Name:
                     return new QuestCheck(GetQuestResponse(obj["questState"].Value<string>()));
+                case TradeCheck.Name:
+                    return new TradeCheck(GetTradeResponse(obj["tradeState"].Value<string>()));
                 case ColonistsOnMapCheck.Name:
                     return new ColonistsOnMapCheck(obj["mapName"].Value<string>(),
                         GetNumeralCompareResponse(obj["compareType"].Value<string>()),
@@ -69,6 +74,8 @@ namespace HumanStoryteller.Parser.Converter {
                     );
                 case RandomCheck.Name:
                     return new RandomCheck(float.Parse(obj["chance"].Value<string>()));
+                case PawnLocationCheck.Name:
+                    return new PawnLocationCheck(obj["pawnName"].Value<string>(), obj["location"].Value<string>(), float.Parse(obj["radius"].Value<string>()));
                 case DifficultyCheck.Name:
                     return new DifficultyCheck(GetDifficulty(obj["difficulty"].Value<string>()));
                 case TimeCheck.Name:
@@ -111,6 +118,8 @@ namespace HumanStoryteller.Parser.Converter {
                     return new BiomeCheck(obj["biomes"] != null ? obj["biomes"].Values<string>().ToList() : new List<string>());
                 case AudioCheck.Name:
                     return new AudioCheck();
+                case TraveledCheck.Name:
+                    return new TraveledCheck();
                 case CheatCheck.Name:
                     return new CheatCheck();
                 case ResearchCheck.Name:
@@ -182,6 +191,20 @@ namespace HumanStoryteller.Parser.Converter {
                 return PawnHealthCheck.HealthCondition.Alive;
             }
         }
+        
+        private PawnStateCheck.PawnCondition GetPawnCondition(String type) {
+            if (type == null) {
+                Parser.LogParseError("pawn condition", type);
+                return PawnStateCheck.PawnCondition.Colonist;
+            }
+
+            try {
+                return PawnStateCheck.dict[type];
+            } catch (KeyNotFoundException) {
+                Parser.LogParseError("pawn condition", type);
+                return PawnStateCheck.PawnCondition.Colonist;
+            }
+        }
 
         private QuestResponse GetQuestResponse(String type) {
             if (type == null) {
@@ -194,6 +217,20 @@ namespace HumanStoryteller.Parser.Converter {
             } catch (KeyNotFoundException) {
                 Parser.LogParseError("quest state", type);
                 return QuestResponse.Pending;
+            }
+        }
+        
+        private TradeResponse GetTradeResponse(String type) {
+            if (type == null) {
+                Parser.LogParseError("trade state", type);
+                return TradeResponse.Pending;
+            }
+
+            try {
+                return TradeCheck.dict[type];
+            } catch (KeyNotFoundException) {
+                Parser.LogParseError("trade state", type);
+                return TradeResponse.Pending;
             }
         }
 

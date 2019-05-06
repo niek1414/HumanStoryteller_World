@@ -10,7 +10,7 @@ namespace HumanStoryteller.Incidents {
     class HumanIncidentWorker_TimeTravel : HumanIncidentWorker {
         public const String Name = "TimeTravel";
 
-        public override IncidentResult Execute(HumanIncidentParms parms) {
+        protected override IncidentResult Execute(HumanIncidentParms parms) {
             IncidentResult ir = new IncidentResult();
 
             if (!(parms is HumanIncidentParams_TimeTravel)) {

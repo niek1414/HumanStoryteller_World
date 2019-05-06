@@ -10,8 +10,8 @@ using Verse;
 
 namespace HumanStoryteller {
     public class HumanStoryteller : Mod {
-        public static string VERSION = "0.2.0";
-        public static string VERSION_NAME = "`Controller - part 1`";
+        public static string VERSION = "0.2.1";
+        public static string VERSION_NAME = "`Controller - part 2`";
 
         public static bool InitiateEventUnsafe = false;
 
@@ -99,6 +99,8 @@ namespace HumanStoryteller {
             Patch.StorytellerUI_Patch.Patch(harmony);
             Patch.CreateWorldUI_Patch.Patch(harmony);
             Patch.SelectStartingSiteUI_Patch.Patch(harmony);
+            Patch.Lord_Patch.Patch(harmony);
+            Patch.Map_Patch.Patch(harmony);
         }
     }
 }

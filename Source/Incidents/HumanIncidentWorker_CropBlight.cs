@@ -11,7 +11,7 @@ namespace HumanStoryteller.Incidents {
     class HumanIncidentWorker_CropBlight : HumanIncidentWorker {
         public const String Name = "CropBlight";
 
-        public override IncidentResult Execute(HumanIncidentParms parms) {
+        protected override IncidentResult Execute(HumanIncidentParms parms) {
             IncidentResult ir = new IncidentResult();
 
             if (!(parms is HumanIncidentParams_CropBlight)) {

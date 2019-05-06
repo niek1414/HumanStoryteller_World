@@ -10,7 +10,7 @@ namespace HumanStoryteller.Incidents {
     class HumanIncidentWorker_ShipPartCrash : HumanIncidentWorker {
         public const String Name = "ShipPartCrash";
 
-        public override IncidentResult Execute(HumanIncidentParms parms) {
+        protected override IncidentResult Execute(HumanIncidentParms parms) {
             IncidentResult ir = new IncidentResult();
             if (!(parms is HumanIncidentParams_ShipPartCrash)) {
                 Tell.Err("Tried to execute " + GetType() + " but param type was " + parms.GetType());

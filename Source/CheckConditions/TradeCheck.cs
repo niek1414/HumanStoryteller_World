@@ -2,26 +2,24 @@ using System;
 using System.Collections.Generic;
 using HumanStoryteller.Incidents;
 using HumanStoryteller.Util;
-using RimWorld;
 using RimWorld.Planet;
 using Verse;
 
 namespace HumanStoryteller.CheckConditions {
-    public class QuestCheck : CheckCondition {
-        public const String Name = "Quest";
+    public class TradeCheck : CheckCondition {
+        public const String Name = "Trade";
 
-        private QuestResponse _response;
+        private TradeResponse _response;
 
-        public static readonly Dictionary<string, QuestResponse> dict = new Dictionary<string, QuestResponse> {
-            {"Pending", QuestResponse.Pending},
-            {"Entered", QuestResponse.Entered},
-            {"Expired", QuestResponse.Expired}
+        public static readonly Dictionary<string, TradeResponse> dict = new Dictionary<string, TradeResponse> {
+            {"Pending", TradeResponse.Pending},
+            {"Expired", TradeResponse.Expired}
         };
 
-        public QuestCheck() {
+        public TradeCheck() {
         }
 
-        public QuestCheck(QuestResponse response) {
+        public TradeCheck(TradeResponse response) {
             _response = Tell.AssertNotNull(response, nameof(response), GetType().Name);
         }
 
@@ -32,22 +30,18 @@ namespace HumanStoryteller.CheckConditions {
                 return false;
             }
 
-            if (!(result is IncidentResult_Quest)) {
+            if (!(result is IncidentResult_Trade)) {
                 Tell.Err($"Tried to check {GetType()} but result type was {result.GetType()}." +
                          " Likely the storycreator added a incomparable condition to an event.");
                 return false;
             }
 
-            IncidentResult_Quest resultQuest = (IncidentResult_Quest) result;
-            if (resultQuest.Parent == null || !Find.WorldObjects.AnySiteAt(resultQuest.Parent.Tile)) {
-                return _response == QuestResponse.Expired;
+            IncidentResult_Trade resultTrade = (IncidentResult_Trade) result;
+            if (!Find.WorldObjects.AnySiteAt(resultTrade.Parent.Tile)) {
+                return _response == TradeResponse.Expired;
             }
 
-            if (!resultQuest.Parent.HasMap) {
-                return _response == QuestResponse.Pending;
-            }
-            
-            return _response == QuestResponse.Entered;
+            return _response == TradeResponse.Pending;
         }
 
         public override string ToString() {
@@ -60,28 +54,24 @@ namespace HumanStoryteller.CheckConditions {
         }
     }
 
-    public enum QuestResponse {
+    public enum TradeResponse {
         Pending,
-        Entered,
         Expired
     }
 
-    public class IncidentResult_Quest : IncidentResult {
+    public class IncidentResult_Trade : IncidentResult {
         public MapParent Parent;
-        public bool AnyEnemiesInitially;
 
-        public IncidentResult_Quest() {
+        public IncidentResult_Trade() {
         }
 
-        public IncidentResult_Quest(MapParent parent, bool anyEnemiesInitially) {
+        public IncidentResult_Trade(MapParent parent) {
             Parent = parent;
-            AnyEnemiesInitially = anyEnemiesInitially;
         }
 
         public override void ExposeData() {
             base.ExposeData();
             Scribe_References.Look(ref Parent, "parent");
-            Scribe_Values.Look(ref AnyEnemiesInitially, "anyEnemiesInitially");
         }
     }
 }

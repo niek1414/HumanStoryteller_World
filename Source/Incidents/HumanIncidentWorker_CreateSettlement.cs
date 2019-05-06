@@ -10,7 +10,7 @@ namespace HumanStoryteller.Incidents {
     class HumanIncidentWorker_CreateSettlement : HumanIncidentWorker {
         public const String Name = "CreateSettlement";
 
-        public override IncidentResult Execute(HumanIncidentParms parms) {
+        protected override IncidentResult Execute(HumanIncidentParms parms) {
             IncidentResult ir = new IncidentResult();
             if (!(parms is HumanIncidentParams_CreateSettlement)) {
                 Tell.Err("Tried to execute " + GetType() + " but param type was " + parms.GetType());
@@ -34,8 +34,15 @@ namespace HumanStoryteller.Incidents {
             
             Settlement settlement = (Settlement) WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Settlement);
             settlement.SetFaction(faction);
-            TileFinder.TryFindNewSiteTile(out int tile, 7, 27, false, true, map.Tile);
-            settlement.Tile = tile;
+            int tileResult;
+            var site = allParams.Site.GetValue();
+            if (site != -1) {
+                tileResult = Mathf.RoundToInt(site);
+            } else {
+                TileFinder.TryFindNewSiteTile(out int tile, 7, 27, false, true, map.Tile);
+                tileResult = tile;
+            }
+            settlement.Tile = tileResult;
             settlement.Name = allParams.SettlementName != "" ? allParams.SettlementName : SettlementNameGenerator.GenerateSettlementName(settlement);
             Find.WorldObjects.Add(settlement);
             
@@ -56,25 +63,29 @@ namespace HumanStoryteller.Incidents {
     public class HumanIncidentParams_CreateSettlement : HumanIncidentParms {
         public string Faction;
         public string MapName;
+        public Number Site;
         public string SettlementName;
 
         public HumanIncidentParams_CreateSettlement() {
+            Site = new Number();
         }
 
         public HumanIncidentParams_CreateSettlement(string target, HumanLetter letter, string faction = "", string mapName = "", string settlementName = "") : base(target, letter) {
             Faction = faction;
             MapName = mapName;
+            Site = new Number();
             SettlementName = settlementName;
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, Faction: {Faction}, MapName: {MapName}, SettlementName: {SettlementName}";
+            return $"{base.ToString()}, Faction: {Faction}, MapName: {MapName}, Tile: {Site}, SettlementName: {SettlementName}";
         }
 
         public override void ExposeData() {
             base.ExposeData();
             Scribe_Values.Look(ref Faction, "faction");
             Scribe_Values.Look(ref MapName, "mapName");
+            Scribe_Deep.Look(ref Site, "tile");
             Scribe_Values.Look(ref SettlementName, "settlementName");
         }
     }

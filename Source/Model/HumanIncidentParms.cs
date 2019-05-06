@@ -21,16 +21,7 @@ namespace HumanStoryteller.Model {
         }
 
         public IIncidentTarget GetTarget() {
-            switch (Target) {
-                case "FirstOfPlayer":
-                    return MapUtil.FirstOfPlayer();
-                case "RandomOfPlayer":
-                    return Find.Maps.FindAll(x => x.ParentFaction.IsPlayer).RandomElement();
-                case "SameAsLastEvent":
-                    return MapUtil.SameAsLastEvent();
-                default: // With name?
-                    return MapUtil.GetMapByName(Target) ?? MapUtil.FirstOfPlayer();
-            }
+            return MapUtil.GetTarget(Target);
         }
         
         public virtual void ExposeData() {

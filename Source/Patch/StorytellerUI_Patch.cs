@@ -61,6 +61,7 @@ namespace HumanStoryteller.Patch {
         }
 
         public static void PreOpen() {
+            Current.Game.Scenario = Current.Game.Scenario.CopyForEditing();
             reset();
             RefreshList(false);
         }

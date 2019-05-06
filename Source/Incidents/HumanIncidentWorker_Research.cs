@@ -12,7 +12,7 @@ namespace HumanStoryteller.Incidents {
         public const String Name = "Research";
 
 
-        public override IncidentResult Execute(HumanIncidentParms parms) {
+        protected override IncidentResult Execute(HumanIncidentParms parms) {
             IncidentResult ir = new IncidentResult();
             if (!(parms is HumanIncidentParams_Research)) {
                 Tell.Err("Tried to execute " + GetType() + " but param type was " + parms.GetType());

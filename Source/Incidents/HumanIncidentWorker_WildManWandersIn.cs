@@ -13,7 +13,7 @@ namespace HumanStoryteller.Incidents {
     class HumanIncidentWorker_WildManWandersIn : HumanIncidentWorker {
         public const String Name = "WildManWandersIn";
 
-        public override IncidentResult Execute(HumanIncidentParms parms) {
+        protected override IncidentResult Execute(HumanIncidentParms parms) {
             IncidentResult ir = new IncidentResult();
 
             if (!(parms is HumanIncidentParams_WildManWandersIn)) {

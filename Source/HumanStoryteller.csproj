@@ -83,12 +83,16 @@
     <Compile Include="CheckConditions\ItemMapCheck.cs" />
     <Compile Include="CheckConditions\MapCreatedCheck.cs" />
     <Compile Include="CheckConditions\PawnHealthCheck.cs" />
+    <Compile Include="CheckConditions\PawnLocationCheck.cs" />
+    <Compile Include="CheckConditions\PawnStateCheck.cs" />
     <Compile Include="CheckConditions\QuestCheck.cs" />
     <Compile Include="CheckConditions\RandomCheck.cs" />
     <Compile Include="CheckConditions\RelationCheck.cs" />
     <Compile Include="CheckConditions\ResearchCheck.cs" />
     <Compile Include="CheckConditions\TemperatureCheck.cs" />
     <Compile Include="CheckConditions\TimeCheck.cs" />
+    <Compile Include="CheckConditions\TradeCheck.cs" />
+    <Compile Include="CheckConditions\TraveledCheck.cs" />
     <Compile Include="CheckConditions\VariableCheck.cs" />
     <Compile Include="HumanStoryteller.cs" />
     <Compile Include="Incidents\GameConditions\HumanGameCondition_TempFlux.cs" />
@@ -147,6 +151,8 @@
     <Compile Include="Incidents\HumanIncidentWorker_VisitorGroup.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_VolcanicWinter.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_WildManWandersIn.cs" />
+    <Compile Include="Incidents\Jobs\LordJob_TravelExact.cs" />
+    <Compile Include="Incidents\Jobs\LordToil_TravelExact.cs" />
     <Compile Include="Model\StoryEventNode.cs" />
     <Compile Include="Model\VariableModifications.cs" />
     <Compile Include="NewtonsoftWrapper\DataContractAttribute.cs" />
@@ -342,7 +348,9 @@
     <Compile Include="Parser\Story.cs" />
     <Compile Include="Parser\ParseNode.cs" />
     <Compile Include="Patch\CreateWorldUI_Patch.cs" />
+    <Compile Include="Patch\Lord_Patch.cs" />
     <Compile Include="Patch\Main_Patch.cs" />
+    <Compile Include="Patch\Map_Patch.cs" />
     <Compile Include="Patch\SelectStartingSiteUI_Patch.cs" />
     <Compile Include="Patch\StorytellerUI_Patch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -361,6 +369,8 @@
     <Compile Include="Model\StorySummary.cs" />
     <Compile Include="Util\DataBank.cs" />
     <Compile Include="Util\ItemUtil.cs" />
+    <Compile Include="Util\LordUtil.cs" />
+    <Compile Include="Util\LordWithMemory.cs" />
     <Compile Include="Util\MapUtil.cs" />
     <Compile Include="Util\Number.cs" />
     <Compile Include="Util\QuestSitePart.cs" />

@@ -13,7 +13,7 @@ namespace HumanStoryteller.Incidents {
     class HumanIncidentWorker_CreatePawn : HumanIncidentWorker {
         public const String Name = "CreatePawn";
 
-        public override IncidentResult Execute(HumanIncidentParms parms) {
+        protected override IncidentResult Execute(HumanIncidentParms parms) {
             IncidentResult ir = new IncidentResult();
 
             if (!(parms is HumanIncidentParams_CreatePawn)) {
