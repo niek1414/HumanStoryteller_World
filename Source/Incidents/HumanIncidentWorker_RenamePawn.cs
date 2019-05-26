@@ -42,6 +42,7 @@ namespace HumanStoryteller.Incidents {
             PawnUtil.RemoveName(allParams.Name);
             PawnUtil.SavePawnByName(allParams.NewName, pawn);
 
+            SendLetter(allParams);
             return ir;
         }
     }

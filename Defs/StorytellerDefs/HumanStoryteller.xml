@@ -4,7 +4,7 @@
     <StorytellerDef Class="HumanStoryteller.StorytellerDef_Human" ParentName="BaseStoryteller">
         <defName>Human</defName>
         <label>Human storyteller(s)</label>
-        <portraitTiny>test</portraitTiny>
+        <portraitTiny>book-small</portraitTiny>
         <portraitLarge>empty</portraitLarge>
         <listOrder>50</listOrder>
         <tutorialMode>false</tutorialMode>

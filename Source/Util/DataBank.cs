@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using HumanStoryteller.Model;
+using RimWorld;
+using Verse;
 
 namespace HumanStoryteller.Util {
     public class DataBank {
@@ -12,25 +14,23 @@ namespace HumanStoryteller.Util {
                     variableBank.Add(mod.Name, 0);
                 }
 
+                float num = mod.Constant.GetValue();
                 switch (mod.Modification) {
                     case ModificationType.Add:
-                        variableBank[mod.Name] += mod.Constant;
+                        variableBank[mod.Name] += num;
                         break;
                     case ModificationType.Subtract:
-                        variableBank[mod.Name] -= mod.Constant;
+                        variableBank[mod.Name] -= num;
                         break;
                     case ModificationType.Divide:
-                        if (mod.Constant == 0) return;
-                        variableBank[mod.Name] /= mod.Constant;
+                        if (num == 0) return;
+                        variableBank[mod.Name] /= num;
                         break;
                     case ModificationType.Multiply:
-                        variableBank[mod.Name] *= mod.Constant;
+                        variableBank[mod.Name] *= num;
                         break;
                     case ModificationType.Equal:
-                        variableBank[mod.Name] = mod.Constant;
-                        break;
-                    case ModificationType.EqualVar:
-                        variableBank[mod.Name] = GetValueFromVariable(mod.NewVar);
+                        variableBank[mod.Name] = num;
                         break;
                     default:
                         Tell.Err("Variable modification type not present or known");
@@ -53,6 +53,17 @@ namespace HumanStoryteller.Util {
         }
 
         public static float GetValueFromVariable(string variable) {
+            switch (variable) {
+                case "_DAYS":
+                    return GenDate.DaysPassed;
+                case "_TREAT_POINTS":
+                    return StorytellerUtility.DefaultThreatPointsNow(HumanStoryteller.StoryComponent.SameAsLastEvent);
+                case "_WEALTH":
+                    float total = 0;
+                    Find.Maps.FindAll(x => x.ParentFaction.IsPlayer).ForEach(m => total += m.wealthWatcher.WealthTotal);
+                    return total;
+            }
+
             Dictionary<string, float> variableBank = HumanStoryteller.StoryComponent.VariableBank;
 
             if (!variableBank.ContainsKey(variable)) {
@@ -63,17 +74,29 @@ namespace HumanStoryteller.Util {
         }
 
         public static bool CompareValueWithConst(float value, CompareType type, float constant) {
+            bool result = false;
+            string compType = "";
             switch (type) {
                 case CompareType.Less:
-                    return value < constant;
+                    result = value < constant;
+                    compType = "less then";
+                    break;
                 case CompareType.More:
-                    return value > constant;
+                    result = value > constant;
+                    compType = "more then";
+                    break;
                 case CompareType.Equal:
-                    return Math.Abs(value - constant) < 0.001;
+                    result = Math.Abs(value - constant) < 0.001;
+                    compType = "equal to";
+                    break;
                 default:
                     Tell.Err("Variable compare type not present or known", type);
-                    return false;
+                    compType = "UNKNOWN EVALUATION";
+                    break;
             }
+
+            Tell.Log("Compare -- is " + value + " " + compType + " " + constant + "? " + (result ? "YES" : "NO"));
+            return result;
         }
 
         public static readonly Dictionary<string, CompareType> compareDict = new Dictionary<string, CompareType> {
@@ -81,7 +104,7 @@ namespace HumanStoryteller.Util {
             {"More", CompareType.More},
             {"Equal", CompareType.Equal}
         };
-        
+
         public enum CompareType {
             Less,
             More,

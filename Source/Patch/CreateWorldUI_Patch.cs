@@ -26,10 +26,21 @@ namespace HumanStoryteller.Patch {
 
                 if (!initParams.OverrideMapGen)
                     return;
-                Traverse.Create(page).Field("seedString").SetValue(initParams.Seed == "" ? GenText.RandomSeedString() : initParams.Seed);
-                Traverse.Create(page).Field("planetCoverage").SetValue(initParams.Coverage.GetValue() == -1 ? 1 : initParams.Coverage.GetValue());
-                Traverse.Create(page).Field("rainfall").SetValue(SeverityToRainfall(initParams.Rainfall.GetValue()));
-                Traverse.Create(page).Field("temperature").SetValue(SeverityToTemperature(initParams.Temperature.GetValue()));
+                if (initParams.Seed != "") {
+                    Traverse.Create(page).Field("seedString").SetValue(initParams.Seed);
+                }
+
+                if (initParams.Coverage.GetValue() != -1) {
+                    Traverse.Create(page).Field("planetCoverage").SetValue(initParams.Coverage.GetValue());
+                }
+
+                if (initParams.Rainfall.GetValue() != -1) {
+                    Traverse.Create(page).Field("rainfall").SetValue(SeverityToRainfall(initParams.Rainfall.GetValue()));
+                }
+
+                if (initParams.Temperature.GetValue() != -1) {
+                    Traverse.Create(page).Field("temperature").SetValue(SeverityToTemperature(initParams.Temperature.GetValue()));
+                }
 
                 Widgets.Label(new Rect(rect.x, rect.y + 250, rect.width, 30), "ParametersOverriden".Translate());
 

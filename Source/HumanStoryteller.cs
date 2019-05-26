@@ -10,8 +10,8 @@ using Verse;
 
 namespace HumanStoryteller {
     public class HumanStoryteller : Mod {
-        public static string VERSION = "0.2.1";
-        public static string VERSION_NAME = "`Controller - part 2`";
+        public static string VERSION = "0.2.2";
+        public static string VERSION_NAME = "`Controller`";
 
         public static bool InitiateEventUnsafe = false;
 

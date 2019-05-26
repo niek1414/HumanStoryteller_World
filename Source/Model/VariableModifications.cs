@@ -9,28 +9,25 @@ namespace HumanStoryteller.Model {
         
         [JsonConverter(typeof(StringEnumConverter))]
         public ModificationType Modification;
-        public float Constant;
-        public string NewVar;
+        public Number Constant;
 
         public VariableModifications() {
         }
 
-        public VariableModifications(string name, ModificationType modification, float constant, string newVar = "") {
+        public VariableModifications(string name, ModificationType modification, Number constant) {
             Name = name;
             Modification = modification;
             Constant = constant;
-            NewVar = newVar;
         }
 
         public override string ToString() {
-            return $"Name: {Name}, Modification: {Modification}, Constant: {Constant}, NewVar: {NewVar}";
+            return $"Name: {Name}, Modification: {Modification}, Constant: {Constant}";
         }
 
         public void ExposeData() {
             Scribe_Values.Look(ref Name, "name");
             Scribe_Values.Look(ref Modification, "modification");
-            Scribe_Values.Look(ref Constant, "constant");
-            Scribe_Values.Look(ref NewVar, "newVar");
+            Scribe_Deep.Look(ref Constant, "constant");
         }
     }
 
@@ -39,7 +36,6 @@ namespace HumanStoryteller.Model {
         Subtract,
         Divide,
         Multiply,
-        Equal,
-        EqualVar
+        Equal
     }
 }

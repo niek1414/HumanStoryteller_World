@@ -8,18 +8,18 @@ namespace HumanStoryteller.CheckConditions {
         public const String Name = "Colonists";
 
         private DataBank.CompareType _compareType;
-        private float _constant;
+        private Number _constant;
 
         public ColonistsCheck() {
         }
 
-        public ColonistsCheck(DataBank.CompareType compareType, float constant) {
+        public ColonistsCheck(DataBank.CompareType compareType, Number constant) {
             _compareType = Tell.AssertNotNull(compareType, nameof(compareType), GetType().Name);
             _constant = Tell.AssertNotNull(constant, nameof(constant), GetType().Name);
         }
 
         public override bool Check(IncidentResult result, int checkPosition) {           
-            return DataBank.CompareValueWithConst(Find.ColonistBar.GetColonistsInOrder().Count, _compareType, _constant);
+            return DataBank.CompareValueWithConst(Find.ColonistBar.GetColonistsInOrder().Count, _compareType, _constant.GetValue());
         }
 
         public override string ToString() {
@@ -29,7 +29,7 @@ namespace HumanStoryteller.CheckConditions {
         public override void ExposeData() {
             base.ExposeData();
             Scribe_Values.Look(ref _compareType, "compareType");
-            Scribe_Values.Look(ref _constant, "constant");
+            Scribe_Deep.Look(ref _constant, "constant");
         }
     }
 }

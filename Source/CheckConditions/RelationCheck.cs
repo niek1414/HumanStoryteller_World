@@ -12,19 +12,19 @@ namespace HumanStoryteller.CheckConditions {
 
         private Faction _faction;
         private DataBank.CompareType _compareType;
-        private float _constant;
+        private Number _constant;
 
         public RelationCheck() {
         }
 
-        public RelationCheck(Faction faction, DataBank.CompareType compareType, float constant) {
+        public RelationCheck(Faction faction, DataBank.CompareType compareType, Number constant) {
             _faction = Tell.AssertNotNull(faction, nameof(faction), GetType().Name);
             _compareType = Tell.AssertNotNull(compareType, nameof(compareType), GetType().Name);
             _constant = Tell.AssertNotNull(constant, nameof(constant), GetType().Name);
         }
 
         public override bool Check(IncidentResult result, int checkPosition) {
-            return DataBank.CompareValueWithConst(_faction.PlayerGoodwill, _compareType, _constant);
+            return DataBank.CompareValueWithConst(_faction.PlayerGoodwill, _compareType, _constant.GetValue());
         }
 
         public override string ToString() {
@@ -35,7 +35,7 @@ namespace HumanStoryteller.CheckConditions {
             base.ExposeData();
             Scribe_References.Look(ref _faction, "faction");
             Scribe_Values.Look(ref _compareType, "compareType");
-            Scribe_Values.Look(ref _constant, "constant");
+            Scribe_Deep.Look(ref _constant, "constant");
         }
     }
 }

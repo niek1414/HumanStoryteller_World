@@ -50,7 +50,6 @@ namespace HumanStoryteller.Web {
             }
         }
 
-
         public static void GetBookRandom(Action<StorySummary[]> getSummariesCallback) {
             Client.GetByPaginationAndFilter("storybook/story/random",
                 (response, handle) => { GetSummariesCallback(response, handle, getSummariesCallback); },
@@ -60,7 +59,16 @@ namespace HumanStoryteller.Web {
                 "",
                 "");
         }
-
+        
+        public static void GetBookNew(Action<StorySummary[]> getSummariesCallback) {
+            Client.GetByPaginationAndFilter("storybook/story/new",
+                (response, handle) => { GetSummariesCallback(response, handle, getSummariesCallback); },
+                0,
+                0,
+                "",
+                "",
+                "");
+        }
 
         public static void GetBook(long start, long amount, string filterName, string filterDescription, string filterCreator,
             Action<StorySummary[]> getSummariesCallback) {

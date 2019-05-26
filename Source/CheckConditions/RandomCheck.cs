@@ -7,17 +7,17 @@ using Verse;
 namespace HumanStoryteller.CheckConditions {
     public class RandomCheck : CheckCondition {
         public const String Name = "Random";
-        private float _chance;
+        private Number _chance;
 
         public RandomCheck() {
         }
 
-        public RandomCheck(float chance) {
+        public RandomCheck(Number chance) {
             _chance = Tell.AssertNotNull(chance, nameof(chance), GetType().Name);
         }
 
         public override bool Check(IncidentResult result, int checkPosition) {
-            return new Random(result.Id + checkPosition).Next(0,100) <= _chance;
+            return new Random(result.Id + checkPosition).Next(0,100) <= _chance.GetValue();
         }
 
         public override string ToString() {
@@ -26,7 +26,7 @@ namespace HumanStoryteller.CheckConditions {
 
         public override void ExposeData() {
             base.ExposeData();
-            Scribe_Values.Look(ref _chance, "chance");
+            Scribe_Deep.Look(ref _chance, "chance");
         }
     }
 }

@@ -6,8 +6,8 @@ using System.Net;
 using HumanStoryteller.CheckConditions;
 using HumanStoryteller.Model;
 using HumanStoryteller.Util;
-using NAudio.Wave;
-using NAudio.Wave.SampleProviders;
+using HumanStoryteller.Web;
+using RestSharp;
 using RimWorld;
 using RuntimeAudioClipLoader;
 using UnityEngine;
@@ -29,35 +29,84 @@ namespace HumanStoryteller.Incidents {
             HumanIncidentParams_PlayAudio
                 allParams = Tell.AssertNotNull((HumanIncidentParams_PlayAudio) parms, nameof(parms), GetType().Name);
             Tell.Log($"Executing event {Name} with:{allParams}");
-            var filePath = "http://freesound.org/data/previews/" + allParams.File;
-            WebClient client = new WebClient();
-
             IncidentResult_Audio irAudio = new IncidentResult_Audio();
 
-            client.DownloadDataAsync(new Uri(filePath));
-            client.DownloadDataCompleted += (sender1, e1) => {
-                MemoryStream stream = new MemoryStream(e1.Result);
-                var audioClip = Manager.Load(stream, Manager.GetAudioFormat(filePath), filePath);
-                irAudio.EndAfter = audioClip.length + RealTime.LastRealTime;
-                if (allParams.IsSong) {
-                    var songDef = CreateSongDef(allParams, audioClip, filePath);
-                    Find.MusicManagerPlay.ForceStartSong(songDef, false);
-                } else {
-                    var soundDef = CreateSoundDef(allParams, audioClip);
-                    var resolvedGrains = soundDef.subSounds[0].grains[0].GetResolvedGrains();
-                    ResolvedGrain_Clip resolvedGrainClip = resolvedGrains.First() as ResolvedGrain_Clip;
+            string filePath;
+            string message;
+
+            if (allParams.File.StartsWith("s__")) {
+                filePath = "/iframe-api/?t=" + allParams.File.Substring(3);
+//                filePath = "https://api.soundcloud.com/tracks/" + allParams.File.Substring(3) + "/download?client_id=NmW1FlPaiL94ueEu7oziOWjYEzZzQDcK";
+                message = "Audio by " + allParams.Author;
+                RestClient restClient = new RestClient("http://soundclouddownloader.info") {
+                    UserAgent = "HumanStoryteller"
+                };
+                RestRequest request = new RestRequest(filePath, Method.GET);
+
+                restClient.ExecuteAsyncGet(request, (response, handle) => {
+                    string downloadUrl;
                     try {
-                        if (SampleOneShot.TryMakeAndPlay(soundDef.subSounds[0], resolvedGrainClip.clip, SoundInfo.OnCamera()) != null) {
-                            SoundSlotManager.Notify_Played(soundDef.slot, resolvedGrainClip.clip.length);
-                        }
+                        var urlStart = response.Content.IndexOf("/download.php", StringComparison.Ordinal);
+                        var urlEnd = response.Content.IndexOf("\"", urlStart, StringComparison.Ordinal);
+                        downloadUrl = response.Content.Substring(urlStart, urlEnd - urlStart);
                     } catch (Exception e) {
                         Tell.Err(e.Message, e);
+                        return;
                     }
-                }
 
-                Messages.Message("Audio by " + allParams.Author + " on FreeSound.org", MessageTypeDefOf.SilentInput);
-            };
+                    downloadFile("http://soundclouddownloader.info" + downloadUrl, irAudio, allParams, message, true, allParams.File.Substring(3));
+                }, "GET");
+            } else if (allParams.File.StartsWith("f__")) {
+                filePath = "http://freesound.org/data/previews/" + allParams.File.Substring(3);
+                message = "Audio by " + allParams.Author + " on FreeSound.org";
+                downloadFile(filePath, irAudio, allParams, message);
+            } else {
+                filePath = "http://freesound.org/data/previews/" + allParams.File;
+                message = "Audio by " + allParams.Author + " on FreeSound.org";
+                downloadFile(filePath, irAudio, allParams, message);
+            }
+
             return irAudio;
+        }
+
+        private void downloadFile(string url, IncidentResult_Audio ir, HumanIncidentParams_PlayAudio allParams, string message,
+            bool soundCloud = false, string cloudId = "") {
+            WebClient client = new WebClient();
+            Tell.Log("Downloading audio form:" + url + (soundCloud ? " (cloudID: " + cloudId + ")": ""));
+            client.DownloadDataAsync(new Uri(url));
+            client.DownloadDataCompleted += (sender1, e1) => {
+                try {
+                    AudioClip audioClip;
+                    MemoryStream stream = new MemoryStream(e1.Result);
+
+                    if (soundCloud) {
+                        audioClip = Manager.Load(stream, AudioFormat.mp3, cloudId);
+                    } else {
+                        audioClip = Manager.Load(stream, Manager.GetAudioFormat(url), url);
+                    }
+
+                    ir.EndAfter = audioClip.length + RealTime.LastRealTime;
+                    if (allParams.IsSong) {
+                        var songDef = CreateSongDef(allParams, audioClip, url);
+                        Find.MusicManagerPlay.ForceStartSong(songDef, false);
+                    } else {
+                        var soundDef = CreateSoundDef(allParams, audioClip);
+                        var resolvedGrains = soundDef.subSounds[0].grains[0].GetResolvedGrains();
+                        ResolvedGrain_Clip resolvedGrainClip = resolvedGrains.First() as ResolvedGrain_Clip;
+                        try {
+                            if (SampleOneShot.TryMakeAndPlay(soundDef.subSounds[0], resolvedGrainClip.clip, SoundInfo.OnCamera()) != null) {
+                                SoundSlotManager.Notify_Played(soundDef.slot, resolvedGrainClip.clip.length);
+                            }
+                        } catch (Exception e) {
+                            Tell.Err(e.Message, e);
+                        }
+                    }
+
+                    Messages.Message(message, MessageTypeDefOf.SilentInput);
+                } catch (Exception e) {
+                    Tell.Err("Exception in play audio:", e);
+                }
+            };
         }
 
         private static SoundDef CreateSoundDef(HumanIncidentParams_PlayAudio allParams, AudioClip audioClip) {

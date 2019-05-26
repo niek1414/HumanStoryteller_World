@@ -9,12 +9,12 @@ namespace HumanStoryteller.CheckConditions {
 
         private ThingDef _item;
         private DataBank.CompareType _compareType;
-        private float _constant;
+        private Number _constant;
 
         public ItemColonyCheck() {
         }
 
-        public ItemColonyCheck(ThingDef item, DataBank.CompareType compareType, float constant) {
+        public ItemColonyCheck(ThingDef item, DataBank.CompareType compareType, Number constant) {
             _item = Tell.AssertNotNull(item, nameof(item), GetType().Name);
             _compareType = Tell.AssertNotNull(compareType, nameof(compareType), GetType().Name);
             _constant = Tell.AssertNotNull(constant, nameof(constant), GetType().Name);
@@ -22,7 +22,7 @@ namespace HumanStoryteller.CheckConditions {
 
         public override bool Check(IncidentResult result, int checkPosition) {
             int count = result.GetTarget().resourceCounter.GetCount(_item);
-            return DataBank.CompareValueWithConst(count, _compareType, _constant);
+            return DataBank.CompareValueWithConst(count, _compareType, _constant.GetValue());
         }
 
         public override string ToString() {
@@ -33,7 +33,7 @@ namespace HumanStoryteller.CheckConditions {
             base.ExposeData();
             Scribe_Defs.Look(ref _item, "item");
             Scribe_Values.Look(ref _compareType, "compareType");
-            Scribe_Values.Look(ref _constant, "constant");
+            Scribe_Deep.Look(ref _constant, "constant");
         }
     }
 }

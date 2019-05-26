@@ -44,5 +44,33 @@ namespace HumanStoryteller.Parser.Converter {
                 throw;
             }
         }
+        
+        public object ReadJson(JToken token, Type objectType) {
+            var s = "";
+            try {
+                switch (token.Type) {
+                    case JTokenType.Float:
+                    case JTokenType.Integer: {
+                        return new Number(token.Value<float>());
+                    }
+                    case JTokenType.String: {
+                        s = token.Value<string>();
+                        if (s.Length > 0) {
+                            if (s.StartsWith("v_")) {
+                                return new Number(s.Substring(2));
+                            }
+                            return new Number(float.Parse(s, CultureInfo.InvariantCulture.NumberFormat));
+                        }
+
+                        break;
+                    }
+                }
+
+                return new Number();
+            } catch (Exception) {
+                Tell.Err("Error in parsing number: expectedType: " + objectType + " JSONtype: " + token.Type + " s: " + s);
+                throw;
+            }
+        }
     }
 }

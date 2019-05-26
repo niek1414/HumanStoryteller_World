@@ -10,19 +10,19 @@ namespace HumanStoryteller.CheckConditions {
 
         private string _variableName;
         private DataBank.CompareType _compareType;
-        private float _constant;
+        private Number _constant;
 
         public VariableCheck() {
         }
 
-        public VariableCheck(string variableName, DataBank.CompareType compareType, float constant) {
+        public VariableCheck(string variableName, DataBank.CompareType compareType, Number constantOrVariable) {
             _variableName = Tell.AssertNotNull(variableName, nameof(variableName), GetType().Name);
             _compareType = Tell.AssertNotNull(compareType, nameof(compareType), GetType().Name);
-            _constant = Tell.AssertNotNull(constant, nameof(constant), GetType().Name);
+            _constant = Tell.AssertNotNull(constantOrVariable, nameof(constantOrVariable), GetType().Name);
         }
 
         public override bool Check(IncidentResult result, int checkPosition) {
-            return DataBank.CompareVariableWithConst(_variableName, _compareType, _constant);
+            return DataBank.CompareVariableWithConst(_variableName, _compareType, _constant.GetValue());
         }
 
         public override string ToString() {
@@ -33,7 +33,7 @@ namespace HumanStoryteller.CheckConditions {
             base.ExposeData();
             Scribe_Values.Look(ref _variableName, "variableName");
             Scribe_Values.Look(ref _compareType, "compareType");
-            Scribe_Values.Look(ref _constant, "constant");
+            Scribe_Deep.Look(ref _constant, "constant");
         }
     }
 }

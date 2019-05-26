@@ -9,7 +9,7 @@
     <LoadingStoryFailed>This Book was lost..\n\nIt seems that the story can not be found.\nThe creator may have removed the story or something went wrong while pre-reading the story.\nPlease notify the mod dev if there is a error.</LoadingStoryFailed>
     <StoryList>Storybook story's</StoryList>
     <StoryTitleInput>Story title</StoryTitleInput>
-    <ParametersOverriden>Settings are defined by the story and can not be changed.</ParametersOverriden>
+    <ParametersOverriden>There are (some) settings that are defined by the story and can not be changed.</ParametersOverriden>
     <LocationOverriden>Landing site is defined by the story and can not be changed</LocationOverriden>
     <StoryDescriptionInput>Description (single keyword)</StoryDescriptionInput>
     <StoryCreatorInput>Creator</StoryCreatorInput>

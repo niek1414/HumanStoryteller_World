@@ -30,6 +30,18 @@ namespace HumanStoryteller.Patch {
         private static string _filterCreator = "";
         private static string _filterDescription = "";
 
+        class CreatorInfo {
+            public StorySummary Story;
+            public Rect Rect;
+
+            public CreatorInfo(StorySummary story, Rect rect) {
+                Story = story;
+                Rect = rect;
+            }
+        }
+        
+        private static CreatorInfo _infoHover = null;
+
         public static void reset() {
             _pageNumber = 0;
             _selectedSummary = null;
@@ -107,6 +119,10 @@ namespace HumanStoryteller.Patch {
             Rect stories = new Rect(rect.x + 450, rect.y, 530, 630);
             DrawStoryList(stories);
             DrawPagination(stories);
+
+            if (_infoHover != null) {
+                DrawCreatorInfo(_infoHover.Story, _infoHover.Rect);
+            }
         }
 
         private static void DrawFilter(Rect filter) {
@@ -126,10 +142,19 @@ namespace HumanStoryteller.Patch {
         }
 
         private static void DrawPagination(Rect stories) {
+            Text.Font = GameFont.Tiny;
+
             if (Widgets.ButtonText(new Rect(stories.center.x - 150, stories.yMax - 40, 90, 40), "Random 5")) {
                 if (!_loading) {
                     _pageNumber = 0;
                     RefreshListRandom();
+                }
+            }
+            
+            if (Widgets.ButtonText(new Rect(stories.center.x + 60, stories.yMax - 40, 90, 40), "Latest 5")) {
+                if (!_loading) {
+                    _pageNumber = 0;
+                    RefreshListNew();
                 }
             }
 
@@ -194,6 +219,7 @@ namespace HumanStoryteller.Patch {
 
         private static void ListStories(Listing_Standard listing, List<StorySummary> stories) {
             bool flag = false;
+            _infoHover = null;
             for (var i = 0; i < stories.Count; i++) {
                 StorySummary story;
                 try {
@@ -212,7 +238,7 @@ namespace HumanStoryteller.Patch {
                 DrawStorySummary(rect, story);
                 flag = true;
             }
-
+            
             if (!flag) {
                 GUI.color = new Color(1f, 1f, 1f, 0.5f);
                 listing.Label("(" + "NoneLower".Translate() + ")");
@@ -259,19 +285,57 @@ namespace HumanStoryteller.Patch {
             GUI.Label(rating, $"Rating: {story.Rating} / Votes: {story.Votes}", alignCenter);
 
             Rect avatar = new Rect(inner.xMax - 65, inner.y + 18, 55, 55);
-
+            Widgets.DrawShadowAround(avatar);
             Texture2D foundImage = GetImage(story.Avatar);
             if (foundImage != null) {
                 GUI.DrawTexture(avatar, foundImage, ScaleMode.ScaleToFit);
             }
 
-            if (!selected && Widgets.ButtonInvisible(rect)) {
+            if (Mouse.IsOver(avatar)) {
+                _infoHover = new CreatorInfo(story, avatar);
+            } else if (!selected && Widgets.ButtonInvisible(rect)) {
                 _selectedSummary = story;
                 if (HumanStoryteller.StoryComponent.Initialised) {
                     HumanStoryteller.StoryComponent.StoryId = story.Id;
                     HumanStoryteller.StoryComponent.ForcedUpdate = true;
                 }
+
                 SoundDefOf.Click.PlayOneShotOnCamera();
+            }
+        }
+
+        private static void DrawCreatorInfo(StorySummary story, Rect avatar) {
+            var badges = story.Badges.Split(';');
+            
+            Rect info = new Rect(Event.current.mousePosition.x - 150, Event.current.mousePosition.y, 150, 100 + (badges.Length > 3 ? (badges.Length - 3) * 13 : 0));
+            Widgets.DrawShadowAround(info);
+            Widgets.DrawBoxSolid(info, new Color(0.21f, 0.25f, 0.29f));
+            Rect innerInfo = info.ContractedBy(4f);
+            innerInfo.x += 4;
+            Text.Font = GameFont.Small;
+            Rect name = innerInfo;
+            name.height = Text.CalcHeight(story.Username, name.width);
+            Widgets.Label(name, story.Username);
+
+            Text.Font = GameFont.Tiny;
+            Rect badgeRect = new Rect(innerInfo) {x = innerInfo.x + 10};
+            badgeRect.y += name.height;
+            foreach (var t in badges) {
+                if (t.NullOrEmpty()) {
+                    continue;
+                }
+
+                Widgets.Label(badgeRect, "- " + t);
+                badgeRect.y += 13;
+            }
+
+            Rect clickToFilterRect = new Rect(innerInfo.x, innerInfo.y + innerInfo.height - 25, innerInfo.width, 25);
+            Text.Font = GameFont.Small;
+            Widgets.Label(clickToFilterRect, "Click to filter on name");
+            if (Widgets.ButtonInvisible(avatar)) {
+                _filterCreator = story.Username;
+                _pageNumber = 0;
+                RefreshList(false);
             }
         }
 
@@ -333,6 +397,21 @@ namespace HumanStoryteller.Patch {
         private static void RefreshListRandom() {
             _loading = true;
             Storybook.GetBookRandom(storyArray => {
+                _loading = false;
+
+                if (storyArray.Length > 0) {
+                    _storyList.Clear();
+                    _storyList.AddRange(storyArray);
+                } else {
+                    _pageNumber = 0;
+                    RefreshList(false);
+                }
+            });
+        }
+        
+        private static void RefreshListNew() {
+            _loading = true;
+            Storybook.GetBookNew(storyArray => {
                 _loading = false;
 
                 if (storyArray.Length > 0) {
