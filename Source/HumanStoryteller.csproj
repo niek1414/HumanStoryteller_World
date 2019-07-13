@@ -399,6 +399,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\About\Preview.png" />
+    <Content Include="..\Defs\DutyDefs\Custom_Intents.xml" />
     <Content Include="..\Defs\GameConditionDefs\GameConditions_Misc.xml" />
     <Content Include="..\Defs\Misc\MainButtonDefs\MainButtons.xml" />
     <Content Include="..\Defs\StorytellerDefs\HumanStoryteller.xml" />
