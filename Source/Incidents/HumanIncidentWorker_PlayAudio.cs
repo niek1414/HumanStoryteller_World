@@ -71,13 +71,12 @@ namespace HumanStoryteller.Incidents {
 
         private void downloadFile(string url, IncidentResult_Audio ir, HumanIncidentParams_PlayAudio allParams, string message,
             bool soundCloud = false, string cloudId = "") {
-            WebClient client = new WebClient();
-            Tell.Log("Downloading audio form:" + url + (soundCloud ? " (cloudID: " + cloudId + ")": ""));
-            client.DownloadDataAsync(new Uri(url));
-            client.DownloadDataCompleted += (sender1, e1) => {
+            Tell.Log("Downloading audio from:" + url + (soundCloud ? " (cloudID: " + cloudId + ")": ""));
+            RestClient client = new RestClient(url);
+            client.ExecuteAsync(new RestRequest(), response => {
                 try {
                     AudioClip audioClip;
-                    MemoryStream stream = new MemoryStream(e1.Result);
+                    MemoryStream stream = new MemoryStream(response.RawBytes);
 
                     if (soundCloud) {
                         audioClip = Manager.Load(stream, AudioFormat.mp3, cloudId);
@@ -106,7 +105,7 @@ namespace HumanStoryteller.Incidents {
                 } catch (Exception e) {
                     Tell.Err("Exception in play audio:", e);
                 }
-            };
+            });
         }
 
         private static SoundDef CreateSoundDef(HumanIncidentParams_PlayAudio allParams, AudioClip audioClip) {
