@@ -31,7 +31,7 @@ namespace HumanStoryteller.Incidents {
             }
 
             var amount = allParams.Amount.GetValue();
-            int countToSpawn = amount != -1 ? Mathf.RoundToInt(amount) : 1;
+            int countToSpawn = Mathf.RoundToInt(amount);
 
             List<TargetInfo> list = new List<TargetInfo>();
             float shrapnelDirection = Rand.Range(0f, 360f);
@@ -67,18 +67,13 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_ShipPartCrash : HumanIncidentParms {
-        public Number Amount;
-        public string ShipCrashedPart;
+        public Number Amount = new Number(1);
+        public string ShipCrashedPart = "";
 
         public HumanIncidentParams_ShipPartCrash() {
         }
 
-        public HumanIncidentParams_ShipPartCrash(String target, HumanLetter letter, string shipCrashedPart = "") : this(target, letter, new Number(), shipCrashedPart) {
-        }
-
-        public HumanIncidentParams_ShipPartCrash(string target, HumanLetter letter, Number amount, string shipCrashedPart) : base(target, letter) {
-            Amount = amount;
-            ShipCrashedPart = shipCrashedPart;
+        public HumanIncidentParams_ShipPartCrash(string target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

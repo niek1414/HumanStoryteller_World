@@ -75,7 +75,8 @@ namespace HumanStoryteller.Incidents {
                     LordMaker.MakeNewLord(pawns[0].Faction, lordJob, map, pawns);
                 }
 
-                if (allParams.IntentType.Equals("Travel") || allParams.IntentType.Equals("TravelAndExit") || allParams.IntentType.Equals("DefendPoint")) {
+                if (allParams.IntentType.Equals("Travel") || allParams.IntentType.Equals("TravelAndExit") ||
+                    allParams.IntentType.Equals("DefendPoint")) {
                     foreach (var t in pawns) {
                         t.mindState.duty.locomotion = GetUrgencyFromString(allParams.SecondStringParam);
                     }
@@ -99,12 +100,12 @@ namespace HumanStoryteller.Incidents {
                     Pawn p1 = PawnUtil.GetPawnByName(allParams.FirstStringParam);
                     Pawn p2 = PawnUtil.GetPawnByName(allParams.SecondStringParam);
                     if (p1 == null || p2 == null) {
-                        Tell.Log("Didn't find pawn while resolving job", allParams.FirstStringParam, allParams.SecondStringParam);
+                        Tell.Warn("Didn't find pawn while resolving job", allParams.FirstStringParam, allParams.SecondStringParam);
                         return null;
                     }
 
                     if (!RCellFinder.TryFindMarriageSite(p1, p2, out IntVec3 result)) {
-                        Tell.Log("Didn't find marriage site for pawns: ", allParams.FirstStringParam, allParams.SecondStringParam);
+                        Tell.Warn("Didn't find marriage site for pawns: ", allParams.FirstStringParam, allParams.SecondStringParam);
                         return null;
                     }
 
@@ -112,7 +113,7 @@ namespace HumanStoryteller.Incidents {
                 case "PrisonBreak":
                     if (!RCellFinder.TryFindRandomExitSpot(list[0], out IntVec3 spot, TraverseMode.PassDoors) ||
                         !TryFindGroupUpLoc(list, spot, out IntVec3 groupUpLoc)) {
-                        Tell.Log("Didn't find escape route.");
+                        Tell.Warn("Didn't find escape route for prison break.");
                         return null;
                     }
 
@@ -135,7 +136,7 @@ namespace HumanStoryteller.Incidents {
                     return new LordJob_Siege(list[0].Faction, stageLoc2, num);
                 case "Joinable_Party":
                     if (!RCellFinder.TryFindPartySpot(list[0], out IntVec3 result1)) {
-                        Tell.Log("Didn't find party spot.");
+                        Tell.Warn("Didn't find party spot.");
                         return null;
                     }
 
@@ -158,15 +159,15 @@ namespace HumanStoryteller.Incidents {
                 case "SleepThenAssaultColony":
                     return new LordJob_SleepThenAssaultColony(list[0].Faction, true);
                 case "TravelAndExit":
-                    return new LordJob_TravelAndExit(MapUtil.FindLocationByName(allParams.FirstStringParam, map));
+                    return new LordJob_TravelAndExit(allParams.Location.GetSingleCell(map));
                 case "Travel":
-                    return new LordJob_TravelExact(MapUtil.FindLocationByName(allParams.FirstStringParam, map));
+                    return new LordJob_TravelExact(allParams.Location.GetSingleCell(map));
                 case "ExitMapBest":
                     return new LordJob_ExitMapBest(GetUrgencyFromString(allParams.FirstStringParam));
                 case "DefendPoint":
-                    return new LordJob_DefendPoint(MapUtil.FindLocationByName(allParams.FirstStringParam, map));
+                    return new LordJob_DefendPoint(allParams.Location.GetSingleCell(map));
                 default:
-                    Tell.Log("Didn't resolve intent type (lord).");
+                    Tell.Warn("Didn't resolve intent type (lord).");
                     return null;
             }
         }
@@ -177,7 +178,7 @@ namespace HumanStoryteller.Incidents {
                     var p1 = PawnUtil.GetPawnByName(allParams.FirstStringParam);
 
                     if (p1 == null) {
-                        Tell.Log("Didn't find pawn while resolving job", allParams.FirstStringParam);
+                        Tell.Warn("Didn't find pawn while resolving job", allParams.FirstStringParam);
                         return null;
                     }
 
@@ -188,7 +189,7 @@ namespace HumanStoryteller.Incidents {
                     var p2 = PawnUtil.GetPawnByName(allParams.FirstStringParam);
 
                     if (p2 == null) {
-                        Tell.Log("Didn't find pawn while resolving job", allParams.FirstStringParam);
+                        Tell.Warn("Didn't find pawn while resolving job", allParams.FirstStringParam);
                         return null;
                     }
 
@@ -197,7 +198,7 @@ namespace HumanStoryteller.Incidents {
                     var p3 = PawnUtil.GetPawnByName(allParams.FirstStringParam);
 
                     if (p3 == null) {
-                        Tell.Log("Didn't find pawn while resolving job", allParams.FirstStringParam);
+                        Tell.Warn("Didn't find pawn while resolving job", allParams.FirstStringParam);
                         return null;
                     }
 
@@ -206,7 +207,7 @@ namespace HumanStoryteller.Incidents {
                     var p4 = PawnUtil.GetPawnByName(allParams.FirstStringParam);
 
                     if (p4 == null) {
-                        Tell.Log("Didn't find pawn while resolving job", allParams.FirstStringParam);
+                        Tell.Warn("Didn't find pawn while resolving job", allParams.FirstStringParam);
                         return null;
                     }
 
@@ -215,7 +216,7 @@ namespace HumanStoryteller.Incidents {
                     var p5 = PawnUtil.GetPawnByName(allParams.FirstStringParam);
 
                     if (p5 == null) {
-                        Tell.Log("Didn't find pawn while resolving job", allParams.FirstStringParam);
+                        Tell.Warn("Didn't find pawn while resolving job", allParams.FirstStringParam);
                         return null;
                     }
 
@@ -226,7 +227,7 @@ namespace HumanStoryteller.Incidents {
                     var p6 = PawnUtil.GetPawnByName(allParams.FirstStringParam);
 
                     if (p6 == null) {
-                        Tell.Log("Didn't find pawn while resolving job", allParams.FirstStringParam);
+                        Tell.Warn("Didn't find pawn while resolving job", allParams.FirstStringParam);
                         return null;
                     }
 
@@ -235,7 +236,7 @@ namespace HumanStoryteller.Incidents {
                     var p7 = PawnUtil.GetPawnByName(allParams.FirstStringParam);
 
                     if (p7 == null) {
-                        Tell.Log("Didn't find pawn while resolving job", allParams.FirstStringParam);
+                        Tell.Warn("Didn't find pawn while resolving job", allParams.FirstStringParam);
                         return null;
                     }
 
@@ -244,7 +245,7 @@ namespace HumanStoryteller.Incidents {
                     var p8 = PawnUtil.GetPawnByName(allParams.FirstStringParam);
 
                     if (p8 == null) {
-                        Tell.Log("Didn't find pawn while resolving job", allParams.FirstStringParam);
+                        Tell.Warn("Didn't find pawn while resolving job", allParams.FirstStringParam);
                         return null;
                     }
 
@@ -259,7 +260,7 @@ namespace HumanStoryteller.Incidents {
                     var p9 = PawnUtil.GetPawnByName(allParams.FirstStringParam);
 
                     if (p9 == null) {
-                        Tell.Log("Didn't find pawn while resolving job", allParams.FirstStringParam);
+                        Tell.Warn("Didn't find pawn while resolving job", allParams.FirstStringParam);
                         return null;
                     }
 
@@ -268,7 +269,7 @@ namespace HumanStoryteller.Incidents {
                     var p10 = PawnUtil.GetPawnByName(allParams.FirstStringParam);
 
                     if (p10 == null) {
-                        Tell.Log("Didn't find pawn while resolving job", allParams.FirstStringParam);
+                        Tell.Warn("Didn't find pawn while resolving job", allParams.FirstStringParam);
                         return null;
                     }
 
@@ -277,7 +278,7 @@ namespace HumanStoryteller.Incidents {
                     var p11 = PawnUtil.GetPawnByName(allParams.FirstStringParam);
 
                     if (p11 == null) {
-                        Tell.Log("Didn't find pawn while resolving job", allParams.FirstStringParam);
+                        Tell.Warn("Didn't find pawn while resolving job", allParams.FirstStringParam);
                         return null;
                     }
 
@@ -286,13 +287,13 @@ namespace HumanStoryteller.Incidents {
                     var p12 = PawnUtil.GetPawnByName(allParams.FirstStringParam);
 
                     if (p12 == null) {
-                        Tell.Log("Didn't find pawn while resolving job", allParams.FirstStringParam);
+                        Tell.Warn("Didn't find pawn while resolving job", allParams.FirstStringParam);
                         return null;
                     }
 
                     Building_Bed buildingBed = RestUtility.FindBedFor(p12, list[0], false, false, true);
                     if (buildingBed == null || !p12.CanReserve(buildingBed)) {
-                        Tell.Log("Didn't find bed", allParams.FirstStringParam);
+                        Tell.Warn("Didn't find bed", allParams.FirstStringParam);
                         return null;
                     }
 
@@ -303,13 +304,13 @@ namespace HumanStoryteller.Incidents {
                     var p13 = PawnUtil.GetPawnByName(allParams.FirstStringParam);
 
                     if (p13 == null) {
-                        Tell.Log("Didn't find pawn while resolving job", allParams.FirstStringParam);
+                        Tell.Warn("Didn't find pawn while resolving job", allParams.FirstStringParam);
                         return null;
                     }
 
                     Building_Bed buildingBed2 = RestUtility.FindBedFor(p13, list[0], true, false, true);
                     if (buildingBed2 == null || !p13.CanReserve(buildingBed2)) {
-                        Tell.Log("Didn't find bed", allParams.FirstStringParam);
+                        Tell.Warn("Didn't find bed", allParams.FirstStringParam);
                         return null;
                     }
 
@@ -320,7 +321,7 @@ namespace HumanStoryteller.Incidents {
                     var p14 = PawnUtil.GetPawnByName(allParams.FirstStringParam);
 
                     if (p14 == null) {
-                        Tell.Log("Didn't find pawn while resolving job", allParams.FirstStringParam);
+                        Tell.Warn("Didn't find pawn while resolving job", allParams.FirstStringParam);
                         return null;
                     }
 
@@ -335,7 +336,7 @@ namespace HumanStoryteller.Incidents {
                     var p15 = PawnUtil.GetPawnByName(allParams.FirstStringParam);
 
                     if (p15 == null) {
-                        Tell.Log("Didn't find pawn while resolving job", allParams.FirstStringParam);
+                        Tell.Warn("Didn't find pawn while resolving job", allParams.FirstStringParam);
                         return null;
                     }
 
@@ -350,7 +351,7 @@ namespace HumanStoryteller.Incidents {
                     var p16 = PawnUtil.GetPawnByName(allParams.FirstStringParam);
 
                     if (p16 == null) {
-                        Tell.Log("Didn't find pawn while resolving job", allParams.FirstStringParam);
+                        Tell.Warn("Didn't find pawn while resolving job", allParams.FirstStringParam);
                         return null;
                     }
 
@@ -359,7 +360,7 @@ namespace HumanStoryteller.Incidents {
                     var p17 = PawnUtil.GetPawnByName(allParams.FirstStringParam);
 
                     if (p17 == null) {
-                        Tell.Log("Didn't find pawn while resolving job", allParams.FirstStringParam);
+                        Tell.Warn("Didn't find pawn while resolving job", allParams.FirstStringParam);
                         return null;
                     }
 
@@ -369,7 +370,7 @@ namespace HumanStoryteller.Incidents {
                 case "UnloadYourInventory":
                     return new Job(JobDefOf.UnloadYourInventory);
                 default:
-                    Tell.Log("Didn't resolve intent type (job).");
+                    Tell.Warn("Didn't resolve intent type (job).");
                     return null;
             }
         }
@@ -419,29 +420,18 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_IntentGiver : HumanIncidentParms {
-        public List<string> Names;
-        public string IntentType;
-        public string FirstStringParam;
-        public string SecondStringParam;
-        public Number FirstNumberParam;
+        public List<string> Names = new List<string>();
+        public string IntentType = "";
+        public string FirstStringParam = "";
+        public string SecondStringParam = "";
+        public Location Location = new Location();
+        public Number FirstNumberParam = new Number();
         public bool Queue;
 
         public HumanIncidentParams_IntentGiver() {
-            Names = new List<string>();
-            IntentType = "";
-            FirstStringParam = "";
-            SecondStringParam = "";
-            FirstNumberParam = new Number();
-            Queue = false;
         }
 
         public HumanIncidentParams_IntentGiver(string target, HumanLetter letter) : base(target, letter) {
-            Names = new List<string>();
-            IntentType = "";
-            FirstStringParam = "";
-            SecondStringParam = "";
-            FirstNumberParam = new Number();
-            Queue = false;
         }
 
         public override string ToString() {
@@ -456,6 +446,7 @@ namespace HumanStoryteller.Incidents {
             Scribe_Values.Look(ref FirstStringParam, "firstStringParam");
             Scribe_Values.Look(ref SecondStringParam, "secondStringParam");
             Scribe_Deep.Look(ref FirstNumberParam, "firstNumberParam");
+            Scribe_Deep.Look(ref Location, "location");
             Scribe_Values.Look(ref Queue, "queue");
         }
     }

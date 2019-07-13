@@ -42,18 +42,13 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_PsychicSoothe : HumanIncidentParms {
-        public Number Duration;
-        public string Gender;
+        public Number Duration = new Number();
+        public string Gender = "";
 
         public HumanIncidentParams_PsychicSoothe() {
         }
 
-        public HumanIncidentParams_PsychicSoothe(String target, HumanLetter letter, String gender = "") : this(target, letter, new Number(), gender) {
-        }
-
-        public HumanIncidentParams_PsychicSoothe(string target, HumanLetter letter, Number duration, string gender) : base(target, letter) {
-            Duration = duration;
-            Gender = gender;
+        public HumanIncidentParams_PsychicSoothe(string target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

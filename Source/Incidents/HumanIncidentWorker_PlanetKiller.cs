@@ -40,17 +40,12 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_Planetkiller : HumanIncidentParms {
-        public Number Duration;
+        public Number Duration = new Number();
 
         public HumanIncidentParams_Planetkiller() {
         }
 
-        public HumanIncidentParams_Planetkiller(String target, HumanLetter letter, Number duration) : base(target,
-            letter) {
-            Duration = duration;
-        }
-
-        public HumanIncidentParams_Planetkiller(string target, HumanLetter letter) : this(target, letter, new Number()) {
+        public HumanIncidentParams_Planetkiller(string target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

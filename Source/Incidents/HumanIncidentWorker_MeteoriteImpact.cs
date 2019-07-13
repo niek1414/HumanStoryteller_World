@@ -100,18 +100,13 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_MeteoriteImpact : HumanIncidentParms {
-        public Number Amount;
-        public string MineableRock;
+        public Number Amount = new Number();
+        public string MineableRock = "";
 
         public HumanIncidentParams_MeteoriteImpact() {
         }
 
-        public HumanIncidentParams_MeteoriteImpact(String target, HumanLetter letter, Number amount, string mineableRock) : base(target, letter) {
-            Amount = amount;
-            MineableRock = mineableRock;
-        }
-
-        public HumanIncidentParams_MeteoriteImpact(string target, HumanLetter letter, string mineableRock = "") : this(target, letter, new Number(), mineableRock) {
+        public HumanIncidentParams_MeteoriteImpact(string target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

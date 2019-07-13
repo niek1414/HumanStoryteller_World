@@ -41,7 +41,7 @@ namespace HumanStoryteller.Incidents {
                 forced = true,
                 target = map
             };
-            List<Pawn> list = SpawnPawns(map, allParams.Names, fakeParams);
+            List<Pawn> list = SpawnPawns(map, allParams.OutNames, fakeParams);
             if (list.Count == 0) {
                 return ir;
             }
@@ -127,20 +127,17 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_VisitorGroup : HumanIncidentParms {
-        public List<String> Names;
+        public List<String> OutNames = new List<string>();
 
         public HumanIncidentParams_VisitorGroup() {
         }
 
-        public HumanIncidentParams_VisitorGroup(String target, HumanLetter letter, List<String> names = null) :
-            base(target, letter) {
-            Names = names ?? new List<string>();
+        public HumanIncidentParams_VisitorGroup(string target, HumanLetter letter) : base(target, letter) {
         }
-
 
         public override void ExposeData() {
             base.ExposeData();
-            Scribe_Collections.Look(ref Names, "names", LookMode.Value);
+            Scribe_Collections.Look(ref OutNames, "names", LookMode.Value);
         }
     }
 }

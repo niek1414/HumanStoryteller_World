@@ -30,7 +30,8 @@ namespace HumanStoryteller.Util {
         }
 
         public static Thing TryMakeMinified(Thing t) {
-            if (t is MinifiedThing minifiedThing) {
+            if (t == null) return null;
+            if (t is MinifiedThing minifiedThing && minifiedThing.InnerThing != null) {
                 return minifiedThing.InnerThing.TryMakeMinified();
             }
 

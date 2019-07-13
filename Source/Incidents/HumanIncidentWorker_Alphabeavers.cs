@@ -54,16 +54,12 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_Alphabeavers : HumanIncidentParms {
-        public Number Amount;
+        public Number Amount = new Number();
 
         public HumanIncidentParams_Alphabeavers() {
         }
 
-        public HumanIncidentParams_Alphabeavers(String target, HumanLetter letter, Number amount) : base(target, letter) {
-            Amount = amount;
-        }
-
-        public HumanIncidentParams_Alphabeavers(String target, HumanLetter letter) : this(target, letter, new Number())  {
+        public HumanIncidentParams_Alphabeavers(string target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

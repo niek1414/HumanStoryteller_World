@@ -80,9 +80,10 @@ namespace HumanStoryteller.Incidents {
             switch (siteCoreDef.defName) {
                 case "DownedRefugee":
                     pawn = DownedRefugeeQuestUtility.GenerateRefugee(tile);
-                    if (allParams.Name != "") {
-                        PawnUtil.SavePawnByName(allParams.Name, pawn);
+                    if (allParams.OutName != "") {
+                        PawnUtil.SavePawnByName(allParams.OutName, pawn);
                     }
+                    PawnUtil.SetDisplayName(pawn, allParams.FirstName, allParams.NickName, allParams.LastName);
 
                     site.GetComponent<DownedRefugeeComp>().pawn.TryAdd(pawn);
                     def = DefDatabase<IncidentDef>.GetNamed("Quest_DownedRefugee");
@@ -133,8 +134,8 @@ namespace HumanStoryteller.Incidents {
                     break;
                 case "PrisonerWillingToJoin":
                     pawn = PrisonerWillingToJoinQuestUtility.GeneratePrisoner(tile, site.Faction);
-                    if (allParams.Name != "") {
-                        PawnUtil.SavePawnByName(allParams.Name, pawn);
+                    if (allParams.OutName != "") {
+                        PawnUtil.SavePawnByName(allParams.OutName, pawn);
                     }
 
                     site.GetComponent<PrisonerWillingToJoinComp>().pawn.TryAdd(pawn);
@@ -171,8 +172,8 @@ namespace HumanStoryteller.Incidents {
                 MapUtil.SaveMapByName(allParams.MapName, site);
             }
 
-            if (allParams.Names.Count != 0) {
-                QuestSitePart part = new QuestSitePart(allParams.Names);
+            if (allParams.OutNames.Count != 0) {
+                QuestSitePart part = new QuestSitePart(allParams.OutNames);
                 site.parts.Add(part);
             }
 
@@ -266,107 +267,42 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_Quest : HumanIncidentParms {
-        public string QuestType;
-        public string ThreatType;
-        public string MapName;
-        public string Name;
-        public string Faction;
-        public List<string> Names;
-        public Number Points;
-        public Number Duration;
-        public Number MinTileDist;
-        public Number MaxTileDist;
+        public string QuestType = "";
+        public string ThreatType = "";
+        public string MapName = "";
+        public string OutName = "";
+        public string FirstName = "";
+        public string NickName = "";
+        public string LastName = "";
+        public string Faction = "";
+        public List<string> OutNames = new List<string>();
+        public Number Points = new Number();
+        public Number Duration = new Number();
+        public Number MinTileDist = new Number(7);
+        public Number MaxTileDist = new Number(20);
 
-        public Number MapAmount;
-        public string MineableRock;
-        public string MapItem;
-        public string MapItemQuality;
-        public string MapStuff;
+        public Number MapAmount = new Number(20);
+        public string MineableRock = "";
+        public string MapItem = "";
+        public string MapItemQuality = "";
+        public string MapStuff = "";
 
         public bool KillReward;
-        public Number RewardAmount;
-        public string RewardItem;
-        public string RewardItemQuality;
-        public string RewardStuff;
-        public string RewardFaction;
-        public Number RewardFactionRelation;
+        public Number RewardAmount = new Number(10);
+        public string RewardItem = "";
+        public string RewardItemQuality = "";
+        public string RewardStuff = "";
+        public string RewardFaction = "";
+        public Number RewardFactionRelation = new Number(0);
 
         public HumanIncidentParams_Quest() {
         }
 
-        public HumanIncidentParams_Quest(string target, HumanLetter letter,
-            string questType,
-            string threatType,
-            string mapName,
-            string name,
-            string faction,
-            List<string> names,
-            Number points,
-            Number duration,
-            Number minTileDist,
-            Number maxTileDist,
-            Number mapAmount,
-            string mineableRock,
-            string mapItem,
-            string mapItemQuality,
-            string mapStuff,
-            bool killReward,
-            Number rewardAmount,
-            string rewardItem,
-            string rewardItemQuality,
-            string rewardStuff,
-            string rewardFaction,
-            Number rewardFactionRelation) : base(target, letter) {
-            QuestType = questType;
-            ThreatType = threatType;
-            Faction = faction;
-            MapName = mapName;
-            Name = name;
-            Names = names ?? new List<string>();
-            Points = points;
-            Duration = duration;
-            MinTileDist = minTileDist;
-            MaxTileDist = maxTileDist;
-            MapAmount = mapAmount;
-            MineableRock = mineableRock;
-            MapItem = mapItem;
-            MapItemQuality = mapItemQuality;
-            MapStuff = mapStuff;
-            KillReward = killReward;
-            RewardAmount = rewardAmount;
-            RewardItem = rewardItem;
-            RewardItemQuality = rewardItemQuality;
-            RewardStuff = rewardStuff;
-            RewardFaction = rewardFaction;
-            RewardFactionRelation = rewardFactionRelation;
-        }
-
-
-        public HumanIncidentParams_Quest(string target, HumanLetter letter,
-            string questType = "",
-            string threatType = "",
-            string mapName = "",
-            string name = "",
-            string faction = "",
-            List<string> names = null,
-            string mineableRock = "",
-            string mapItem = "",
-            string mapItemQuality = "",
-            string mapStuff = "",
-            bool killReward = false,
-            string rewardItem = "",
-            string rewardItemQuality = "",
-            string rewardStuff = "",
-            string rewardFaction = "") : this(target, letter,
-            questType, threatType, mapName, name, faction, names, new Number(), new Number(), new Number(7), new Number(20), new Number(20),
-            mineableRock,
-            mapItem,
-            mapItemQuality, mapStuff, killReward, new Number(10), rewardItem, rewardItemQuality, rewardStuff, rewardFaction, new Number(0)) {
+        public HumanIncidentParams_Quest(string target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {
-            return
-                $"{base.ToString()}, QuestType: {QuestType}, ThreatType: {ThreatType}, MapName: {MapName}, Name: {Name}, Faction: {Faction}, Names: {Names}, Points: {Points}, Duration: {Duration}, MinTileDist: {MinTileDist}, MaxTileDist: {MaxTileDist}, MapAmount: {MapAmount}, MineableRock: {MineableRock}, MapItem: {MapItem}, MapItemQuality: {MapItemQuality}, MapStuff: {MapStuff}, KillReward: {KillReward}, RewardAmount: {RewardAmount}, RewardItem: {RewardItem}, RewardItemQuality: {RewardItemQuality}, RewardStuff: {RewardStuff}, RewardFaction: {RewardFaction}, RewardFactionRelation: {RewardFactionRelation}";
+            return $"{base.ToString()}, QuestType: {QuestType}, ThreatType: {ThreatType}, MapName: {MapName}, OutName: {OutName}, FirstName: {FirstName}, NickName: {NickName}, LastName: {LastName}, Faction: {Faction}, OutNames: {OutNames}, Points: {Points}, Duration: {Duration}, MinTileDist: {MinTileDist}, MaxTileDist: {MaxTileDist}, MapAmount: {MapAmount}, MineableRock: {MineableRock}, MapItem: {MapItem}, MapItemQuality: {MapItemQuality}, MapStuff: {MapStuff}, KillReward: {KillReward}, RewardAmount: {RewardAmount}, RewardItem: {RewardItem}, RewardItemQuality: {RewardItemQuality}, RewardStuff: {RewardStuff}, RewardFaction: {RewardFaction}, RewardFactionRelation: {RewardFactionRelation}";
         }
 
         public override void ExposeData() {
@@ -375,8 +311,11 @@ namespace HumanStoryteller.Incidents {
             Scribe_Values.Look(ref ThreatType, "threatType");
             Scribe_Values.Look(ref Faction, "faction");
             Scribe_Values.Look(ref MapName, "mapName");
-            Scribe_Values.Look(ref Name, "name");
-            Scribe_Collections.Look(ref Names, "names", LookMode.Value);
+            Scribe_Values.Look(ref OutName, "name");
+            Scribe_Values.Look(ref FirstName, "firstName");
+            Scribe_Values.Look(ref NickName, "nickName");
+            Scribe_Values.Look(ref LastName, "lastName");
+            Scribe_Collections.Look(ref OutNames, "names", LookMode.Value);
             Scribe_Deep.Look(ref Points, "points");
             Scribe_Deep.Look(ref Duration, "duration");
             Scribe_Deep.Look(ref MinTileDist, "minTileDist");

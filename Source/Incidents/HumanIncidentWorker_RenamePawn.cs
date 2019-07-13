@@ -40,7 +40,7 @@ namespace HumanStoryteller.Incidents {
                 return ir;
 
             PawnUtil.RemoveName(allParams.Name);
-            PawnUtil.SavePawnByName(allParams.NewName, pawn);
+            PawnUtil.SavePawnByName(allParams.OutName, pawn);
 
             SendLetter(allParams);
             return ir;
@@ -48,24 +48,22 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_RenamePawn : HumanIncidentParms {
-        public string NewName;
-        public string Name;
+        public string OutName = "";
+        public string Name = "";
 
         public HumanIncidentParams_RenamePawn() {
         }
 
-        public HumanIncidentParams_RenamePawn(String target, HumanLetter letter, string newName = "", string name = "") : base(target, letter) {
-            NewName = newName;
-            Name = name;
+        public HumanIncidentParams_RenamePawn(string target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, NewName: {NewName}, Name: {Name}";
+            return $"{base.ToString()}, NewName: {OutName}, Name: {Name}";
         }
 
         public override void ExposeData() {
             base.ExposeData();
-            Scribe_Values.Look(ref NewName, "newName");
+            Scribe_Values.Look(ref OutName, "newName");
             Scribe_Values.Look(ref Name, "name");
         }
     }

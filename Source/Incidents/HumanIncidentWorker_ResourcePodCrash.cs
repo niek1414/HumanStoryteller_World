@@ -25,9 +25,7 @@ namespace HumanStoryteller.Incidents {
             Map map = (Map) allParams.GetTarget();
             List<Thing> things;
             if (allParams.Item != "") {
-                int num;
-                var paramsAmount = allParams.Amount.GetValue();
-                num = paramsAmount != -1 ? Mathf.RoundToInt(paramsAmount) : 20;
+                int num = Mathf.RoundToInt(allParams.Amount.GetValue());
                 ThingDef droppable = ThingDef.Named(allParams.Item);
                 things = new List<Thing>();
                 if (droppable.stackLimit <= 0) return ir;
@@ -58,7 +56,7 @@ namespace HumanStoryteller.Incidents {
                 things = ThingSetMakerDefOf.ResourcePod.root.Generate();
             }
 
-            IntVec3 intVec = MapUtil.FindLocationByName(allParams.Location, map);
+            IntVec3 intVec = allParams.Location.GetSingleCell(map);
 
             DropPodUtility.DropThingsNear(intVec, map, things, 110, allParams.InstaPlace, true);
             SendLetter(allParams, "LetterLabelCargoPodCrash".Translate(), "CargoPodCrash".Translate(), LetterDefOf.PositiveEvent,
@@ -69,29 +67,17 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_ResourcePodCrash : HumanIncidentParms {
-        public Number Amount;
-        public string Item;
-        public string ItemQuality;
-        public string Stuff;
+        public Number Amount = new Number(20);
+        public string Item = "";
+        public string ItemQuality = "";
+        public string Stuff = "";
         public bool InstaPlace;
-        public string Location;
+        public Location Location = new Location();
 
         public HumanIncidentParams_ResourcePodCrash() {
         }
 
-        public HumanIncidentParams_ResourcePodCrash(String target, HumanLetter letter, string item = "", string itemQuality = "", string stuff = "",
-            bool instaPlace = false, string location = "") :
-            this(target, letter, new Number(), item, itemQuality, stuff, instaPlace, location) {
-        }
-
-        public HumanIncidentParams_ResourcePodCrash(string target, HumanLetter letter, Number amount, string item, string itemQuality, string stuff,
-            bool instaPlace, string location) : base(target, letter) {
-            Amount = amount;
-            Item = item;
-            ItemQuality = itemQuality;
-            Stuff = stuff;
-            InstaPlace = instaPlace;
-            Location = location;
+        public HumanIncidentParams_ResourcePodCrash(string target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {
@@ -105,7 +91,7 @@ namespace HumanStoryteller.Incidents {
             Scribe_Values.Look(ref ItemQuality, "itemQuality");
             Scribe_Values.Look(ref Stuff, "stuff");
             Scribe_Values.Look(ref InstaPlace, "instaPlace");
-            Scribe_Values.Look(ref Location, "location");
+            Scribe_Deep.Look(ref Location, "location");
         }
     }
 }

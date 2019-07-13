@@ -62,20 +62,13 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_CropBlight : HumanIncidentParms {
-        public Number Radius;
-        public Number Chance;
+        public Number Radius = new Number(15);
+        public Number Chance = new Number(0.4f);
 
         public HumanIncidentParams_CropBlight() {
         }
 
-        public HumanIncidentParams_CropBlight(String target, HumanLetter letter, Number radius, Number chance) :
-            base(target, letter) {
-            Radius = radius;
-            Chance = chance;
-        }
-
-        public HumanIncidentParams_CropBlight(String target, HumanLetter letter) :
-            this(target, letter, new Number(15), new Number(0.4f)) {
+        public HumanIncidentParams_CropBlight(string target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

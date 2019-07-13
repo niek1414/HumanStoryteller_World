@@ -1,17 +1,19 @@
 ﻿using System;
+using System.Net;
 using System.Threading;
-using System.Timers;
 using Harmony;
 using HumanStoryteller.Model;
 using HumanStoryteller.Util;
-using HumanStoryteller.Web;
 using RimWorld;
+using UnityEngine;
 using Verse;
 
 namespace HumanStoryteller {
     public class HumanStoryteller : Mod {
-        public static string VERSION = "0.2.2";
-        public static string VERSION_NAME = "`Controller`";
+        public static string VERSION = "0.3.0";
+        public static string VERSION_NAME = "`Clairvoyant`";
+
+        private HumanStorytellerSettings _settings;
 
         public static bool InitiateEventUnsafe = false;
 
@@ -36,19 +38,25 @@ namespace HumanStoryteller {
         public static long StoryId =>
             IsNoStory ? -1 : Tell.AssertNotNull(StoryComponent.Story.Id, nameof(StoryComponent.Story.Id), "HumanStoryteller");
 
-        public static bool DEBUG => true;
+        public static bool CreatorTools => HumanStorytellerSettings.EnableCreatorTools;
 
         public HumanStoryteller(ModContentPack content) : base(content) {
-//            Thread humanStoryThread = new Thread(SwitchStoryteller);
-//            humanStoryThread.Start();
+            _settings = GetSettings<HumanStorytellerSettings>();
+            ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
+        }
+        
+        public override void DoSettingsWindowContents(Rect inRect)
+        {
+            Listing_Standard listingStandard = new Listing_Standard();
+            listingStandard.Begin(inRect);
+            listingStandard.CheckboxLabeled("EnableCreatorTools".Translate(), ref HumanStorytellerSettings.EnableCreatorTools, "EnableCreatorToolsToolTip".Translate());
+            listingStandard.End();
+            base.DoSettingsWindowContents(inRect);
         }
 
-        private void SwitchStoryteller() {
-//            while (true) {
-//                if (Current.Game != null) {
-//                    Tell.Log(Current.Game.DebugString());
-//                }
-//            }
+        public override string SettingsCategory()
+        {
+            return "HumanStoryteller".Translate();
         }
 
         public static void GetStoryCallback(Story story, StorytellerComp_HumanThreatCycle cycle = null) {
@@ -62,7 +70,7 @@ namespace HumanStoryteller {
                 if (cycle != null) {
                     cycle.RefreshTimer.Enabled = false;
                 }
-                Messages.Message(Translator.Translate("StoryNotFound"), MessageTypeDefOf.NegativeEvent, false);
+                Messages.Message("StoryNotFound".Translate(), MessageTypeDefOf.NegativeEvent, false);
                 return;
             }
             var sc = StoryComponent;
@@ -86,6 +94,17 @@ namespace HumanStoryteller {
             }
 
             InitiateEventUnsafe = false;
+        }
+    }
+
+    public class HumanStorytellerSettings : ModSettings
+    {
+        public static bool EnableCreatorTools;
+
+        public override void ExposeData()
+        {
+            Scribe_Values.Look(ref EnableCreatorTools, "enableCreatorTools");
+            base.ExposeData();
         }
     }
 

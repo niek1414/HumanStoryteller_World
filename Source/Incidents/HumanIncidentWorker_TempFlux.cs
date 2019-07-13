@@ -38,18 +38,13 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_TempFlux : HumanIncidentParms {
-        public Number Duration;
-        public Number TempChange;
+        public Number Duration = new Number();
+        public Number TempChange = new Number(-20);
 
         public HumanIncidentParams_TempFlux() {
         }
 
-        public HumanIncidentParams_TempFlux(String target, HumanLetter letter) : this(target, letter, new Number(), new Number(-20)) {
-        }
-
-        public HumanIncidentParams_TempFlux(string target, HumanLetter letter, Number duration, Number tempChange) : base(target, letter) {
-            Duration = duration;
-            TempChange = tempChange;
+        public HumanIncidentParams_TempFlux(string target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

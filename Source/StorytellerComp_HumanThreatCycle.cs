@@ -1,20 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Timers;
 using HumanStoryteller.Model;
 using HumanStoryteller.Util;
 using HumanStoryteller.Web;
 using RimWorld;
-using UnityEngine;
 using Verse;
 using Timer = System.Timers.Timer;
 
 namespace HumanStoryteller {
     public class StorytellerComp_HumanThreatCycle : StorytellerComp {
-        private HumanStoryteller.RefreshRate currentRate = HumanStoryteller.RefreshRate.Long;
-
+        private HumanStoryteller.RefreshRate _currentRate = HumanStoryteller.RefreshRate.Long;
+        private static readonly MainButtonDef RateButtonDef = DefDatabase<MainButtonDef>.AllDefs.First(x => x.defName == "RateTab");
+        private static readonly MainButtonDef ToolsButtonDef = DefDatabase<MainButtonDef>.AllDefs.First(x => x.defName == "CreatorTools");
+        
         protected StorytellerCompProperties_HumanThreatCycle Props =>
             (StorytellerCompProperties_HumanThreatCycle) props;
 
@@ -36,8 +36,8 @@ namespace HumanStoryteller {
             }
 
             if (Find.TickManager.TicksGame % 50 != 0) return;
-            var buttonDef = DefDatabase<MainButtonDef>.AllDefs.First(x => x.defName == "RateTab");
-            buttonDef.buttonVisible = !HumanStoryteller.IsNoStory;
+            RateButtonDef.buttonVisible = !HumanStoryteller.IsNoStory;
+            ToolsButtonDef.buttonVisible = HumanStorytellerSettings.EnableCreatorTools;
         }
 
         public void CycleTick() {
@@ -50,6 +50,8 @@ namespace HumanStoryteller {
             }
 
             if (HumanStoryteller.StoryComponent.Story == null) return;
+            
+            HumanStoryteller.StoryComponent.StoryQueue.Tick();
 
             var interval =
                 Find.TickManager.CurTimeSpeed == TimeSpeed.Superfast ||
@@ -85,33 +87,22 @@ namespace HumanStoryteller {
 
             HumanStoryteller.StoryComponent.CurrentNodes.RemoveAll(item => item == null);
 
-            int laneCount = HumanStoryteller.StoryComponent.CurrentNodes.Count;
-            string laneInfo = laneCount.ToString();
-            if (Prefs.DevMode && HumanStoryteller.DEBUG) {
-                laneInfo += "\n";
-                foreach (StoryEventNode node in HumanStoryteller.StoryComponent.CurrentNodes) {
-                    laneInfo += node.StoryNode.StoryEvent.Uuid.Substring(0, 4) + " " + node.StoryNode.StoryEvent.Name +
-                                (node.StoryNode.LeftChild == null && node.StoryNode.RightChild == null ? "[DORMANT]" : "");
-                    laneInfo += "\n";
-                }
-            }
-
-            if (Prefs.DevMode && Find.TickManager.TicksGame % 500 == 0) {
-                Tell.Log("TickOffset: " + IntervalsPassed + ", Concurrent lanes: " + laneInfo);
+            if (Find.TickManager.TicksGame % 500 == 0) {
+                Tell.Log("TickOffset: " + IntervalsPassed + ", Concurrent lanes: " + HumanStoryteller.StoryComponent.CurrentNodes.Count);
                 Tell.Log("Vars: \n" + DataBank.VariableBankToString());
             }
 
-            if (laneCount > 15) {
+            if (HumanStoryteller.StoryComponent.CurrentNodes.Count > 15) {
                 Tell.Warn("More concurrent lanes then 15, this can hurt performance badly. This is because the storymaker used to much dividers.");
             }
 
-            if (laneCount > 500) {
-                Tell.Err("More concurrent lanes then 500, probably unintentionally created by" +
+            if (HumanStoryteller.StoryComponent.CurrentNodes.Count > 500) {
+                Tell.Warn("More concurrent lanes then 500, probably unintentionally created by" +
                          " looping over a divider or merging multiple concurrent lanes.\n" +
                          "Unused lanes will be cleared! This means that if the story is updated, you may not be able to continue where you left off if you finished the story before.");
             }
 
-            for (var i = 0; i < laneCount; i++) {
+            for (var i = 0; i < HumanStoryteller.StoryComponent.CurrentNodes.Count; i++) {
                 if (_consecutiveEventCounter > 10) {
                     yield break;
                 }
@@ -139,7 +130,7 @@ namespace HumanStoryteller {
                     _consecutiveEventCounter += 2; //Always execute a divider's children together
                     yield return right;
                 } else {
-                    if (laneCount > 400 && sn.LeftChild == null && sn.RightChild == null) {
+                    if (HumanStoryteller.StoryComponent.CurrentNodes.Count > 400 && sn.LeftChild == null && sn.RightChild == null) {
                         HumanStoryteller.StoryComponent.CurrentNodes[i] = null;
                     } else {
                         StoryNode newEvent =
@@ -184,22 +175,21 @@ namespace HumanStoryteller {
             HumanStoryteller.StoryComponent.ThreatCycle = this;
 
             Messages.Message(
-                $"HumanStoryteller story: #{HumanStoryteller.StoryComponent.StoryId}, ALPHA BUILD: {HumanStoryteller.VERSION_NAME} ({HumanStoryteller.VERSION})",
+                $"HumanStoryteller {"Story".Translate()}: #{HumanStoryteller.StoryComponent.StoryId}, {"ALPHA_BUILD".Translate()}: {HumanStoryteller.VERSION_NAME} ({HumanStoryteller.VERSION})",
                 MessageTypeDefOf.PositiveEvent);
 
-//            string str = "";
-//            foreach (var def in from d in DefDatabase<MentalBreakDef>.AllDefs
+//            string str1 = "";
+//            string str2 = "";
+//            foreach (var def in from d in DefDatabase<TraitDef>.AllDefs
 //                select d) {
-//                str += def.defName + "\n";
+//                foreach (var data in def.degreeDatas) {
+//                    str1 += def.defName + "|" + data.degree + "\n";
+//                    str2 += data.label.CapitalizeFirst() + "\n";
+//                }
 //            }
 //
-//            Tell.Log(str);
-//            str = "";
-//            foreach (var def in from d in DefDatabase<MentalBreakDef>.AllDefs
-//                select d) {
-//                str += def.label + "\n";
-//            }
-//            Tell.Log(str);
+//            Tell.Log(str1);
+//            Tell.Log(str2);
 
             if (HumanStoryteller.IsNoStory) {
                 Storybook.GetStory(HumanStoryteller.StoryComponent.StoryId, story => HumanStoryteller.GetStoryCallback(story, this));
@@ -210,25 +200,25 @@ namespace HumanStoryteller {
             RefreshTimer.Enabled = true;
         }
 
-        public HumanStoryteller.RefreshRate CurrentRate => currentRate;
+        public HumanStoryteller.RefreshRate CurrentRate => _currentRate;
 
         public void SetRefreshRate(HumanStoryteller.RefreshRate rate) {
             switch (rate) {
                 case HumanStoryteller.RefreshRate.Short:
                     RefreshTimer.Interval = HumanStoryteller.SHORT_REFRESH;
-                    currentRate = HumanStoryteller.RefreshRate.Short;
+                    _currentRate = HumanStoryteller.RefreshRate.Short;
                     break;
                 case HumanStoryteller.RefreshRate.Medium:
                     RefreshTimer.Interval = HumanStoryteller.MEDIUM_REFRESH;
-                    currentRate = HumanStoryteller.RefreshRate.Medium;
+                    _currentRate = HumanStoryteller.RefreshRate.Medium;
                     break;
                 case HumanStoryteller.RefreshRate.Long:
                     RefreshTimer.Interval = HumanStoryteller.LONG_REFRESH;
-                    currentRate = HumanStoryteller.RefreshRate.Long;
+                    _currentRate = HumanStoryteller.RefreshRate.Long;
                     break;
                 case HumanStoryteller.RefreshRate.Off:
                     RefreshTimer.Interval = HumanStoryteller.OFF_REFRESH;
-                    currentRate = HumanStoryteller.RefreshRate.Off;
+                    _currentRate = HumanStoryteller.RefreshRate.Off;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(rate), rate, null);

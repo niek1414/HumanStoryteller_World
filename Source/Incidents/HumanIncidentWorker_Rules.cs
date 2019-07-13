@@ -109,27 +109,16 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_Rules : HumanIncidentParms {
-        public List<string> DisallowedBuildings;
-        public List<string> DisallowedDesignators;
+        public List<string> DisallowedBuildings = new List<string>();
+        public List<string> DisallowedDesignators = new List<string>();
         public bool ExplodeOnDeath;
-        public Number ExplodeRadius;
-        public Dictionary<string, Number> Stats;
+        public Number ExplodeRadius = new Number();
+        public Dictionary<string, Number> Stats = new Dictionary<string, Number>();
 
         public HumanIncidentParams_Rules() {
         }
 
-        public HumanIncidentParams_Rules(string target, HumanLetter letter, List<string> disallowedBuildings, List<string> disallowedDesignators,
-            bool explodeOnDeath, Number explodeRadius, Dictionary<string, Number> stats) : base(target, letter) {
-            DisallowedBuildings = disallowedBuildings ?? new List<string>();
-            DisallowedDesignators = disallowedDesignators ?? new List<string>();
-            ExplodeOnDeath = explodeOnDeath;
-            ExplodeRadius = explodeRadius;
-            Stats = stats ?? new Dictionary<string, Number>();
-        }
-
-        public HumanIncidentParams_Rules(string target, HumanLetter letter, List<string> disallowedBuildings = null,
-            List<string> disallowedDesignators = null, bool explodeOnDeath = false, Dictionary<string, Number> stats = null) : this(target, letter,
-            disallowedBuildings, disallowedDesignators, explodeOnDeath, new Number(), stats) {
+        public HumanIncidentParams_Rules(string target, HumanLetter letter) : base(target, letter) {
         }
 
         public override void ExposeData() {

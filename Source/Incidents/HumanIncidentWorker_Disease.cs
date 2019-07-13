@@ -173,18 +173,14 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_Disease : HumanIncidentParms {
-        public List<String> Names;
-        public string Disease;
+        public List<String> Names = new List<string>();
+        public string Disease = "";
 
         public HumanIncidentParams_Disease() {
         }
 
-        public HumanIncidentParams_Disease(String target, HumanLetter letter, List<String> names = null, string disease = "") :
-            base(target, letter) {
-            Names = names ?? new List<string>();
-            Disease = disease;
+        public HumanIncidentParams_Disease(string target, HumanLetter letter) : base(target, letter) {
         }
-
 
         public override void ExposeData() {
             base.ExposeData();

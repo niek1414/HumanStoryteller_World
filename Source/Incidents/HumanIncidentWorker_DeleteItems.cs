@@ -24,12 +24,8 @@ namespace HumanStoryteller.Incidents {
 
             Map map = (Map) allParams.GetTarget();
             if (allParams.Item != "") {
-                int num;
-                var paramsAmount = allParams.Amount.GetValue();
-                num = paramsAmount != -1 ? Mathf.RoundToInt(paramsAmount) : 1;
                 ThingDef removeDef = ThingDef.Named(allParams.Item);
-
-                RemoveThingsOfType(removeDef, num, map);
+                RemoveThingsOfType(removeDef, Mathf.RoundToInt(allParams.Amount.GetValue()), map);
             }
 
             SendLetter(parms);
@@ -60,19 +56,13 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_DeleteItems : HumanIncidentParms {
-        public Number Amount;
-        public string Item;
+        public Number Amount = new Number(1);
+        public string Item = "";
 
         public HumanIncidentParams_DeleteItems() {
         }
 
-        public HumanIncidentParams_DeleteItems(String target, HumanLetter letter, string item = "") :
-            this(target, letter, new Number(), item) {
-        }
-
-        public HumanIncidentParams_DeleteItems(string target, HumanLetter letter, Number amount, string item) : base(target, letter) {
-            Amount = amount;
-            Item = item;
+        public HumanIncidentParams_DeleteItems(string target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

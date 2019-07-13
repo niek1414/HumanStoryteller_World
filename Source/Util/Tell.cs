@@ -11,6 +11,7 @@ namespace HumanStoryteller.Util {
         }
 
         public static void Log(string message, object obj1 = null, object obj2 = null) {
+            if (!HumanStoryteller.CreatorTools) return;
             Print(message, Severity.Low, obj1, obj2);
         }
 

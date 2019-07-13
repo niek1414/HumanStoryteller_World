@@ -111,20 +111,13 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_AnimalInsanityMass : HumanIncidentParms {
-        public Number Points;
-        public string AnimalKind;
+        public Number Points = new Number();
+        public string AnimalKind = "";
 
         public HumanIncidentParams_AnimalInsanityMass() {
         }
 
-        public HumanIncidentParams_AnimalInsanityMass(String target, HumanLetter letter, Number points, string animalKind) :
-            base(target, letter) {
-            Points = points;
-            AnimalKind = animalKind;
-        }
-
-        public HumanIncidentParams_AnimalInsanityMass(string target, HumanLetter letter, string animalKind = "") : this(target, letter, new Number(), animalKind) {
-            AnimalKind = animalKind;
+        public HumanIncidentParams_AnimalInsanityMass(string target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

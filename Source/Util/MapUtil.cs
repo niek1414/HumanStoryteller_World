@@ -79,48 +79,6 @@ namespace HumanStoryteller.Util {
 
             return false;
         }
-
-        public static IntVec3 FindLocationByName(string loc, Map map) {
-            switch (loc) {
-                case "RandomEdge":
-                    if (DropCellFinder.TryFindDropSpotNear(CellFinder.RandomEdgeCell(map), map, out var outResult, false, true)) {
-                        return outResult;
-                    } else {
-                        return DropCellFinder.RandomDropSpot(map);
-                    }
-
-                case "Center":
-                    return RCellFinder.TryFindRandomCellNearWith(map.Center, null, map, out var result)
-                        ? result
-                        : DropCellFinder.RandomDropSpot(map);
-                case "OutsideColony":
-                    return RCellFinder.TryFindRandomSpotJustOutsideColony(map.Center, map, out var result2)
-                        ? result2
-                        : DropCellFinder.RandomDropSpot(map);
-                case "Siege":
-                    return RCellFinder.FindSiegePositionFrom(map.Center, map);
-                case "Random":
-                    return DropCellFinder.RandomDropSpot(map);
-                default:
-                    string[] splinted = loc.Split(':');
-                    if (splinted.Length == 3) {
-                        if (!int.TryParse(splinted[0], out var x)
-                            || !int.TryParse(splinted[1], out var y)
-                            || !int.TryParse(splinted[2], out var z)) {
-                            Tell.Warn("Tried to parse location with :'s but got x:" + splinted[0] + " y:" + splinted[1] + " z:" + splinted[2]);
-                            return DropCellFinder.RandomDropSpot(map);
-                        }
-                        return new IntVec3(x, y, z);
-                    }
-
-                    Pawn p = PawnUtil.GetPawnByName(loc);
-                    if (p == null || p.Map != map) {
-                        return DropCellFinder.RandomDropSpot(map);
-                    }
-
-                    return p.Position;
-            }
-        }
         
         public static Map GetTarget(string target) {
             switch (target) {

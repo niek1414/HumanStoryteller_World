@@ -1,12 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using HumanStoryteller.CheckConditions;
 using HumanStoryteller.Model;
 using HumanStoryteller.Util;
 using RimWorld;
-using RimWorld.Planet;
-using UnityEngine;
 using Verse;
 
 namespace HumanStoryteller.Incidents {
@@ -70,15 +67,16 @@ namespace HumanStoryteller.Incidents {
                 1F, true, true, true, false, false, false, false, null, null, null,
                 biologicalAge == -1 ? new float?() : biologicalAge,
                 chronologicalAge == -1 ? new float?() : chronologicalAge,
-                allParams.Gender == "" || PawnUtil.GetGender(allParams.Gender) == Gender.None ? new Gender?() : PawnUtil.GetGender(allParams.Gender),
-                null, allParams.Name != "" ? allParams.Name : null
+                allParams.Gender == "" || PawnUtil.GetGender(allParams.Gender) == Gender.None ? new Gender?() : PawnUtil.GetGender(allParams.Gender)
             ));
 
+            PawnUtil.SetDisplayName(pawn, allParams.FirstName, allParams.NickName, allParams.LastName);
+            
             if (pawn.Faction == Faction.OfPlayer)
                 Find.StoryWatcher.watcherPopAdaptation.Notify_PawnEvent(pawn, PopAdaptationEvent.GainedColonist);
 
-            if (allParams.Name != "") {
-                PawnUtil.SavePawnByName(allParams.Name, pawn);
+            if (allParams.OutName != "") {
+                PawnUtil.SavePawnByName(allParams.OutName, pawn);
             }
 
             if (allParams.Weapon != "") {
@@ -121,54 +119,32 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_CreatePawn : HumanIncidentParms {
-        public Number BiologicalAge;
-        public Number ChronologicalAge;
-        public Number ApparelMoney;
+        public Number BiologicalAge = new Number();
+        public Number ChronologicalAge = new Number();
+        public Number ApparelMoney = new Number();
         public Number GearHealthMin;
-        public Number GearHealthMax;
-        public string PawnKind;
-        public string Name;
-        public string Faction;
+        public Number GearHealthMax = new Number();
+        public string PawnKind = "";
+        public string FirstName = "";
+        public string NickName = "";
+        public string LastName = "";
+        public string OutName = "";
+        public string Faction = "";
         public bool NewBorn;
         public bool MustBeCapableOfViolence;
-        public string Gender;
-        public string Weapon;
-        public string ItemQuality;
-        public string Stuff;
+        public string Gender = "";
+        public string Weapon = "";
+        public string ItemQuality = "";
+        public string Stuff = "";
 
         public HumanIncidentParams_CreatePawn() {
         }
 
-        public HumanIncidentParams_CreatePawn(string target, HumanLetter letter, Number biologicalAge, Number chronologicalAge, Number apparelMoney,
-            Number gearHealthMin, Number gearHealthMax, string pawnKind, string name, string faction, bool newBorn, bool mustBeCapableOfViolence,
-            string gender, string weapon, string itemQuality, string stuff) : base(target, letter) {
-            BiologicalAge = biologicalAge;
-            ChronologicalAge = chronologicalAge;
-            ApparelMoney = apparelMoney;
-            GearHealthMin = gearHealthMin;
-            GearHealthMax = gearHealthMax;
-            PawnKind = pawnKind;
-            Name = name;
-            Faction = faction;
-            NewBorn = newBorn;
-            MustBeCapableOfViolence = mustBeCapableOfViolence;
-            Gender = gender;
-            Weapon = weapon;
-            ItemQuality = itemQuality;
-            Stuff = stuff;
-        }
-
-        public HumanIncidentParams_CreatePawn(string target, HumanLetter letter, string pawnKind = "", string name = "", string faction = "",
-            bool newBorn = false, bool mustBeCapableOfViolence = false, string gender = "", string weapon = "", string itemQuality = "",
-            string stuff = "")
-            : this(target, letter, new Number(), new Number(),
-                new Number(), new Number(), new Number(), pawnKind, name, faction, newBorn, mustBeCapableOfViolence, gender, weapon, itemQuality,
-                stuff) {
+        public HumanIncidentParams_CreatePawn(string target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {
-            return
-                $"{base.ToString()}, PawnKind: {PawnKind}, Name: {Name}, Faction: {Faction}, NewBorn: {NewBorn}, MustBeCapableOfViolence: {MustBeCapableOfViolence}, BiologicalAge: {BiologicalAge}, ChronologicalAge: {ChronologicalAge}, Gender: {Gender}, Weapon: {Weapon}, ItemQuality: {ItemQuality}";
+            return $"{base.ToString()}, BiologicalAge: {BiologicalAge}, ChronologicalAge: {ChronologicalAge}, ApparelMoney: {ApparelMoney}, GearHealthMin: {GearHealthMin}, GearHealthMax: {GearHealthMax}, PawnKind: {PawnKind}, FirstName: {FirstName}, NickName: {NickName}, LastName: {LastName}, OutName: {OutName}, Faction: {Faction}, NewBorn: {NewBorn}, MustBeCapableOfViolence: {MustBeCapableOfViolence}, Gender: {Gender}, Weapon: {Weapon}, ItemQuality: {ItemQuality}, Stuff: {Stuff}";
         }
 
         public override void ExposeData() {
@@ -179,7 +155,10 @@ namespace HumanStoryteller.Incidents {
             Scribe_Deep.Look(ref GearHealthMin, "gearHealthMin");
             Scribe_Deep.Look(ref GearHealthMax, "gearHealthMax");
             Scribe_Values.Look(ref PawnKind, "pawnKind");
-            Scribe_Values.Look(ref Name, "name");
+            Scribe_Values.Look(ref FirstName, "firstName");
+            Scribe_Values.Look(ref NickName, "nickName");
+            Scribe_Values.Look(ref LastName, "lastName");
+            Scribe_Values.Look(ref OutName, "name");
             Scribe_Values.Look(ref Faction, "faction");
             Scribe_Values.Look(ref NewBorn, "newBorn");
             Scribe_Values.Look(ref MustBeCapableOfViolence, "mustBeCapableOfViolence");

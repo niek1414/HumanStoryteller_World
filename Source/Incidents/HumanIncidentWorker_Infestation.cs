@@ -53,16 +53,12 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_Infestation : HumanIncidentParms {
-        public Number Points;
+        public Number Points = new Number();
 
         public HumanIncidentParams_Infestation() {
         }
 
-        public HumanIncidentParams_Infestation(String target, HumanLetter letter, Number points) : base(target, letter) {
-            Points = points;
-        }
-
-        public HumanIncidentParams_Infestation(string target, HumanLetter letter) : this(target, letter, new Number()) {
+        public HumanIncidentParams_Infestation(string target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

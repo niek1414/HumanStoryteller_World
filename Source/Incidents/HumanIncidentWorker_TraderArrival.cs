@@ -75,7 +75,7 @@ namespace HumanStoryteller.Incidents {
                 fakeParm.forced = true;
                 fakeParm.target = map;
                 fakeParm.traderKind = kindDef;
-                List<Pawn> list = SpawnPawns(map, kindDef, allParams.Names, fakeParm);
+                List<Pawn> list = SpawnPawns(map, kindDef, allParams.OutNames, fakeParm);
                 if (list.Count == 0) {
                     return ir;
                 }
@@ -151,33 +151,25 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_TraderArrival : HumanIncidentParms {
-        public Number Points;
-        public string TraderKind;
-        public List<String> Names;
+        public Number Points = new Number();
+        public string TraderKind = "";
+        public List<String> OutNames = new List<string>();
 
         public HumanIncidentParams_TraderArrival() {
         }
 
-        public HumanIncidentParams_TraderArrival(String target, HumanLetter letter, string traderKind = "", List<String> names = null) :
-            this(target, letter, new Number(), traderKind, names) {
-        }
-
-        public HumanIncidentParams_TraderArrival(string target, HumanLetter letter, Number points, string traderKind, List<string> names) :
-            base(target, letter) {
-            Points = points;
-            TraderKind = traderKind;
-            Names = names ?? new List<string>();
+        public HumanIncidentParams_TraderArrival(string target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, Points: {Points}, TraderKind: {TraderKind}, Names: {Names}";
+            return $"{base.ToString()}, Points: {Points}, TraderKind: {TraderKind}, Names: {OutNames}";
         }
 
         public override void ExposeData() {
             base.ExposeData();
             Scribe_Deep.Look(ref Points, "points");
             Scribe_Values.Look(ref TraderKind, "traderKind");
-            Scribe_Collections.Look(ref Names, "names", LookMode.Value);
+            Scribe_Collections.Look(ref OutNames, "names", LookMode.Value);
         }
     }
 }

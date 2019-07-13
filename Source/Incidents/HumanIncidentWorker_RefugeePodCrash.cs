@@ -31,9 +31,11 @@ namespace HumanStoryteller.Incidents {
             IntVec3 intVec = DropCellFinder.RandomDropSpot(map);
             Pawn pawn = FindPawn(things);
             
-            if (allParams.Name != "") {
-                PawnUtil.SavePawnByName(allParams.Name, pawn);
+            if (allParams.OutName != "") {
+                PawnUtil.SavePawnByName(allParams.OutName, pawn);
             }
+            
+            PawnUtil.SetDisplayName(pawn, allParams.FirstName, allParams.NickName, allParams.LastName);
             
             pawn.guest.getRescuedThoughtOnUndownedBecauseOfPlayer = true;
             string title = "LetterLabelRefugeePodCrash".Translate();
@@ -70,22 +72,27 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_RefugeePodCrash : HumanIncidentParms {
-        public string Name;
+        public string OutName = "";
+        public string FirstName = "";
+        public string NickName = "";
+        public string LastName = "";
 
         public HumanIncidentParams_RefugeePodCrash() {
         }
 
-        public HumanIncidentParams_RefugeePodCrash(String target, HumanLetter letter, string name = "") : base(target, letter) {
-            Name = name;
+        public HumanIncidentParams_RefugeePodCrash(string target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, Name: {Name}";
+            return $"{base.ToString()}, OutName: {OutName}, FirstName: {FirstName}, NickName: {NickName}, LastName: {LastName}";
         }
 
         public override void ExposeData() {
             base.ExposeData();
-            Scribe_Values.Look(ref Name, "name");
+            Scribe_Values.Look(ref OutName, "name");
+            Scribe_Values.Look(ref FirstName, "firstName");
+            Scribe_Values.Look(ref NickName, "nickName");
+            Scribe_Values.Look(ref LastName, "lastName");
         }
     }
 }

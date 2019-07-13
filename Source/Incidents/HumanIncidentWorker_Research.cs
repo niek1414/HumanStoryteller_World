@@ -37,15 +37,13 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_Research : HumanIncidentParms {
-        public List<string> Projects;
+        public List<string> Projects = new List<string>();
         public bool FinishCurrent;
 
         public HumanIncidentParams_Research() {
         }
 
-        public HumanIncidentParams_Research(string target, HumanLetter letter, List<string> projects = null, bool finishCurrent = false) : base(target, letter) {
-            Projects = projects ?? new List<string>();
-            FinishCurrent = finishCurrent;
+        public HumanIncidentParams_Research(string target, HumanLetter letter) : base(target, letter) {
         }
 
         public override void ExposeData() {

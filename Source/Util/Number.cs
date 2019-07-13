@@ -1,4 +1,3 @@
-using System;
 using Verse;
 
 namespace HumanStoryteller.Util {

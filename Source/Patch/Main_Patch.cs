@@ -23,7 +23,7 @@ namespace HumanStoryteller.Patch {
         }
 
         public static void OnGUI() {
-            if (!Prefs.DevMode) return;
+            if (!HumanStoryteller.CreatorTools) return;
             if (UI.MouseCell().InBounds(Find.CurrentMap)) {
                 Widgets.Label(new Rect(5, 5, 400, 30),
                     "tile:" + UI.MouseCell().x + ":" + UI.MouseCell().y + ":" + UI.MouseCell().z + " (storymaker info)");

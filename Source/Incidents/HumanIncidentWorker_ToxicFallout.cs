@@ -37,17 +37,12 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_ToxicFallout : HumanIncidentParms {
-        public Number Duration;
+        public Number Duration = new Number();
 
         public HumanIncidentParams_ToxicFallout() {
         }
 
-        public HumanIncidentParams_ToxicFallout(String target, HumanLetter letter, Number duration) : base(target,
-            letter) {
-            Duration = duration;
-        }
-
-        public HumanIncidentParams_ToxicFallout(string target, HumanLetter letter) : this(target, letter, new Number()) {
+        public HumanIncidentParams_ToxicFallout(string target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

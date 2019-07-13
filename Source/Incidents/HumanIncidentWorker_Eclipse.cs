@@ -37,17 +37,12 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_Eclipse : HumanIncidentParms {
-        public Number Duration;
+        public Number Duration = new Number();
 
         public HumanIncidentParams_Eclipse() {
         }
 
-        public HumanIncidentParams_Eclipse(String target, HumanLetter letter, Number duration) : base(target,
-            letter) {
-            Duration = duration;
-        }
-
-        public HumanIncidentParams_Eclipse(String target, HumanLetter letter) : this(target, letter, new Number()) {
+        public HumanIncidentParams_Eclipse(string target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

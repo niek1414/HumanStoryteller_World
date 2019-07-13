@@ -62,21 +62,14 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_PsychicDrone : HumanIncidentParms {
-        public Number Duration;
-        public string Gender;
-        public string PsyLevel;
+        public Number Duration = new Number();
+        public string Gender = "";
+        public string PsyLevel = "";
 
         public HumanIncidentParams_PsychicDrone() {
         }
 
-        public HumanIncidentParams_PsychicDrone(String target, HumanLetter letter, String gender = "", String psyLevel = "") : this(target, letter, new Number(), gender, psyLevel) {
-        }
-
-        public HumanIncidentParams_PsychicDrone(string target, HumanLetter letter, Number duration, string gender, string psyLevel) : base(target,
-            letter) {
-            Duration = duration;
-            Gender = gender;
-            PsyLevel = psyLevel;
+        public HumanIncidentParams_PsychicDrone(string target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

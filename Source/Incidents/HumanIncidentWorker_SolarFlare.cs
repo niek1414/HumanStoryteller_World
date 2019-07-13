@@ -37,16 +37,12 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_SolarFlare : HumanIncidentParms {
-        public Number Duration;
+        public Number Duration = new Number();
 
         public HumanIncidentParams_SolarFlare() {
         }
 
-        public HumanIncidentParams_SolarFlare(String target, HumanLetter letter) : this(target, letter, new Number()) {
-        }
-
-        public HumanIncidentParams_SolarFlare(string target, HumanLetter letter, Number duration) : base(target, letter) {
-            Duration = duration;
+        public HumanIncidentParams_SolarFlare(string target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

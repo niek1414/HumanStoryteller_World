@@ -62,15 +62,7 @@ namespace HumanStoryteller.Incidents {
                 false, false, false, true, false, 20f, false, true, true, false, false, false, false, null, null, null, null, null, null, null);
             Pawn refugee = PawnGenerator.GeneratePawn(request);
             refugee.relations.everSeenByPlayer = true;
-            if (allParams.Name != "") {
-                if (refugee.Name is NameTriple prevNameTriple) {
-                    refugee.Name = new NameTriple(allParams.Name, allParams.Name, prevNameTriple.Last);
-                } else if (refugee.Name is NameSingle prevNameSingle) {
-                    refugee.Name = new NameTriple(allParams.Name, allParams.Name, prevNameSingle.Name);
-                } else {
-                    refugee.Name = new NameTriple(allParams.Name, allParams.Name, "");
-                }
-            }
+            PawnUtil.SavePawnByName(allParams.OutName, refugee);
 
             string text = "RefugeeChasedInitial".Translate(refugee.Name.ToStringFull, refugee.story.Title, enemyFac.def.pawnsPlural, enemyFac.Name,
                 refugee.ageTracker.AgeBiologicalYears, PawnUtility.PawnKindsToCommaList(pawnKinds, true), refugee.Named("PAWN"));
@@ -130,28 +122,23 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_RefugeeChased : HumanIncidentParms {
-        public Number Points;
-        public string Name;
+        public Number Points = new Number();
+        public string OutName = "";
 
         public HumanIncidentParams_RefugeeChased() {
         }
 
-        public HumanIncidentParams_RefugeeChased(String target, HumanLetter letter, string name = "") : this(target, letter, new Number(), name) {
-        }
-
-        public HumanIncidentParams_RefugeeChased(string target, HumanLetter letter, Number points, string name) : base(target, letter) {
-            Points = points;
-            Name = name;
+        public HumanIncidentParams_RefugeeChased(string target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, Points: {Points}, Name: {Name}";
+            return $"{base.ToString()}, Points: {Points}, Name: {OutName}";
         }
 
         public override void ExposeData() {
             base.ExposeData();
             Scribe_Deep.Look(ref Points, "points");
-            Scribe_Values.Look(ref Name, "name");
+            Scribe_Values.Look(ref OutName, "name");
         }
     }
 }

@@ -16,7 +16,7 @@ namespace HumanStoryteller.Patch {
         }
 
         public static void ExtraOnGUI() {
-            if (Prefs.DevMode) {
+            if (HumanStoryteller.CreatorTools) {
                 Widgets.Label(new Rect(5, 5, 400, 30), "tile:" + Find.WorldInterface.SelectedTile + " (storymaker info)");
             }
 
@@ -29,15 +29,48 @@ namespace HumanStoryteller.Patch {
             if (!initParams.OverrideMapLoc)
                 return;
             var site = Mathf.RoundToInt(initParams.Site.GetValue());
-            if (Find.GameInitData.startingTile != site) {
-                Find.GameInitData.startingTile = site;
-                Find.WorldInterface.SelectedTile = site;
-                Find.WorldCameraDriver.JumpTo(Find.WorldGrid.GetTileCenter(site));
+            if (site != -1) {
+                if (Find.GameInitData.startingTile != site) {
+                    Find.GameInitData.startingTile = site;
+                    Find.WorldInterface.SelectedTile = site;
+                    Find.WorldCameraDriver.JumpTo(Find.WorldGrid.GetTileCenter(site));
+                }
+
+                Text.Font = GameFont.Medium;
+                Widgets.Label(new Rect(UI.screenWidth / 2 - 300, UI.screenHeight - 100, 1000, 45), "LocationOverriden".Translate());
+                Text.Font = GameFont.Small;
             }
 
-            Text.Font = GameFont.Medium;
-            Widgets.Label(new Rect(UI.screenWidth / 2 - 300, UI.screenHeight - 100, 1000, 45), "LocationOverriden".Translate());
-            Text.Font = GameFont.Small;
+            if (initParams.StartSeason != "") {
+                switch (initParams.StartSeason) {
+                    case "Auto":
+                        Find.GameInitData.startingSeason = Season.Undefined;
+                        break;
+                    case "Spring":
+                        Find.GameInitData.startingSeason = Season.Spring;
+                        break;
+                    case "Summer":
+                        Find.GameInitData.startingSeason = Season.Summer;
+                        break;
+                    case "Fall":
+                        Find.GameInitData.startingSeason = Season.Fall;
+                        break;
+                    case "Winter":
+                        Find.GameInitData.startingSeason = Season.Winter;
+                        break;
+                    case "PermanentSummer":
+                        Find.GameInitData.startingSeason = Season.PermanentSummer;
+                        break;
+                    case "PermanentWinter":
+                        Find.GameInitData.startingSeason = Season.PermanentWinter;
+                        break;
+                }
+            }
+
+            var mapSize = Mathf.RoundToInt(initParams.MapSize.GetValue());
+            if (mapSize != -1) {
+                Find.GameInitData.mapSize = mapSize;
+            }
         }
     }
 }

@@ -24,8 +24,8 @@ namespace HumanStoryteller.Incidents {
             Tell.Log($"Executing event {Name} with:{allParams}");
 
             Map map = (Map) allParams.GetTarget();
-            string title = "todo (more info inside)";
-            string message = "This event should be customized in the mail tab of the event";
+            string title = "MessageToCreator".Translate();
+            string message = "ShouldHaveCustomMail".Translate();
             LetterDef type = LetterDefOf.NeutralEvent;
 
             if (parms.Letter?.Type != null) {
@@ -66,22 +66,17 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_Dialog : HumanIncidentParms {
-        public Number Silver;
-        public Number Duration;
+        public Number Silver = new Number(0);
+        public Number Duration = new Number(1);
 
         public HumanIncidentParams_Dialog() {
         }
 
-        public HumanIncidentParams_Dialog(String target, HumanLetter letter, Number silver, Number duration) : base(target, letter) {
-            Silver = silver;
-            Duration = duration;
-        }
-        
-        public HumanIncidentParams_Dialog(String target, HumanLetter letter) : this(target, letter, new Number(0), new Number(1)) {
+        public HumanIncidentParams_Dialog(string target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, Silver: {Silver}";
+            return $"{base.ToString()}, Silver: {Silver}, Duration: {Duration}";
         }
 
         public override void ExposeData() {

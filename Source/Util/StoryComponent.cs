@@ -15,6 +15,7 @@ namespace HumanStoryteller.Util {
         public Dictionary<string, Pawn> PawnBank = new Dictionary<string, Pawn>();
         public Dictionary<string, MapParent> MapBank = new Dictionary<string, MapParent>();
         public StorytellerComp_HumanThreatCycle ThreatCycle;
+        public StoryQueue StoryQueue = new StoryQueue();
 
         private Map _firstMapOfPlayer;
 
@@ -59,6 +60,7 @@ namespace HumanStoryteller.Util {
             _firstMapOfPlayer = null;
             _sameAsLastEvent = null;
             _lastColonizedMap = null;
+            StoryQueue = new StoryQueue();
         }
         
         public override void ExposeData() {
@@ -77,14 +79,14 @@ namespace HumanStoryteller.Util {
             Scribe_References.Look(ref _firstMapOfPlayer, "firstMapOfPlayer");
             Scribe_References.Look(ref _sameAsLastEvent, "sameAsLastEvent");
             Scribe_References.Look(ref _lastColonizedMap, "lastColonizedMap");
-            if (Scribe.mode == LoadSaveMode.LoadingVars && Prefs.DevMode) {
+            if (Scribe.mode == LoadSaveMode.LoadingVars && HumanStoryteller.CreatorTools) {
                 Tell.Log("StoryComponent Loaded:" + ToString());
             }
         }
 
         public override string ToString() {
             return
-                $"Initialised: {Initialised}, Story: {Story}, StoryId: {StoryId}, CurrentNodes: {CurrentNodes}, AllNodes: {AllNodes}, VariableBank: {VariableBank}, PawnBank: {PawnBank}, MapBank: {MapBank}, ThreatCycle: {ThreatCycle}, FirstMapOfPlayer: {_firstMapOfPlayer}, SameAsLastEvent: {_sameAsLastEvent}, ReservedPawnKeysWorkingList: {reservedPawnKeysWorkingList}, ReservedPawnValuesWorkingList: {reservedPawnValuesWorkingList}, ReservedMapKeysWorkingList: {reservedMapKeysWorkingList}, ReservedMapValuesWorkingList: {reservedMapValuesWorkingList}";
+                $"Initialised: {Initialised}, Story: {Story}, StoryId: {StoryId}, CurrentNodes: {CurrentNodes}, AllNodes: {AllNodes}, VariableBank: {VariableBank}, PawnBank: {PawnBank}, MapBank: {MapBank}, ThreatCycle: {ThreatCycle}, FirstMapOfPlayer: {_firstMapOfPlayer}, SameAsLastEvent: {_sameAsLastEvent}, ReservedPawnKeysWorkingList: {reservedPawnKeysWorkingList}, ReservedPawnValuesWorkingList: {reservedPawnValuesWorkingList}, ReservedMapKeysWorkingList: {reservedMapKeysWorkingList}, ReservedMapValuesWorkingList: {reservedMapValuesWorkingList}, QueueSize: {StoryQueue.Size()}";
         }
     }
 }

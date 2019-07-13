@@ -59,16 +59,13 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_AnimalInsanitySingle : HumanIncidentParms {
-        public List<String> Names;
+        public List<String> Names = new List<string>();
 
         public HumanIncidentParams_AnimalInsanitySingle() {
         }
 
-        public HumanIncidentParams_AnimalInsanitySingle(String target, HumanLetter letter, List<String> names = null) :
-            base(target, letter) {
-            Names = names ?? new List<string>();
+        public HumanIncidentParams_AnimalInsanitySingle(string target, HumanLetter letter) : base(target, letter) {
         }
-
 
         public override void ExposeData() {
             base.ExposeData();

@@ -1,9 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 
 <LanguageData>
-    <AlertNeedStorySource>No story</AlertNeedStorySource>
-    <AlertNeedStoryDesc>This won't do, this won't do at all!\n\nWhere is our story gone?\nO, would you human kindly check your connection to the outside world?\n\n(Big stories my take a little while to load, but not more than 2 minutes)</AlertNeedStoryDesc>
+    <!--Game messages-->
+    <HumanStoryteller>Human Storyteller</HumanStoryteller>
+    <Story>story</Story>
+    <ALPHA_BUILD>ALPHA BUILD</ALPHA_BUILD>
     
+    <!--Story select-->
     <StoryNotFound>Story was not found in the storybook.\nThe creator may have removed the story.\nIf you reloaded this game the last received story will continue playing.</StoryNotFound>
     <LoadingStory>Browsing storybook</LoadingStory>
     <LoadingStoryFailed>This Book was lost..\n\nIt seems that the story can not be found.\nThe creator may have removed the story or something went wrong while pre-reading the story.\nPlease notify the mod dev if there is a error.</LoadingStoryFailed>
@@ -13,8 +16,63 @@
     <LocationOverriden>Landing site is defined by the story and can not be changed</LocationOverriden>
     <StoryDescriptionInput>Description (single keyword)</StoryDescriptionInput>
     <StoryCreatorInput>Creator</StoryCreatorInput>
+    <Search>Search</Search>
+    <Random5>Random 5</Random5>
+    <Latest5>Latest 5</Latest5>
+    <PickedStory>Picked story: #</PickedStory>
+    <Rating>Rating</Rating>
+    <Votes>Votes</Votes>
+    <FilterOnName>Click to filter on name</FilterOnName>
     
-    <!--incidents-->
+    <!--Tab-->
+    <ShortDuration>Short\n(2 min)</ShortDuration>
+    <MediumDuration>Medium\n(10 min)</MediumDuration>
+    <LongDuration>Long\n(1 hour)</LongDuration>
+    <OffDuration>Off</OffDuration>
+    <CopyHomeArea>Copy home area...</CopyHomeArea>
+    <CouldNotCopy>Could not copy area</CouldNotCopy>
+    <CopiedArea>Copied area to clipboard</CopiedArea>
+    <EventLanes>Event lanes</EventLanes>
+    <Pending>Pending</Pending>
+    <Destroy>Destroy</Destroy>
+    <AddLane>Add lane (enter uuid)</AddLane>
+    <Add>Add</Add>
+    <AddedNode>Added node</AddedNode>
+    <CouldNotFindNode>Could not find node</CouldNotFindNode>
+    <NoStorySadFace>No story right now :(</NoStorySadFace>
+    <NotVoted>not voted</NotVoted>
+    <Voted>voted</Voted>
+    <RateStory>Rate story</RateStory>
+    <SyncRate>Story sync rate with server (Pls use Short only when needed ;)\ne.g. when the story is created by a friend while you play)</SyncRate>
+    
+    <!--Tab-CopyZone-->
+    <ZoneCopyIntro>Here you can copy your home area and integrate it in your story.\nTwo options:\n - Select 'Copy structure' to spawn the same structure, floors &amp; items\n   in your story using the 'Create structure' event.\n - Select 'Copy location' to use the area in 'location' fields in checks &amp; events.</ZoneCopyIntro>
+    <CopyStructure>Copy structure</CopyStructure>
+    <CopyLocation>Copy location</CopyLocation>
+    <ZoneCopyOrigin>The origin is the zero point of the area and can be used to place the area relative to e.g. a pawn</ZoneCopyOrigin>
+    <ZoneCopyNow>Copy to clipboard</ZoneCopyNow>
+    <BuildingZoneCopy>Copy buildings &amp; structures</BuildingZoneCopy>
+    <ItemZoneCopy>Copy items</ItemZoneCopy>
+    <TerrainZoneCopy>Copy terrain (non-buildable ground)</TerrainZoneCopy>
+    <FloorZoneCopy>Copy floor (buildable ground)</FloorZoneCopy>
+    <PawnsZoneCopy>Copy pawns (Only kind, name, faction, weapons &amp; gear)</PawnsZoneCopy>
+    <WarnZoneCopy>For performance (and my poor server) please only select the required categories</WarnZoneCopy>
+
+    <!--Incidents-->
+    <MessageToCreator>MESSAGE TO CREATOR</MessageToCreator>
+    <ShouldHaveCustomMail>This event should be customized in the mail tab of the event.</ShouldHaveCustomMail>
     <PlantSproutTitle>{PLANT} sprout</PlantSproutTitle>
     <PlantSproutMessage>A grove of {PLANT}'s has sprouted nearby! If you wait for the plants to grow, you'll be able to harvest them later.</PlantSproutMessage>
+    
+    <!--Alerts-->
+    <AlertNeedStorySource>No story</AlertNeedStorySource>
+    <AlertNeedStoryDesc>This won't do, this won't do at all!\n\nWhere is our story gone?\nO, would you human kindly check your connection to the outside world?\n\n(Big stories my take a little while to load, but not more than 2 minutes)</AlertNeedStoryDesc>
+    
+    <!--UI-->
+    <Clear>Clear</Clear>
+    <Pick>Pick</Pick>
+    <EnableCreatorTools>Enable creator tools</EnableCreatorTools>
+    <EnableCreatorToolsToolTip>Shows tile numbers, cell numbers, enables story debug tab, lets you copy zones and locations, and more!</EnableCreatorToolsToolTip>
+    
+    
 </LanguageData>

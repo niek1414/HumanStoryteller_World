@@ -8,6 +8,23 @@ namespace HumanStoryteller.Util {
         private static int _cleanupCounter;
         private const int CleanupCounterMax = 100;
 
+        public static void SetDisplayName(Pawn p, string first, string nick = "", string last = "") {
+            switch (p.Name) {
+                case NameTriple n:
+                    p.Name = new NameTriple(
+                        first != "" ? first : n.First,
+                        nick != "" ? nick : n.Nick,
+                        last != "" ? last : n.Last
+                    );
+                    break;
+                default:
+                    if (first != "" || nick != "" || last != ""){
+                        p.Name = new NameSingle(first + " " + nick + " " + last);
+                    }
+                    break;
+            }
+        }
+        
         public static Pawn GetPawnByName(String name) {
             var pawnBank = HumanStoryteller.StoryComponent.PawnBank;
 
@@ -30,18 +47,6 @@ namespace HumanStoryteller.Util {
         }
 
         public static void SavePawnByName(String name, Pawn pawn) {
-            switch (pawn.Name) {
-                case NameTriple prevNameTriple:
-                    pawn.Name = new NameTriple(name, prevNameTriple.Nick, prevNameTriple.Last);
-                    break;
-                case NameSingle _:
-                    pawn.Name = new NameSingle(name);
-                    break;
-                default:
-                    pawn.Name = new NameTriple(name, name, "");
-                    break;
-            }
-
             if (HumanStoryteller.StoryComponent.PawnBank.ContainsKey(name)) {
                 RemoveName(name);
             }

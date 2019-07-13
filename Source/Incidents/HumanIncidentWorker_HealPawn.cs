@@ -49,16 +49,13 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_HealPawn : HumanIncidentParms {
-        public List<String> Names;
+        public List<String> Names = new List<string>();
         public bool Miracle;
 
         public HumanIncidentParams_HealPawn() {
         }
 
-        public HumanIncidentParams_HealPawn(String target, HumanLetter letter, List<String> names = null, bool miracle = false) :
-            base(target, letter) {
-            Names = names ?? new List<string>();
-            Miracle = miracle;
+        public HumanIncidentParams_HealPawn(string target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

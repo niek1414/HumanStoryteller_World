@@ -191,24 +191,15 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_PlayAudio : HumanIncidentParms {
-        public string File;
-        public string Author;
+        public string File = "";
+        public string Author = "";
         public bool IsSong;
-        public Number Volume;
+        public Number Volume = new Number(1F);
 
         public HumanIncidentParams_PlayAudio() {
         }
 
-        public HumanIncidentParams_PlayAudio(String target, HumanLetter letter,
-            Number volume, string file, string author, bool isSong) : base(target, letter) {
-            File = file;
-            Author = author;
-            IsSong = isSong;
-            Volume = volume;
-        }
-
-        public HumanIncidentParams_PlayAudio(string target, HumanLetter letter, string file = "", string author = "", bool isSong = false) : this(
-            target, letter, new Number(1F), file, author, isSong) {
+        public HumanIncidentParams_PlayAudio(string target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

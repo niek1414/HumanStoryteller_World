@@ -116,8 +116,8 @@ namespace HumanStoryteller.Incidents {
             stringBuilder.AppendLine("Points = " + points.ToString("F0"));
             for (var i = 0; i < list.Count; i++) {
                 Pawn p = list[i];
-                if (i < allParams.Names.Count) {
-                    PawnUtil.SavePawnByName(allParams.Names[i], p);
+                if (i < allParams.OutNames.Count) {
+                    PawnUtil.SavePawnByName(allParams.OutNames[i], p);
                 }
 
                 string str = p.equipment == null || p.equipment.Primary == null ? "unarmed" : p.equipment.Primary.LabelCap;
@@ -213,36 +213,22 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_RaidEnemy : HumanIncidentParms {
-        public Number Points;
-        public Number Amount;
-        public String Faction;
-        public String Strategy;
-        public String ArriveMode;
-        public List<String> Names;
+        public Number Points = new Number();
+        public Number Amount = new Number();
+        public String Faction = "";
+        public String Strategy = "";
+        public String ArriveMode = "";
+        public List<String> OutNames = new List<string>();
 
         public HumanIncidentParams_RaidEnemy() {
         }
 
-        public HumanIncidentParams_RaidEnemy(String target, HumanLetter letter, String faction = "",
-            String strategy = "", String arriveMode = "", List<String> names = null) : this(target, letter, new Number(), new Number(), faction,
-            strategy,
-            arriveMode, names) {
-        }
-
-        public HumanIncidentParams_RaidEnemy(string target, HumanLetter letter, Number points, Number amount, string faction, string strategy,
-            string arriveMode,
-            List<string> names) : base(target, letter) {
-            Points = points;
-            Amount = amount;
-            Faction = faction;
-            Strategy = strategy;
-            ArriveMode = arriveMode;
-            Names = names ?? new List<string>();
+        public HumanIncidentParams_RaidEnemy(string target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {
             return
-                $"{base.ToString()}, Points: {Points}, Amount: {Amount}, Faction: {Faction}, Strategy: {Strategy}, ArriveMode: {ArriveMode}, Names: {Names}";
+                $"{base.ToString()}, Points: {Points}, Amount: {Amount}, Faction: {Faction}, Strategy: {Strategy}, ArriveMode: {ArriveMode}, Names: {OutNames}";
         }
 
         public override void ExposeData() {
@@ -252,7 +238,7 @@ namespace HumanStoryteller.Incidents {
             Scribe_Values.Look(ref Faction, "faction");
             Scribe_Values.Look(ref Strategy, "strategy");
             Scribe_Values.Look(ref ArriveMode, "arriveMode");
-            Scribe_Collections.Look(ref Names, "names", LookMode.Value);
+            Scribe_Collections.Look(ref OutNames, "names", LookMode.Value);
         }
     }
 }

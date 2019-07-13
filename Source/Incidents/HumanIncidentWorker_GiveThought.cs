@@ -50,34 +50,18 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_GiveThought : HumanIncidentParms {
-        public Number ThoughtEffect;
-        public Number ThoughtDuration;
-        public List<String> Names;
-        public string ThoughtType;
-        public string ThoughtLabel;
-        public string ThoughtDescription;
-        public string OtherPawn;
+        public Number ThoughtEffect = new Number(0);
+        public Number ThoughtDuration = new Number(1);
+        public List<String> Names = new List<string>();
+        public string ThoughtType = "";
+        public string ThoughtLabel = "";
+        public string ThoughtDescription = "";
+        public string OtherPawn = "";
 
         public HumanIncidentParams_GiveThought() {
         }
 
-        public HumanIncidentParams_GiveThought(string target, HumanLetter letter, Number thoughtEffect, Number thoughtDuration, List<string> names, string thoughtType, string thoughtLabel, string thoughtDescription, string otherPawn) : base(target, letter) {
-            ThoughtEffect = thoughtEffect;
-            ThoughtDuration = thoughtDuration;
-            Names = names ?? new List<string>();
-            ThoughtType = thoughtType;
-            ThoughtLabel = thoughtLabel;
-            ThoughtDescription = thoughtDescription;
-            OtherPawn = otherPawn;
-        }
-
-        public HumanIncidentParams_GiveThought(String target, HumanLetter letter,
-            List<String> names = null,
-            string thoughtType = "",
-            string thoughtLabel = "",
-            string thoughtDescription = "",
-            string otherPawn = "") :
-            this(target, letter, new Number(0), new Number(1), names, thoughtType, thoughtLabel, thoughtDescription, otherPawn) {
+        public HumanIncidentParams_GiveThought(string target, HumanLetter letter) : base(target, letter) {
         }
 
         public override void ExposeData() {

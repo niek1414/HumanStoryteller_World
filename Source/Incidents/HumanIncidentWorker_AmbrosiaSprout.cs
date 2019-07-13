@@ -11,7 +11,7 @@ namespace HumanStoryteller.Incidents {
     class HumanIncidentWorker_AmbrosiaSprout : HumanIncidentWorker {
         public const String Name = "AmbrosiaSprout";
 
-        private static readonly IntRange CountRange = new IntRange(10, 20);
+        public static readonly IntRange CountRange = new IntRange(10, 20);
 
         protected override IncidentResult Execute(HumanIncidentParms parms) {
             IncidentResult ir = new IncidentResult();
@@ -41,17 +41,9 @@ namespace HumanStoryteller.Incidents {
             }
 
             Thing thing = null;
-            int randomInRange;
-            var amount = allParams.Amount.GetValue();
-            if (amount != -1) {
-                randomInRange = Mathf.RoundToInt(amount);
-            } else {
-                randomInRange = CountRange.RandomInRange;
-            }
-
+            int randomInRange = Mathf.RoundToInt(allParams.Amount.GetValue());
             for (int i = 0; i < randomInRange; i++) {
-                var range = allParams.Range.GetValue();
-                if (!CellFinder.TryRandomClosewalkCellNear(cell, map, Mathf.RoundToInt(range != -1 ? range : 6),
+                if (!CellFinder.TryRandomClosewalkCellNear(cell, map, Mathf.RoundToInt(allParams.Range.GetValue()),
                     out IntVec3 result,
                     x => CanSpawnAt(plant, x, map))) {
                     break;
@@ -110,22 +102,14 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_AmbrosiaSprout : HumanIncidentParms {
-        public Number Amount;
-        public Number Range;
-        public string PlantKind;
+        public Number Amount = new Number(HumanIncidentWorker_AmbrosiaSprout.CountRange.RandomInRange);
+        public Number Range = new Number(6);
+        public string PlantKind = "";
 
         public HumanIncidentParams_AmbrosiaSprout() {
         }
 
-        public HumanIncidentParams_AmbrosiaSprout(String target, HumanLetter letter, Number amount, Number range, string plantKind) :
-            base(target, letter) {
-            Amount = amount;
-            Range = range;
-            PlantKind = plantKind;
-        }
-
-        public HumanIncidentParams_AmbrosiaSprout(string target, HumanLetter letter, string plantKind = "")
-            : this(target, letter, new Number(), new Number(), plantKind) {
+        public HumanIncidentParams_AmbrosiaSprout(string target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

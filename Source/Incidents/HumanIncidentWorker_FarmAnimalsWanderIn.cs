@@ -52,8 +52,9 @@ namespace HumanStoryteller.Incidents {
             for (int i = 0; i < num; i++) {
                 IntVec3 loc = CellFinder.RandomClosewalkCellNear(result, map, 12);
                 Pawn pawn = PawnGenerator.GeneratePawn(kind);
-                if (i < allParams.Names.Count) {
-                    PawnUtil.SavePawnByName(allParams.Names[i], pawn);
+                if (i < allParams.OutNames.Count) {
+                    PawnUtil.SetDisplayName(pawn, allParams.OutNames[i]);
+                    PawnUtil.SavePawnByName(allParams.OutNames[i], pawn);
                 }
 
                 GenSpawn.Spawn(pawn, loc, map, Rot4.Random);
@@ -73,32 +74,24 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_FarmAnimalsWanderIn : HumanIncidentParms {
-        public Number Amount;
-        public List<string> Names;
-        public String AnimalKind;
+        public Number Amount = new Number();
+        public List<string> OutNames = new List<string>();
+        public String AnimalKind = "";
 
         public HumanIncidentParams_FarmAnimalsWanderIn() {
         }
 
-        public HumanIncidentParams_FarmAnimalsWanderIn(String target, HumanLetter letter, Number amount, List<string> names,
-            String animalKind) :
-            base(target, letter) {
-            Amount = amount;
-            Names = names ?? new List<string>();
-            AnimalKind = animalKind;
-        }
-
-        public HumanIncidentParams_FarmAnimalsWanderIn(string target, HumanLetter letter, List<string> names = null, string animalKind = "") : this(target, letter, new Number(), names, animalKind) {
+        public HumanIncidentParams_FarmAnimalsWanderIn(string target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, Amount: {Amount}, Names: {Names}, Kind: {AnimalKind}";
+            return $"{base.ToString()}, Amount: {Amount}, Names: {OutNames}, Kind: {AnimalKind}";
         }
         
         public override void ExposeData() {
             base.ExposeData();
             Scribe_Deep.Look(ref Amount, "amount");
-            Scribe_Collections.Look(ref Names, "names", LookMode.Value);
+            Scribe_Collections.Look(ref OutNames, "names", LookMode.Value);
             Scribe_Values.Look(ref AnimalKind, "animalKind");
         }
     }

@@ -24,18 +24,7 @@ namespace HumanStoryteller.Incidents {
 
             Map map = (Map) allParams.GetTarget();
 
-            IntVec3 cell;
-            if (allParams.Name != "") {
-                var pawn = PawnUtil.GetPawnByName(allParams.Name);
-
-                if (pawn != null) {
-                    cell = pawn.Position;
-                } else {
-                    cell = DropCellFinder.RandomDropSpot(map);
-                }
-            } else {
-                cell = DropCellFinder.RandomDropSpot(map);
-            }
+            IntVec3 cell = allParams.Location.GetSingleCell(map);
             
             switch (allParams.OrbitalType) {
                 case "Bombardment":
@@ -54,7 +43,7 @@ namespace HumanStoryteller.Incidents {
                     break;
                 default:
                     Thing thing = ThingMaker.MakeThing(ThingDef.Named(allParams.OrbitalType));
-                    GenPlace.TryPlaceThing(thing, cell, map, ThingPlaceMode.Near);
+                    GenPlace.TryPlaceThing(thing, cell, map, ThingPlaceMode.Direct);
                     break;
             }
             
@@ -65,25 +54,22 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_OrbitalStrike : HumanIncidentParms {
-        public string Name;
-        public string OrbitalType;
+        public string OrbitalType = "";
+        public Location Location = new Location();
 
         public HumanIncidentParams_OrbitalStrike() {
         }
 
-        public HumanIncidentParams_OrbitalStrike(String target, HumanLetter letter, string name = "", string orbitalType = "") :
-            base(target, letter) {
-            Name = name;
-            OrbitalType = orbitalType;
+        public HumanIncidentParams_OrbitalStrike(string target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, Name: {Name}, OrbitalType: {OrbitalType}";
+            return $"{base.ToString()}, Location: {Location}, OrbitalType: {OrbitalType}";
         }
 
         public override void ExposeData() {
             base.ExposeData();
-            Scribe_Values.Look(ref Name, "name");
+            Scribe_Deep.Look(ref Location, "location");
             Scribe_Values.Look(ref OrbitalType, "orbitalType");
         }
     }

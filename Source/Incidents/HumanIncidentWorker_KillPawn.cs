@@ -41,18 +41,14 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_KillPawn : HumanIncidentParms {
-        public List<String> Names;
+        public List<String> Names = new List<string>();
         public bool Destroy;
 
         public HumanIncidentParams_KillPawn() {
         }
 
-        public HumanIncidentParams_KillPawn(String target, HumanLetter letter, List<String> names = null, bool destroy = false) :
-            base(target, letter) {
-            Names = names ?? new List<string>();
-            Destroy = destroy;
+        public HumanIncidentParams_KillPawn(string target, HumanLetter letter) : base(target, letter) {
         }
-
 
         public override void ExposeData() {
             base.ExposeData();

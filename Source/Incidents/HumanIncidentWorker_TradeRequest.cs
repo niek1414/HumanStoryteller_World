@@ -251,50 +251,21 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_TradeRequest : HumanIncidentParms {
-        public Number Points;
-        public Number Duration;
+        public Number Points = new Number();
+        public Number Duration = new Number();
 
-        public Number RequestAmount;
-        public string RequestItem;
+        public Number RequestAmount = new Number();
+        public string RequestItem = "";
 
-        public Number RewardAmount;
-        public string RewardItem;
-        public string RewardItemQuality;
-        public string RewardStuff;
+        public Number RewardAmount = new Number(5);
+        public string RewardItem = "";
+        public string RewardItemQuality = "";
+        public string RewardStuff = "";
 
         public HumanIncidentParams_TradeRequest() {
         }
 
-        public HumanIncidentParams_TradeRequest(string target, HumanLetter letter,
-            Number duration,
-            Number requestAmount,
-            string requestItem,
-            Number rewardAmount,
-            string rewardItem,
-            string rewardItemQuality,
-            string rewardStuff) : base(target, letter) {
-            Duration = duration;
-            RequestAmount = requestAmount;
-            RequestItem = requestItem;
-            RewardAmount = rewardAmount;
-            RewardItem = rewardItem;
-            RewardItemQuality = rewardItemQuality;
-            RewardStuff = rewardStuff;
-        }
-
-
-        public HumanIncidentParams_TradeRequest(string target, HumanLetter letter,
-            string requestItem = "",
-            string rewardItem = "",
-            string rewardItemQuality = "",
-            string rewardStuff = "") : this(target, letter,
-            new Number(),
-            new Number(),
-            requestItem,
-            new Number(5),
-            rewardItem,
-            rewardItemQuality,
-            rewardStuff) {
+        public HumanIncidentParams_TradeRequest(string target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

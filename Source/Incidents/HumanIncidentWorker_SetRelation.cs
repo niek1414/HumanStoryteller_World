@@ -44,21 +44,14 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_SetRelation : HumanIncidentParms {
-        public Number FactionRelation;
-        public string Faction;
-        public string NewName;
+        public Number FactionRelation = new Number(0);
+        public string Faction = "";
+        public string NewName = "";
 
         public HumanIncidentParams_SetRelation() {
         }
 
-        public HumanIncidentParams_SetRelation(String target, HumanLetter letter, string faction = "", string newName = "") :
-            this(target, letter, new Number(0), faction, newName) {
-        }
-
-        public HumanIncidentParams_SetRelation(string target, HumanLetter letter, Number factionRelation, string faction, string newName) : base(target, letter) {
-            FactionRelation = factionRelation;
-            Faction = faction;
-            NewName = newName;
+        public HumanIncidentParams_SetRelation(string target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

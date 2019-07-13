@@ -37,20 +37,13 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_Aurora : HumanIncidentParms {
-        public Number Duration;
+        public Number Duration = new Number();
 
         public HumanIncidentParams_Aurora() {
         }
 
-        public HumanIncidentParams_Aurora(String target, HumanLetter letter, Number duration) : base(target,
-            letter) {
-            Duration = duration;
+        public HumanIncidentParams_Aurora(string target, HumanLetter letter) : base(target, letter) {
         }
-
-        public HumanIncidentParams_Aurora(String target, HumanLetter letter) : this(target, letter, new Number()) {
-        }
-        
-        
 
         public override string ToString() {
             return $"{base.ToString()}, Duration: {Duration}";

@@ -135,7 +135,7 @@ namespace HumanStoryteller.Patch {
             Widgets.Label(new Rect(filter.x, filter.y + 120, filter.width, 30), "StoryCreatorInput".Translate());
             _filterCreator = Widgets.TextField(new Rect(filter.x, filter.y + 140, filter.width / 3 * 2, 30), _filterCreator, 255, new Regex(".*"));
 
-            if (Widgets.ButtonText(new Rect(filter.x + filter.width / 3 * 2, filter.y + 140, filter.width / 3, 30), "Search")) {
+            if (Widgets.ButtonText(new Rect(filter.x + filter.width / 3 * 2, filter.y + 140, filter.width / 3, 30), "Search".Translate())) {
                 _pageNumber = 0;
                 RefreshList(false);
             }
@@ -144,14 +144,14 @@ namespace HumanStoryteller.Patch {
         private static void DrawPagination(Rect stories) {
             Text.Font = GameFont.Tiny;
 
-            if (Widgets.ButtonText(new Rect(stories.center.x - 150, stories.yMax - 40, 90, 40), "Random 5")) {
+            if (Widgets.ButtonText(new Rect(stories.center.x - 150, stories.yMax - 40, 90, 40), "Random5".Translate())) {
                 if (!_loading) {
                     _pageNumber = 0;
                     RefreshListRandom();
                 }
             }
             
-            if (Widgets.ButtonText(new Rect(stories.center.x + 60, stories.yMax - 40, 90, 40), "Latest 5")) {
+            if (Widgets.ButtonText(new Rect(stories.center.x + 60, stories.yMax - 40, 90, 40), "Latest5".Translate())) {
                 if (!_loading) {
                     _pageNumber = 0;
                     RefreshListNew();
@@ -205,7 +205,7 @@ namespace HumanStoryteller.Patch {
 
             Text.Font = GameFont.Tiny;
             Widgets.Label(new Rect(stories.xMax - 90, stories.yMax - 14, 90, 17),
-                "Picked story: #" + (_selectedSummary == null ? "-" : _selectedSummary.Id.ToString()));
+                "PickedStory".Translate() + (_selectedSummary == null ? "-" : _selectedSummary.Id.ToString()));
         }
 
         private static void DrawStoryList(Rect stories) {
@@ -282,7 +282,7 @@ namespace HumanStoryteller.Patch {
             rating.y += description.height + rating.height;
             GUIStyle alignCenter = Text.CurFontStyle;
             alignCenter.alignment = TextAnchor.LowerCenter;
-            GUI.Label(rating, $"Rating: {story.Rating} / Votes: {story.Votes}", alignCenter);
+            GUI.Label(rating, $"{"Rating".Translate()}: {story.Rating} / {"Votes".Translate()}: {story.Votes}", alignCenter);
 
             Rect avatar = new Rect(inner.xMax - 65, inner.y + 18, 55, 55);
             Widgets.DrawShadowAround(avatar);
@@ -331,7 +331,8 @@ namespace HumanStoryteller.Patch {
 
             Rect clickToFilterRect = new Rect(innerInfo.x, innerInfo.y + innerInfo.height - 25, innerInfo.width, 25);
             Text.Font = GameFont.Small;
-            Widgets.Label(clickToFilterRect, "Click to filter on name");
+            Widgets.Label(clickToFilterRect, "FilterOnName".Translate());
+            avatar.center = new Vector2(Event.current.mousePosition.x, Event.current.mousePosition.y);
             if (Widgets.ButtonInvisible(avatar)) {
                 _filterCreator = story.Username;
                 _pageNumber = 0;

@@ -1,8 +1,5 @@
 using System;
-using System.Collections.Generic;
 using HumanStoryteller.Incidents;
-using HumanStoryteller.Util;
-using RimWorld;
 using Verse;
 
 namespace HumanStoryteller.CheckConditions {

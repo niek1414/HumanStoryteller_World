@@ -27,30 +27,20 @@ namespace HumanStoryteller.Incidents {
 
             Map map = (Map) allParams.GetTarget();
 
-            if (!Candidates(map).TryRandomElement(out var result))
+            if (!Candidates(map).TryRandomElement(out var pawn))
             {
                 return ir;
             }
 
-            result.guest?.SetGuestStatus(null);
-            string value = result.LabelIndefinite();
-            if (allParams.Name != "") {
-                switch (result.Name) {
-                    case NameTriple prevNameTriple:
-                        result.Name = new NameTriple(allParams.Name, allParams.Name, prevNameTriple.Last);
-                        break;
-                    case NameSingle prevNameSingle:
-                        result.Name = new NameTriple(allParams.Name, allParams.Name, prevNameSingle.Name);
-                        break;
-                    default:
-                        result.Name = new NameTriple(allParams.Name, allParams.Name, "");
-                        break;
-                }
-            }
-            bool flag = result.Name != null;
-            result.SetFaction(Faction.OfPlayer);
-            string text = flag || result.Name == null ? "LetterAnimalSelfTame".Translate(result).CapitalizeFirst() : (!result.Name.Numerical ? "LetterAnimalSelfTameAndName".Translate(value, result.Name.ToStringFull, result.Named("ANIMAL")).CapitalizeFirst() : "LetterAnimalSelfTameAndNameNumerical".Translate(value, result.Name.ToStringFull, result.Named("ANIMAL")).CapitalizeFirst());
-            SendLetter(allParams, "LetterLabelAnimalSelfTame".Translate(result.KindLabel, result).CapitalizeFirst(), text, LetterDefOf.PositiveEvent, result);
+            pawn.guest?.SetGuestStatus(null);
+            string value = pawn.LabelIndefinite();
+            PawnUtil.SavePawnByName(allParams.OutName, pawn);
+            PawnUtil.SetDisplayName(pawn, allParams.OutName);
+            
+            bool flag = pawn.Name != null;
+            pawn.SetFaction(Faction.OfPlayer);
+            string text = flag || pawn.Name == null ? "LetterAnimalSelfTame".Translate(pawn).CapitalizeFirst() : (!pawn.Name.Numerical ? "LetterAnimalSelfTameAndName".Translate(value, pawn.Name.ToStringFull, pawn.Named("ANIMAL")).CapitalizeFirst() : "LetterAnimalSelfTameAndNameNumerical".Translate(value, pawn.Name.ToStringFull, pawn.Named("ANIMAL")).CapitalizeFirst());
+            SendLetter(allParams, "LetterLabelAnimalSelfTame".Translate(pawn.KindLabel, pawn).CapitalizeFirst(), text, LetterDefOf.PositiveEvent, pawn);
 
             return ir;
         }
@@ -64,22 +54,21 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_SelfTame : HumanIncidentParms {
-        public string Name;
+        public string OutName = "";
 
         public HumanIncidentParams_SelfTame() {
         }
 
-        public HumanIncidentParams_SelfTame(String target, HumanLetter letter, string name = "") : base(target, letter) {
-            Name = name;
+        public HumanIncidentParams_SelfTame(string target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, Name: {Name}";
+            return $"{base.ToString()}, Name: {OutName}";
         }
 
         public override void ExposeData() {
             base.ExposeData();
-            Scribe_Values.Look(ref Name, "name");
+            Scribe_Values.Look(ref OutName, "name");
         }
     }
 }

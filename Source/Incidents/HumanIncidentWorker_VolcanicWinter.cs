@@ -37,17 +37,12 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_VolcanicWinter : HumanIncidentParms {
-        public Number Duration;
+        public Number Duration = new Number();
 
         public HumanIncidentParams_VolcanicWinter() {
         }
 
-        public HumanIncidentParams_VolcanicWinter(String target, HumanLetter letter, Number duration) : base(target,
-            letter) {
-            Duration = duration;
-        }
-
-        public HumanIncidentParams_VolcanicWinter(string target, HumanLetter letter) : this(target, letter, new Number()) {
+        public HumanIncidentParams_VolcanicWinter(string target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

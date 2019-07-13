@@ -61,20 +61,16 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_CreateSettlement : HumanIncidentParms {
-        public string Faction;
-        public string MapName;
-        public Number Site;
-        public string SettlementName;
+        public string Faction = "";
+        public string MapName = "";
+        public Number Site = new Number();
+        public string SettlementName = "";
 
         public HumanIncidentParams_CreateSettlement() {
             Site = new Number();
         }
 
-        public HumanIncidentParams_CreateSettlement(string target, HumanLetter letter, string faction = "", string mapName = "", string settlementName = "") : base(target, letter) {
-            Faction = faction;
-            MapName = mapName;
-            Site = new Number();
-            SettlementName = settlementName;
+        public HumanIncidentParams_CreateSettlement(string target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

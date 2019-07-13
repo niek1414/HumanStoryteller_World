@@ -40,8 +40,8 @@ namespace HumanStoryteller.Incidents {
             if (allParams.Gender != ""){
                 pawn.gender = PawnUtil.GetGender(allParams.Gender);
             }
-            if (allParams.Name != "") {
-                PawnUtil.SavePawnByName(allParams.Name, pawn);
+            if (allParams.OutName != "") {
+                PawnUtil.SavePawnByName(allParams.OutName, pawn);
             }
             GenSpawn.Spawn(pawn, cell, map);
             IncidentDef def = IncidentDef.Named("WildManWandersIn");
@@ -55,24 +55,22 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_WildManWandersIn : HumanIncidentParms {
-        public string Name;
-        public string Gender;
+        public string OutName = "";
+        public string Gender = "";
 
         public HumanIncidentParams_WildManWandersIn() {
         }
 
-        public HumanIncidentParams_WildManWandersIn(String target, HumanLetter letter, string name = "", string gender = "") : base(target, letter) {
-            Name = name;
-            Gender = gender;
+        public HumanIncidentParams_WildManWandersIn(string target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, Name: {Name}, Gender: {Gender}";
+            return $"{base.ToString()}, Name: {OutName}, Gender: {Gender}";
         }
 
         public override void ExposeData() {
             base.ExposeData();
-            Scribe_Values.Look(ref Name, "name");
+            Scribe_Values.Look(ref OutName, "name");
             Scribe_Values.Look(ref Gender, "gender");
         }
     }

@@ -18,35 +18,24 @@ namespace HumanStoryteller.Incidents {
     public class HumanIncidentParams_Root : HumanIncidentParms {
         public bool OverrideMapGen;
         public bool OverrideMapLoc;
-        public string Seed;
-        public string Opening;
-        public Number PawnAmount;
-        public Number Coverage;
-        public Number Rainfall;
-        public Number Temperature;
-        public Number Site;
+        public string Seed = "";
+        public string Opening = "";
+        public string StartSeason = "";
+        public Number PawnAmount = new Number();
+        public Number Coverage = new Number();
+        public Number Rainfall = new Number();
+        public Number Temperature = new Number();
+        public Number Site = new Number();
+        public Number MapSize = new Number();
         
         public HumanIncidentParams_Root() {
         }
 
-
-        public HumanIncidentParams_Root(string target, HumanLetter letter, bool overrideMapGen, bool overrideMapLoc, string seed, string opening, Number coverage, Number rainfall, Number temperature, Number site, Number pawnAmount) : base(target, letter) {
-            OverrideMapGen = overrideMapGen;
-            OverrideMapLoc = overrideMapLoc;
-            Seed = seed;
-            Opening = opening;
-            PawnAmount = pawnAmount;
-            Coverage = coverage;
-            Rainfall = rainfall;
-            Temperature = temperature;
-            Site = site;
-        }
-
-        public HumanIncidentParams_Root(String target, HumanLetter letter, bool overrideMapGen = false, bool overrideMapLoc = false, string seed = "", string opening = "") : this(target, letter, overrideMapGen, overrideMapLoc, seed, opening, new Number(), new Number(), new Number(), new Number(), new Number())  {
+        public HumanIncidentParams_Root(string target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, OverrideMapGen: {OverrideMapGen}, OverrideMapLoc: {OverrideMapLoc}, Seed: {Seed}, Opening: {Opening}, PawnAmount: {PawnAmount}, Coverage: {Coverage}, Rainfall: {Rainfall}, Temperature: {Temperature}, Site: {Site}";
+            return $"{base.ToString()}, OverrideMapGen: {OverrideMapGen}, OverrideMapLoc: {OverrideMapLoc}, Seed: {Seed}, Opening: {Opening}, StartSeason: {StartSeason}, PawnAmount: {PawnAmount}, Coverage: {Coverage}, Rainfall: {Rainfall}, Temperature: {Temperature}, Site: {Site}, MapSize: {MapSize}";
         }
 
         public override void ExposeData() {
@@ -54,10 +43,13 @@ namespace HumanStoryteller.Incidents {
             Scribe_Values.Look(ref OverrideMapGen, "overrideMapGen");
             Scribe_Values.Look(ref Seed, "seed");
             Scribe_Values.Look(ref Opening, "opening");
+            Scribe_Values.Look(ref StartSeason, "startSeason");
             Scribe_Deep.Look(ref PawnAmount, "pawnAmount");
             Scribe_Deep.Look(ref Coverage, "coverage");
             Scribe_Deep.Look(ref Rainfall, "rainfall");
             Scribe_Deep.Look(ref Temperature, "temperature");
+            Scribe_Deep.Look(ref Site, "site");
+            Scribe_Deep.Look(ref MapSize, "mapSize");
         }
     }
 }

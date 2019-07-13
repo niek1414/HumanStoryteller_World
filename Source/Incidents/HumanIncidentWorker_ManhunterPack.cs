@@ -69,20 +69,13 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_ManhunterPack : HumanIncidentParms {
-        public string AnimalKind;
-        public Number Points;
+        public string AnimalKind = "";
+        public Number Points = new Number();
 
         public HumanIncidentParams_ManhunterPack() {
         }
 
-        public HumanIncidentParams_ManhunterPack(String target, HumanLetter letter, Number points, string animalKind) :
-            base(target, letter) {
-            Points = points;
-            AnimalKind = animalKind;
-        }
-
-        public HumanIncidentParams_ManhunterPack(string target, HumanLetter letter, string animalKind = "") : this(target, letter, new Number(), animalKind) {
-            AnimalKind = animalKind;
+        public HumanIncidentParams_ManhunterPack(string target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

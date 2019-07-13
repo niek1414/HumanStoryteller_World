@@ -5,6 +5,7 @@ using HumanStoryteller.Util;
 using RimWorld;
 using UnityEngine;
 using Verse;
+using Verse.AI.Group;
 
 namespace HumanStoryteller.Incidents {
     class HumanIncidentWorker_EditPawn : HumanIncidentWorker {
@@ -30,6 +31,8 @@ namespace HumanStoryteller.Incidents {
                     continue;
                 }
 
+                PawnUtil.SetDisplayName(pawn, allParams.FirstName, allParams.NickName, allParams.LastName);
+
                 if (allParams.Strip) {
                     pawn.Strip();
                 }
@@ -42,32 +45,40 @@ namespace HumanStoryteller.Incidents {
                     pawn.SetFaction(FactionUtility.DefaultFactionFrom(FactionDef.Named(allParams.Faction)));
                 }
 
-                if (allParams.Location != "") {
-                    IntVec3 intVec;
-                    switch (allParams.Location) {
-                        case "RandomEdge":
-                            intVec = CellFinder.RandomEdgeCell(map);
-                            break;
-                        case "Center":
-                            intVec = RCellFinder.TryFindRandomCellNearWith(map.Center, null, map, out var result)
-                                ? result
-                                : DropCellFinder.RandomDropSpot(map);
-                            break;
-                        case "Random":
-                            intVec = DropCellFinder.RandomDropSpot(map);
-                            break;
-                        default:
-                            intVec = DropCellFinder.RandomDropSpot(map);
-                            break;
+                if (allParams.Traits.Count > 0) {
+                    pawn.story?.traits?.allTraits?.Clear();
+                }
+
+                allParams.Traits.ForEach(s => {
+                    var split = s.Split('|');
+                    var traitDef = DefDatabase<TraitDef>.GetNamed(split[0], false);
+                    if (traitDef == null) {
+                        Tell.Warn("Did not find trait with name: " + split[0]);
+                        return;
                     }
 
-                    pawn.Position = intVec;
+                    TraitDegreeData data;
+                    try {
+                        data = traitDef.DataAtDegree(Convert.ToInt32(split[1]));
+                    } catch (ArgumentOutOfRangeException) {
+                        Tell.Warn("Did not find correct trait degree");
+                        return;
+                    }
+
+                    pawn.story?.traits?.GainTrait(new Trait(traitDef, data?.degree ?? 0));
+                });
+
+
+                var cell = allParams.Location.GetSingleCell(map, false);
+                if (cell.IsValid) {
+                    pawn.Position = cell;
+                    pawn.Notify_Teleported(true, false);
                 }
-                
+
                 if (allParams.SetDrafted) {
                     pawn.drafter.Drafted = true;
                 }
-                
+
                 if (allParams.Banish) {
                     PawnBanishUtility.Banish(pawn);
                 }
@@ -159,81 +170,60 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_EditPawn : HumanIncidentParms {
-        public Number SkillAnimals;
-        public Number SkillArtistic;
-        public Number SkillConstruction;
-        public Number SkillCooking;
-        public Number SkillCrafting;
-        public Number SkillPlants;
-        public Number SkillMedicine;
-        public Number SkillMelee;
-        public Number SkillMining;
-        public Number SkillIntellectual;
-        public Number SkillShooting;
-        public Number SkillSocial;
-        public Number AgeBioYear;
+        public Number SkillAnimals = new Number();
+        public Number SkillArtistic = new Number();
+        public Number SkillConstruction = new Number();
+        public Number SkillCooking = new Number();
+        public Number SkillCrafting = new Number();
+        public Number SkillPlants = new Number();
+        public Number SkillMedicine = new Number();
+        public Number SkillMelee = new Number();
+        public Number SkillMining = new Number();
+        public Number SkillIntellectual = new Number();
+        public Number SkillShooting = new Number();
+        public Number SkillSocial = new Number();
+        public Number AgeBioYear = new Number();
 
         public bool SkillAdd;
 
-        public List<String> Names;
+        public List<String> Traits = new List<string>();
+        public List<String> Names = new List<string>();
+        public string FirstName = "";
+        public string NickName = "";
+        public string LastName = "";
         public bool Strip;
         public bool ClearMind;
         public bool Banish;
         public bool SetDrafted;
-        public string Faction;
+        public string Faction = "";
 
-        public string Location;
+        public Location Location = new Location();
 
         public HumanIncidentParams_EditPawn() {
         }
 
-        public HumanIncidentParams_EditPawn(string target, HumanLetter letter, Number skillAnimals, Number skillArtistic, Number skillConstruction,
-            Number skillCooking, Number skillCrafting, Number skillPlants, Number skillMedicine, Number skillMelee, Number skillMining,
-            Number skillIntellectual, Number skillShooting, Number skillSocial, Number ageBioYear, bool skillAdd, List<string> names, bool strip,
-            bool clearMind, bool banish, bool drafted, string faction, string location) : base(target, letter) {
-            SkillAnimals = skillAnimals;
-            SkillArtistic = skillArtistic;
-            SkillConstruction = skillConstruction;
-            SkillCooking = skillCooking;
-            SkillCrafting = skillCrafting;
-            SkillPlants = skillPlants;
-            SkillMedicine = skillMedicine;
-            SkillMelee = skillMelee;
-            SkillMining = skillMining;
-            SkillIntellectual = skillIntellectual;
-            SkillShooting = skillShooting;
-            SkillSocial = skillSocial;
-            AgeBioYear = ageBioYear;
-            SkillAdd = skillAdd;
-            Names = names ?? new List<string>();;
-            Strip = strip;
-            ClearMind = clearMind;
-            Banish = banish;
-            SetDrafted = drafted;
-            Faction = faction;
-            Location = location;
-        }
-
-        public HumanIncidentParams_EditPawn(string target, HumanLetter letter, bool skillAdd = false, List<string> names = null, bool strip = false,
-            bool clearMind = false, bool banish = false, bool drafted = false, string faction = "", string location = "") : this(target, letter,
-            new Number(), new Number(), new Number(), new Number(), new Number(), new Number(), new Number(), new Number(), new Number(),
-            new Number(), new Number(), new Number(), new Number(), skillAdd, names, strip, clearMind, banish, drafted, faction, location) {
+        public HumanIncidentParams_EditPawn(string target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, SkillAnimals: {SkillAnimals}, SkillArtistic: {SkillArtistic}, SkillConstruction: {SkillConstruction}, SkillCooking: {SkillCooking}, SkillCrafting: {SkillCrafting}, SkillPlants: {SkillPlants}, SkillMedicine: {SkillMedicine}, SkillMelee: {SkillMelee}, SkillMining: {SkillMining}, SkillIntellectual: {SkillIntellectual}, SkillShooting: {SkillShooting}, SkillSocial: {SkillSocial}, AgeBioYear: {AgeBioYear}, SkillAdd: {SkillAdd}, Names: {Names}, Strip: {Strip}, ClearMind: {ClearMind}, Banish: {Banish}, SetDrafted: {SetDrafted}, Faction: {Faction}, Location: {Location}";
+            return
+                $"{base.ToString()}, SkillAnimals: {SkillAnimals}, SkillArtistic: {SkillArtistic}, SkillConstruction: {SkillConstruction}, SkillCooking: {SkillCooking}, SkillCrafting: {SkillCrafting}, SkillPlants: {SkillPlants}, SkillMedicine: {SkillMedicine}, SkillMelee: {SkillMelee}, SkillMining: {SkillMining}, SkillIntellectual: {SkillIntellectual}, SkillShooting: {SkillShooting}, SkillSocial: {SkillSocial}, AgeBioYear: {AgeBioYear}, SkillAdd: {SkillAdd}, Traids: {Traits}, Names: {Names}, FirstName: {FirstName}, NickName: {NickName}, LastName: {LastName}, Strip: {Strip}, ClearMind: {ClearMind}, Banish: {Banish}, SetDrafted: {SetDrafted}, Faction: {Faction}, Location: {Location}";
         }
 
         public override void ExposeData() {
             base.ExposeData();
             Scribe_Collections.Look(ref Names, "names", LookMode.Value);
+            Scribe_Values.Look(ref FirstName, "firstName");
+            Scribe_Values.Look(ref NickName, "nickName");
+            Scribe_Values.Look(ref LastName, "lastName");
             Scribe_Values.Look(ref Strip, "strip");
             Scribe_Values.Look(ref ClearMind, "clearMind");
             Scribe_Values.Look(ref Banish, "banish");
             Scribe_Values.Look(ref SetDrafted, "setDrafted");
             Scribe_Deep.Look(ref AgeBioYear, "ageBioYear");
             Scribe_Values.Look(ref Faction, "faction");
-            Scribe_Values.Look(ref Location, "location");
+            Scribe_Deep.Look(ref Location, "location");
+            Scribe_Collections.Look(ref Traits, "traits", LookMode.Value);
 
             Scribe_Values.Look(ref SkillAdd, "skillAdd");
             Scribe_Deep.Look(ref SkillAnimals, "skillAnimals");

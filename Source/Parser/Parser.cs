@@ -57,7 +57,7 @@ namespace HumanStoryteller.Parser {
                         storyNode.LeftChild = new Model.Connection(parseNode.Left.Offset, nodesDictionary[parseNode.Left.Uuid].RealNode);
                     } catch (KeyNotFoundException) {
                         Tell.Err("While parsing, a unknown node was mentioned. UUID:" + parseNode.Left);
-                        Tell.Log(json);
+                        Tell.Warn(json);
                     }
                 }
 
@@ -66,7 +66,7 @@ namespace HumanStoryteller.Parser {
                         storyNode.RightChild = new Model.Connection(parseNode.Right.Offset, nodesDictionary[parseNode.Right.Uuid].RealNode);
                     } catch (KeyNotFoundException) {
                         Tell.Err("While parsing, a unknown node was mentioned. UUID:" + parseNode.Right);
-                        Tell.Log(json);
+                        Tell.Warn(json);
                     }
                 }
             }

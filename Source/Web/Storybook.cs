@@ -144,6 +144,8 @@ namespace HumanStoryteller.Web {
         }
 
         private static bool CheckRequestStatus(IRestResponse response, RestRequestAsyncHandle handle = null) {
+            Tell.Log(response.Content);
+            
             if (response.ResponseStatus != ResponseStatus.Completed) {
                 Tell.Warn($"Rest call failed, {response.ResponseStatus}", response);
                 if (handle != null) {

@@ -38,16 +38,13 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_MentalBreak : HumanIncidentParms {
-        public List<String> Names;
-        public string MentalBreak;
+        public List<String> Names = new List<string>();
+        public string MentalBreak = "";
 
         public HumanIncidentParams_MentalBreak() {
         }
 
-        public HumanIncidentParams_MentalBreak(String target, HumanLetter letter, List<String> names = null, string mentalBreak = "") :
-            base(target, letter) {
-            Names = names ?? new List<string>();
-            MentalBreak = mentalBreak;
+        public HumanIncidentParams_MentalBreak(string target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

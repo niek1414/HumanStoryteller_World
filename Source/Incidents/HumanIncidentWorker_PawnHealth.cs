@@ -58,18 +58,14 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_PawnHealth : HumanIncidentParms {
-        public List<String> Names;
-        public string HealthAction;
-        public string BodyPart;
+        public List<String> Names = new List<string>();
+        public string HealthAction = "";
+        public string BodyPart = "";
 
         public HumanIncidentParams_PawnHealth() {
         }
 
-        public HumanIncidentParams_PawnHealth(String target, HumanLetter letter, List<String> names = null, string healthAction = "", string bodyPart = "") :
-            base(target, letter) {
-            Names = names ?? new List<string>();
-            HealthAction = healthAction;
-            BodyPart = bodyPart;
+        public HumanIncidentParams_PawnHealth(string target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

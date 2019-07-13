@@ -113,19 +113,13 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_HerdMigration : HumanIncidentParms {
-        public Number Amount;
-        public string AnimalKind;
+        public Number Amount = new Number();
+        public string AnimalKind = "";
 
         public HumanIncidentParams_HerdMigration() {
         }
 
-        public HumanIncidentParams_HerdMigration(String target, HumanLetter letter, string animalKind = "") :
-            this(target, letter, new Number(), animalKind) {
-        }
-
-        public HumanIncidentParams_HerdMigration(string target, HumanLetter letter, Number amount, string animalKind) : base(target, letter) {
-            AnimalKind = animalKind;
-            Amount = amount;
+        public HumanIncidentParams_HerdMigration(string target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

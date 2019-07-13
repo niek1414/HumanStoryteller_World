@@ -31,16 +31,12 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_TimeTravel : HumanIncidentParms {
-        public Number HourChange;
+        public Number HourChange = new Number(0);
 
         public HumanIncidentParams_TimeTravel() {
         }
 
-        public HumanIncidentParams_TimeTravel(String target, HumanLetter letter, Number hourChange) : base(target, letter) {
-            HourChange = hourChange;
-        }
-
-        public HumanIncidentParams_TimeTravel(string target, HumanLetter letter) : this(target, letter, new Number(0)) {
+        public HumanIncidentParams_TimeTravel(string target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

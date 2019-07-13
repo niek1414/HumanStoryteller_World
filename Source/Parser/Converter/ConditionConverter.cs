@@ -38,7 +38,7 @@ namespace HumanStoryteller.Parser.Converter {
         }
 
         private CheckCondition GetCondition(JObject obj) {
-            String type = obj["type"].Value<string>();
+            String type = GetString(obj, "type");
             if (type == null) {
                 Parser.LogParseError("condition", type);
                 return null;
@@ -46,75 +46,75 @@ namespace HumanStoryteller.Parser.Converter {
 
             switch (type) {
                 case PawnHealthCheck.Name:
-                    return new PawnHealthCheck(obj["pawnName"].Value<string>(),
-                        GetHealthCondition(obj["healthCondition"].Value<string>()));
+                    return new PawnHealthCheck(GetString(obj, "pawnName"),
+                        GetHealthCondition(GetString(obj, "healthCondition")));
                 case PawnStateCheck.Name:
-                    return new PawnStateCheck(obj["pawnName"].Value<string>(),
-                        GetPawnCondition(obj["pawnCondition"].Value<string>()));
+                    return new PawnStateCheck(GetString(obj, "pawnName"),
+                        GetPawnCondition(GetString(obj, "pawnCondition")));
                 case MapCreatedCheck.Name:
-                    return new MapCreatedCheck(obj["mapName"].Value<string>());
+                    return new MapCreatedCheck(GetString(obj, "mapName"));
                 case ColonistOnMapCheck.Name:
-                    return new ColonistOnMapCheck(obj["mapName"].Value<string>(),
-                        obj["pawnName"].Value<string>());
+                    return new ColonistOnMapCheck(GetString(obj, "mapName"),
+                        GetString(obj, "pawnName"));
                 case QuestCheck.Name:
-                    return new QuestCheck(GetQuestResponse(obj["questState"].Value<string>()));
+                    return new QuestCheck(GetQuestResponse(GetString(obj, "questState")));
                 case TradeCheck.Name:
-                    return new TradeCheck(GetTradeResponse(obj["tradeState"].Value<string>()));
+                    return new TradeCheck(GetTradeResponse(GetString(obj, "tradeState")));
                 case ColonistsOnMapCheck.Name:
-                    return new ColonistsOnMapCheck(obj["mapName"].Value<string>(),
-                        GetNumeralCompareResponse(obj["compareType"].Value<string>()),
+                    return new ColonistsOnMapCheck(GetString(obj, "mapName"),
+                        GetNumeralCompareResponse(GetString(obj, "compareType")),
                         GetNumber(obj["constant"])
                     );
                 case DialogCheck.Name:
-                    return new DialogCheck(GetDialogResponse(obj["response"].Value<string>()));
+                    return new DialogCheck(GetDialogResponse(GetString(obj, "response")));
                 case VariableCheck.Name:
-                    return new VariableCheck(obj["name"].Value<string>(),
-                        GetNumeralCompareResponse(obj["compareType"].Value<string>()),
+                    return new VariableCheck(GetString(obj, "name"),
+                        GetNumeralCompareResponse(GetString(obj, "compareType")),
                         GetNumber(obj["constant"])
                     );
                 case RandomCheck.Name:
                     return new RandomCheck(GetNumber(obj["chance"]));
                 case PawnLocationCheck.Name:
-                    return new PawnLocationCheck(obj["pawnName"].Value<string>(), obj["location"].Value<string>(),
-                        float.Parse(obj["radius"].Value<string>()));
+                    return new PawnLocationCheck(GetString(obj, "pawnName"), GetLocation(obj["location"]),
+                        float.Parse(GetString(obj, "radius") ?? "1"));
                 case DifficultyCheck.Name:
-                    return new DifficultyCheck(GetDifficulty(obj["difficulty"].Value<string>()));
+                    return new DifficultyCheck(GetDifficulty(GetString(obj, "difficulty")));
                 case TimeCheck.Name:
                     return new TimeCheck(GetTimeList(obj, "hours"), GetTimeList(obj, "days"), GetTimeList(obj, "quadrums"),
                         GetTimeList(obj, "years"));
                 case RelationCheck.Name:
                     return new RelationCheck(
-                            Find.FactionManager.AllFactions.First(f => f.def.defName == obj["faction"].Value<string>()),
-                            GetNumeralCompareResponse(obj["compareType"].Value<string>()),
-                            GetNumber(obj["constant"])
-                        );
+                        Find.FactionManager.AllFactions.First(f => f.def.defName == GetString(obj, "faction")),
+                        GetNumeralCompareResponse(GetString(obj, "compareType")),
+                        GetNumber(obj["constant"])
+                    );
                 case ItemMapCheck.Name:
                     return new ItemMapCheck(
-                            ThingDef.Named(obj["item"].Value<string>()),
-                            GetNumeralCompareResponse(obj["compareType"].Value<string>()),
-                            GetNumber(obj["constant"])
-                        );
+                        ThingDef.Named(GetString(obj, "item")),
+                        GetNumeralCompareResponse(GetString(obj, "compareType")),
+                        GetNumber(obj["constant"])
+                    );
                 case ItemColonyCheck.Name:
                     return new ItemColonyCheck(
-                            ThingDef.Named(obj["item"].Value<string>()),
-                            GetNumeralCompareResponse(obj["compareType"].Value<string>()),
-                            GetNumber(obj["constant"])
-                        );
+                        ThingDef.Named(GetString(obj, "item")),
+                        GetNumeralCompareResponse(GetString(obj, "compareType")),
+                        GetNumber(obj["constant"])
+                    );
                 case TemperatureCheck.Name:
                     return new TemperatureCheck(
-                            GetNumeralCompareResponse(obj["compareType"].Value<string>()),
-                            GetNumber(obj["constant"])
-                        );
+                        GetNumeralCompareResponse(GetString(obj, "compareType")),
+                        GetNumber(obj["constant"])
+                    );
                 case ColoniesCheck.Name:
                     return new ColoniesCheck(
-                            GetNumeralCompareResponse(obj["compareType"].Value<string>()),
-                            GetNumber(obj["constant"])
-                        );
+                        GetNumeralCompareResponse(GetString(obj, "compareType")),
+                        GetNumber(obj["constant"])
+                    );
                 case ColonistsCheck.Name:
                     return new ColonistsCheck(
-                            GetNumeralCompareResponse(obj["compareType"].Value<string>()),
-                            GetNumber(obj["constant"])
-                        );
+                        GetNumeralCompareResponse(GetString(obj, "compareType")),
+                        GetNumber(obj["constant"])
+                    );
                 case BiomeCheck.Name:
                     return new BiomeCheck(obj["biomes"] != null ? obj["biomes"].Values<string>().ToList() : new List<string>());
                 case AudioCheck.Name:
@@ -124,15 +124,36 @@ namespace HumanStoryteller.Parser.Converter {
                 case CheatCheck.Name:
                     return new CheatCheck();
                 case ResearchCheck.Name:
-                    return new ResearchCheck(GetResearchProject(obj["project"].Value<string>()));
+                    return new ResearchCheck(GetResearchProject(GetString(obj, "project")));
                 default:
                     Parser.LogParseError("condition", type);
                     return null;
             }
         }
 
+        private string GetString(JObject obj, string key) {
+            return obj[key]?.Value<string>();
+        }
+
         private Number GetNumber(JToken jToken) {
+            if (jToken == null) {
+                return null;
+            }
+
             return (Number) new NumberJsonConverter().ReadJson(jToken, typeof(Number));
+        }
+
+        private Location GetLocation(JToken jToken) {
+            if (jToken == null) {
+                return null;
+            }
+
+            Location location = new Location();
+            JsonSerializer.Create(new JsonSerializerSettings {
+                NullValueHandling = NullValueHandling.Ignore,
+                Converters = new List<JsonConverter> {new NumberJsonConverter(), new DecimalJsonConverter()}
+            }).Populate(jToken.CreateReader(), location);
+            return location;
         }
 
         private List<int> GetTimeList(JObject obj, string timeType) {
