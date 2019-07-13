@@ -2,17 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
 using HumanStoryteller.CheckConditions;
 using HumanStoryteller.Model;
 using HumanStoryteller.Util;
-using HumanStoryteller.Web;
 using RestSharp;
 using RimWorld;
-using RuntimeAudioClipLoader;
 using UnityEngine;
 using Verse;
 using Verse.Sound;
+using Manager = HumanStoryteller.Util.Manager;
 
 namespace HumanStoryteller.Incidents {
     class HumanIncidentWorker_PlayAudio : HumanIncidentWorker {
@@ -71,7 +69,7 @@ namespace HumanStoryteller.Incidents {
 
         private void downloadFile(string url, IncidentResult_Audio ir, HumanIncidentParams_PlayAudio allParams, string message,
             bool soundCloud = false, string cloudId = "") {
-            Tell.Log("Downloading audio from:" + url + (soundCloud ? " (cloudID: " + cloudId + ")": ""));
+            Tell.Log("Downloading audio from: " + url + (soundCloud ? " (cloudID: " + cloudId + ")": ""));
             RestClient client = new RestClient(url);
             client.ExecuteAsync(new RestRequest(), response => {
                 try {

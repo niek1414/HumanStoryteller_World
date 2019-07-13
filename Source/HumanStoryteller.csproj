@@ -372,6 +372,7 @@
     <Compile Include="Model\StoryEvent.cs" />
     <Compile Include="Model\StoryNode.cs" />
     <Compile Include="Model\StorySummary.cs" />
+    <Compile Include="Util\CustomSoundLoader.cs" />
     <Compile Include="Util\Location.cs" />
     <Compile Include="Util\WidgetsExtented.cs" />
     <Compile Include="Views\MainTabWindow_CreaterTools.cs" />
