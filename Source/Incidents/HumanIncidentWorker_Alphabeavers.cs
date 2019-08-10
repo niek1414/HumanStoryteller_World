@@ -59,7 +59,7 @@ namespace HumanStoryteller.Incidents {
         public HumanIncidentParams_Alphabeavers() {
         }
 
-        public HumanIncidentParams_Alphabeavers(string target, HumanLetter letter) : base(target, letter) {
+        public HumanIncidentParams_Alphabeavers(Target target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

@@ -1,8 +1,6 @@
 using System;
-using System.Linq;
 using HumanStoryteller.Model;
 using HumanStoryteller.Util;
-using UnityEngine.Assertions.Must;
 using Verse;
 
 namespace HumanStoryteller.Incidents {
@@ -73,7 +71,7 @@ namespace HumanStoryteller.Incidents {
         public HumanIncidentParams_DestroyPosition() {
         }
 
-        public HumanIncidentParams_DestroyPosition(string target, HumanLetter letter) : base(target, letter) {
+        public HumanIncidentParams_DestroyPosition(Target target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

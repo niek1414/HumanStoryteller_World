@@ -44,7 +44,7 @@ namespace HumanStoryteller.Incidents {
         public HumanIncidentParams_TempFlux() {
         }
 
-        public HumanIncidentParams_TempFlux(string target, HumanLetter letter) : base(target, letter) {
+        public HumanIncidentParams_TempFlux(Target target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

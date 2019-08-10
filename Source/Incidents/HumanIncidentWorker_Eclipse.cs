@@ -4,7 +4,6 @@ using HumanStoryteller.Util;
 using RimWorld;
 using UnityEngine;
 using Verse;
-using Random = System.Random;
 
 namespace HumanStoryteller.Incidents {
     class HumanIncidentWorker_Eclipse : HumanIncidentWorker {
@@ -42,7 +41,7 @@ namespace HumanStoryteller.Incidents {
         public HumanIncidentParams_Eclipse() {
         }
 
-        public HumanIncidentParams_Eclipse(string target, HumanLetter letter) : base(target, letter) {
+        public HumanIncidentParams_Eclipse(Target target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

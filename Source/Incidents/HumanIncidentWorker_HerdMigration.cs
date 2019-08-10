@@ -8,7 +8,6 @@ using UnityEngine;
 using Verse;
 using Verse.AI;
 using Verse.AI.Group;
-using Verse.Sound;
 
 namespace HumanStoryteller.Incidents {
     class HumanIncidentWorker_HerdMigration : HumanIncidentWorker {
@@ -119,7 +118,7 @@ namespace HumanStoryteller.Incidents {
         public HumanIncidentParams_HerdMigration() {
         }
 
-        public HumanIncidentParams_HerdMigration(string target, HumanLetter letter) : base(target, letter) {
+        public HumanIncidentParams_HerdMigration(Target target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

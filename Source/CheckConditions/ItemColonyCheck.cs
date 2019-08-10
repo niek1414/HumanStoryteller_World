@@ -21,7 +21,7 @@ namespace HumanStoryteller.CheckConditions {
         }
 
         public override bool Check(IncidentResult result, int checkPosition) {
-            int count = result.GetTarget().resourceCounter.GetCount(_item);
+            int count = result.Target.GetMapFromTarget().resourceCounter.GetCount(_item);
             return DataBank.CompareValueWithConst(count, _compareType, _constant.GetValue());
         }
 

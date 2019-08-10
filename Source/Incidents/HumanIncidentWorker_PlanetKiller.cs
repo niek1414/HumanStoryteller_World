@@ -5,7 +5,6 @@ using HumanStoryteller.Util;
 using RimWorld;
 using UnityEngine;
 using Verse;
-using Random = System.Random;
 
 namespace HumanStoryteller.Incidents {
     class HumanIncidentWorker_Planetkiller : HumanIncidentWorker {
@@ -45,7 +44,7 @@ namespace HumanStoryteller.Incidents {
         public HumanIncidentParams_Planetkiller() {
         }
 
-        public HumanIncidentParams_Planetkiller(string target, HumanLetter letter) : base(target, letter) {
+        public HumanIncidentParams_Planetkiller(Target target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

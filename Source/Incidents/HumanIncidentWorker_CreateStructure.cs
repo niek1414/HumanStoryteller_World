@@ -40,7 +40,7 @@ namespace HumanStoryteller.Incidents {
         public HumanIncidentParams_CreateStructure() {
         }
 
-        public HumanIncidentParams_CreateStructure(string target, HumanLetter letter) : base(target, letter) {
+        public HumanIncidentParams_CreateStructure(Target target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

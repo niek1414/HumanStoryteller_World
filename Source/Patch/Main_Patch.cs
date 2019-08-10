@@ -23,6 +23,9 @@ namespace HumanStoryteller.Patch {
         }
 
         public static void OnGUI() {
+            if (HumanStoryteller.HumanStorytellerGame && HumanStoryteller.StoryComponent.Initialised) {
+                HumanStoryteller.StoryComponent?.StoryOverlay?.DrawOverlay();
+            }
             if (!HumanStoryteller.CreatorTools) return;
             if (UI.MouseCell().InBounds(Find.CurrentMap)) {
                 Widgets.Label(new Rect(5, 5, 400, 30),

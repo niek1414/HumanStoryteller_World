@@ -1,17 +1,16 @@
-using System;
-using HumanStoryteller.Util;
+using HumanStoryteller.Incidents;
 using RimWorld;
 using Verse;
 
 namespace HumanStoryteller.Model {
     public class HumanIncidentParms : IExposable {
-        public String Target;
+        public Target Target;
         public HumanLetter Letter;
 
         public HumanIncidentParms() {
         }
 
-        public HumanIncidentParms(String target, HumanLetter letter) {
+        public HumanIncidentParms(Target target, HumanLetter letter) {
             Target = target;
             Letter = letter;
         }
@@ -21,11 +20,11 @@ namespace HumanStoryteller.Model {
         }
 
         public IIncidentTarget GetTarget() {
-            return MapUtil.GetTarget(Target);
+            return Target.GetMapFromTarget();
         }
-        
+
         public virtual void ExposeData() {
-            Scribe_Values.Look(ref Target, "target");
+            Scribe_Deep.Look(ref Target, "target");
             Scribe_Deep.Look(ref Letter, "letter");
         }
     }

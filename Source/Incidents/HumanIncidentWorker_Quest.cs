@@ -298,7 +298,7 @@ namespace HumanStoryteller.Incidents {
         public HumanIncidentParams_Quest() {
         }
 
-        public HumanIncidentParams_Quest(string target, HumanLetter letter) : base(target, letter) {
+        public HumanIncidentParams_Quest(Target target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

@@ -58,7 +58,7 @@ namespace HumanStoryteller.Incidents {
         public HumanIncidentParams_Infestation() {
         }
 
-        public HumanIncidentParams_Infestation(string target, HumanLetter letter) : base(target, letter) {
+        public HumanIncidentParams_Infestation(Target target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

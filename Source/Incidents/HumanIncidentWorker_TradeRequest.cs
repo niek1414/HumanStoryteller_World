@@ -265,7 +265,7 @@ namespace HumanStoryteller.Incidents {
         public HumanIncidentParams_TradeRequest() {
         }
 
-        public HumanIncidentParams_TradeRequest(string target, HumanLetter letter) : base(target, letter) {
+        public HumanIncidentParams_TradeRequest(Target target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

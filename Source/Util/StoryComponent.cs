@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using HumanStoryteller.Model;
+using HumanStoryteller.Util.Overlay;
 using RimWorld.Planet;
 using Verse;
 
@@ -16,6 +17,8 @@ namespace HumanStoryteller.Util {
         public Dictionary<string, MapParent> MapBank = new Dictionary<string, MapParent>();
         public StorytellerComp_HumanThreatCycle ThreatCycle;
         public StoryQueue StoryQueue = new StoryQueue();
+        public StoryStatus StoryStatus = new StoryStatus();
+        public StoryOverlay StoryOverlay = new StoryOverlay();
 
         private Map _firstMapOfPlayer;
 
@@ -23,7 +26,7 @@ namespace HumanStoryteller.Util {
             get => _firstMapOfPlayer ?? Find.Maps.FindAll(x => x.ParentFaction.IsPlayer).RandomElement();
             set => _firstMapOfPlayer = value;
         }
-        
+
         private Map _lastColonizedMap;
 
         public Map LastColonizedMap {
@@ -61,12 +64,63 @@ namespace HumanStoryteller.Util {
             _sameAsLastEvent = null;
             _lastColonizedMap = null;
             StoryQueue = new StoryQueue();
+            StoryOverlay = new StoryOverlay();
+            StoryStatus = new StoryStatus();
         }
-        
+
+        public override void GameComponentUpdate() {
+            if (Story == null || !Initialised) {
+                return;
+            }
+
+            FollowThing();
+            ChangeWorldView();
+        }
+
+        private void ChangeWorldView() {
+            if (!StoryStatus.DisableCameraControls) {
+                return;
+            }
+
+            Find.World.renderer.wantedMode = StoryStatus.ShowWorld ? WorldRenderMode.Planet : WorldRenderMode.None;
+        }
+
+        private void FollowThing() {
+            if (StoryStatus.FollowThing == GlobalTargetInfo.Invalid) return;
+            var target = CameraJumper.GetAdjustedTarget(StoryStatus.FollowThing);
+            if (!target.IsValid) {
+                Tell.Log("Invalid thing to follow, resetting...");
+                StoryStatus.FollowThing = GlobalTargetInfo.Invalid;
+                return;
+            }
+
+            if (target.HasThing) {
+                if (Current.ProgramState != ProgramState.Playing)
+                    return;
+                Map mapHeld = target.Thing.MapHeld;
+                if (mapHeld == null || !Find.Maps.Contains(mapHeld) || !target.Thing.DrawPos.InBounds(mapHeld))
+                    return;
+                if (Find.CurrentMap != mapHeld) {
+                    Current.Game.CurrentMap = mapHeld;
+                }
+
+                StoryStatus.JumpException = true;
+                Find.CameraDriver.JumpToCurrentMapLoc(target.Thing.DrawPos);
+                StoryStatus.JumpException = false;
+            } else {
+                StoryStatus.JumpException = true;
+                CameraJumper.TryJump(target);
+                StoryStatus.JumpException = false;
+
+            }
+        }
+
         public override void ExposeData() {
             base.ExposeData();
             Scribe_Values.Look(ref Initialised, "initialised");
             Scribe_Deep.Look(ref Story, "story");
+            Scribe_Deep.Look(ref StoryOverlay, "storyOverlay");
+            Scribe_Deep.Look(ref StoryStatus, "storyStatus");
             Scribe_Values.Look(ref StoryId, "storyId");
             Scribe_Collections.Look(ref CurrentNodes, "currentNode", LookMode.Deep);
             Scribe_Collections.Look(ref AllNodes, "allNodes", LookMode.Deep);

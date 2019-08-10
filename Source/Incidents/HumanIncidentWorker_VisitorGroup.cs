@@ -132,7 +132,7 @@ namespace HumanStoryteller.Incidents {
         public HumanIncidentParams_VisitorGroup() {
         }
 
-        public HumanIncidentParams_VisitorGroup(string target, HumanLetter letter) : base(target, letter) {
+        public HumanIncidentParams_VisitorGroup(Target target, HumanLetter letter) : base(target, letter) {
         }
 
         public override void ExposeData() {

@@ -223,7 +223,7 @@ namespace HumanStoryteller.Incidents {
         public HumanIncidentParams_RaidEnemy() {
         }
 
-        public HumanIncidentParams_RaidEnemy(string target, HumanLetter letter) : base(target, letter) {
+        public HumanIncidentParams_RaidEnemy(Target target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

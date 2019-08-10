@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using HumanStoryteller.Model;
 using HumanStoryteller.Util;
@@ -68,7 +67,7 @@ namespace HumanStoryteller.Incidents {
         public HumanIncidentParams_CropBlight() {
         }
 
-        public HumanIncidentParams_CropBlight(string target, HumanLetter letter) : base(target, letter) {
+        public HumanIncidentParams_CropBlight(Target target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

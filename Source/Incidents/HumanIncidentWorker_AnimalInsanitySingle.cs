@@ -64,7 +64,7 @@ namespace HumanStoryteller.Incidents {
         public HumanIncidentParams_AnimalInsanitySingle() {
         }
 
-        public HumanIncidentParams_AnimalInsanitySingle(string target, HumanLetter letter) : base(target, letter) {
+        public HumanIncidentParams_AnimalInsanitySingle(Target target, HumanLetter letter) : base(target, letter) {
         }
 
         public override void ExposeData() {

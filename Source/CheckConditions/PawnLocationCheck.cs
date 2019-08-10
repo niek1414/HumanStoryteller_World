@@ -24,7 +24,7 @@ namespace HumanStoryteller.CheckConditions {
 
         public override bool Check(IncidentResult result, int checkPosition) {
             Pawn p = PawnUtil.GetPawnByName(_pawnName);
-            var target = result.GetTarget();
+            var target = result.Target.GetMapFromTarget();
             if (p == null || p.Map != target) {
                 return false;
             }

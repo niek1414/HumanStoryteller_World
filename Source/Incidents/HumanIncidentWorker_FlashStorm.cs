@@ -4,7 +4,6 @@ using HumanStoryteller.Util;
 using RimWorld;
 using UnityEngine;
 using Verse;
-using Random = System.Random;
 
 namespace HumanStoryteller.Incidents {
     class HumanIncidentWorker_Flashstorm : HumanIncidentWorker {
@@ -47,7 +46,7 @@ namespace HumanStoryteller.Incidents {
         public HumanIncidentParams_Flashstorm() {
         }
 
-        public HumanIncidentParams_Flashstorm(string target, HumanLetter letter) : base(target, letter) {
+        public HumanIncidentParams_Flashstorm(Target target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

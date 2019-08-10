@@ -81,7 +81,7 @@ namespace HumanStoryteller.Incidents {
         public HumanIncidentParams_FarmAnimalsWanderIn() {
         }
 
-        public HumanIncidentParams_FarmAnimalsWanderIn(string target, HumanLetter letter) : base(target, letter) {
+        public HumanIncidentParams_FarmAnimalsWanderIn(Target target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

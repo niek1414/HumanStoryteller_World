@@ -10,8 +10,8 @@ using Verse;
 
 namespace HumanStoryteller {
     public class HumanStoryteller : Mod {
-        public static string VERSION = "0.3.0";
-        public static string VERSION_NAME = "`Clairvoyant`";
+        public static string VERSION = "0.4.0";
+        public static string VERSION_NAME = "`Theater`";
 
         private HumanStorytellerSettings _settings;
 
@@ -115,6 +115,7 @@ namespace HumanStoryteller {
             HarmonyInstance harmony = HarmonyInstance.Create("rimworld.keyboxsoftware.humanstoryteller");
 
             Patch.Main_Patch.Patch(harmony);
+            Patch.StoryStatus_Patch.Patch(harmony);
             Patch.StorytellerUI_Patch.Patch(harmony);
             Patch.CreateWorldUI_Patch.Patch(harmony);
             Patch.SelectStartingSiteUI_Patch.Patch(harmony);

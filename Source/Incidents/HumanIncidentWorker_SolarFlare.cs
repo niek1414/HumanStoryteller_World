@@ -4,7 +4,6 @@ using HumanStoryteller.Util;
 using RimWorld;
 using UnityEngine;
 using Verse;
-using Random = System.Random;
 
 namespace HumanStoryteller.Incidents {
     class HumanIncidentWorker_SolarFlare : HumanIncidentWorker {
@@ -42,7 +41,7 @@ namespace HumanStoryteller.Incidents {
         public HumanIncidentParams_SolarFlare() {
         }
 
-        public HumanIncidentParams_SolarFlare(string target, HumanLetter letter) : base(target, letter) {
+        public HumanIncidentParams_SolarFlare(Target target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

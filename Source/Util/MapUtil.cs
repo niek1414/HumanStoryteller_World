@@ -79,20 +79,5 @@ namespace HumanStoryteller.Util {
 
             return false;
         }
-        
-        public static Map GetTarget(string target) {
-            switch (target) {
-                case "FirstOfPlayer":
-                    return FirstOfPlayer();
-                case "RandomOfPlayer":
-                    return Find.Maps.FindAll(x => x.ParentFaction.IsPlayer).RandomElement();
-                case "SameAsLastEvent":
-                    return SameAsLastEvent();
-                case "LastColonized":
-                    return LastColonized();
-                default: // With name?
-                    return GetMapByName(target) ?? FirstOfPlayer();
-            }
-        }
     }
 }

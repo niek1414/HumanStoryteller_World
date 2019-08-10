@@ -4,7 +4,6 @@ using Harmony;
 using HumanStoryteller.Model;
 using HumanStoryteller.Util;
 using RimWorld;
-using UnityEngine;
 using Verse;
 
 namespace HumanStoryteller.Incidents {
@@ -118,7 +117,7 @@ namespace HumanStoryteller.Incidents {
         public HumanIncidentParams_Rules() {
         }
 
-        public HumanIncidentParams_Rules(string target, HumanLetter letter) : base(target, letter) {
+        public HumanIncidentParams_Rules(Target target, HumanLetter letter) : base(target, letter) {
         }
 
         public override void ExposeData() {

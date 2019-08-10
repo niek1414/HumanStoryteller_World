@@ -33,7 +33,6 @@ namespace HumanStoryteller.Incidents {
                         HealthUtility.TryAnesthetize(pawn);
                         break;
                     case "DamageTillDowned":
-                        Tell.Warn(pawn.Name.ToStringFull);
                         HealthUtility.DamageUntilDowned(pawn);
                         break;
                     case "Immobilize":
@@ -65,7 +64,7 @@ namespace HumanStoryteller.Incidents {
         public HumanIncidentParams_PawnHealth() {
         }
 
-        public HumanIncidentParams_PawnHealth(string target, HumanLetter letter) : base(target, letter) {
+        public HumanIncidentParams_PawnHealth(Target target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

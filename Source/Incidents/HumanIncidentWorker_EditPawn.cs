@@ -5,7 +5,6 @@ using HumanStoryteller.Util;
 using RimWorld;
 using UnityEngine;
 using Verse;
-using Verse.AI.Group;
 
 namespace HumanStoryteller.Incidents {
     class HumanIncidentWorker_EditPawn : HumanIncidentWorker {
@@ -31,6 +30,12 @@ namespace HumanStoryteller.Incidents {
                     continue;
                 }
 
+                if (pawn.Spawned && allParams.Despawn) {
+                    pawn.DeSpawn();
+                } else if (!pawn.Spawned && !allParams.Despawn) {
+                    pawn.SpawnSetup(map, false);
+                }
+
                 PawnUtil.SetDisplayName(pawn, allParams.FirstName, allParams.NickName, allParams.LastName);
 
                 if (allParams.Strip) {
@@ -40,6 +45,8 @@ namespace HumanStoryteller.Incidents {
                 if (allParams.ClearMind) {
                     pawn.ClearMind();
                 }
+
+                pawn.drafter.Drafted = allParams.SetDrafted;
 
                 if (allParams.Faction != "") {
                     pawn.SetFaction(FactionUtility.DefaultFactionFrom(FactionDef.Named(allParams.Faction)));
@@ -67,16 +74,14 @@ namespace HumanStoryteller.Incidents {
 
                     pawn.story?.traits?.GainTrait(new Trait(traitDef, data?.degree ?? 0));
                 });
-
+                //TODO gear
+                //TODO finish item object that is already created in the storycreator
+                pawn.
 
                 var cell = allParams.Location.GetSingleCell(map, false);
                 if (cell.IsValid) {
                     pawn.Position = cell;
                     pawn.Notify_Teleported(true, false);
-                }
-
-                if (allParams.SetDrafted) {
-                    pawn.drafter.Drafted = true;
                 }
 
                 if (allParams.Banish) {
@@ -191,6 +196,7 @@ namespace HumanStoryteller.Incidents {
         public string FirstName = "";
         public string NickName = "";
         public string LastName = "";
+        public bool Despawn;
         public bool Strip;
         public bool ClearMind;
         public bool Banish;
@@ -202,12 +208,11 @@ namespace HumanStoryteller.Incidents {
         public HumanIncidentParams_EditPawn() {
         }
 
-        public HumanIncidentParams_EditPawn(string target, HumanLetter letter) : base(target, letter) {
+        public HumanIncidentParams_EditPawn(Target target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {
-            return
-                $"{base.ToString()}, SkillAnimals: {SkillAnimals}, SkillArtistic: {SkillArtistic}, SkillConstruction: {SkillConstruction}, SkillCooking: {SkillCooking}, SkillCrafting: {SkillCrafting}, SkillPlants: {SkillPlants}, SkillMedicine: {SkillMedicine}, SkillMelee: {SkillMelee}, SkillMining: {SkillMining}, SkillIntellectual: {SkillIntellectual}, SkillShooting: {SkillShooting}, SkillSocial: {SkillSocial}, AgeBioYear: {AgeBioYear}, SkillAdd: {SkillAdd}, Traids: {Traits}, Names: {Names}, FirstName: {FirstName}, NickName: {NickName}, LastName: {LastName}, Strip: {Strip}, ClearMind: {ClearMind}, Banish: {Banish}, SetDrafted: {SetDrafted}, Faction: {Faction}, Location: {Location}";
+            return $"{base.ToString()}, SkillAnimals: {SkillAnimals}, SkillArtistic: {SkillArtistic}, SkillConstruction: {SkillConstruction}, SkillCooking: {SkillCooking}, SkillCrafting: {SkillCrafting}, SkillPlants: {SkillPlants}, SkillMedicine: {SkillMedicine}, SkillMelee: {SkillMelee}, SkillMining: {SkillMining}, SkillIntellectual: {SkillIntellectual}, SkillShooting: {SkillShooting}, SkillSocial: {SkillSocial}, AgeBioYear: {AgeBioYear}, SkillAdd: {SkillAdd}, Traits: {Traits}, Names: {Names}, FirstName: {FirstName}, NickName: {NickName}, LastName: {LastName}, Despawn: {Despawn}, Strip: {Strip}, ClearMind: {ClearMind}, Banish: {Banish}, SetDrafted: {SetDrafted}, Faction: {Faction}, Location: {Location}";
         }
 
         public override void ExposeData() {
@@ -216,6 +221,7 @@ namespace HumanStoryteller.Incidents {
             Scribe_Values.Look(ref FirstName, "firstName");
             Scribe_Values.Look(ref NickName, "nickName");
             Scribe_Values.Look(ref LastName, "lastName");
+            Scribe_Values.Look(ref Despawn, "despawn");
             Scribe_Values.Look(ref Strip, "strip");
             Scribe_Values.Look(ref ClearMind, "clearMind");
             Scribe_Values.Look(ref Banish, "banish");

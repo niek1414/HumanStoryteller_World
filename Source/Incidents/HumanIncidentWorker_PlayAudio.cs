@@ -7,12 +7,12 @@ using HumanStoryteller.Model;
 using HumanStoryteller.Util;
 using RestSharp;
 using RimWorld;
+using RuntimeAudioClipLoader;
 using UnityEngine;
 using Verse;
 using Verse.Sound;
-using Manager = HumanStoryteller.Util.Manager;
 
-namespace HumanStoryteller.Incidents {
+namespace HumanStoryteller.Incidents {//TODO fix on mac (try use mod loader)
     class HumanIncidentWorker_PlayAudio : HumanIncidentWorker {
         public const String Name = "PlayAudio";
 
@@ -196,7 +196,7 @@ namespace HumanStoryteller.Incidents {
         public HumanIncidentParams_PlayAudio() {
         }
 
-        public HumanIncidentParams_PlayAudio(string target, HumanLetter letter) : base(target, letter) {
+        public HumanIncidentParams_PlayAudio(Target target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

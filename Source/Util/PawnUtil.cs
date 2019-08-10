@@ -39,10 +39,12 @@ namespace HumanStoryteller.Util {
 
             foreach (var pair in pawnBank) {
                 if (pair.Key.ToUpper().Equals(name.ToUpper())) {
+                    Tell.Log("Found pawn with name I: " + name + " S: " + pair.Value.Name.ToStringShort);
                     return pair.Value;
                 }
             }
 
+            Tell.Log("No pawn found for name I: " + name);
             return null;
         }
 
@@ -50,11 +52,13 @@ namespace HumanStoryteller.Util {
             if (HumanStoryteller.StoryComponent.PawnBank.ContainsKey(name)) {
                 RemoveName(name);
             }
-
+            
+            Tell.Log("Saved pawn S: " + pawn.Name.ToStringShort + " as I: " + name);
             HumanStoryteller.StoryComponent.PawnBank.Add(name, pawn);
         }
 
         public static void RemoveName(string name) {
+            Tell.Log("Removed pawn with name I: " + name);
             HumanStoryteller.StoryComponent.PawnBank.Remove(name);
         }
 

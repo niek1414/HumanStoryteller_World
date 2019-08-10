@@ -77,7 +77,7 @@ namespace HumanStoryteller.Incidents {
         public HumanIncidentParams_ResourcePodCrash() {
         }
 
-        public HumanIncidentParams_ResourcePodCrash(string target, HumanLetter letter) : base(target, letter) {
+        public HumanIncidentParams_ResourcePodCrash(Target target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

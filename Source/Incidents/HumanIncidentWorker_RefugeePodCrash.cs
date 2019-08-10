@@ -1,12 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using HumanStoryteller.CheckConditions;
 using HumanStoryteller.Model;
 using HumanStoryteller.Util;
 using RimWorld;
-using RimWorld.Planet;
-using UnityEngine;
 using Verse;
 
 namespace HumanStoryteller.Incidents {
@@ -80,7 +76,7 @@ namespace HumanStoryteller.Incidents {
         public HumanIncidentParams_RefugeePodCrash() {
         }
 
-        public HumanIncidentParams_RefugeePodCrash(string target, HumanLetter letter) : base(target, letter) {
+        public HumanIncidentParams_RefugeePodCrash(Target target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

@@ -1,14 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using HumanStoryteller.Model;
 using HumanStoryteller.Util;
 using RimWorld;
-using UnityEngine;
 using Verse;
-using Verse.AI;
-using Verse.AI.Group;
-using Verse.Sound;
 
 namespace HumanStoryteller.Incidents {
     class HumanIncidentWorker_ManhunterPack : HumanIncidentWorker {
@@ -75,7 +70,7 @@ namespace HumanStoryteller.Incidents {
         public HumanIncidentParams_ManhunterPack() {
         }
 
-        public HumanIncidentParams_ManhunterPack(string target, HumanLetter letter) : base(target, letter) {
+        public HumanIncidentParams_ManhunterPack(Target target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

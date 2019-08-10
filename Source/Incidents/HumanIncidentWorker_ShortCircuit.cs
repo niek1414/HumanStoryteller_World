@@ -113,7 +113,7 @@ namespace HumanStoryteller.Incidents {
         public HumanIncidentParams_ShortCircuit() {
         }
 
-        public HumanIncidentParams_ShortCircuit(String target, HumanLetter letter) : base(target, letter) {
+        public HumanIncidentParams_ShortCircuit(Target target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

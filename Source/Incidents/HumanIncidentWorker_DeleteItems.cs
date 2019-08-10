@@ -1,9 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using HumanStoryteller.Model;
 using HumanStoryteller.Util;
-using RimWorld;
 using UnityEngine;
 using Verse;
 
@@ -62,7 +59,7 @@ namespace HumanStoryteller.Incidents {
         public HumanIncidentParams_DeleteItems() {
         }
 
-        public HumanIncidentParams_DeleteItems(string target, HumanLetter letter) : base(target, letter) {
+        public HumanIncidentParams_DeleteItems(Target target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

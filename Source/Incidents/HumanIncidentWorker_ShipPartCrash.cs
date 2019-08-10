@@ -73,7 +73,7 @@ namespace HumanStoryteller.Incidents {
         public HumanIncidentParams_ShipPartCrash() {
         }
 
-        public HumanIncidentParams_ShipPartCrash(string target, HumanLetter letter) : base(target, letter) {
+        public HumanIncidentParams_ShipPartCrash(Target target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

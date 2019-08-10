@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using HumanStoryteller.Incidents;
 using HumanStoryteller.Util;
-using RimWorld;
 using Verse;
 
 namespace HumanStoryteller.CheckConditions {
@@ -18,7 +17,7 @@ namespace HumanStoryteller.CheckConditions {
         }
 
         public override bool Check(IncidentResult result, int checkPosition) {
-            return _biomes.Contains(result.GetTarget().Biome.defName);
+            return _biomes.Contains(result.Target.GetMapFromTarget().Biome.defName);
         }
 
         public override string ToString() {

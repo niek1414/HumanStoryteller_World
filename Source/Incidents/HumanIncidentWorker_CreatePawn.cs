@@ -5,6 +5,7 @@ using HumanStoryteller.Model;
 using HumanStoryteller.Util;
 using RimWorld;
 using Verse;
+using Verse.AI.Group;
 
 namespace HumanStoryteller.Incidents {
     class HumanIncidentWorker_CreatePawn : HumanIncidentWorker {
@@ -102,16 +103,32 @@ namespace HumanStoryteller.Incidents {
                     pawn.equipment.AddEquipment(weapon);
                 }
             }
-
-            GenSpawn.Spawn(pawn, cell, map);
-            if (pawn.Faction == Faction.OfPlayer)
-                return ir;
-            IncidentParms fakeParms = new IncidentParms();
-            fakeParms.faction = faction;
-            fakeParms.target = map;
-            fakeParms.pawnGroups = new Dictionary<Pawn, int> {{pawn, 0}};
-            fakeParms.raidStrategy = RaidStrategyDefOf.ImmediateAttack;
-            RaidStrategyDefOf.ImmediateAttack.Worker.MakeLords(fakeParms, new List<Pawn> {pawn});
+            //TODO test
+            if (!allParams.NoSpawn) {
+                GenSpawn.Spawn(pawn, cell, map);
+                if (pawn.Faction != Faction.OfPlayer) {
+                    switch (pawn.Faction.PlayerRelationKind) {
+                        case FactionRelationKind.Hostile:
+                            IncidentParms fakeParmsAttack = new IncidentParms();
+                            fakeParmsAttack.faction = faction;
+                            fakeParmsAttack.target = map;
+                            fakeParmsAttack.pawnGroups = new Dictionary<Pawn, int> {{pawn, 0}};
+                            fakeParmsAttack.raidStrategy = RaidStrategyDefOf.ImmediateAttack;
+                            RaidStrategyDefOf.ImmediateAttack.Worker.MakeLords(fakeParmsAttack, new List<Pawn> {pawn});
+                            break;
+                        case FactionRelationKind.Neutral:
+                            RCellFinder.TryFindRandomSpotJustOutsideColony(pawn, out IntVec3 result3);
+                            LordMaker.MakeNewLord(pawn.Faction,  new LordJob_Travel(result3), map, new []{pawn});
+                            break;
+                        case FactionRelationKind.Ally:
+                            RCellFinder.TryFindRandomSpotJustOutsideColony(pawn, out IntVec3 result4);
+                            LordMaker.MakeNewLord(pawn.Faction,  new LordJob_DefendBase(pawn.Faction, result4), map, new []{pawn});
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+                }
+            }
 
             SendLetter(parms);
             return ir;
@@ -131,6 +148,7 @@ namespace HumanStoryteller.Incidents {
         public string OutName = "";
         public string Faction = "";
         public bool NewBorn;
+        public bool NoSpawn;
         public bool MustBeCapableOfViolence;
         public string Gender = "";
         public string Weapon = "";
@@ -140,11 +158,11 @@ namespace HumanStoryteller.Incidents {
         public HumanIncidentParams_CreatePawn() {
         }
 
-        public HumanIncidentParams_CreatePawn(string target, HumanLetter letter) : base(target, letter) {
+        public HumanIncidentParams_CreatePawn(Target target, HumanLetter letter) : base(target, letter) {
         }
-
+        
         public override string ToString() {
-            return $"{base.ToString()}, BiologicalAge: {BiologicalAge}, ChronologicalAge: {ChronologicalAge}, ApparelMoney: {ApparelMoney}, GearHealthMin: {GearHealthMin}, GearHealthMax: {GearHealthMax}, PawnKind: {PawnKind}, FirstName: {FirstName}, NickName: {NickName}, LastName: {LastName}, OutName: {OutName}, Faction: {Faction}, NewBorn: {NewBorn}, MustBeCapableOfViolence: {MustBeCapableOfViolence}, Gender: {Gender}, Weapon: {Weapon}, ItemQuality: {ItemQuality}, Stuff: {Stuff}";
+            return $"{base.ToString()}, BiologicalAge: {BiologicalAge}, ChronologicalAge: {ChronologicalAge}, ApparelMoney: {ApparelMoney}, GearHealthMin: {GearHealthMin}, GearHealthMax: {GearHealthMax}, PawnKind: {PawnKind}, FirstName: {FirstName}, NickName: {NickName}, LastName: {LastName}, OutName: {OutName}, Faction: {Faction}, NewBorn: {NewBorn}, NoSpawn: {NoSpawn}, MustBeCapableOfViolence: {MustBeCapableOfViolence}, Gender: {Gender}, Weapon: {Weapon}, ItemQuality: {ItemQuality}, Stuff: {Stuff}";
         }
 
         public override void ExposeData() {
@@ -161,6 +179,7 @@ namespace HumanStoryteller.Incidents {
             Scribe_Values.Look(ref OutName, "name");
             Scribe_Values.Look(ref Faction, "faction");
             Scribe_Values.Look(ref NewBorn, "newBorn");
+            Scribe_Values.Look(ref NoSpawn, "noSpawn");
             Scribe_Values.Look(ref MustBeCapableOfViolence, "mustBeCapableOfViolence");
             Scribe_Values.Look(ref Gender, "gender");
             Scribe_Values.Look(ref Weapon, "weapon");

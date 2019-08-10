@@ -70,7 +70,7 @@ namespace HumanStoryteller.Incidents {
             Site = new Number();
         }
 
-        public HumanIncidentParams_CreateSettlement(string target, HumanLetter letter) : base(target, letter) {
+        public HumanIncidentParams_CreateSettlement(Target target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

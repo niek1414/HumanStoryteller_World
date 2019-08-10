@@ -109,7 +109,7 @@ namespace HumanStoryteller.Incidents {
         public HumanIncidentParams_AmbrosiaSprout() {
         }
 
-        public HumanIncidentParams_AmbrosiaSprout(string target, HumanLetter letter) : base(target, letter) {
+        public HumanIncidentParams_AmbrosiaSprout(Target target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

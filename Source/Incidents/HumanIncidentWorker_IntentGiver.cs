@@ -431,7 +431,7 @@ namespace HumanStoryteller.Incidents {
         public HumanIncidentParams_IntentGiver() {
         }
 
-        public HumanIncidentParams_IntentGiver(string target, HumanLetter letter) : base(target, letter) {
+        public HumanIncidentParams_IntentGiver(Target target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

@@ -10,7 +10,7 @@ namespace HumanStoryteller.Parser.Converter {
         public override bool CanWrite => false;
         public override bool CanRead => true;
 
-        private String defaultIncidentTarget = "FirstOfPlayer";
+        private Target defaultIncidentTarget = new Target();
         private HumanLetter defaultLetter = null;
 
         public override bool CanConvert(Type objectType) {
@@ -254,6 +254,26 @@ namespace HumanStoryteller.Parser.Converter {
                 case HumanIncidentWorker_DestroyPosition.Name:
                     incident = new FiringHumanIncident(new HumanIncidentWorker_DestroyPosition(),
                         new HumanIncidentParams_DestroyPosition(defaultIncidentTarget, defaultLetter));
+                    break;
+                case HumanIncidentWorker_ChapterSplash.Name:
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_ChapterSplash(),
+                        new HumanIncidentParams_ChapterSplash(defaultIncidentTarget, defaultLetter));
+                    break;
+                case HumanIncidentWorker_RadioMessage.Name:
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_RadioMessage(),
+                        new HumanIncidentParams_RadioMessage(defaultIncidentTarget, defaultLetter));
+                    break;
+                case HumanIncidentWorker_SpeedControl.Name:
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_SpeedControl(),
+                        new HumanIncidentParams_SpeedControl(defaultIncidentTarget, defaultLetter));
+                    break;
+                case HumanIncidentWorker_ControlCamera.Name:
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_ControlCamera(),
+                        new HumanIncidentParams_ControlCamera(defaultIncidentTarget, defaultLetter));
+                    break;
+                case HumanIncidentWorker_MovieMode.Name:
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_MovieMode(),
+                        new HumanIncidentParams_MovieMode(defaultIncidentTarget, defaultLetter));
                     break;
                 default:
                     Parser.LogParseError("incident", type);

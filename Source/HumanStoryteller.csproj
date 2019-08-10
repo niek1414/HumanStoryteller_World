@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -44,9 +44,6 @@
       <HintPath>..\..\..\RimWorldWin64_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="NAudio, Version=1.7.3.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\..\..\RimWorldWin64_Data\Managed\NAudio.dll</HintPath>
-    </Reference>
     <Reference Include="RestSharp Version=105.2.4.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\Assemblies\RestSharp.dll</HintPath>
     </Reference>
@@ -60,10 +57,6 @@
       <HintPath>..\..\..\RimWorldWin64_Data\Managed\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <None Include="..\About\About-Debug.xml" />
-    <None Include="..\About\About-Release.xml">
-      <SubType>Designer</SubType>
-    </None>
     <None Include="..\Languages\**" />
     <None Include="..\Patches\**" />
   </ItemGroup>
@@ -102,6 +95,8 @@
     <Compile Include="Incidents\HumanIncidentWorker_AnimalInsanityMass.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_AnimalInsanitySingle.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_Aurora.cs" />
+    <Compile Include="Incidents\HumanIncidentWorker_ChapterSplash.cs" />
+    <Compile Include="Incidents\HumanIncidentWorker_ControlCamera.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_CreatePawn.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_CreateSettlement.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_CreateStructure.cs" />
@@ -121,12 +116,14 @@
     <Compile Include="Incidents\HumanIncidentWorker_ManhunterPack.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_MentalBreak.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_MeteoriteImpact.cs" />
+    <Compile Include="Incidents\HumanIncidentWorker_MovieMode.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_OrbitalStrike.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_PawnHealth.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_PlanetKiller.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_PlayAudio.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_PsychicDrone.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_Quest.cs" />
+    <Compile Include="Incidents\HumanIncidentWorker_RadioMessage.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_RefugeeChased.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_RefugeePodCrash.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_RenamePawn.cs" />
@@ -139,6 +136,7 @@
     <Compile Include="Incidents\HumanIncidentWorker_ShipPartCrash.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_ShortCircuit.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_SolarFlare.cs" />
+    <Compile Include="Incidents\HumanIncidentWorker_SpeedControl.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_TempFlux.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_Dialog.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_Difficulty.cs" />
@@ -358,9 +356,11 @@
     <Compile Include="Patch\Main_Patch.cs" />
     <Compile Include="Patch\Map_Patch.cs" />
     <Compile Include="Patch\SelectStartingSiteUI_Patch.cs" />
+    <Compile Include="Patch\StoryStatus_Patch.cs" />
     <Compile Include="Patch\StorytellerUI_Patch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StoryQueue.cs" />
+    <Compile Include="StoryStatus.cs" />
     <Compile Include="StorytellerCompProperties_HumanThreatCycle.cs" />
     <Compile Include="StorytellerComp_HumanThreatCycle.cs" />
     <Compile Include="StoryGraph.cs" />
@@ -372,8 +372,13 @@
     <Compile Include="Model\StoryEvent.cs" />
     <Compile Include="Model\StoryNode.cs" />
     <Compile Include="Model\StorySummary.cs" />
-    <Compile Include="Util\CustomSoundLoader.cs" />
     <Compile Include="Util\Location.cs" />
+    <Compile Include="Util\Overlay\BlackBars.cs" />
+    <Compile Include="Util\Overlay\ChapterBar.cs" />
+    <Compile Include="Util\Overlay\IRadioItem.cs" />
+    <Compile Include="Util\Overlay\OverlayItem.cs" />
+    <Compile Include="Util\Overlay\RadioMessage.cs" />
+    <Compile Include="Util\Overlay\StoryOverlay.cs" />
     <Compile Include="Util\WidgetsExtented.cs" />
     <Compile Include="Views\MainTabWindow_CreaterTools.cs" />
     <Compile Include="Views\MainTabWindow_RateTab.cs" />
@@ -399,7 +404,18 @@
     <Compile Include="Web\Storybook.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\About\Preview.png" />
+    <Content Include="..\About\About-Debug.xml">
+      <Link>About\About-Debug.xml</Link>
+    </Content>
+    <Content Include="..\About\About-Release.xml">
+      <Link>About\About-Release.xml</Link>
+    </Content>
+    <Content Include="..\About\About.xml">
+      <Link>About\About.xml</Link>
+    </Content>
+    <Content Include="..\About\Preview.png">
+      <Link>About\Preview.png</Link>
+    </Content>
     <Content Include="..\Defs\DutyDefs\Custom_Intents.xml" />
     <Content Include="..\Defs\GameConditionDefs\GameConditions_Misc.xml" />
     <Content Include="..\Defs\Misc\MainButtonDefs\MainButtons.xml" />

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using HumanStoryteller.Model;
 using HumanStoryteller.Util;
 using RimWorld;
@@ -47,7 +46,7 @@ namespace HumanStoryteller.Incidents {
         public HumanIncidentParams_KillPawn() {
         }
 
-        public HumanIncidentParams_KillPawn(string target, HumanLetter letter) : base(target, letter) {
+        public HumanIncidentParams_KillPawn(Target target, HumanLetter letter) : base(target, letter) {
         }
 
         public override void ExposeData() {

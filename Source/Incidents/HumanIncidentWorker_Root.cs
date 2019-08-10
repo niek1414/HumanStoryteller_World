@@ -1,8 +1,6 @@
 using System;
 using HumanStoryteller.Model;
 using HumanStoryteller.Util;
-using RimWorld;
-using UnityEngine;
 using Verse;
 
 namespace HumanStoryteller.Incidents {
@@ -31,7 +29,7 @@ namespace HumanStoryteller.Incidents {
         public HumanIncidentParams_Root() {
         }
 
-        public HumanIncidentParams_Root(string target, HumanLetter letter) : base(target, letter) {
+        public HumanIncidentParams_Root(Target target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

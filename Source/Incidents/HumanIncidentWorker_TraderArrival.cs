@@ -6,7 +6,6 @@ using HumanStoryteller.Util;
 using RimWorld;
 using Verse;
 using Verse.AI.Group;
-using Verse.Sound;
 
 namespace HumanStoryteller.Incidents {
     class HumanIncidentWorker_TraderArrival : HumanIncidentWorker {
@@ -158,7 +157,7 @@ namespace HumanStoryteller.Incidents {
         public HumanIncidentParams_TraderArrival() {
         }
 
-        public HumanIncidentParams_TraderArrival(string target, HumanLetter letter) : base(target, letter) {
+        public HumanIncidentParams_TraderArrival(Target target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

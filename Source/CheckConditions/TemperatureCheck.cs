@@ -19,7 +19,7 @@ namespace HumanStoryteller.CheckConditions {
         }
 
         public override bool Check(IncidentResult result, int checkPosition) {
-            return DataBank.CompareValueWithConst(result.GetTarget().mapTemperature.OutdoorTemp, _compareType, _constant.GetValue());
+            return DataBank.CompareValueWithConst(result.Target.GetMapFromTarget().mapTemperature.OutdoorTemp, _compareType, _constant.GetValue());
         }
 
         public override string ToString() {

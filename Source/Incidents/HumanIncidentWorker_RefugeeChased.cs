@@ -5,7 +5,6 @@ using HumanStoryteller.CheckConditions;
 using HumanStoryteller.Model;
 using HumanStoryteller.Util;
 using RimWorld;
-using RimWorld.Planet;
 using UnityEngine;
 using Verse;
 
@@ -128,7 +127,7 @@ namespace HumanStoryteller.Incidents {
         public HumanIncidentParams_RefugeeChased() {
         }
 
-        public HumanIncidentParams_RefugeeChased(string target, HumanLetter letter) : base(target, letter) {
+        public HumanIncidentParams_RefugeeChased(Target target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

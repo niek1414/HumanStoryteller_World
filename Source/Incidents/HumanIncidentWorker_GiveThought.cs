@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using HumanStoryteller.Model;
 using HumanStoryteller.Util;
 using RimWorld;
@@ -61,7 +60,7 @@ namespace HumanStoryteller.Incidents {
         public HumanIncidentParams_GiveThought() {
         }
 
-        public HumanIncidentParams_GiveThought(string target, HumanLetter letter) : base(target, letter) {
+        public HumanIncidentParams_GiveThought(Target target, HumanLetter letter) : base(target, letter) {
         }
 
         public override void ExposeData() {

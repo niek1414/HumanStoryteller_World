@@ -72,7 +72,7 @@ namespace HumanStoryteller.Incidents {
         public HumanIncidentParams_Dialog() {
         }
 
-        public HumanIncidentParams_Dialog(string target, HumanLetter letter) : base(target, letter) {
+        public HumanIncidentParams_Dialog(Target target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

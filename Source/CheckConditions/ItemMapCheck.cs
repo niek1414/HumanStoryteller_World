@@ -24,7 +24,7 @@ namespace HumanStoryteller.CheckConditions {
         }
 
         public override bool Check(IncidentResult result, int checkPosition) {
-            int count = result.GetTarget().listerThings.ThingsMatching(new ThingRequest {
+            int count = result.Target.GetMapFromTarget().listerThings.ThingsMatching(new ThingRequest {
                 singleDef = _item,
                 group = ThingRequestGroup.HaulableEverOrMinifiable
             }).Count;

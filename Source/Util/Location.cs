@@ -49,6 +49,14 @@ namespace HumanStoryteller.Util {
             return Type == Zone;
         }
 
+        public bool isPawn() {
+            return Type == Pawn;
+        }
+
+        public bool isSet() {
+            return Type != "";
+        }
+
         private IntVec3 GetCell(Map target) {
             switch (Type) {
                 case "":

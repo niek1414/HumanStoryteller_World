@@ -18,7 +18,7 @@ namespace HumanStoryteller {
         protected StorytellerCompProperties_HumanThreatCycle Props =>
             (StorytellerCompProperties_HumanThreatCycle) props;
 
-        private int IntervalsPassed => Find.TickManager.TicksGame / 600; // 1/10 of a day
+        private int IntervalsPassed => Find.TickManager.TicksGame / 60; // 1/100 of a day
 
         private bool _missedLastIncidentCheck = true; //Start game with a first check
         private int _consecutiveEventCounter;
@@ -89,7 +89,6 @@ namespace HumanStoryteller {
 
             if (Find.TickManager.TicksGame % 500 == 0) {
                 Tell.Log("TickOffset: " + IntervalsPassed + ", Concurrent lanes: " + HumanStoryteller.StoryComponent.CurrentNodes.Count);
-                Tell.Log("Vars: \n" + DataBank.VariableBankToString());
             }
 
             if (HumanStoryteller.StoryComponent.CurrentNodes.Count > 15) {

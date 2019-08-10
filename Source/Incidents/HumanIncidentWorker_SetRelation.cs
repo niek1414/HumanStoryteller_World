@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using HumanStoryteller.Incidents.GameConditions;
 using HumanStoryteller.Model;
 using HumanStoryteller.Util;
 using RimWorld;
@@ -51,7 +50,7 @@ namespace HumanStoryteller.Incidents {
         public HumanIncidentParams_SetRelation() {
         }
 
-        public HumanIncidentParams_SetRelation(string target, HumanLetter letter) : base(target, letter) {
+        public HumanIncidentParams_SetRelation(Target target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

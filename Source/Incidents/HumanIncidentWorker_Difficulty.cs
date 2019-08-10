@@ -2,7 +2,6 @@ using System;
 using HumanStoryteller.Model;
 using HumanStoryteller.Util;
 using RimWorld;
-using UnityEngine;
 using Verse;
 
 namespace HumanStoryteller.Incidents {
@@ -35,7 +34,7 @@ namespace HumanStoryteller.Incidents {
         public HumanIncidentParams_Difficulty() {
         }
 
-        public HumanIncidentParams_Difficulty(string target, HumanLetter letter) : base(target, letter) {
+        public HumanIncidentParams_Difficulty(Target target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

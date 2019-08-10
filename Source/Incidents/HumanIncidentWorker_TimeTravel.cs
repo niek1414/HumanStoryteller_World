@@ -1,8 +1,6 @@
 using System;
-using HumanStoryteller.Incidents.GameConditions;
 using HumanStoryteller.Model;
 using HumanStoryteller.Util;
-using RimWorld;
 using UnityEngine;
 using Verse;
 
@@ -36,7 +34,7 @@ namespace HumanStoryteller.Incidents {
         public HumanIncidentParams_TimeTravel() {
         }
 
-        public HumanIncidentParams_TimeTravel(string target, HumanLetter letter) : base(target, letter) {
+        public HumanIncidentParams_TimeTravel(Target target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

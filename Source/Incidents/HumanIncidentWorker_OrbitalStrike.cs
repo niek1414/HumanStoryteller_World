@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using HumanStoryteller.Model;
 using HumanStoryteller.Util;
 using RimWorld;
@@ -60,7 +58,7 @@ namespace HumanStoryteller.Incidents {
         public HumanIncidentParams_OrbitalStrike() {
         }
 
-        public HumanIncidentParams_OrbitalStrike(string target, HumanLetter letter) : base(target, letter) {
+        public HumanIncidentParams_OrbitalStrike(Target target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

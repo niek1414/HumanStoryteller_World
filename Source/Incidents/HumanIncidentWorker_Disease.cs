@@ -179,7 +179,7 @@ namespace HumanStoryteller.Incidents {
         public HumanIncidentParams_Disease() {
         }
 
-        public HumanIncidentParams_Disease(string target, HumanLetter letter) : base(target, letter) {
+        public HumanIncidentParams_Disease(Target target, HumanLetter letter) : base(target, letter) {
         }
 
         public override void ExposeData() {

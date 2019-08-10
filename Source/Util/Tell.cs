@@ -18,6 +18,11 @@ namespace HumanStoryteller.Util {
         public static void Warn(string message, object obj1 = null, object obj2 = null) {
             Print(message, Severity.Medium, obj1, obj2);
         }
+        
+        public static void Debug(string message, object obj1 = null, object obj2 = null) {
+            Verse.Log.ResetMessageCount();
+            Print(" _DEBUG_" + message, Severity.Medium, obj1, obj2);
+        }
 
         public static void Err(string message, object obj1 = null, object obj2 = null) {
             Print(message, Severity.High, obj1, obj2);

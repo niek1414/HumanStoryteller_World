@@ -106,7 +106,7 @@ namespace HumanStoryteller.Incidents {
         public HumanIncidentParams_MeteoriteImpact() {
         }
 
-        public HumanIncidentParams_MeteoriteImpact(string target, HumanLetter letter) : base(target, letter) {
+        public HumanIncidentParams_MeteoriteImpact(Target target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

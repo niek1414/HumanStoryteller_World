@@ -117,7 +117,7 @@ namespace HumanStoryteller.Incidents {
         public HumanIncidentParams_AnimalInsanityMass() {
         }
 
-        public HumanIncidentParams_AnimalInsanityMass(string target, HumanLetter letter) : base(target, letter) {
+        public HumanIncidentParams_AnimalInsanityMass(Target target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {
