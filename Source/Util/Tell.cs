@@ -32,12 +32,12 @@ namespace HumanStoryteller.Util {
             if (obj1 != null) {
                 StringWriter stringWriter = new StringWriter();
                 ObjectDumper.Write(obj1, 0, stringWriter);
-                message += " 1_ " + stringWriter;
+                message += " 1_" + obj1.GetType() + "_ " + stringWriter;
             }
             if (obj2 != null) {
                 StringWriter stringWriter = new StringWriter();
                 ObjectDumper.Write(obj2, 0, stringWriter);
-                message += " 2_ " + stringWriter;
+                message += " 2_" + obj2.GetType() + "_ " + stringWriter;
             }
             
             message = $"_HS_ {message}";

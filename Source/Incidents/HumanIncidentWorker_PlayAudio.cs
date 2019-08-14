@@ -14,11 +14,12 @@ using UnityEngine;
 using Verse;
 using Verse.Sound;
 using NAudio.Wave;
+using RuntimeAudioClipLoader;
 
 namespace HumanStoryteller.Incidents {
     class HumanIncidentWorker_PlayAudio : HumanIncidentWorker {
         public const String Name = "PlayAudio";
-        private static String CachePath = Path.Combine(Path.Combine("/tmp", "RimWorld"), Path.Combine("HumanStoryteller", "audio"));
+        private static String CachePath = (OSUtil.IsWindows ? "C:\\" : "/") + Path.Combine(Path.Combine("tmp", "RimWorld"), Path.Combine("HumanStoryteller", "audio"));
         private const string SoundCloudDownloader = "http://soundclouddownloader.info";
         private const string FreeSoundDownloader = "http://freesound.org/data/previews/";
 
@@ -85,7 +86,6 @@ namespace HumanStoryteller.Incidents {
         private static void DownloadFile(string url, IncidentResult_Audio ir, HumanIncidentParams_PlayAudio allParams, string message,
             bool soundCloud = false, string id = "") {
             try {
-                Tell.Log("Downloading audio from: " + url + (soundCloud ? " (cloudID: " + id + ")" : ""));
                 Directory.CreateDirectory(CachePath);
                 var tmpPath = Path.Combine(CachePath, id + (soundCloud ? ".mp3" : Path.GetExtension(url)));
                 if (File.Exists(tmpPath)) {
@@ -114,11 +114,13 @@ namespace HumanStoryteller.Incidents {
 
             try {
                 CheckFunc();
-            } catch (Exception) {
-                Tell.Warn("No MP3 support, converting to wav");
-                return false;
+            } catch (Exception e) {
+                if (e.GetType() == typeof(TypeLoadException)) {
+                    Tell.Warn("No MP3 support, converting to wav");
+                    return false;
+                }
             }
-            
+
             return true;
         }
 
@@ -161,20 +163,29 @@ namespace HumanStoryteller.Incidents {
         }
 
         private static void PlayFile(string url, IncidentResult_Audio ir, HumanIncidentParams_PlayAudio allParams, string message) {
+            AudioClip LoadClipWithManager() {
+                return Manager.Load(url);
+            }
+
             try {
-                url = GenFilePaths.SafeURIForUnityWWWFromPath(url);
+                AudioClip audioClip;
+                if (HasMp3Support()) {
+                    audioClip = LoadClipWithManager();
+                } else {
+                    url = GenFilePaths.SafeURIForUnityWWWFromPath(url);
+                    var www = new WWW(url);
 
-                var www = new WWW(url);
+                    while (!www.isDone) {
+                        Thread.Sleep(40);
+                    }
 
-                while (!www.isDone) {
-                    Thread.Sleep(40);
+                    if (www.error != null)
+                        Tell.Err(www.error);
+                    audioClip = www.GetAudioClip(false, false, AudioType.UNKNOWN);
+                    audioClip.LoadAudioData();
+                    audioClip.name = Path.GetFileNameWithoutExtension(url);
                 }
-
-                if (www.error != null)
-                    Tell.Err(www.error);
-                AudioClip audioClip = www.GetAudioClip(false, false, AudioType.UNKNOWN);
-                audioClip.LoadAudioData();
-                audioClip.name = Path.GetFileNameWithoutExtension(url);
+                
 
                 while (audioClip.loadState == AudioDataLoadState.Loading || audioClip.loadState == AudioDataLoadState.Unloaded) {
                     Thread.Sleep(40);
@@ -184,7 +195,7 @@ namespace HumanStoryteller.Incidents {
                     Tell.Warn("Unable to load audio file: " + url);
                     return;
                 }
-                
+
                 ir.EndAfter = audioClip.length + RealTime.LastRealTime;
                 if (allParams.IsSong) {
                     var songDef = CreateSongDef(allParams, audioClip, url);
