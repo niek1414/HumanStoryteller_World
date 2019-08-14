@@ -42,7 +42,7 @@ namespace HumanStoryteller.Web {
 //            request.AddParameter("creator", filterCreator);
 //
 //            restClient.ExecuteAsyncGet(request, callback, "GET");
-            callback(Curl("GET", _host + url, "",  new Dictionary<string, string> {
+            callback(Curl("GET", _host + url, "", new Dictionary<string, string> {
                 {"start", start.ToString()},
                 {"amount", amount.ToString()},
                 {"name", filterName},
@@ -88,10 +88,9 @@ namespace HumanStoryteller.Web {
                 firstParam = false;
                 url += $"{parm.Key}={parm.Value}";
             }
-            
+
             try {
                 var arguments = $"-k {url + (ticket != null ? "?ticket=" + ticket : "")} -X {method}" + (data != "" ? $"--data \"{data}\"" : "");
-                Tell.Log(arguments);
                 var psi = new ProcessStartInfo {
                     FileName = "curl",
                     Arguments = arguments,
@@ -107,7 +106,11 @@ namespace HumanStoryteller.Web {
                 };
             } finally {
                 if (p != null && p.HasExited == false)
-                    p.Kill();
+                    try {
+                        p.Kill();
+                    } catch (InvalidOperationException) {
+                        //Ignore
+                    }
             }
         }
     }

@@ -76,7 +76,7 @@ namespace HumanStoryteller.Incidents {
                 });
                 //TODO gear
                 //TODO finish item object that is already created in the storycreator
-                pawn.
+//                pawn.
 
                 var cell = allParams.Location.GetSingleCell(map, false);
                 if (cell.IsValid) {

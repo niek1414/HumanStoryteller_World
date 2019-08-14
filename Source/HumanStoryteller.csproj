@@ -44,6 +44,10 @@
       <HintPath>..\..\..\RimWorldWin64_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="NAudio, Version=1.7.3.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\..\..\RimWorldWin64_Data\Managed\NAudio.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="RestSharp Version=105.2.4.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\Assemblies\RestSharp.dll</HintPath>
     </Reference>

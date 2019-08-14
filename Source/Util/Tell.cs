@@ -37,7 +37,7 @@ namespace HumanStoryteller.Util {
             if (obj2 != null) {
                 StringWriter stringWriter = new StringWriter();
                 ObjectDumper.Write(obj2, 0, stringWriter);
-                message += " 1_ " + stringWriter;
+                message += " 2_ " + stringWriter;
             }
             
             message = $"_HS_ {message}";
