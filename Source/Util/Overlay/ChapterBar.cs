@@ -78,6 +78,10 @@ namespace HumanStoryteller.Util.Overlay {
             return false;
         }
 
+        public void NotifyEnd() {
+            SetState(State.FadeOut);
+        }
+
         private void SetState(State state) {
             _currentState = state;
             _timeSinceLastTransition = 0;

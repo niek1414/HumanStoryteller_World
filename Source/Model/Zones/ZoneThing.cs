@@ -104,6 +104,12 @@ namespace HumanStoryteller.Model.Zones {
             return $"X: {X}, Z: {Z}, Rot: {Rot}, DefType: {DefType}, Points: {Points}, Quality: {Quality}, Stuff: {Stuff}, Amount: {Amount}, Faction: {Faction}, Type: {Type}";
         }
 
+        public IntVec3 GetCellLocation(StructureZone parent, IntVec3 offset) {
+            return new IntVec3(
+                Mathf.RoundToInt(X) - Mathf.RoundToInt(parent.OriginX) + offset.x, 0,
+                Mathf.RoundToInt(Z) - Mathf.RoundToInt(parent.OriginZ) + offset.z);
+        }
+        
         public Rot4 RotObj {
             get => Rot == -1 ? Rot4.North : new Rot4(Mathf.RoundToInt(Rot));
             set => Rot = value.AsInt;

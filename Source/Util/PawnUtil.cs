@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HumanStoryteller.Util.Logging;
 using Verse;
 
 namespace HumanStoryteller.Util {
@@ -32,7 +33,8 @@ namespace HumanStoryteller.Util {
             if (_cleanupCounter >= CleanupCounterMax) {
                 _cleanupCounter = 0;
                 foreach (var item in pawnBank.Where(pair =>
-                    pair.Value == null || pair.Value.Destroyed).ToList()) {
+                    pair.Value == null || pair.Value.Discarded).ToList()) {
+                    Tell.Log("Removing pawn with name I: " + item.Key);
                     pawnBank.Remove(item.Key);
                 }
             }
@@ -44,7 +46,7 @@ namespace HumanStoryteller.Util {
                 }
             }
 
-            Tell.Log("No pawn found for name I: " + name);
+            Tell.Log("No pawn found with name I: " + name);
             return null;
         }
 

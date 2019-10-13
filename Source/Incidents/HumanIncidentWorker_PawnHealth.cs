@@ -2,7 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using HumanStoryteller.Model;
+using HumanStoryteller.Model.PawnGroup;
+using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util;
+using HumanStoryteller.Util.Logging;
 using RimWorld;
 using Verse;
 
@@ -22,9 +25,10 @@ namespace HumanStoryteller.Incidents {
                 Tell.AssertNotNull((HumanIncidentParams_PawnHealth) parms, nameof(parms), GetType().Name);
             Tell.Log($"Executing event {Name} with:{allParams}");
 
-            foreach (var name in allParams.Names) {
-                var pawn = PawnUtil.GetPawnByName(name);
-                if (pawn == null) {
+            Map map = (Map) allParams.GetTarget();
+            
+            foreach (var pawn in allParams.Names.Filter(map)) {
+                if (pawn.DestroyedOrNull()) {
                     continue;
                 }
 
@@ -57,7 +61,7 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_PawnHealth : HumanIncidentParms {
-        public List<String> Names = new List<string>();
+        public PawnGroupSelector Names = new PawnGroupSelector();
         public string HealthAction = "";
         public string BodyPart = "";
 
@@ -73,7 +77,7 @@ namespace HumanStoryteller.Incidents {
 
         public override void ExposeData() {
             base.ExposeData();
-            Scribe_Collections.Look(ref Names, "names", LookMode.Value);
+            Scribe_Deep.Look(ref Names, "names");
             Scribe_Values.Look(ref HealthAction, "healthAction");
             Scribe_Values.Look(ref BodyPart, "bodyPart");
         }

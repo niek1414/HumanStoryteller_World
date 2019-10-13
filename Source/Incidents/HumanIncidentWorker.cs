@@ -1,6 +1,8 @@
 using System;
 using HumanStoryteller.Model;
+using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util;
+using HumanStoryteller.Util.Logging;
 using RimWorld;
 using Verse;
 
@@ -8,9 +10,11 @@ namespace HumanStoryteller.Incidents {
     public abstract class HumanIncidentWorker : IExposable {
         private void PreExecute(HumanIncidentParms parms) {
             HumanStoryteller.StoryComponent.SameAsLastEvent = (Map) parms.GetTarget();
+            MapUtil.GetMapContainerByTile(parms.Target.GetTileFromTarget(false), false)?.FakeConnect();
         }
 
         private void PostExecute(HumanIncidentParms parms, IncidentResult incidentResult) {
+            MapUtil.GetMapContainerByTile(parms.Target.GetTileFromTarget(false), false)?.FakeDisconnect();
             incidentResult.Target = parms.Target;
         }
 
@@ -69,38 +73,39 @@ namespace HumanStoryteller.Incidents {
         public long TargetTile;
         public string TargetName;
 
-        public int GetTileFromTarget() {
+        public int GetTileFromTarget(bool warn = true) {
             switch (CustomTarget) {
                 case "Preset":
                     return GetPresetTarget().Tile;
                 case "Tile":
                     return (int) TargetTile;
                 case "Name":
-                    return GetNamedTarget().Tile;
+                    return GetNamedTarget(warn).Tile;
                 default:
                     return GetPresetTarget().Tile;
             }
         }
-        
-        public Map GetMapFromTarget() {
+
+        public Map GetMapFromTarget(bool warn = true) {
             switch (CustomTarget) {
                 case "Preset":
                     return GetPresetTarget();
                 case "Tile":
-                    return GetTileTarget();
+                    return GetTileTarget(warn);
                 case "Name":
-                    return GetNamedTarget();
+                    return GetNamedTarget(warn);
                 default:
+                    Tell.Warn("Unknown map target type", CustomTarget);
                     return GetPresetTarget();
             }
         }
 
-        private Map GetNamedTarget() {
-            return MapUtil.GetMapByName(TargetName) ?? MapUtil.FirstOfPlayer();
+        private Map GetNamedTarget(bool warn = true) {
+            return MapUtil.GetMapByName(TargetName, warn) ?? MapUtil.FirstOfPlayer();
         }
 
-        private Map GetTileTarget() {
-            return Current.Game.FindMap((int) TargetTile) ?? MapUtil.FirstOfPlayer();
+        private Map GetTileTarget(bool warn = true) {
+            return Current.Game.FindMap((int) TargetTile) ?? MapUtil.GetMapByTile(TargetTile, warn) ?? MapUtil.FirstOfPlayer();
         }
         
         private Map GetPresetTarget() {
@@ -116,6 +121,26 @@ namespace HumanStoryteller.Incidents {
                 default:
                     return MapUtil.FirstOfPlayer();
             }
+        }
+
+        public override string ToString() {
+            var result = CustomTarget + ": ";
+            switch (CustomTarget) {
+                case "Preset":
+                    result += TargetPreset;
+                    break;
+                case "Tile":
+                    result += TargetTile.ToString();
+                    break;
+                case "Name":
+                    result += TargetName;
+                    break;
+                default:
+                    result += "Unknown custom type: " + CustomTarget;
+                    break;
+            }
+
+            return result;
         }
 
         public void ExposeData() {

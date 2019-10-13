@@ -3,9 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Timers;
 using HumanStoryteller.Model;
+using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util;
+using HumanStoryteller.Util.Logging;
 using HumanStoryteller.Web;
 using RimWorld;
+using UnityEngine;
+using UnityStandardAssets.ImageEffects;
 using Verse;
 using Timer = System.Timers.Timer;
 
@@ -71,7 +75,7 @@ namespace HumanStoryteller {
                     if (sen?.StoryNode?.StoryEvent?.Incident?.Worker != null) {
                         var incident = sen.StoryNode.StoryEvent.Incident;
                         sen.Result = incident.Worker.ExecuteIncident(incident.Parms);
-                        DataBank.ProcessVariableModifications(sen.StoryNode.Modifications);
+                        DataBankUtil.ProcessVariableModifications(sen.StoryNode.Modifications);
                     } else {
                         Tell.Warn("Returned a incident that was not defined");
                     }
@@ -155,7 +159,6 @@ namespace HumanStoryteller {
                 Tell.Warn("Tried to get story while not in-game");
                 return;
             }
-
             Storybook.GetStory(HumanStoryteller.StoryComponent.StoryId, story => HumanStoryteller.GetStoryCallback(story, this));
         }
 
@@ -169,6 +172,7 @@ namespace HumanStoryteller {
                 Tell.Log("RECORDED HISTORY");
             } else {
                 Tell.Log("CONTINUING HS GAME", HumanStoryteller.StoryComponent.StoryId);
+                Storybook.GetStory(HumanStoryteller.StoryComponent.StoryId, story => HumanStoryteller.GetStoryCallback(story, this));
             }
 
             HumanStoryteller.StoryComponent.ThreatCycle = this;

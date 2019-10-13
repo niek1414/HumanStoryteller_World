@@ -8,7 +8,7 @@ namespace HumanStoryteller.Util.Overlay {
         private const int LeaveTime = 3;
 
         public const float MaxCoverPercent = 0.1f;
-        public float LastBarHeight = 0;
+        public float LastBarHeight;
         
         private enum State {
             Enter,
@@ -60,6 +60,10 @@ namespace HumanStoryteller.Util.Overlay {
             LastBarHeight = coverSize;
             Draw(coverSize);
             return false;
+        }
+
+        public void NotifyEnd() {
+            SetState(State.Leave);
         }
 
         private void SetState(State state) {

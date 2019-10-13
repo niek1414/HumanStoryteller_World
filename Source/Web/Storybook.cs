@@ -1,7 +1,7 @@
 using System;
 using System.Net;
-using HumanStoryteller.Model;
-using HumanStoryteller.Util;
+using HumanStoryteller.Model.StoryPart;
+using HumanStoryteller.Util.Logging;
 using RestSharp;
 
 namespace HumanStoryteller.Web {
@@ -144,7 +144,7 @@ namespace HumanStoryteller.Web {
         }
 
         private static bool CheckRequestStatus(IRestResponse response, RestRequestAsyncHandle handle = null) {
-            Tell.Log(response.Content);
+            Tell.Debug(response.Content);
             
             if (response.ResponseStatus != ResponseStatus.Completed) {
                 Tell.Warn($"Rest call failed, {response.ResponseStatus}", response);

@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
 using HumanStoryteller.Model;
+using HumanStoryteller.Model.PawnGroup;
+using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util;
+using HumanStoryteller.Util.Logging;
 using RimWorld;
 using Verse;
 
@@ -21,12 +24,16 @@ namespace HumanStoryteller.Incidents {
                 Tell.AssertNotNull((HumanIncidentParams_GiveThought) parms, nameof(parms), GetType().Name);
             Tell.Log($"Executing event {Name} with:{allParams}");
 
-            foreach (var name in allParams.Names) {
-                var pawn = PawnUtil.GetPawnByName(name);
+            Map map = (Map) allParams.GetTarget();
+            
+            foreach (var pawn in allParams.Names.Filter(map)) {
                 if (pawn?.needs?.mood?.thoughts?.memories == null) {
-                    continue;//Not found or animal/wild man
+                    continue; //Not found or animal/wild man
                 }
-                ThoughtDef def = allParams.ThoughtType == "" || allParams.ThoughtType == "custom" ? null : DefDatabase<ThoughtDef>.GetNamed(allParams.ThoughtType, false);
+
+                ThoughtDef def = allParams.ThoughtType == "" || allParams.ThoughtType == "custom"
+                    ? null
+                    : DefDatabase<ThoughtDef>.GetNamed(allParams.ThoughtType, false);
                 Thought_Memory thought;
                 if (def == null) {
                     thought = (Thought_Memory) ThoughtMaker.MakeThought(ThoughtDefOf.DebugGood);
@@ -51,7 +58,7 @@ namespace HumanStoryteller.Incidents {
     public class HumanIncidentParams_GiveThought : HumanIncidentParms {
         public Number ThoughtEffect = new Number(0);
         public Number ThoughtDuration = new Number(1);
-        public List<String> Names = new List<string>();
+        public PawnGroupSelector Names = new PawnGroupSelector();
         public string ThoughtType = "";
         public string ThoughtLabel = "";
         public string ThoughtDescription = "";
@@ -67,7 +74,7 @@ namespace HumanStoryteller.Incidents {
             base.ExposeData();
             Scribe_Deep.Look(ref ThoughtEffect, "thoughtEffect");
             Scribe_Deep.Look(ref ThoughtDuration, "thoughtDuration");
-            Scribe_Collections.Look(ref Names, "names", LookMode.Value);
+            Scribe_Deep.Look(ref Names, "names");
             Scribe_Values.Look(ref ThoughtType, "thoughtType");
             Scribe_Values.Look(ref ThoughtLabel, "thoughtLabel");
             Scribe_Values.Look(ref ThoughtDescription, "thoughtDescription");

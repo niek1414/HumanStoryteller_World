@@ -17,6 +17,7 @@ namespace HumanStoryteller.Patch {
 
         public static void ExtraOnGUI() {
             if (HumanStoryteller.CreatorTools) {
+                Text.Font = GameFont.Small;
                 Widgets.Label(new Rect(5, 5, 400, 30), "tile:" + Find.WorldInterface.SelectedTile + " (storymaker info)");
             }
 

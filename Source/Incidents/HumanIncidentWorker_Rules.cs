@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using Harmony;
 using HumanStoryteller.Model;
+using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util;
+using HumanStoryteller.Util.Logging;
 using RimWorld;
 using Verse;
 
@@ -84,21 +86,21 @@ namespace HumanStoryteller.Incidents {
                     Traverse.Create(explode).Field("radius").SetValue(radius);
                 }
 
-                ScenarioEditor.AddPart(Current.Game.Scenario, explode);
+                ScenarioEditorUtil.AddPart(Current.Game.Scenario, explode);
             } else {
-                ScenarioEditor.RemovePart(Current.Game.Scenario, typeof(ScenPart_OnPawnDeathExplode));
+                ScenarioEditorUtil.RemovePart(Current.Game.Scenario, typeof(ScenPart_OnPawnDeathExplode));
             }
 
             foreach (KeyValuePair<string, Number> stat in allParams.Stats) {
                 var statDef = StatDef.Named(stat.Key);
                 if (statDef == null) continue;
 
-                ScenarioEditor.RemoveStatPart(Current.Game.Scenario, statDef);
+                ScenarioEditorUtil.RemoveStatPart(Current.Game.Scenario, statDef);
 
                 var part = new ScenPart_StatFactor();
                 Traverse.Create(part).Field("stat").SetValue(statDef);
                 Traverse.Create(part).Field("factor").SetValue(stat.Value.GetValue());
-                ScenarioEditor.AddPart(Current.Game.Scenario, part);
+                ScenarioEditorUtil.AddPart(Current.Game.Scenario, part);
             }
 
             SendLetter(parms);

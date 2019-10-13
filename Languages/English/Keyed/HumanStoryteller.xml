@@ -63,6 +63,7 @@
     <ShouldHaveCustomMail>This event should be customized in the mail tab of the event.</ShouldHaveCustomMail>
     <PlantSproutTitle>{PLANT} sprout</PlantSproutTitle>
     <PlantSproutMessage>A grove of {PLANT}'s has sprouted nearby! If you wait for the plants to grow, you'll be able to harvest them later.</PlantSproutMessage>
+    <RadioMessageLabel>A message from</RadioMessageLabel>
     
     <!--Alerts-->
     <AlertNeedStorySource>No story</AlertNeedStorySource>

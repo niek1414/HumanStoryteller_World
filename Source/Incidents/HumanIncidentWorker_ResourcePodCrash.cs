@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using HumanStoryteller.Model;
+using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util;
+using HumanStoryteller.Util.Logging;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -23,38 +25,7 @@ namespace HumanStoryteller.Incidents {
             Tell.Log($"Executing event {Name} with:{allParams}");
 
             Map map = (Map) allParams.GetTarget();
-            List<Thing> things;
-            if (allParams.Item != "") {
-                int num = Mathf.RoundToInt(allParams.Amount.GetValue());
-                ThingDef droppable = ThingDef.Named(allParams.Item);
-                things = new List<Thing>();
-                if (droppable.stackLimit <= 0) return ir;
-                ThingDef stuff = null;
-                if (droppable.MadeFromStuff) {
-                    try {
-                        if (allParams.Stuff != "") {
-                            stuff = (from d in DefDatabase<ThingDef>.AllDefs
-                                where d.IsStuff && d.defName.Equals(allParams.Stuff)
-                                select d).First();
-                        }
-                    } catch (InvalidOperationException) {
-                    }
-                }
-
-                var qc = allParams.ItemQuality != "" ? ItemUtil.GetCategory(allParams.ItemQuality) : QualityCategory.Normal;
-                while (num > 0) {
-                    var stack = ThingMaker.MakeThing(droppable, stuff);
-                    ItemUtil.TrySetQuality(stack,
-                        allParams.ItemQuality != "" ? qc : QualityUtility.GenerateQualityRandomEqualChance());
-                    var amount = Mathf.Min(stack.def.stackLimit, num);
-                    num -= amount;
-                    stack.stackCount = amount;
-                    stack = ItemUtil.TryMakeMinified(stack);
-                    things.Add(stack);
-                }
-            } else {
-                things = ThingSetMakerDefOf.ResourcePod.root.Generate();
-            }
+            List<Thing> things = allParams.Item.GetThings(true) ?? ThingSetMakerDefOf.ResourcePod.root.Generate();
 
             IntVec3 intVec = allParams.Location.GetSingleCell(map);
 
@@ -67,10 +38,7 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_ResourcePodCrash : HumanIncidentParms {
-        public Number Amount = new Number(20);
-        public string Item = "";
-        public string ItemQuality = "";
-        public string Stuff = "";
+        public Item Item = new Item("", "", "", new Number(20));
         public bool InstaPlace;
         public Location Location = new Location();
 
@@ -81,15 +49,12 @@ namespace HumanStoryteller.Incidents {
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, Amount: {Amount}, Item: {Item}, ItemQuality: {ItemQuality}, Stuff: {Stuff}, InstaPlace: {InstaPlace}, Location: {Location}";
+            return $"{base.ToString()}, Item: {Item}, InstaPlace: {InstaPlace}, Location: {Location}";
         }
 
         public override void ExposeData() {
             base.ExposeData();
-            Scribe_Deep.Look(ref Amount, "amount");
-            Scribe_Values.Look(ref Item, "item");
-            Scribe_Values.Look(ref ItemQuality, "itemQuality");
-            Scribe_Values.Look(ref Stuff, "stuff");
+            Scribe_Deep.Look(ref Item, "item");
             Scribe_Values.Look(ref InstaPlace, "instaPlace");
             Scribe_Deep.Look(ref Location, "location");
         }

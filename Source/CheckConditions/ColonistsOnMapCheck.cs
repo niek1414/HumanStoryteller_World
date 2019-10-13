@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using HumanStoryteller.Incidents;
+using HumanStoryteller.Model;
 using HumanStoryteller.Util;
+using HumanStoryteller.Util.Logging;
 using RimWorld;
 using Verse;
 
@@ -11,20 +13,20 @@ namespace HumanStoryteller.CheckConditions {
         public const String Name = "ColonistsOnMap";
 
         private string _mapName;
-        private DataBank.CompareType _compareType;
+        private DataBankUtil.CompareType _compareType;
         private Number _constant;
 
         public ColonistsOnMapCheck() {
         }
 
-        public ColonistsOnMapCheck(string mapName, DataBank.CompareType compareType, Number constant) {
+        public ColonistsOnMapCheck(string mapName, DataBankUtil.CompareType compareType, Number constant) {
             _mapName = Tell.AssertNotNull(mapName, nameof(mapName), GetType().Name);
             _compareType = Tell.AssertNotNull(compareType, nameof(compareType), GetType().Name);
             _constant = Tell.AssertNotNull(constant, nameof(constant), GetType().Name);
         }
 
         public override bool Check(IncidentResult result, int checkPosition) {
-            return DataBank.CompareValueWithConst(MapUtil.GetMapByName(_mapName, false)?.mapPawns.ColonistCount ?? 0, _compareType, _constant.GetValue());
+            return DataBankUtil.CompareValueWithConst(MapUtil.GetMapByName(_mapName, false)?.mapPawns.ColonistCount ?? 0, _compareType, _constant.GetValue());
         }
 
         public override string ToString() {

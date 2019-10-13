@@ -1,6 +1,9 @@
 using System;
+using HumanStoryteller.CheckConditions;
 using HumanStoryteller.Model;
+using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util;
+using HumanStoryteller.Util.Logging;
 using Verse;
 
 namespace HumanStoryteller.Incidents {
@@ -22,7 +25,8 @@ namespace HumanStoryteller.Incidents {
 
             if (allParams.Structure != "") {
                 IntVec3 cell = allParams.Location.GetSingleCell(map, false);
-                if (!AreaUtil.StringToAreaObjects(allParams.Structure, map, cell.IsValid ? cell : IntVec3.Zero)) {
+                ir = new IncidentResult_CreatedStructure();
+                if (!AreaUtil.StringToAreaObjects(allParams.Structure, map, cell.IsValid ? cell : IntVec3.Zero, (IncidentResult_CreatedStructure) ir)) {
                     Tell.Warn("Unable to translate string into spawnable objects. For more info ^");
                 }
             }

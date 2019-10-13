@@ -1,22 +1,30 @@
-using System;
 using System.Collections.Generic;
+using HumanStoryteller.Model.Action;
+using HumanStoryteller.Util;
+using Verse;
 
 namespace HumanStoryteller {
-    public class StoryQueue {
-        private readonly Queue<Action> _queue = new Queue<Action>();
+    public class StoryQueue : IExposable {
+        public List<IStoryAction> Queue = new List<IStoryAction>();
         
-        public void Add(Action action) {
-            _queue.Enqueue(action);
+        public void Add(IStoryAction action) {
+            Queue.Add(action);
         }
 
         public void Tick() {
-            if (_queue.Count > 0) {
-                _queue.Dequeue()();
+            if (Queue.Count > 0) {
+                var local = Queue[0];
+                local.Action();
+                Queue.RemoveAt(0);
             }
         }
 
         public int Size() {
-            return _queue.Count;
+            return Queue.Count;
+        }
+
+        public void ExposeData() {
+            Scribe_Collections.Look(ref Queue, "queue", LookMode.Deep);
         }
     }
 }

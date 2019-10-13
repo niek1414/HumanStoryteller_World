@@ -1,4 +1,5 @@
 using HumanStoryteller.Util;
+using HumanStoryteller.Views.Extention;
 using UnityEngine;
 using Verse;
 

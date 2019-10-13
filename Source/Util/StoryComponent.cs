@@ -1,5 +1,8 @@
 using System.Collections.Generic;
 using HumanStoryteller.Model;
+using HumanStoryteller.Model.PawnGroup;
+using HumanStoryteller.Model.StoryPart;
+using HumanStoryteller.Util.Logging;
 using HumanStoryteller.Util.Overlay;
 using RimWorld.Planet;
 using Verse;
@@ -14,7 +17,8 @@ namespace HumanStoryteller.Util {
         public List<StoryNode> AllNodes = new List<StoryNode>();
         public Dictionary<string, float> VariableBank = new Dictionary<string, float>();
         public Dictionary<string, Pawn> PawnBank = new Dictionary<string, Pawn>();
-        public Dictionary<string, MapParent> MapBank = new Dictionary<string, MapParent>();
+        public Dictionary<string, PawnGroup> PawnGroupBank = new Dictionary<string, PawnGroup>();
+        public Dictionary<string, MapContainer> MapBank = new Dictionary<string, MapContainer>();
         public StorytellerComp_HumanThreatCycle ThreatCycle;
         public StoryQueue StoryQueue = new StoryQueue();
         public StoryStatus StoryStatus = new StoryStatus();
@@ -42,12 +46,13 @@ namespace HumanStoryteller.Util {
         }
 
         private List<string> reservedPawnKeysWorkingList;
+        private List<string> reservedPawnGroupKeysWorkingList;
         private List<Pawn> reservedPawnValuesWorkingList;
+        private List<PawnGroup> reservedPawnGroupValuesWorkingList;
         private List<string> reservedMapKeysWorkingList;
-        private List<MapParent> reservedMapValuesWorkingList;
+        private List<MapContainer> reservedMapValuesWorkingList;
 
         public StoryComponent(Game game) {
-            Tell.Log("StoryComponent init:" + game.DebugString());
         }
 
         public void Reset() {
@@ -58,7 +63,8 @@ namespace HumanStoryteller.Util {
             AllNodes = new List<StoryNode>();
             VariableBank = new Dictionary<string, float>();
             PawnBank = new Dictionary<string, Pawn>();
-            MapBank = new Dictionary<string, MapParent>();
+            PawnGroupBank = new Dictionary<string, PawnGroup>();
+            MapBank = new Dictionary<string, MapContainer>();
             ThreatCycle = null;
             _firstMapOfPlayer = null;
             _sameAsLastEvent = null;
@@ -121,13 +127,16 @@ namespace HumanStoryteller.Util {
             Scribe_Deep.Look(ref Story, "story");
             Scribe_Deep.Look(ref StoryOverlay, "storyOverlay");
             Scribe_Deep.Look(ref StoryStatus, "storyStatus");
+            Scribe_Deep.Look(ref StoryQueue, "storyQueue");
             Scribe_Values.Look(ref StoryId, "storyId");
             Scribe_Collections.Look(ref CurrentNodes, "currentNode", LookMode.Deep);
             Scribe_Collections.Look(ref AllNodes, "allNodes", LookMode.Deep);
             Scribe_Collections.Look(ref VariableBank, "variableBank", LookMode.Value, LookMode.Value);
             Scribe_Collections.Look(ref PawnBank, "pawnBank", LookMode.Value, LookMode.Reference, ref reservedPawnKeysWorkingList,
                 ref reservedPawnValuesWorkingList);
-            Scribe_Collections.Look(ref MapBank, "mapBank", LookMode.Value, LookMode.Reference, ref reservedMapKeysWorkingList,
+            Scribe_Collections.Look(ref PawnGroupBank, "pawnGroupBank", LookMode.Value, LookMode.Deep, ref reservedPawnGroupKeysWorkingList,
+                ref reservedPawnGroupValuesWorkingList);
+            Scribe_Collections.Look(ref MapBank, "mapBank", LookMode.Value, LookMode.Deep, ref reservedMapKeysWorkingList,
                 ref reservedMapValuesWorkingList);
 
             Scribe_References.Look(ref _firstMapOfPlayer, "firstMapOfPlayer");

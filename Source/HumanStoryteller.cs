@@ -3,7 +3,9 @@ using System.Net;
 using System.Threading;
 using Harmony;
 using HumanStoryteller.Model;
+using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util;
+using HumanStoryteller.Util.Logging;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -21,6 +23,8 @@ namespace HumanStoryteller {
         public const int MEDIUM_REFRESH = 60000 * 10;
         public const int LONG_REFRESH = 60000 * 60;
         public const int OFF_REFRESH = Int32.MaxValue;
+        
+        public const bool DEBUG = true;
 
         public enum RefreshRate {
             Short,

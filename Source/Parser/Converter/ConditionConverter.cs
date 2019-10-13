@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using HumanStoryteller.CheckConditions;
+using HumanStoryteller.Model;
 using HumanStoryteller.Util;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -123,6 +124,8 @@ namespace HumanStoryteller.Parser.Converter {
                     return new TraveledCheck();
                 case CheatCheck.Name:
                     return new CheatCheck();
+                case CreatedStructureCheck.Name:
+                    return new CreatedStructureCheck();
                 case ResearchCheck.Name:
                     return new ResearchCheck(GetResearchProject(GetString(obj, "project")));
                 default:
@@ -274,17 +277,17 @@ namespace HumanStoryteller.Parser.Converter {
             }
         }
 
-        private DataBank.CompareType GetNumeralCompareResponse(String type) {
+        private DataBankUtil.CompareType GetNumeralCompareResponse(String type) {
             if (type == null) {
                 Parser.LogParseError("numeral compare", type);
-                return DataBank.CompareType.More;
+                return DataBankUtil.CompareType.More;
             }
 
             try {
-                return DataBank.compareDict[type];
+                return DataBankUtil.compareDict[type];
             } catch (KeyNotFoundException) {
                 Parser.LogParseError("numeral compare", type);
-                return DataBank.CompareType.More;
+                return DataBankUtil.CompareType.More;
             }
         }
     }

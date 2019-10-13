@@ -1,7 +1,9 @@
 using System;
 using System.Linq;
 using HumanStoryteller.Model;
+using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util;
+using HumanStoryteller.Util.Logging;
 using Verse;
 
 namespace HumanStoryteller.Incidents {

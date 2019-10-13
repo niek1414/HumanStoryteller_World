@@ -1,10 +1,15 @@
 using System;
 using System.Collections.Generic;
 using HumanStoryteller.Model;
+using HumanStoryteller.Model.PawnGroup;
+using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util;
+using HumanStoryteller.Util.Logging;
 using RimWorld;
 using UnityEngine;
 using Verse;
+using Verse.AI;
+using Verse.AI.Group;
 
 namespace HumanStoryteller.Incidents {
     class HumanIncidentWorker_EditPawn : HumanIncidentWorker {
@@ -24,15 +29,14 @@ namespace HumanStoryteller.Incidents {
 
             Map map = (Map) allParams.GetTarget();
 
-            foreach (var name in allParams.Names) {
-                var pawn = PawnUtil.GetPawnByName(name);
-                if (pawn == null) {
+            foreach (var pawn in allParams.Names.Filter(map)) {
+                if (pawn.DestroyedOrNull() || pawn.Dead) {
                     continue;
                 }
 
                 if (pawn.Spawned && allParams.Despawn) {
                     pawn.DeSpawn();
-                } else if (!pawn.Spawned && !allParams.Despawn) {
+                } else if (!pawn.Spawned && pawn.holdingOwner == null && !allParams.Despawn) {
                     pawn.SpawnSetup(map, false);
                 }
 
@@ -43,6 +47,9 @@ namespace HumanStoryteller.Incidents {
                 }
 
                 if (allParams.ClearMind) {
+                    pawn.jobs.ClearQueuedJobs();
+                    pawn.jobs.EndCurrentJob(JobCondition.InterruptForced);
+                    pawn.GetLord()?.Notify_PawnLost(pawn, PawnLostCondition.LeftVoluntarily);
                     pawn.ClearMind();
                 }
 
@@ -192,7 +199,7 @@ namespace HumanStoryteller.Incidents {
         public bool SkillAdd;
 
         public List<String> Traits = new List<string>();
-        public List<String> Names = new List<string>();
+        public PawnGroupSelector Names = new PawnGroupSelector();
         public string FirstName = "";
         public string NickName = "";
         public string LastName = "";
@@ -217,7 +224,7 @@ namespace HumanStoryteller.Incidents {
 
         public override void ExposeData() {
             base.ExposeData();
-            Scribe_Collections.Look(ref Names, "names", LookMode.Value);
+            Scribe_Deep.Look(ref Names, "names");
             Scribe_Values.Look(ref FirstName, "firstName");
             Scribe_Values.Look(ref NickName, "nickName");
             Scribe_Values.Look(ref LastName, "lastName");

@@ -3,7 +3,7 @@ using Verse;
 
 namespace HumanStoryteller.Util {
     public class ItemUtil {
-        public static QualityCategory GetCategory(string q) {
+        public static QualityCategory GetCategory(string q, QualityCategory fallback) {
             switch (q) {
                 case "Awful":
                     return QualityCategory.Awful;
@@ -18,7 +18,7 @@ namespace HumanStoryteller.Util {
                 case "Masterwork":
                     return QualityCategory.Masterwork;
                 default:
-                    return QualityUtility.GenerateQualityRandomEqualChance();
+                    return fallback;
             }
         }
 

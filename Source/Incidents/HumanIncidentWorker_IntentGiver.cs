@@ -2,9 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using HumanStoryteller.CheckConditions;
+using HumanStoryteller.Helper.IntentHelper;
 using HumanStoryteller.Incidents.Jobs;
 using HumanStoryteller.Model;
+using HumanStoryteller.Model.PawnGroup;
+using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util;
+using HumanStoryteller.Util.Logging;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -28,15 +32,14 @@ namespace HumanStoryteller.Incidents {
             Map map = (Map) allParams.GetTarget();
 
             var pawns = new List<Pawn>();
-            foreach (var name in allParams.Names) {
-                var pawn = PawnUtil.GetPawnByName(name);
-                if (pawn != null) {
+            foreach (var pawn in allParams.Names.Filter(map)) {
+                if (!pawn.DestroyedOrNull() && !pawn.Dead) {
                     pawns.Add(pawn);
                 }
             }
 
             if (pawns.Count <= 0) {
-                Tell.Warn("No pawns found to give intent to", allParams.Names.ToCommaList());
+                Tell.Warn("No pawns found to give intent to");
                 return ir;
             }
             
@@ -99,7 +102,7 @@ namespace HumanStoryteller.Incidents {
                 case "Joinable_MarriageCeremony":
                     Pawn p1 = PawnUtil.GetPawnByName(allParams.FirstStringParam);
                     Pawn p2 = PawnUtil.GetPawnByName(allParams.SecondStringParam);
-                    if (p1 == null || p2 == null) {
+                    if (p1.DestroyedOrNull() || p2.DestroyedOrNull() || p1.Dead || p2.Dead) {
                         Tell.Warn("Didn't find pawn while resolving job", allParams.FirstStringParam, allParams.SecondStringParam);
                         return null;
                     }
@@ -177,7 +180,7 @@ namespace HumanStoryteller.Incidents {
                 case "Hunt":
                     var p1 = PawnUtil.GetPawnByName(allParams.FirstStringParam);
 
-                    if (p1 == null) {
+                    if (p1.DestroyedOrNull() || p1.Dead) {
                         Tell.Warn("Didn't find pawn while resolving job", allParams.FirstStringParam);
                         return null;
                     }
@@ -235,7 +238,7 @@ namespace HumanStoryteller.Incidents {
                 case "TradeWithPawn":
                     var p7 = PawnUtil.GetPawnByName(allParams.FirstStringParam);
 
-                    if (p7 == null) {
+                    if (p7.DestroyedOrNull() || p7.Dead || p7.Downed) {
                         Tell.Warn("Didn't find pawn while resolving job", allParams.FirstStringParam);
                         return null;
                     }
@@ -244,7 +247,7 @@ namespace HumanStoryteller.Incidents {
                 case "SocialFight":
                     var p8 = PawnUtil.GetPawnByName(allParams.FirstStringParam);
 
-                    if (p8 == null) {
+                    if (p8.DestroyedOrNull() || p8.Dead || p8.Downed) {
                         Tell.Warn("Didn't find pawn while resolving job", allParams.FirstStringParam);
                         return null;
                     }
@@ -259,7 +262,7 @@ namespace HumanStoryteller.Incidents {
                 case "Insult":
                     var p9 = PawnUtil.GetPawnByName(allParams.FirstStringParam);
 
-                    if (p9 == null) {
+                    if (p9.DestroyedOrNull() || p9.Dead) {
                         Tell.Warn("Didn't find pawn while resolving job", allParams.FirstStringParam);
                         return null;
                     }
@@ -275,18 +278,11 @@ namespace HumanStoryteller.Incidents {
 
                     return new Job(JobDefOf.Ignite, p10);
                 case "LayDown":
-                    var p11 = PawnUtil.GetPawnByName(allParams.FirstStringParam);
-
-                    if (p11 == null) {
-                        Tell.Warn("Didn't find pawn while resolving job", allParams.FirstStringParam);
-                        return null;
-                    }
-
                     return new Job(JobDefOf.LayDown, new LocalTargetInfo(new IntVec3(-1, -2, -3)));
                 case "Rescue":
                     var p12 = PawnUtil.GetPawnByName(allParams.FirstStringParam);
 
-                    if (p12 == null) {
+                    if (p12.DestroyedOrNull() || p12.Dead) {
                         Tell.Warn("Didn't find pawn while resolving job", allParams.FirstStringParam);
                         return null;
                     }
@@ -303,7 +299,7 @@ namespace HumanStoryteller.Incidents {
                 case "Capture":
                     var p13 = PawnUtil.GetPawnByName(allParams.FirstStringParam);
 
-                    if (p13 == null) {
+                    if (p13.DestroyedOrNull() || p13.Dead) {
                         Tell.Warn("Didn't find pawn while resolving job", allParams.FirstStringParam);
                         return null;
                     }
@@ -335,7 +331,7 @@ namespace HumanStoryteller.Incidents {
                 case "Kidnap":
                     var p15 = PawnUtil.GetPawnByName(allParams.FirstStringParam);
 
-                    if (p15 == null) {
+                    if (p15.DestroyedOrNull() || p15.Dead) {
                         Tell.Warn("Didn't find pawn while resolving job", allParams.FirstStringParam);
                         return null;
                     }
@@ -350,7 +346,7 @@ namespace HumanStoryteller.Incidents {
                 case "PrisonerExecution":
                     var p16 = PawnUtil.GetPawnByName(allParams.FirstStringParam);
 
-                    if (p16 == null) {
+                    if (p16.DestroyedOrNull() || p16.Dead) {
                         Tell.Warn("Didn't find pawn while resolving job", allParams.FirstStringParam);
                         return null;
                     }
@@ -359,7 +355,7 @@ namespace HumanStoryteller.Incidents {
                 case "Slaughter":
                     var p17 = PawnUtil.GetPawnByName(allParams.FirstStringParam);
 
-                    if (p17 == null) {
+                    if (p17.DestroyedOrNull() || p17.Dead) {
                         Tell.Warn("Didn't find pawn while resolving job", allParams.FirstStringParam);
                         return null;
                     }
@@ -420,7 +416,7 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_IntentGiver : HumanIncidentParms {
-        public List<string> Names = new List<string>();
+        public PawnGroupSelector Names = new PawnGroupSelector();
         public string IntentType = "";
         public string FirstStringParam = "";
         public string SecondStringParam = "";
@@ -441,7 +437,7 @@ namespace HumanStoryteller.Incidents {
 
         public override void ExposeData() {
             base.ExposeData();
-            Scribe_Collections.Look(ref Names, "names", LookMode.Value);
+            Scribe_Deep.Look(ref Names, "names");
             Scribe_Values.Look(ref IntentType, "type");
             Scribe_Values.Look(ref FirstStringParam, "firstStringParam");
             Scribe_Values.Look(ref SecondStringParam, "secondStringParam");

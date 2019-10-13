@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using HumanStoryteller.Incidents;
+using HumanStoryteller.Model;
 using HumanStoryteller.Model.Zones;
 using HumanStoryteller.Util;
+using HumanStoryteller.Util.Logging;
 using Verse;
 
 namespace HumanStoryteller.CheckConditions {
@@ -25,7 +27,7 @@ namespace HumanStoryteller.CheckConditions {
         public override bool Check(IncidentResult result, int checkPosition) {
             Pawn p = PawnUtil.GetPawnByName(_pawnName);
             var target = result.Target.GetMapFromTarget();
-            if (p == null || p.Map != target) {
+            if (p.DestroyedOrNull() || p.Map != target) {
                 return false;
             }
 

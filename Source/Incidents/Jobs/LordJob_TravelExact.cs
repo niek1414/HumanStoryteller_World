@@ -25,7 +25,6 @@ namespace HumanStoryteller.Incidents.Jobs {
             stateGraph.AddTransition(transition1);
             Transition transition2 = new Transition(lordToilDefendPoint, lordToilTravel);
             transition2.AddTrigger(new Trigger_TicksPassedWithoutHarm(1200));
-            transition2.AddPreAction(new TransitionAction_EnsureHaveExitDestination());
             stateGraph.AddTransition(transition2);
             return stateGraph;
         }

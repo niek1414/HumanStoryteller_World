@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using HumanStoryteller.Model;
+using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Parser.Converter;
-using HumanStoryteller.Util;
+using HumanStoryteller.Util.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Verse;
@@ -24,7 +24,7 @@ namespace HumanStoryteller.Parser {
             return result;
         }
 
-        public static Model.Story StoryParser(String json) {
+        public static Model.StoryPart.Story StoryParser(String json) {
             JObject mainStory = JObject.Parse(json);
             var story = JsonConvert.DeserializeObject<Story>(mainStory["storyline"].ToString(Formatting.None), new JsonSerializerSettings {
                 NullValueHandling = NullValueHandling.Ignore,
@@ -54,7 +54,7 @@ namespace HumanStoryteller.Parser {
                 storyNode.Modifications = parseNode.Modifications;
                 if (parseNode.Left != null) {
                     try {
-                        storyNode.LeftChild = new Model.Connection(parseNode.Left.Offset, nodesDictionary[parseNode.Left.Uuid].RealNode);
+                        storyNode.LeftChild = new Model.StoryPart.Connection(parseNode.Left.Offset, nodesDictionary[parseNode.Left.Uuid].RealNode);
                     } catch (KeyNotFoundException) {
                         Tell.Err("While parsing, a unknown node was mentioned. UUID:" + parseNode.Left);
                         Tell.Warn(json);
@@ -63,7 +63,7 @@ namespace HumanStoryteller.Parser {
 
                 if (parseNode.Right != null) {
                     try {
-                        storyNode.RightChild = new Model.Connection(parseNode.Right.Offset, nodesDictionary[parseNode.Right.Uuid].RealNode);
+                        storyNode.RightChild = new Model.StoryPart.Connection(parseNode.Right.Offset, nodesDictionary[parseNode.Right.Uuid].RealNode);
                     } catch (KeyNotFoundException) {
                         Tell.Err("While parsing, a unknown node was mentioned. UUID:" + parseNode.Right);
                         Tell.Warn(json);
@@ -71,7 +71,7 @@ namespace HumanStoryteller.Parser {
                 }
             }
 
-            return new Model.Story(mainStory["id"].Value<long>(), story.Name, story.Description, mainStory["creator"].Value<long>(),
+            return new Model.StoryPart.Story(mainStory["id"].Value<long>(), story.Name, story.Description, mainStory["creator"].Value<long>(),
                 new StoryGraph(root));
         }
 

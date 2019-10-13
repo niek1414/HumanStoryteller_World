@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using HumanStoryteller.Incidents;
 using HumanStoryteller.Util;
+using HumanStoryteller.Util.Logging;
 using Verse;
 
 namespace HumanStoryteller.CheckConditions {
@@ -14,8 +15,7 @@ namespace HumanStoryteller.CheckConditions {
 
         public override bool Check(IncidentResult result, int checkPosition) {
             if (result == null) {
-                Tell.Err($"Tried to check {GetType()} but result type was null." +
-                         " Likely the storycreator added a incomparable condition to an event.");
+                Tell.Err($"Tried to check {GetType()} but result type was null.");
                 return false;
             }
 

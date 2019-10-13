@@ -2,8 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using HumanStoryteller.CheckConditions;
+using HumanStoryteller.Helper.QuestHelper;
 using HumanStoryteller.Model;
+using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util;
+using HumanStoryteller.Util.Logging;
 using RimWorld;
 using RimWorld.Planet;
 using UnityEngine;
@@ -61,9 +64,7 @@ namespace HumanStoryteller.Incidents {
             Site site = SiteMaker.MakeSite(siteCoreDef, sitePartDef, tile, enemy, true, points);
             site.sitePartsKnown = true;
             if (allParams.KillReward) {
-                List<Thing> list = allParams.RewardItem == ""
-                    ? GenerateRewards(SiteTuning.BanditCampQuestRewardMarketValueRange, points)
-                    : GenerateRewards(allParams.RewardAmount, allParams.RewardItem, allParams.RewardStuff, allParams.RewardItemQuality);
+                List<Thing> list = allParams.RewardItem.GetThings(true) ?? GenerateRewards(SiteTuning.BanditCampQuestRewardMarketValueRange, points);
                 site.GetComponent<DefeatAllEnemiesQuestComp>().StartQuest(ally, Mathf.RoundToInt(allParams.RewardFactionRelation.GetValue()), list);
             }
 
@@ -83,6 +84,7 @@ namespace HumanStoryteller.Incidents {
                     if (allParams.OutName != "") {
                         PawnUtil.SavePawnByName(allParams.OutName, pawn);
                     }
+
                     PawnUtil.SetDisplayName(pawn, allParams.FirstName, allParams.NickName, allParams.LastName);
 
                     site.GetComponent<DownedRefugeeComp>().pawn.TryAdd(pawn);
@@ -114,9 +116,7 @@ namespace HumanStoryteller.Incidents {
 
                     break;
                 case "ItemStash":
-                    List<Thing> list = allParams.MapItem != ""
-                        ? GenerateRewards(allParams.MapAmount, allParams.MapItem, allParams.MapStuff, allParams.MapItemQuality)
-                        : GenerateRewards(SiteTuning.ItemStashQuestMarketValueRange, points);
+                    List<Thing> list = allParams.MapItem.GetThings(true) ?? GenerateRewards(SiteTuning.ItemStashQuestMarketValueRange, points);
                     site.GetComponent<ItemStashContentsComp>().contents.TryAddRangeOrTransfer(list, false);
                     if (ally == null) {
                         ally = Find.FactionManager.RandomNonHostileFaction(false, false, false);
@@ -169,7 +169,7 @@ namespace HumanStoryteller.Incidents {
 
             Find.WorldObjects.Add(site);
             if (allParams.MapName != "") {
-                MapUtil.SaveMapByName(allParams.MapName, site);
+                MapUtil.SaveMapByName(allParams.MapName, new MapContainer(site));
             }
 
             if (allParams.OutNames.Count != 0) {
@@ -186,38 +186,6 @@ namespace HumanStoryteller.Incidents {
             parms.totalMarketValueRange = type *
                                           SiteTuning.QuestRewardMarketValueThreatPointsFactor.Evaluate(siteThreatPoints);
             return ThingSetMakerDefOf.Reward_ItemStashQuestContents.root.Generate(parms);
-        }
-
-        private List<Thing> GenerateRewards(Number number, string item, string stuff, string quality) {
-            List<Thing> things = new List<Thing>();
-            int num = Mathf.RoundToInt(number.GetValue());
-            ThingDef droppable = ThingDef.Named(item);
-            if (droppable.stackLimit <= 0) return things;
-            ThingDef stuffDef = null;
-            if (droppable.MadeFromStuff) {
-                try {
-                    if (stuff != "") {
-                        stuffDef = (from d in DefDatabase<ThingDef>.AllDefs
-                            where d.IsStuff && d.defName.Equals(stuff)
-                            select d).First();
-                    }
-                } catch (InvalidOperationException) {
-                }
-            }
-
-            var qc = quality != "" ? ItemUtil.GetCategory(quality) : QualityCategory.Normal;
-            while (num > 0) {
-                var stack = ThingMaker.MakeThing(droppable, stuffDef);
-                ItemUtil.TrySetQuality(stack,
-                    quality != "" ? qc : QualityUtility.GenerateQualityRandomEqualChance());
-                var amount = Mathf.Min(stack.def.stackLimit, num);
-                num -= amount;
-                stack.stackCount = amount;
-                stack = ItemUtil.TryMakeMinified(stack);
-                things.Add(stack);
-            }
-
-            return things;
         }
 
         private ThingDef FindRandomMineableDef() {
@@ -281,17 +249,11 @@ namespace HumanStoryteller.Incidents {
         public Number MinTileDist = new Number(7);
         public Number MaxTileDist = new Number(20);
 
-        public Number MapAmount = new Number(20);
         public string MineableRock = "";
-        public string MapItem = "";
-        public string MapItemQuality = "";
-        public string MapStuff = "";
+        public Item MapItem = new Item("", "", "", new Number(20));
 
         public bool KillReward;
-        public Number RewardAmount = new Number(10);
-        public string RewardItem = "";
-        public string RewardItemQuality = "";
-        public string RewardStuff = "";
+        public Item RewardItem = new Item("", "", "", new Number(10));
         public string RewardFaction = "";
         public Number RewardFactionRelation = new Number(0);
 
@@ -302,7 +264,7 @@ namespace HumanStoryteller.Incidents {
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, QuestType: {QuestType}, ThreatType: {ThreatType}, MapName: {MapName}, OutName: {OutName}, FirstName: {FirstName}, NickName: {NickName}, LastName: {LastName}, Faction: {Faction}, OutNames: {OutNames}, Points: {Points}, Duration: {Duration}, MinTileDist: {MinTileDist}, MaxTileDist: {MaxTileDist}, MapAmount: {MapAmount}, MineableRock: {MineableRock}, MapItem: {MapItem}, MapItemQuality: {MapItemQuality}, MapStuff: {MapStuff}, KillReward: {KillReward}, RewardAmount: {RewardAmount}, RewardItem: {RewardItem}, RewardItemQuality: {RewardItemQuality}, RewardStuff: {RewardStuff}, RewardFaction: {RewardFaction}, RewardFactionRelation: {RewardFactionRelation}";
+            return $"{base.ToString()}, QuestType: {QuestType}, ThreatType: {ThreatType}, MapName: {MapName}, OutName: {OutName}, FirstName: {FirstName}, NickName: {NickName}, LastName: {LastName}, Faction: {Faction}, OutNames: {OutNames}, Points: {Points}, Duration: {Duration}, MinTileDist: {MinTileDist}, MaxTileDist: {MaxTileDist}, MineableRock: {MineableRock}, MapItem: {MapItem}, KillReward: {KillReward}, RewardItem: {RewardItem}, RewardFaction: {RewardFaction}, RewardFactionRelation: {RewardFactionRelation}";
         }
 
         public override void ExposeData() {
@@ -320,16 +282,10 @@ namespace HumanStoryteller.Incidents {
             Scribe_Deep.Look(ref Duration, "duration");
             Scribe_Deep.Look(ref MinTileDist, "minTileDist");
             Scribe_Deep.Look(ref MaxTileDist, "maxTileDist");
-            Scribe_Deep.Look(ref MapAmount, "mapAmount");
             Scribe_Values.Look(ref MineableRock, "mineableRock");
-            Scribe_Values.Look(ref MapItem, "mapItem");
-            Scribe_Values.Look(ref MapItemQuality, "mapItemQuality");
-            Scribe_Values.Look(ref MapStuff, "mapStuff");
+            Scribe_Deep.Look(ref MapItem, "mapItem");
             Scribe_Values.Look(ref KillReward, "killReward");
-            Scribe_Deep.Look(ref RewardAmount, "rewardAmount");
-            Scribe_Values.Look(ref RewardItem, "rewardItem");
-            Scribe_Values.Look(ref RewardItemQuality, "rewardItemQuality");
-            Scribe_Values.Look(ref RewardStuff, "rewardStuff");
+            Scribe_Deep.Look(ref RewardItem, "rewardItem");
             Scribe_Values.Look(ref RewardFaction, "rewardFaction");
             Scribe_Deep.Look(ref RewardFactionRelation, "rewardFactionRelation");
         }

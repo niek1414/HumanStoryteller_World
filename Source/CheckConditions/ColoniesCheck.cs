@@ -1,25 +1,27 @@
 using System;
 using HumanStoryteller.Incidents;
+using HumanStoryteller.Model;
 using HumanStoryteller.Util;
+using HumanStoryteller.Util.Logging;
 using Verse;
 
 namespace HumanStoryteller.CheckConditions {
     public class ColoniesCheck : CheckCondition {
         public const String Name = "Colonies";
 
-        private DataBank.CompareType _compareType;
+        private DataBankUtil.CompareType _compareType;
         private Number _constant;
 
         public ColoniesCheck() {
         }
 
-        public ColoniesCheck(DataBank.CompareType compareType, Number constant) {
+        public ColoniesCheck(DataBankUtil.CompareType compareType, Number constant) {
             _compareType = Tell.AssertNotNull(compareType, nameof(compareType), GetType().Name);
             _constant = Tell.AssertNotNull(constant, nameof(constant), GetType().Name);
         }
 
         public override bool Check(IncidentResult result, int checkPosition) {           
-            return DataBank.CompareValueWithConst(Find.Maps.FindAll(x => x.ParentFaction.IsPlayer).Count, _compareType, _constant.GetValue());
+            return DataBankUtil.CompareValueWithConst(Find.Maps.FindAll(x => x.ParentFaction.IsPlayer).Count, _compareType, _constant.GetValue());
         }
 
         public override string ToString() {

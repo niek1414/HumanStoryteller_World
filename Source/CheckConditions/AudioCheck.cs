@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using HumanStoryteller.Incidents;
 using HumanStoryteller.Util;
+using HumanStoryteller.Util.Logging;
 using Verse;
 
 namespace HumanStoryteller.CheckConditions {

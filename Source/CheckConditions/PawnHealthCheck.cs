@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using HumanStoryteller.Incidents;
 using HumanStoryteller.Model;
 using HumanStoryteller.Util;
+using HumanStoryteller.Util.Logging;
 using Verse;
 
 namespace HumanStoryteller.CheckConditions {
@@ -30,7 +31,7 @@ namespace HumanStoryteller.CheckConditions {
 
         public override bool Check(IncidentResult result, int checkPosition) {
             Pawn pawn = PawnUtil.GetPawnByName(_pawnName);
-            if (pawn == null) {
+            if (pawn.DestroyedOrNull()) {
                 switch (_condition) {
                     case HealthCondition.Alive:
                         return false;

@@ -10,9 +10,9 @@ namespace HumanStoryteller.Patch {
         public static void Patch(HarmonyInstance harmony) {
             //TODO fix on load when this is enabled
             // Slow motion
-//            MethodInfo speedMultiplier = AccessTools.Method(typeof(TickManager), "get_TickRateMultiplier");
-//            HarmonyMethod slowMotion = new HarmonyMethod(typeof(StoryStatus_Patch).GetMethod("SlowMotion"));
-//            harmony.Patch(speedMultiplier, null, slowMotion);
+            MethodInfo speedMultiplier = AccessTools.Method(typeof(TickManager), "get_TickRateMultiplier");
+            HarmonyMethod slowMotion = new HarmonyMethod(typeof(StoryStatus_Patch).GetMethod("SlowMotion"));
+            harmony.Patch(speedMultiplier, null, slowMotion);
 
             // Disable speed controls
             MethodInfo speedControl = AccessTools.Method(typeof(TimeControls), "DoTimeControlsGUI");
@@ -21,10 +21,10 @@ namespace HumanStoryteller.Patch {
 
             // Disable camera jumping
             MethodInfo worldCameraJumper = AccessTools.Method(typeof(WorldCameraDriver), "JumpTo", new[] {typeof(int)});
-            HarmonyMethod disableCameraControls = new HarmonyMethod(typeof(StoryStatus_Patch).GetMethod("DisableCameraControls"));
-            harmony.Patch(worldCameraJumper, disableCameraControls);
+            HarmonyMethod enableCameraControls = new HarmonyMethod(typeof(StoryStatus_Patch).GetMethod("EnableCameraControls"));
+            harmony.Patch(worldCameraJumper, enableCameraControls);
             MethodInfo driverCameraJumper = AccessTools.Method(typeof(CameraDriver), "JumpToCurrentMapLoc", new[] {typeof(Vector3)});
-            harmony.Patch(driverCameraJumper, disableCameraControls);
+            harmony.Patch(driverCameraJumper, enableCameraControls);
 
             // Disable camera panning
             MethodInfo preventProp = AccessTools.Method(typeof(CameraDriver), "get_AnythingPreventsCameraMotion");
@@ -42,6 +42,8 @@ namespace HumanStoryteller.Patch {
             MethodInfo mapUI = AccessTools.Method(typeof(MapInterface), "MapInterfaceOnGUI_BeforeMainTabs");
             HarmonyMethod removeUI = new HarmonyMethod(typeof(StoryStatus_Patch).GetMethod("RemoveUI"));
             harmony.Patch(mapUI, removeUI);
+            MethodInfo cellInfoUI = AccessTools.Method(typeof(MouseoverReadout), "MouseoverReadoutOnGUI");
+            harmony.Patch(cellInfoUI, removeUI);
             MethodInfo alertUI = AccessTools.Method(typeof(AlertsReadout), "AlertsReadoutOnGUI");
             harmony.Patch(alertUI, removeUI);
             MethodInfo tutorUI = AccessTools.Method(typeof(Tutor), "TutorOnGUI");
@@ -52,14 +54,8 @@ namespace HumanStoryteller.Patch {
             harmony.Patch(windowsUI, removeUIAndShowForcedPauseWindows);
         }
 
-        private static bool shouldNotMessWithGame() {
-            if (Current.Game == null) return true;
-            var sc = HumanStoryteller.StoryComponent;
-            return sc?.Story == null || !sc.Initialised || LongEventHandler.ForcePause;
-        }
-
         public static void SlowMotion(TickManager __instance, ref float __result) {
-            if (shouldNotMessWithGame()) return;
+            if (Main_Patch.ShouldNotMessWithGame() || LongEventHandler.ForcePause) return;
             var sc = HumanStoryteller.StoryComponent;
             if (sc.StoryStatus.ForcedSlowMotion && !__instance.Paused) {
                 __result = 0.3f;
@@ -67,7 +63,7 @@ namespace HumanStoryteller.Patch {
         }
 
         public static bool SpeedButtons() {
-            if (shouldNotMessWithGame()) return true;
+            if (Main_Patch.ShouldNotMessWithGame() || LongEventHandler.ForcePause) return true;
             var sc = HumanStoryteller.StoryComponent;
             if (sc.StoryStatus.DisableSpeedControls && Current.Game.tickManager.CurTimeSpeed == TimeSpeed.Paused) {
                 Current.Game.tickManager.CurTimeSpeed = TimeSpeed.Normal;
@@ -101,22 +97,22 @@ namespace HumanStoryteller.Patch {
         }
 
         public static bool RemoveUI() {
-            if (shouldNotMessWithGame()) return true;
-            return !HumanStoryteller.StoryComponent.StoryStatus.MovieMode;
+            if (Main_Patch.ShouldNotMessWithGame() || LongEventHandler.ForcePause) return true;
+            var sc = HumanStoryteller.StoryComponent;
+            return !(sc.StoryStatus.MovieMode || sc.StoryOverlay.ShouldBlockInput());
         }
 
         public static void CameraDollyPrevention(ref bool __result) {
-            if (shouldNotMessWithGame()) return;
+            if (Main_Patch.ShouldNotMessWithGame() || LongEventHandler.ForcePause) return;
             var sc = HumanStoryteller.StoryComponent;
-            if (sc.StoryStatus.DisableCameraControls || sc.StoryStatus.MovieMode) {
+            if (sc.StoryStatus.DisableCameraControls || sc.StoryStatus.MovieMode || sc.StoryOverlay.ShouldBlockInput()) {
                 __result = true;
             }
         }
 
         public static void DisableUserInput() {
-            if (shouldNotMessWithGame()) return;
-            if (!HumanStoryteller.StoryComponent.StoryStatus.MovieMode) return;
-
+            if (Main_Patch.ShouldNotMessWithGame() || LongEventHandler.ForcePause) return;
+            if (!(HumanStoryteller.StoryComponent.StoryStatus.MovieMode || HumanStoryteller.StoryComponent.StoryOverlay.ShouldBlockInput())) return;
             if (KeyBindingDefOf.TogglePause.KeyDownEvent) {
                 Find.MainTabsRoot.ToggleTab(MainButtonDefOf.Menu);
             }
@@ -130,11 +126,11 @@ namespace HumanStoryteller.Patch {
             }
         }
 
-        public static bool DisableCameraControls() {
-            if (shouldNotMessWithGame()) return true;
+        public static bool EnableCameraControls() {
+            if (Main_Patch.ShouldNotMessWithGame() || LongEventHandler.ForcePause) return true;
             var sc = HumanStoryteller.StoryComponent;
             if (sc.StoryStatus.JumpException) return true;
-            return !sc.StoryStatus.DisableCameraControls && !sc.StoryStatus.MovieMode;
+            return !(sc.StoryStatus.DisableCameraControls || sc.StoryStatus.MovieMode || sc.StoryOverlay.ShouldBlockInput());
         }
     }
 }

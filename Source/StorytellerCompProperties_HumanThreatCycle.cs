@@ -1,4 +1,5 @@
 ﻿using HumanStoryteller.Util;
+using HumanStoryteller.Util.Logging;
 using RimWorld;
 
 namespace HumanStoryteller {

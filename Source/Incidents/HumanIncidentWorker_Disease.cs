@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using HumanStoryteller.Model;
+using HumanStoryteller.Model.PawnGroup;
+using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util;
+using HumanStoryteller.Util.Logging;
 using RimWorld;
 using RimWorld.Planet;
 using UnityEngine;
@@ -47,12 +50,9 @@ namespace HumanStoryteller.Incidents {
             }
 
             List<Pawn> list = new List<Pawn>();
-            if (allParams.Names.Count > 0) {
-                foreach (var name in allParams.Names) {
-                    Pawn target = PawnUtil.GetPawnByName(name);
-                    if (target == null) continue;
-                    list.Add(target);
-                }
+            foreach (var target in allParams.Names.Filter(map)) {
+                if (target.DestroyedOrNull() || target.Dead) continue;
+                list.Add(target);
             }
 
             if (list.Count == 0) {
@@ -173,7 +173,7 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_Disease : HumanIncidentParms {
-        public List<String> Names = new List<string>();
+        public PawnGroupSelector Names = new PawnGroupSelector();
         public string Disease = "";
 
         public HumanIncidentParams_Disease() {
@@ -184,7 +184,7 @@ namespace HumanStoryteller.Incidents {
 
         public override void ExposeData() {
             base.ExposeData();
-            Scribe_Collections.Look(ref Names, "names", LookMode.Value);
+            Scribe_Deep.Look(ref Names, "names");
             Scribe_Values.Look(ref Disease, "disease");
         }
     }

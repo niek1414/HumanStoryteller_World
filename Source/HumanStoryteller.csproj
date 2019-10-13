@@ -36,7 +36,7 @@
     <Reference Include="0Harmony, Version=1.2.0.1, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\Assemblies\0Harmony.dll</HintPath>
     </Reference>
-    <Reference Include="Assembly-CSharp, Version=1.0.7087.21809, Culture=neutral, PublicKeyToken=null">
+    <Reference Include="Assembly-CSharp, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\..\..\RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
@@ -74,6 +74,7 @@
     <Compile Include="CheckConditions\ColonistOnMapCheck.cs" />
     <Compile Include="CheckConditions\ColonistsCheck.cs" />
     <Compile Include="CheckConditions\ColonistsOnMapCheck.cs" />
+    <Compile Include="CheckConditions\CreatedStructureCheck.cs" />
     <Compile Include="CheckConditions\DialogCheck.cs" />
     <Compile Include="CheckConditions\DifficultyCheck.cs" />
     <Compile Include="CheckConditions\ItemColonyCheck.cs" />
@@ -91,6 +92,12 @@
     <Compile Include="CheckConditions\TradeCheck.cs" />
     <Compile Include="CheckConditions\TraveledCheck.cs" />
     <Compile Include="CheckConditions\VariableCheck.cs" />
+    <Compile Include="Helper\IntentHelper\LordUtil.cs" />
+    <Compile Include="Helper\IntentHelper\LordWithMemory.cs" />
+    <Compile Include="Helper\QuestHelper\QuestSitePart.cs" />
+    <Compile Include="Helper\QuestHelper\QuestSitePartDef.cs" />
+    <Compile Include="Helper\QuestHelper\QuestSitePartWorker.cs" />
+    <Compile Include="Helper\SoundHelper\SoundGrain.cs" />
     <Compile Include="HumanStoryteller.cs" />
     <Compile Include="Incidents\GameConditions\HumanGameCondition_TempFlux.cs" />
     <Compile Include="Incidents\HumanIncidentWorker.cs" />
@@ -101,6 +108,7 @@
     <Compile Include="Incidents\HumanIncidentWorker_Aurora.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_ChapterSplash.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_ControlCamera.cs" />
+    <Compile Include="Incidents\HumanIncidentWorker_CoupleDecouple.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_CreatePawn.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_CreateSettlement.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_CreateStructure.cs" />
@@ -110,6 +118,7 @@
     <Compile Include="Incidents\HumanIncidentWorker_Disease.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_Eclipse.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_EditPawn.cs" />
+    <Compile Include="Incidents\HumanIncidentWorker_FadeBlack.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_FlashStorm.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_GiveThought.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_HealPawn.cs" />
@@ -130,6 +139,7 @@
     <Compile Include="Incidents\HumanIncidentWorker_RadioMessage.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_RefugeeChased.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_RefugeePodCrash.cs" />
+    <Compile Include="Incidents\HumanIncidentWorker_RenameMap.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_RenamePawn.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_Research.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_ResourcePodCrash.cs" />
@@ -157,7 +167,43 @@
     <Compile Include="Incidents\HumanIncidentWorker_WildManWandersIn.cs" />
     <Compile Include="Incidents\Jobs\LordJob_TravelExact.cs" />
     <Compile Include="Incidents\Jobs\LordToil_TravelExact.cs" />
-    <Compile Include="Model\StoryEventNode.cs" />
+    <Compile Include="Model\Action\SpawnItemAction.cs" />
+    <Compile Include="Model\Action\StoryAction.cs" />
+    <Compile Include="Model\Item.cs" />
+    <Compile Include="Model\Location.cs" />
+    <Compile Include="Model\MapContainer.cs" />
+    <Compile Include="Model\Number.cs" />
+    <Compile Include="Model\PawnGroup\Filter\AwakeFilter.cs" />
+    <Compile Include="Model\PawnGroup\Filter\CanReachFilter.cs" />
+    <Compile Include="Model\PawnGroup\Filter\CanSeeOneOfFilter.cs" />
+    <Compile Include="Model\PawnGroup\Filter\DownedFilter.cs" />
+    <Compile Include="Model\PawnGroup\Filter\DraftedFilter.cs" />
+    <Compile Include="Model\PawnGroup\Filter\FactionFilter.cs" />
+    <Compile Include="Model\PawnGroup\Filter\FightingFilter.cs" />
+    <Compile Include="Model\PawnGroup\Filter\InBedFilter.cs" />
+    <Compile Include="Model\PawnGroup\Filter\IndoorsFilter.cs" />
+    <Compile Include="Model\PawnGroup\Filter\IsKidnappedFilter.cs" />
+    <Compile Include="Model\PawnGroup\Filter\KindFilter.cs" />
+    <Compile Include="Model\PawnGroup\Filter\MaleFilter.cs" />
+    <Compile Include="Model\PawnGroup\Filter\NaturalAgeUnderFilter.cs" />
+    <Compile Include="Model\PawnGroup\Filter\OnFireFilter.cs" />
+    <Compile Include="Model\PawnGroup\Filter\PrisonerFilter.cs" />
+    <Compile Include="Model\PawnGroup\Filter\PrisonerInCellFilter.cs" />
+    <Compile Include="Model\PawnGroup\Filter\RelationFilter.cs" />
+    <Compile Include="Model\PawnGroup\Filter\StarvingFilter.cs" />
+    <Compile Include="Model\PawnGroup\Filter\UnderRoofFilter.cs" />
+    <Compile Include="Model\PawnGroup\PawnGroupFilter.cs" />
+    <Compile Include="Model\PawnGroup\PawnGroup.cs" />
+    <Compile Include="Model\PawnGroup\PawnGroupSelector.cs" />
+    <Compile Include="Model\PawnGroup\PawnGroupSource.cs" />
+    <Compile Include="Model\StoryPart\Connection.cs" />
+    <Compile Include="Model\StoryPart\FiringHumanIncident.cs" />
+    <Compile Include="Model\StoryPart\HumanIncidentParms.cs" />
+    <Compile Include="Model\StoryPart\Story.cs" />
+    <Compile Include="Model\StoryPart\StoryEvent.cs" />
+    <Compile Include="Model\StoryPart\StoryEventNode.cs" />
+    <Compile Include="Model\StoryPart\StoryNode.cs" />
+    <Compile Include="Model\StoryPart\StorySummary.cs" />
     <Compile Include="Model\Zones\LocationZone.cs" />
     <Compile Include="Model\Zones\StructureZone.cs" />
     <Compile Include="Model\Zones\ZoneCell.cs" />
@@ -352,6 +398,7 @@
     <Compile Include="Parser\Converter\NumberJsonConverter.cs" />
     <Compile Include="Parser\Converter\IncidentConverter.cs" />
     <Compile Include="Parser\Converter\LetterTypeConverter.cs" />
+    <Compile Include="Parser\Converter\PawnGroupConverter.cs" />
     <Compile Include="Parser\Parser.cs" />
     <Compile Include="Parser\Story.cs" />
     <Compile Include="Parser\ParseNode.cs" />
@@ -368,39 +415,26 @@
     <Compile Include="StorytellerCompProperties_HumanThreatCycle.cs" />
     <Compile Include="StorytellerComp_HumanThreatCycle.cs" />
     <Compile Include="StoryGraph.cs" />
-    <Compile Include="Model\Connection.cs" />
-    <Compile Include="Model\FiringHumanIncident.cs" />
-    <Compile Include="Model\HumanIncidentParms.cs" />
     <Compile Include="Model\HumanLetter.cs" />
-    <Compile Include="Model\Story.cs" />
-    <Compile Include="Model\StoryEvent.cs" />
-    <Compile Include="Model\StoryNode.cs" />
-    <Compile Include="Model\StorySummary.cs" />
-    <Compile Include="Util\Location.cs" />
+    <Compile Include="Util\Logging\ObjectDumper.cs" />
+    <Compile Include="Util\Logging\Tell.cs" />
     <Compile Include="Util\OSUtil.cs" />
     <Compile Include="Util\Overlay\BlackBars.cs" />
     <Compile Include="Util\Overlay\ChapterBar.cs" />
+    <Compile Include="Util\Overlay\FadeBlack.cs" />
     <Compile Include="Util\Overlay\IRadioItem.cs" />
     <Compile Include="Util\Overlay\OverlayItem.cs" />
     <Compile Include="Util\Overlay\RadioMessage.cs" />
     <Compile Include="Util\Overlay\StoryOverlay.cs" />
-    <Compile Include="Util\WidgetsExtented.cs" />
+    <Compile Include="Util\PawnGroupUtil.cs" />
+    <Compile Include="Views\Extention\WidgetsExtented.cs" />
     <Compile Include="Views\MainTabWindow_CreaterTools.cs" />
     <Compile Include="Views\MainTabWindow_RateTab.cs" />
-    <Compile Include="Util\DataBank.cs" />
+    <Compile Include="Util\DataBankUtil.cs" />
     <Compile Include="Util\ItemUtil.cs" />
-    <Compile Include="Util\LordUtil.cs" />
-    <Compile Include="Util\LordWithMemory.cs" />
     <Compile Include="Util\MapUtil.cs" />
-    <Compile Include="Util\Number.cs" />
-    <Compile Include="Util\QuestSitePart.cs" />
-    <Compile Include="Util\QuestSitePartDef.cs" />
-    <Compile Include="Util\QuestSitePartWorker.cs" />
-    <Compile Include="Util\ScenarioEditor.cs" />
-    <Compile Include="Util\SoundGrain.cs" />
+    <Compile Include="Util\ScenarioEditorUtil.cs" />
     <Compile Include="Util\AreaUtil.cs" />
-    <Compile Include="Util\Tell.cs" />
-    <Compile Include="Util\ObjectDumper.cs" />
     <Compile Include="Util\PawnUtil.cs" />
     <Compile Include="Util\StoryComponent.cs" />
     <Compile Include="Util\ZipUtil.cs" />

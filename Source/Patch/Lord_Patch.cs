@@ -1,5 +1,6 @@
 using System.Reflection;
 using Harmony;
+using HumanStoryteller.Helper.IntentHelper;
 using HumanStoryteller.Util;
 using Verse.AI.Group;
 
@@ -16,6 +17,7 @@ namespace HumanStoryteller.Patch {
         }
 
         public static void ReceiveMemo(Lord __instance, string memo) {
+            if (Main_Patch.ShouldNotMessWithGame()) return;
             if (__instance is LordWithMemory l) {
                 if (memo.Equals("TravelArrived")) {
                     l.TraveledIR?.Traveled();
@@ -24,6 +26,7 @@ namespace HumanStoryteller.Patch {
         }
 
         public static void Expose(Lord __instance) {
+            if (Main_Patch.ShouldNotMessWithGame()) return;
             if (__instance is LordWithMemory l) {
                 l.ExposeData();
             }

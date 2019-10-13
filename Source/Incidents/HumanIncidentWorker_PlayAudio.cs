@@ -6,8 +6,11 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using HumanStoryteller.CheckConditions;
+using HumanStoryteller.Helper.SoundHelper;
 using HumanStoryteller.Model;
+using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util;
+using HumanStoryteller.Util.Logging;
 using RestSharp;
 using RimWorld;
 using UnityEngine;
@@ -19,7 +22,10 @@ using RuntimeAudioClipLoader;
 namespace HumanStoryteller.Incidents {
     class HumanIncidentWorker_PlayAudio : HumanIncidentWorker {
         public const String Name = "PlayAudio";
-        private static String CachePath = (OSUtil.IsWindows ? "C:\\" : "/") + Path.Combine(Path.Combine("tmp", "RimWorld"), Path.Combine("HumanStoryteller", "audio"));
+
+        private static String CachePath = (OSUtil.IsWindows ? "C:\\" : "/") +
+                                          Path.Combine(Path.Combine("tmp", "RimWorld"), Path.Combine("HumanStoryteller", "audio"));
+
         private const string SoundCloudDownloader = "http://soundclouddownloader.info";
         private const string FreeSoundDownloader = "http://freesound.org/data/previews/";
 
@@ -87,7 +93,7 @@ namespace HumanStoryteller.Incidents {
             bool soundCloud = false, string id = "") {
             try {
                 Directory.CreateDirectory(CachePath);
-                var tmpPath = Path.Combine(CachePath, id + (soundCloud ? ".mp3" : Path.GetExtension(url)));
+                var tmpPath = Path.Combine(CachePath, id.Replace('/', '-').Replace('\\', '=') + (soundCloud ? ".mp3" : ""));
                 if (File.Exists(tmpPath)) {
                     Tell.Log("Audio from cache (" + tmpPath + ")");
                     LoadAndConvertFile(tmpPath, ir, allParams, message);
@@ -95,6 +101,7 @@ namespace HumanStoryteller.Incidents {
                     Tell.Log("Downloading audio from: " + url + (soundCloud ? " (cloudID: " + id + ")" : ""));
                     RestClient client = new RestClient(url);
                     client.ExecuteAsync(new RestRequest(), response => {
+                        Tell.Debug("res", response, tmpPath);
                         using (FileStream fs = File.Create(tmpPath)) {
                             fs.Write(response.RawBytes, 0, response.RawBytes.Length);
                         }
@@ -164,7 +171,13 @@ namespace HumanStoryteller.Incidents {
 
         private static void PlayFile(string url, IncidentResult_Audio ir, HumanIncidentParams_PlayAudio allParams, string message) {
             AudioClip LoadClipWithManager() {
-                return Manager.Load(url);
+                try {
+                    return Manager.Load(url);
+                } catch (ArgumentNullException) {
+                    Tell.Warn("Corrupt audio file found, removing from cache");
+                    File.Delete(url);
+                    throw;
+                }
             }
 
             try {
@@ -185,7 +198,6 @@ namespace HumanStoryteller.Incidents {
                     audioClip.LoadAudioData();
                     audioClip.name = Path.GetFileNameWithoutExtension(url);
                 }
-                
 
                 while (audioClip.loadState == AudioDataLoadState.Loading || audioClip.loadState == AudioDataLoadState.Unloaded) {
                     Thread.Sleep(40);

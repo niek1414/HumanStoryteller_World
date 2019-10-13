@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using HumanStoryteller.CheckConditions;
 using HumanStoryteller.Model;
+using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Parser.Converter;
 using Newtonsoft.Json;
 

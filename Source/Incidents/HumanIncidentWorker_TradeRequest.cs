@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using HumanStoryteller.CheckConditions;
 using HumanStoryteller.Model;
+using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util;
+using HumanStoryteller.Util.Logging;
 using RimWorld;
 using RimWorld.Planet;
 using UnityEngine;
@@ -51,21 +53,15 @@ namespace HumanStoryteller.Incidents {
             TradeRequestComp component = settlementBase.GetComponent<TradeRequestComp>();
             int tickDuration;
             var inputDuration = allParams.Duration.GetValue();
-            if (inputDuration != -1) {
-                tickDuration = Mathf.RoundToInt(inputDuration * 60000f);
-            } else {
-                tickDuration = RandomOfferDurationTicks(map.Tile, settlementBase.Tile);
-            }
+            tickDuration = inputDuration != -1 
+                ? Mathf.RoundToInt(inputDuration * 60000f) 
+                : RandomOfferDurationTicks(map.Tile, settlementBase.Tile);
 
             component.expiration = Find.TickManager.TicksGame + tickDuration;
 
-            component.requestThingDef = null;
-            component.requestCount = -1;
-            if (allParams.RequestItem != "") {
-                component.requestThingDef = ThingDef.Named(allParams.RequestItem);
-            }
+            component.requestThingDef = allParams.RequestItem.GetThingDef();
+            component.requestCount = Mathf.RoundToInt(allParams.RequestItem.Amount.GetValue());
 
-            component.requestCount = Mathf.RoundToInt(allParams.RequestAmount.GetValue());
             if (component.requestThingDef == null) {
                 TryFindRandomRequestedThingDef(map, out ThingDef thingDef, out int count);
                 component.requestThingDef = thingDef;
@@ -79,16 +75,8 @@ namespace HumanStoryteller.Incidents {
             }
 
             component.rewards.ClearAndDestroyContents();
-            List<Thing> rewards;
-            if (allParams.RewardItem == "") {
-                rewards = GenerateRewardsFor(component.requestThingDef, component.requestCount, map);
-            } else {
-                rewards = GenerateRewards(allParams.RewardAmount, allParams.RewardItem, allParams.RewardStuff, allParams.RewardItemQuality);
-            }
-
+            List<Thing> rewards = allParams.RewardItem.GetThings(true) ?? GenerateRewardsFor(component.requestThingDef, component.requestCount, map);
             component.rewards.TryAddRangeOrTransfer(rewards, true, true);
-
-            
             
             string text = "LetterCaravanRequest".Translate(settlementBase.Label,
                 TradeRequestUtility.RequestedThingLabel(component.requestThingDef, component.requestCount).CapitalizeFirst(),
@@ -101,38 +89,6 @@ namespace HumanStoryteller.Incidents {
             SendLetter(allParams, "LetterLabelCaravanRequest".Translate(), text, LetterDefOf.PositiveEvent, settlementBase, settlementBase.Faction);
 
             return new IncidentResult_Trade(map.Parent);
-        }
-
-        private List<Thing> GenerateRewards(Number number, string item, string stuff, string quality) {
-            List<Thing> things = new List<Thing>();
-            int num = Mathf.RoundToInt(number.GetValue());
-            ThingDef droppable = ThingDef.Named(item);
-            if (droppable.stackLimit <= 0) return things;
-            ThingDef stuffDef = null;
-            if (droppable.MadeFromStuff) {
-                try {
-                    if (stuff != "") {
-                        stuffDef = (from d in DefDatabase<ThingDef>.AllDefs
-                            where d.IsStuff && d.defName.Equals(stuff)
-                            select d).First();
-                    }
-                } catch (InvalidOperationException) {
-                }
-            }
-
-            var qc = quality != "" ? ItemUtil.GetCategory(quality) : QualityCategory.Normal;
-            while (num > 0) {
-                var stack = ThingMaker.MakeThing(droppable, stuffDef);
-                ItemUtil.TrySetQuality(stack,
-                    quality != "" ? qc : QualityUtility.GenerateQualityRandomEqualChance());
-                var amount = Mathf.Min(stack.def.stackLimit, num);
-                num -= amount;
-                stack.stackCount = amount;
-                stack = ItemUtil.TryMakeMinified(stack);
-                things.Add(stack);
-            }
-
-            return things;
         }
 
         private static List<Thing> GenerateRewardsFor(ThingDef thingDef, int quantity, Map map) {
@@ -217,24 +173,20 @@ namespace HumanStoryteller.Incidents {
         }
 
         private static int RandomRequestCount(ThingDef thingDef, Map map) {
-            float num = BaseValueWantedRange.RandomInRange;
-            num *= ValueWantedFactorFromWealthCurve.Evaluate(map.wealthWatcher.WealthTotal);
-            return ThingUtility.RoundedResourceStackCount(Mathf.Max(1, Mathf.RoundToInt(num / thingDef.BaseMarketValue)));
+            float randomWantedAmount = BaseValueWantedRange.RandomInRange;
+            randomWantedAmount *= ValueWantedFactorFromWealthCurve.Evaluate(map.wealthWatcher.WealthTotal);
+            return ThingUtility.RoundedResourceStackCount(Mathf.Max(1, Mathf.RoundToInt(randomWantedAmount / thingDef.BaseMarketValue)));
         }
 
         private int RandomOfferDurationTicks(int tileIdFrom, int tileIdTo) {
             int randomInRange = SiteTuning.QuestSiteTimeoutDaysRange.RandomInRange;
-            int num = CaravanArrivalTimeEstimator.EstimatedTicksToArrive(tileIdFrom, tileIdTo, null);
-            float num2 = num / 60000f;
-            int num3 = Mathf.CeilToInt(Mathf.Max(num2 + 6f, num2 * 1.35f));
-            int num4 = num3;
-            IntRange questSiteTimeoutDaysRange = SiteTuning.QuestSiteTimeoutDaysRange;
-            if (num4 > questSiteTimeoutDaysRange.max) {
+            float ticksToArrive = CaravanArrivalTimeEstimator.EstimatedTicksToArrive(tileIdFrom, tileIdTo, null) / 60000f;
+            int travelTime = Mathf.CeilToInt(Mathf.Max(ticksToArrive + 6f, ticksToArrive * 1.35f));
+            if (travelTime > SiteTuning.QuestSiteTimeoutDaysRange.max) {
                 return -1;
             }
 
-            int num5 = Mathf.Max(randomInRange, num3);
-            return 60000 * num5;
+            return 60000 * Mathf.Max(randomInRange, travelTime);
         }
 
         private static SettlementBase RandomNearbyTradeableSettlement(int originTile) {
@@ -254,13 +206,8 @@ namespace HumanStoryteller.Incidents {
         public Number Points = new Number();
         public Number Duration = new Number();
 
-        public Number RequestAmount = new Number();
-        public string RequestItem = "";
-
-        public Number RewardAmount = new Number(5);
-        public string RewardItem = "";
-        public string RewardItemQuality = "";
-        public string RewardStuff = "";
+        public Item RequestItem = new Item("", "", "", new Number(5));
+        public Item RewardItem = new Item("", "", "", new Number(5));
 
         public HumanIncidentParams_TradeRequest() {
         }
@@ -270,19 +217,15 @@ namespace HumanStoryteller.Incidents {
 
         public override string ToString() {
             return
-                $"{base.ToString()}, Points: {Points}, Duration: {Duration}, RequestAmount: {RequestAmount}, RequestItem: {RequestItem}, RewardAmount: {RewardAmount}, RewardItem: {RewardItem}, RewardItemQuality: {RewardItemQuality}, RewardStuff: {RewardStuff}";
+                $"{base.ToString()}, Points: {Points}, Duration: {Duration}, RequestItem: {RequestItem}, RewardItem: {RewardItem}";
         }
 
         public override void ExposeData() {
             base.ExposeData();
             Scribe_Deep.Look(ref Points, "points");
             Scribe_Deep.Look(ref Duration, "duration");
-            Scribe_Deep.Look(ref RequestAmount, "requestAmount");
-            Scribe_Values.Look(ref RequestItem, "requestItem");
-            Scribe_Deep.Look(ref RewardAmount, "rewardAmount");
-            Scribe_Values.Look(ref RewardItem, "rewardItem");
-            Scribe_Values.Look(ref RewardItemQuality, "rewardItemQuality");
-            Scribe_Values.Look(ref RewardStuff, "rewardStuff");
+            Scribe_Deep.Look(ref RequestItem, "requestItem");
+            Scribe_Deep.Look(ref RewardItem, "rewardItem");
         }
     }
 }

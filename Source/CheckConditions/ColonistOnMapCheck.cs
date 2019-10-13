@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using HumanStoryteller.Incidents;
 using HumanStoryteller.Util;
+using HumanStoryteller.Util.Logging;
 using RimWorld;
 using Verse;
 
@@ -25,7 +26,7 @@ namespace HumanStoryteller.CheckConditions {
             var map = MapUtil.GetMapByName(_mapName, false);
             if (map == null) return false;
             var pawn = PawnUtil.GetPawnByName(_pawnName);
-            if (pawn == null) return false;
+            if (pawn.DestroyedOrNull()) return false;
             return map.mapPawns.AllPawns.Contains(pawn);
         }
 

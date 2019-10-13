@@ -1,6 +1,8 @@
 using System;
 using HumanStoryteller.Incidents;
+using HumanStoryteller.Model;
 using HumanStoryteller.Util;
+using HumanStoryteller.Util.Logging;
 using Verse;
 
 namespace HumanStoryteller.CheckConditions {
@@ -8,13 +10,13 @@ namespace HumanStoryteller.CheckConditions {
         public const String Name = "ItemColony";
 
         private ThingDef _item;
-        private DataBank.CompareType _compareType;
+        private DataBankUtil.CompareType _compareType;
         private Number _constant;
 
         public ItemColonyCheck() {
         }
 
-        public ItemColonyCheck(ThingDef item, DataBank.CompareType compareType, Number constant) {
+        public ItemColonyCheck(ThingDef item, DataBankUtil.CompareType compareType, Number constant) {
             _item = Tell.AssertNotNull(item, nameof(item), GetType().Name);
             _compareType = Tell.AssertNotNull(compareType, nameof(compareType), GetType().Name);
             _constant = Tell.AssertNotNull(constant, nameof(constant), GetType().Name);
@@ -22,7 +24,7 @@ namespace HumanStoryteller.CheckConditions {
 
         public override bool Check(IncidentResult result, int checkPosition) {
             int count = result.Target.GetMapFromTarget().resourceCounter.GetCount(_item);
-            return DataBank.CompareValueWithConst(count, _compareType, _constant.GetValue());
+            return DataBankUtil.CompareValueWithConst(count, _compareType, _constant.GetValue());
         }
 
         public override string ToString() {

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using HumanStoryteller.Util;
+using HumanStoryteller.Util.Logging;
 using Newtonsoft.Json;
 using UnityEngine;
 using Verse;

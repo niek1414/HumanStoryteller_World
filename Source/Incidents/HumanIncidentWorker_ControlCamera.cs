@@ -1,7 +1,9 @@
 using System;
 using Harmony;
 using HumanStoryteller.Model;
+using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util;
+using HumanStoryteller.Util.Logging;
 using HumanStoryteller.Util.Overlay;
 using RimWorld;
 using RimWorld.Planet;
@@ -22,8 +24,10 @@ namespace HumanStoryteller.Incidents {
             HumanIncidentParams_ControlCamera
                 allParams = Tell.AssertNotNull((HumanIncidentParams_ControlCamera) parms, nameof(parms), GetType().Name);
             Tell.Log($"Executing event {Name} with:{allParams}");
-
+            
             var sc = HumanStoryteller.StoryComponent;
+            sc.StoryStatus.FollowThing = GlobalTargetInfo.Invalid;
+            
             if (allParams.ShowTile) {
                 CameraJumper.TryShowWorld();
                 Find.WorldCameraDriver.JumpTo(parms.Target.GetTileFromTarget());
@@ -80,7 +84,7 @@ namespace HumanStoryteller.Incidents {
 
         public override void ExposeData() {
             base.ExposeData();
-            Scribe_Values.Look(ref Location, "location");
+            Scribe_Deep.Look(ref Location, "location");
             Scribe_Deep.Look(ref Zoom, "zoom");
             Scribe_Values.Look(ref Follow, "follow");
             Scribe_Values.Look(ref ShowTile, "showTile");

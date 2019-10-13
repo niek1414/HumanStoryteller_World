@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using HumanStoryteller.Model;
+using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util;
+using HumanStoryteller.Util.Logging;
 using RimWorld;
 using Verse;
 using Verse.AI.Group;
@@ -80,27 +82,14 @@ namespace HumanStoryteller.Incidents {
                 PawnUtil.SavePawnByName(allParams.OutName, pawn);
             }
 
-            if (allParams.Weapon != "") {
+            if (allParams.Weapon.NotEmpty()) {
                 if (pawn.equipment.Primary != null)
                     pawn.equipment.Remove(pawn.equipment.Primary);
-                if (allParams.Weapon != "None") {
-                    var qc = allParams.ItemQuality != "" ? ItemUtil.GetCategory(allParams.ItemQuality) : QualityCategory.Normal;
-                    ThingDef thingDef = (from def in DefDatabase<ThingDef>.AllDefs
-                        where def.IsWeapon && def.defName.Equals(allParams.Weapon)
-                        select def).RandomElementWithFallback();
-                    ThingDef stuff = GenStuff.RandomStuffFor(thingDef);
-                    try {
-                        if (allParams.Stuff != "") {
-                            stuff = (from d in DefDatabase<ThingDef>.AllDefs
-                                where d.IsStuff && d.defName.Equals(allParams.Stuff)
-                                select d).First();
-                        }
-                    } catch (InvalidOperationException) {
+                if (allParams.Weapon.Thing != "None") {
+                    var weapon = allParams.Weapon.GetThing();
+                    if (weapon != null) {
+                        pawn.equipment.AddEquipment(weapon);
                     }
-
-                    var weapon = (ThingWithComps) ThingMaker.MakeThing(thingDef, stuff);
-                    ItemUtil.TrySetQuality(weapon, qc);
-                    pawn.equipment.AddEquipment(weapon);
                 }
             }
             //TODO test
@@ -139,7 +128,7 @@ namespace HumanStoryteller.Incidents {
         public Number BiologicalAge = new Number();
         public Number ChronologicalAge = new Number();
         public Number ApparelMoney = new Number();
-        public Number GearHealthMin;
+        public Number GearHealthMin = new Number();
         public Number GearHealthMax = new Number();
         public string PawnKind = "";
         public string FirstName = "";
@@ -151,18 +140,16 @@ namespace HumanStoryteller.Incidents {
         public bool NoSpawn;
         public bool MustBeCapableOfViolence;
         public string Gender = "";
-        public string Weapon = "";
-        public string ItemQuality = "";
-        public string Stuff = "";
+        public Item Weapon = new Item();
 
         public HumanIncidentParams_CreatePawn() {
         }
 
         public HumanIncidentParams_CreatePawn(Target target, HumanLetter letter) : base(target, letter) {
         }
-        
+
         public override string ToString() {
-            return $"{base.ToString()}, BiologicalAge: {BiologicalAge}, ChronologicalAge: {ChronologicalAge}, ApparelMoney: {ApparelMoney}, GearHealthMin: {GearHealthMin}, GearHealthMax: {GearHealthMax}, PawnKind: {PawnKind}, FirstName: {FirstName}, NickName: {NickName}, LastName: {LastName}, OutName: {OutName}, Faction: {Faction}, NewBorn: {NewBorn}, NoSpawn: {NoSpawn}, MustBeCapableOfViolence: {MustBeCapableOfViolence}, Gender: {Gender}, Weapon: {Weapon}, ItemQuality: {ItemQuality}, Stuff: {Stuff}";
+            return $"{base.ToString()}, BiologicalAge: {BiologicalAge}, ChronologicalAge: {ChronologicalAge}, ApparelMoney: {ApparelMoney}, GearHealthMin: {GearHealthMin}, GearHealthMax: {GearHealthMax}, PawnKind: {PawnKind}, FirstName: {FirstName}, NickName: {NickName}, LastName: {LastName}, OutName: {OutName}, Faction: {Faction}, NewBorn: {NewBorn}, NoSpawn: {NoSpawn}, MustBeCapableOfViolence: {MustBeCapableOfViolence}, Gender: {Gender}, Weapon: {Weapon}";
         }
 
         public override void ExposeData() {
@@ -182,9 +169,7 @@ namespace HumanStoryteller.Incidents {
             Scribe_Values.Look(ref NoSpawn, "noSpawn");
             Scribe_Values.Look(ref MustBeCapableOfViolence, "mustBeCapableOfViolence");
             Scribe_Values.Look(ref Gender, "gender");
-            Scribe_Values.Look(ref Weapon, "weapon");
-            Scribe_Values.Look(ref ItemQuality, "itemQuality");
-            Scribe_Values.Look(ref Stuff, "stuff");
+            Scribe_Deep.Look(ref Weapon, "weapon");
         }
     }
 }

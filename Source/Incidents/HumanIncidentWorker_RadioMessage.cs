@@ -1,6 +1,8 @@
 using System;
 using HumanStoryteller.Model;
+using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util;
+using HumanStoryteller.Util.Logging;
 using HumanStoryteller.Util.Overlay;
 using Verse;
 
@@ -19,8 +21,10 @@ namespace HumanStoryteller.Incidents {
                 allParams = Tell.AssertNotNull((HumanIncidentParams_RadioMessage) parms, nameof(parms), GetType().Name);
             Tell.Log($"Executing event {Name} with:{allParams}");
 
-            HumanStoryteller.StoryComponent?.StoryOverlay.AddRadio(new RadioMessage(PawnUtil.GetPawnByName(allParams.Name), allParams.Message));
-
+            var message = new RadioMessage(PawnUtil.GetPawnByName(allParams.Name), allParams.Message);
+            HumanStoryteller.StoryComponent?.StoryOverlay.AddRadio(message);
+            Find.History.archive.Add(message);
+            
             SendLetter(allParams);
             return ir;
         }

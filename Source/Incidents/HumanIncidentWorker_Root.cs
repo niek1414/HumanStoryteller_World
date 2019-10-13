@@ -1,6 +1,8 @@
 using System;
 using HumanStoryteller.Model;
+using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util;
+using HumanStoryteller.Util.Logging;
 using Verse;
 
 namespace HumanStoryteller.Incidents {
@@ -27,9 +29,6 @@ namespace HumanStoryteller.Incidents {
         public Number MapSize = new Number();
         
         public HumanIncidentParams_Root() {
-        }
-
-        public HumanIncidentParams_Root(Target target, HumanLetter letter) : base(target, letter) {
         }
 
         public override string ToString() {

@@ -2,8 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Harmony;
+using HumanStoryteller.CheckConditions;
+using HumanStoryteller.Model.Action;
 using HumanStoryteller.Model.Zones;
 using HumanStoryteller.Parser.Converter;
+using HumanStoryteller.Util.Logging;
 using Newtonsoft.Json;
 using RimWorld;
 using UnityEngine;
@@ -27,11 +30,8 @@ namespace HumanStoryteller.Util {
 
             LocationZone root = new LocationZone(zoneCells, origin);
             var str = JsonConvert.SerializeObject(root, Formatting.None,
-                new JsonSerializerSettings() {DefaultValueHandling = DefaultValueHandling.Ignore});
+                new JsonSerializerSettings {DefaultValueHandling = DefaultValueHandling.Ignore});
             var compStr = ZipUtil.Zip(str);
-
-            Tell.Log("Original Length: " + str.Length);
-            Tell.Log("Compressed Length: " + compStr.Length);
 
             GUIUtility.systemCopyBuffer = str.Length <= compStr.Length ? str : compStr;
             return true;
@@ -79,9 +79,6 @@ namespace HumanStoryteller.Util {
             StructureZone root = new StructureZone(zoneThings, origin);
             var str = JsonConvert.SerializeObject(root);
             var compStr = ZipUtil.Zip(str);
-
-            Tell.Log("Original Length: " + str.Length);
-            Tell.Log("Compressed Length: " + compStr.Length);
 
             GUIUtility.systemCopyBuffer = str.Length <= compStr.Length ? str : compStr;
             return true;
@@ -144,47 +141,13 @@ namespace HumanStoryteller.Util {
             }
         }
 
-        public static bool StringToAreaObjects(string compressedJson, Map target, IntVec3 offset) {
+        public static bool StringToAreaObjects(string compressedJson, Map target, IntVec3 offset, IncidentResult_CreatedStructure ir) {
             try {
                 var json = ZipUtil.Unzip(compressedJson);
                 var settings = new JsonSerializerSettings
                     {NullValueHandling = NullValueHandling.Ignore, Converters = new List<JsonConverter> {new DecimalJsonConverter()}};
                 StructureZone root = JsonConvert.DeserializeObject<StructureZone>(json, settings);
-                int failCounter = 0;
-                int spawned = 0;
-                int max = 50;
-
-                Action a = null;
-                a = () => {
-                    var autoHomeArea = Find.PlaySettings.autoHomeArea;
-                    Find.PlaySettings.autoHomeArea = false;
-
-                    var currentMax = spawned + max;
-                    var end = false;
-                    for (var i = spawned; i < currentMax; i++) {
-                        if (i >= root.Things.Count) {
-                            end = true;
-                            break;
-                        }
-
-                        var thing = root.Things[i];
-                        if (SpawnThing(thing, root, target, offset) == null) {
-                            failCounter++;
-                        }
-
-                        spawned++;
-                    }
-
-                    Find.PlaySettings.autoHomeArea = autoHomeArea;
-                    if (end) {
-                        FloodFillerFog.DebugRefogMap(target);
-                        Tell.Log("Spawned structure. Complete size was " + root.Things.Count + " of with " + failCounter +
-                                 " things failed to spawn.");
-                    } else {
-                        HumanStoryteller.StoryComponent.StoryQueue.Add(a);
-                    }
-                };
-                HumanStoryteller.StoryComponent.StoryQueue.Add(a);
+                HumanStoryteller.StoryComponent.StoryQueue.Add(new SpawnItemAction(root, target, offset, ir));
                 return true;
             } catch (Exception e) {
                 Tell.Warn(e.Message + " __stack: " + e.StackTrace);
@@ -192,22 +155,51 @@ namespace HumanStoryteller.Util {
             }
         }
 
-        private static Thing SpawnThing(ZoneThing thing, StructureZone root, Map target, IntVec3 offset, bool spawn = true) {
+        public static void FloodStructureZone(Map target, StructureZone root, IntVec3 offset) {
+            CellIndices cellIndices = target.cellIndices;
+            if (target.fogGrid.fogGrid == null) {
+                target.fogGrid.fogGrid = new bool[cellIndices.NumGridCells];
+            }
+
+            bool[] previousGrid = (bool[]) target.fogGrid.fogGrid.Clone();
+            for (var i = 0; i < target.fogGrid.fogGrid.Length; i++) {
+                target.fogGrid.fogGrid[i] = true;
+            }
+
+            foreach (var pawn in target.mapPawns.FreeColonistsSpawned) {
+                FloodFillerFog.FloodUnfog(pawn.Position, target);
+            }
+
+            var newGrid = target.fogGrid.fogGrid;
+            foreach (var thing in root.Things) {
+                var cell = thing.GetCellLocation(root, offset);
+                var i = cellIndices.CellToIndex(cell);
+                target.fogGrid.fogGrid = previousGrid;
+                target.fogGrid.fogGrid[i] = newGrid[i];
+                target.mapDrawer.MapMeshDirty(cell, MapMeshFlag.FogOfWar);
+            }
+            target.roofGrid.Drawer.SetDirty();
+        }
+
+        public static Thing SpawnThing(ZoneThing thing, StructureZone root, Map target, IntVec3 offset, bool spawn = true) {
             if (thing == null) {
                 Tell.Warn("Found empty object while creating structure");
                 return null;
             }
 
             Thing spawnThing;
-            IntVec3 newLoc = new IntVec3(Mathf.RoundToInt(thing.X) - Mathf.RoundToInt(root.OriginX) + offset.x, 0,
-                Mathf.RoundToInt(thing.Z) - Mathf.RoundToInt(root.OriginZ) + offset.z);
-            if (!newLoc.InBounds(target) && spawn) return null;
+            IntVec3 newLoc = thing.GetCellLocation(root, offset);
+            if (!newLoc.InBounds(target) && spawn) {
+                Tell.Log("Trying to spawn thing outside of the map", newLoc);
+                return null;
+            }
 
             Def def = thing.DefTypeObj;
             if (def == null) {
                 Tell.Warn("Found object with no Def while creating structure");
                 return null;
             }
+
             ThingDef stuffDef = thing.StuffObj;
 
             if (thing.IsBuilding()) {
