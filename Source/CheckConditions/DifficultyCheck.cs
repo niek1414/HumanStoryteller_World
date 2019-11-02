@@ -23,7 +23,7 @@ namespace HumanStoryteller.CheckConditions {
         }
 
         public override string ToString() {
-            return $"Difficulty: {_difficulty}";
+            return $"Difficulty: [{_difficulty}]";
         }
 
         public override void ExposeData() {

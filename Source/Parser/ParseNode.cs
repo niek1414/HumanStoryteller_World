@@ -25,7 +25,7 @@ namespace HumanStoryteller.Parser {
         public FiringHumanIncident Incident { get; set; }
 
         public override string ToString() {
-            return $"Uuid: {Uuid}, Name: {Name}, Left: {Left}, Right: {Right}, Conditions: {Conditions}, Modifications: {Modifications}, RealNode: {RealNode}, Incident: {Incident}";
+            return $"Uuid: [{Uuid}], Name: [{Name}], Left: [{Left}], Right: [{Right}], Conditions: [{Conditions}], Modifications: [{Modifications}], RealNode: [{RealNode}], Incident: [{Incident}]";
         }
     }
 }

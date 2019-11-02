@@ -75,7 +75,7 @@ namespace HumanStoryteller.Incidents {
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, Duration: {Duration}, Gender: {Gender}, PsyLevel: {PsyLevel}";
+            return $"{base.ToString()}, Duration: [{Duration}], Gender: [{Gender}], PsyLevel: [{PsyLevel}]";
         }
 
         public override void ExposeData() {

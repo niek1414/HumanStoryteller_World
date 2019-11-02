@@ -65,7 +65,7 @@ namespace HumanStoryteller.Incidents {
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, Amount: {Amount}";
+            return $"{base.ToString()}, Amount: [{Amount}]";
         }
         
         public override void ExposeData() {

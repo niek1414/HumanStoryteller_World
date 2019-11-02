@@ -72,6 +72,9 @@ namespace HumanStoryteller.Parser.Converter {
                 case IsKidnappedFilter.Name:
                     pawnGroupFilter = new IsKidnappedFilter();
                     break;
+                case IsHumanlikeFilter.Name:
+                    pawnGroupFilter = new IsHumanlikeFilter();
+                    break;
                 case OnFireFilter.Name:
                     pawnGroupFilter = new OnFireFilter();
                     break;

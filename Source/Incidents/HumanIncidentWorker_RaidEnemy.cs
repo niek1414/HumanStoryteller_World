@@ -230,7 +230,7 @@ namespace HumanStoryteller.Incidents {
 
         public override string ToString() {
             return
-                $"{base.ToString()}, Points: {Points}, Amount: {Amount}, Faction: {Faction}, Strategy: {Strategy}, ArriveMode: {ArriveMode}, Names: {OutNames}";
+                $"{base.ToString()}, Points: [{Points}], Amount: [{Amount}], Faction: [{Faction}], Strategy: [{Strategy}], ArriveMode: [{ArriveMode}], Names: [{OutNames.ToCommaList()}]";
         }
 
         public override void ExposeData() {

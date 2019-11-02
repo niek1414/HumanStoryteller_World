@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Harmony;
 using RimWorld;
 using Verse;
 
@@ -26,7 +27,7 @@ namespace HumanStoryteller.Model.PawnGroup.Filter {
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, Kinds: {Kinds}";
+            return $"{base.ToString()}, Kinds: [{Kinds.Join()}]";
         }
     }
 }

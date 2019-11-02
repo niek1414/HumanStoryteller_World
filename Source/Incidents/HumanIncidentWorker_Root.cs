@@ -19,7 +19,7 @@ namespace HumanStoryteller.Incidents {
         public bool OverrideMapGen;
         public bool OverrideMapLoc;
         public string Seed = "";
-        public string Opening = "";
+        public RichText Opening = new RichText();
         public string StartSeason = "";
         public Number PawnAmount = new Number();
         public Number Coverage = new Number();
@@ -32,14 +32,14 @@ namespace HumanStoryteller.Incidents {
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, OverrideMapGen: {OverrideMapGen}, OverrideMapLoc: {OverrideMapLoc}, Seed: {Seed}, Opening: {Opening}, StartSeason: {StartSeason}, PawnAmount: {PawnAmount}, Coverage: {Coverage}, Rainfall: {Rainfall}, Temperature: {Temperature}, Site: {Site}, MapSize: {MapSize}";
+            return $"{base.ToString()}, OverrideMapGen: [{OverrideMapGen}], OverrideMapLoc: [{OverrideMapLoc}], Seed: [{Seed}], Opening: [{Opening}], StartSeason: [{StartSeason}], PawnAmount: [{PawnAmount}], Coverage: [{Coverage}], Rainfall: [{Rainfall}], Temperature: [{Temperature}], Site: [{Site}], MapSize: [{MapSize}]";
         }
 
         public override void ExposeData() {
             base.ExposeData();
             Scribe_Values.Look(ref OverrideMapGen, "overrideMapGen");
             Scribe_Values.Look(ref Seed, "seed");
-            Scribe_Values.Look(ref Opening, "opening");
+            Scribe_Deep.Look(ref Opening, "opening");
             Scribe_Values.Look(ref StartSeason, "startSeason");
             Scribe_Deep.Look(ref PawnAmount, "pawnAmount");
             Scribe_Deep.Look(ref Coverage, "coverage");

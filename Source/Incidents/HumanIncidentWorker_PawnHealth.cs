@@ -27,7 +27,7 @@ namespace HumanStoryteller.Incidents {
 
             Map map = (Map) allParams.GetTarget();
             
-            foreach (var pawn in allParams.Names.Filter(map)) {
+            foreach (var pawn in allParams.Pawns.Filter(map)) {
                 if (pawn.DestroyedOrNull()) {
                     continue;
                 }
@@ -61,7 +61,7 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_PawnHealth : HumanIncidentParms {
-        public PawnGroupSelector Names = new PawnGroupSelector();
+        public PawnGroupSelector Pawns = new PawnGroupSelector();
         public string HealthAction = "";
         public string BodyPart = "";
 
@@ -72,12 +72,12 @@ namespace HumanStoryteller.Incidents {
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, Names: {Names}, HealthAction: {HealthAction}, BodyPart: {BodyPart}";
+            return $"{base.ToString()}, Pawns: [{Pawns}], HealthAction: [{HealthAction}], BodyPart: [{BodyPart}]";
         }
 
         public override void ExposeData() {
             base.ExposeData();
-            Scribe_Deep.Look(ref Names, "names");
+            Scribe_Deep.Look(ref Pawns, "names");
             Scribe_Values.Look(ref HealthAction, "healthAction");
             Scribe_Values.Look(ref BodyPart, "bodyPart");
         }

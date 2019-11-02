@@ -149,7 +149,7 @@ namespace HumanStoryteller.Incidents {
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, BiologicalAge: {BiologicalAge}, ChronologicalAge: {ChronologicalAge}, ApparelMoney: {ApparelMoney}, GearHealthMin: {GearHealthMin}, GearHealthMax: {GearHealthMax}, PawnKind: {PawnKind}, FirstName: {FirstName}, NickName: {NickName}, LastName: {LastName}, OutName: {OutName}, Faction: {Faction}, NewBorn: {NewBorn}, NoSpawn: {NoSpawn}, MustBeCapableOfViolence: {MustBeCapableOfViolence}, Gender: {Gender}, Weapon: {Weapon}";
+            return $"{base.ToString()}, BiologicalAge: [{BiologicalAge}], ChronologicalAge: [{ChronologicalAge}], ApparelMoney: [{ApparelMoney}], GearHealthMin: [{GearHealthMin}], GearHealthMax: [{GearHealthMax}], PawnKind: [{PawnKind}], FirstName: [{FirstName}], NickName: [{NickName}], LastName: [{LastName}], OutName: [{OutName}], Faction: [{Faction}], NewBorn: [{NewBorn}], NoSpawn: [{NoSpawn}], MustBeCapableOfViolence: [{MustBeCapableOfViolence}], Gender: [{Gender}], Weapon: [{Weapon}]";
         }
 
         public override void ExposeData() {

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
+using Harmony;
 using HumanStoryteller.Incidents;
-using HumanStoryteller.Util;
 using HumanStoryteller.Util.Logging;
 using RimWorld;
 using Verse;
@@ -69,7 +69,7 @@ namespace HumanStoryteller.CheckConditions {
         }
 
         public override string ToString() {
-            return $"Hours: {_hours}, Days: {_days}, Quadrums: {_quadrums}, Years: {_years}";
+            return $"Hours: [{_hours.Join()}], Days: [{_days.Join()}], Quadrums: [{_quadrums.Join()}], Years: [{_years.Join()}]";
         }
 
         public override void ExposeData() {

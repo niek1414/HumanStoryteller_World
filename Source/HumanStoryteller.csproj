@@ -77,6 +77,7 @@
     <Compile Include="CheckConditions\CreatedStructureCheck.cs" />
     <Compile Include="CheckConditions\DialogCheck.cs" />
     <Compile Include="CheckConditions\DifficultyCheck.cs" />
+    <Compile Include="CheckConditions\GroupCountCheck.cs" />
     <Compile Include="CheckConditions\ItemColonyCheck.cs" />
     <Compile Include="CheckConditions\ItemMapCheck.cs" />
     <Compile Include="CheckConditions\MapCreatedCheck.cs" />
@@ -134,6 +135,7 @@
     <Compile Include="Incidents\HumanIncidentWorker_PawnHealth.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_PlanetKiller.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_PlayAudio.cs" />
+    <Compile Include="Incidents\HumanIncidentWorker_PointTo.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_PsychicDrone.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_Quest.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_RadioMessage.cs" />
@@ -145,10 +147,12 @@
     <Compile Include="Incidents\HumanIncidentWorker_ResourcePodCrash.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_Root.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_Rules.cs" />
+    <Compile Include="Incidents\HumanIncidentWorker_SavePawnGroup.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_SelfTame.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_SetRelation.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_ShipPartCrash.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_ShortCircuit.cs" />
+    <Compile Include="Incidents\HumanIncidentWorker_ShowImage.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_SolarFlare.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_SpeedControl.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_TempFlux.cs" />
@@ -162,6 +166,7 @@
     <Compile Include="Incidents\HumanIncidentWorker_ToxicFallout.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_TraderArrival.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_TradeRequest.cs" />
+    <Compile Include="Incidents\HumanIncidentWorker_TransferPawn.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_VisitorGroup.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_VolcanicWinter.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_WildManWandersIn.cs" />
@@ -182,6 +187,7 @@
     <Compile Include="Model\PawnGroup\Filter\FightingFilter.cs" />
     <Compile Include="Model\PawnGroup\Filter\InBedFilter.cs" />
     <Compile Include="Model\PawnGroup\Filter\IndoorsFilter.cs" />
+    <Compile Include="Model\PawnGroup\Filter\IsHumanlikeFilter.cs" />
     <Compile Include="Model\PawnGroup\Filter\IsKidnappedFilter.cs" />
     <Compile Include="Model\PawnGroup\Filter\KindFilter.cs" />
     <Compile Include="Model\PawnGroup\Filter\MaleFilter.cs" />
@@ -196,6 +202,7 @@
     <Compile Include="Model\PawnGroup\PawnGroup.cs" />
     <Compile Include="Model\PawnGroup\PawnGroupSelector.cs" />
     <Compile Include="Model\PawnGroup\PawnGroupSource.cs" />
+    <Compile Include="Model\RichText.cs" />
     <Compile Include="Model\StoryPart\Connection.cs" />
     <Compile Include="Model\StoryPart\FiringHumanIncident.cs" />
     <Compile Include="Model\StoryPart\HumanIncidentParms.cs" />
@@ -399,6 +406,7 @@
     <Compile Include="Parser\Converter\IncidentConverter.cs" />
     <Compile Include="Parser\Converter\LetterTypeConverter.cs" />
     <Compile Include="Parser\Converter\PawnGroupConverter.cs" />
+    <Compile Include="Parser\Converter\RichTextConverter.cs" />
     <Compile Include="Parser\Parser.cs" />
     <Compile Include="Parser\Story.cs" />
     <Compile Include="Parser\ParseNode.cs" />
@@ -424,7 +432,9 @@
     <Compile Include="Util\Overlay\FadeBlack.cs" />
     <Compile Include="Util\Overlay\IRadioItem.cs" />
     <Compile Include="Util\Overlay\OverlayItem.cs" />
+    <Compile Include="Util\Overlay\Pointer.cs" />
     <Compile Include="Util\Overlay\RadioMessage.cs" />
+    <Compile Include="Util\Overlay\ShowImage.cs" />
     <Compile Include="Util\Overlay\StoryOverlay.cs" />
     <Compile Include="Util\PawnGroupUtil.cs" />
     <Compile Include="Views\Extention\WidgetsExtented.cs" />

@@ -64,6 +64,7 @@ namespace HumanStoryteller.Model.Action {
                 HumanStoryteller.StoryComponent.StoryQueue.Add(this);
             }
         }
+        
         public void ExposeData() {
             Scribe_Values.Look(ref FailCounter, "failCounter");
             Scribe_Values.Look(ref Spawned, "spawned");
@@ -71,6 +72,10 @@ namespace HumanStoryteller.Model.Action {
             Scribe_References.Look(ref Target, "target");
             Scribe_Values.Look(ref Offset, "offset");
             Scribe_References.Look(ref Ir, "ir");
+        }
+
+        public override string ToString() {
+            return $"FailCounter: {FailCounter}, Spawned: {Spawned}, Root: {Root}, Target: {Target}, Offset: {Offset}, Ir: {Ir}";
         }
     }
 }

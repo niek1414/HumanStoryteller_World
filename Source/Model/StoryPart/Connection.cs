@@ -15,7 +15,7 @@ namespace HumanStoryteller.Model.StoryPart {
         }
 
         public override string ToString() {
-            return $"Offset: {Offset}, Node: {Node}";
+            return $"Offset: [{Offset}], Node: [{Node}]";
         }
         
         public void ExposeData() {

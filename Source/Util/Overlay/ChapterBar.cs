@@ -78,8 +78,15 @@ namespace HumanStoryteller.Util.Overlay {
             return false;
         }
 
+        public void HighPrio() {
+        }
+
         public void NotifyEnd() {
             SetState(State.FadeOut);
+        }
+
+        public bool ShouldBlockInput() {
+            return false;
         }
 
         private void SetState(State state) {

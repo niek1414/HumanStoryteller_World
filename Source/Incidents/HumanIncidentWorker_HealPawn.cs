@@ -26,7 +26,7 @@ namespace HumanStoryteller.Incidents {
             
             Map map = (Map) allParams.GetTarget();
             
-            foreach (var pawn in allParams.Names.Filter(map)) {
+            foreach (var pawn in allParams.Pawns.Filter(map)) {
                 if (pawn == null) {
                     continue;
                 }
@@ -52,7 +52,7 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_HealPawn : HumanIncidentParms {
-        public PawnGroupSelector Names = new PawnGroupSelector();
+        public PawnGroupSelector Pawns = new PawnGroupSelector();
         public bool Miracle;
 
         public HumanIncidentParams_HealPawn() {
@@ -62,12 +62,12 @@ namespace HumanStoryteller.Incidents {
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, Names: {Names}, Miracle: {Miracle}";
+            return $"{base.ToString()}, Pawns: [{Pawns}], Miracle: [{Miracle}]";
         }
 
         public override void ExposeData() {
             base.ExposeData();
-            Scribe_Deep.Look(ref Names, "names");
+            Scribe_Deep.Look(ref Pawns, "names");
             Scribe_Values.Look(ref Miracle, "miracle");
         }
     }

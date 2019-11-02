@@ -27,7 +27,7 @@ namespace HumanStoryteller.Incidents {
 
             Map map = (Map) allParams.GetTarget();
             Pawn firstTarget = null;
-            foreach (var target in allParams.Names.Filter(map)) {
+            foreach (var target in allParams.Pawns.Filter(map)) {
                 firstTarget = target;
                 if (target.DestroyedOrNull() || target.Downed || target.Dead || !target.SpawnedOrAnyParentSpawned) continue;
                 HumanIncidentWorker_AnimalInsanityMass.DriveInsane(target);
@@ -60,7 +60,7 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_AnimalInsanitySingle : HumanIncidentParms {
-        public PawnGroupSelector Names;
+        public PawnGroupSelector Pawns;
 
         public HumanIncidentParams_AnimalInsanitySingle() {
         }
@@ -69,12 +69,12 @@ namespace HumanStoryteller.Incidents {
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, Names: {Names}";
+            return $"{base.ToString()}, Pawns: [{Pawns}]";
         }
 
         public override void ExposeData() {
             base.ExposeData();
-            Scribe_Deep.Look(ref Names, "names");
+            Scribe_Deep.Look(ref Pawns, "names");
         }
     }
 }

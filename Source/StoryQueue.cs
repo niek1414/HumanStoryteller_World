@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Harmony;
 using HumanStoryteller.Model.Action;
 using HumanStoryteller.Util;
 using Verse;
@@ -25,6 +26,10 @@ namespace HumanStoryteller {
 
         public void ExposeData() {
             Scribe_Collections.Look(ref Queue, "queue", LookMode.Deep);
+        }
+
+        public override string ToString() {
+            return $"Queue: {Queue.Join()}";
         }
     }
 }

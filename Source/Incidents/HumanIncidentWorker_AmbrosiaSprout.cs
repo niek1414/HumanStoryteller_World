@@ -115,7 +115,7 @@ namespace HumanStoryteller.Incidents {
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, Amount: {Amount}, Range: {Range}, Kind: {PlantKind}";
+            return $"{base.ToString()}, Amount: [{Amount}], Range: [{Range}], Kind: [{PlantKind}]";
         }
 
         public override void ExposeData() {

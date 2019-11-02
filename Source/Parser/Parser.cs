@@ -4,6 +4,7 @@ using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Parser.Converter;
 using HumanStoryteller.Util.Logging;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 using Verse;
 
@@ -28,7 +29,7 @@ namespace HumanStoryteller.Parser {
             JObject mainStory = JObject.Parse(json);
             var story = JsonConvert.DeserializeObject<Story>(mainStory["storyline"].ToString(Formatting.None), new JsonSerializerSettings {
                 NullValueHandling = NullValueHandling.Ignore,
-                Converters = new List<JsonConverter> {new NumberJsonConverter(), new DecimalJsonConverter()}
+                Converters = new List<JsonConverter> {new NumberJsonConverter(), new RichTextConverter(), new DecimalJsonConverter(), new StringEnumConverter(), new PawnGroupConverter()}
             });
 
             var nodesDictionary = new Dictionary<string, ParseNode>();

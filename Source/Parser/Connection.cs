@@ -4,7 +4,7 @@ namespace HumanStoryteller.Parser {
         public string Uuid { get; set; }
 
         public override string ToString() {
-            return $"Offset: {Offset}, Uuid: {Uuid}";
+            return $"Offset: [{Offset}], Uuid: [{Uuid}]";
         }
     }
 }

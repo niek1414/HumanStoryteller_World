@@ -34,8 +34,8 @@ namespace HumanStoryteller.Incidents {
                 if (parms.Letter.Shake) {
                     Find.CameraDriver.shaker.DoShake(4f);
                 }
-                title = parms.Letter.Title;
-                message = parms.Letter.Message;
+                title = parms.Letter.Title.Get();
+                message = parms.Letter.Message.Get();
                 type = parms.Letter.Type;
             }
 
@@ -78,7 +78,7 @@ namespace HumanStoryteller.Incidents {
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, Silver: {Silver}, Duration: {Duration}";
+            return $"{base.ToString()}, Silver: [{Silver}], Duration: [{Duration}]";
         }
 
         public override void ExposeData() {

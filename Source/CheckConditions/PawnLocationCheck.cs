@@ -40,7 +40,7 @@ namespace HumanStoryteller.CheckConditions {
         }
 
         public override string ToString() {
-            return $"PawnName: {_pawnName}, Location: {_location}, Radius: {_radius}";
+            return $"PawnName: [{_pawnName}], Location: [{_location}], Radius: [{_radius}]";
         }
 
         public override void ExposeData() {

@@ -21,7 +21,7 @@ namespace HumanStoryteller.Incidents {
                 allParams = Tell.AssertNotNull((HumanIncidentParams_RadioMessage) parms, nameof(parms), GetType().Name);
             Tell.Log($"Executing event {Name} with:{allParams}");
 
-            var message = new RadioMessage(PawnUtil.GetPawnByName(allParams.Name), allParams.Message);
+            var message = new RadioMessage(PawnUtil.GetPawnByName(allParams.Name), allParams.Message.Get());
             HumanStoryteller.StoryComponent?.StoryOverlay.AddRadio(message);
             Find.History.archive.Add(message);
             
@@ -32,7 +32,7 @@ namespace HumanStoryteller.Incidents {
 
     public class HumanIncidentParams_RadioMessage : HumanIncidentParms {
         public string Name = "";
-        public string Message = "";
+        public RichText Message = new RichText();
 
         public HumanIncidentParams_RadioMessage() {
         }
@@ -41,13 +41,13 @@ namespace HumanStoryteller.Incidents {
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, Name: {Name}, Message: {Message}";
+            return $"{base.ToString()}, Name: [{Name}], Message: [{Message}]";
         }
 
         public override void ExposeData() {
             base.ExposeData();
             Scribe_Values.Look(ref Name, "name");
-            Scribe_Values.Look(ref Message, "message");
+            Scribe_Deep.Look(ref Message, "message");
         }
     }
 }

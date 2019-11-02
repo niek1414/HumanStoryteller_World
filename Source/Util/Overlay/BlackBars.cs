@@ -9,7 +9,7 @@ namespace HumanStoryteller.Util.Overlay {
 
         public const float MaxCoverPercent = 0.1f;
         public float LastBarHeight;
-        
+
         private enum State {
             Enter,
             Visible,
@@ -31,7 +31,7 @@ namespace HumanStoryteller.Util.Overlay {
                 case State.Enter:
                     if (_timeSinceLastTransition >= EnterTime) {
                         SetState(State.Visible);
-                       coverSize = MaxCoverPercent;
+                        coverSize = MaxCoverPercent;
                     } else {
                         var progress = (EnterTime - _timeSinceLastTransition) / EnterTime;
                         coverSize = (1 - progress) * MaxCoverPercent;
@@ -62,8 +62,15 @@ namespace HumanStoryteller.Util.Overlay {
             return false;
         }
 
+        public void HighPrio() {
+        }
+
         public void NotifyEnd() {
             SetState(State.Leave);
+        }
+
+        public bool ShouldBlockInput() {
+            return false;
         }
 
         private void SetState(State state) {

@@ -137,9 +137,14 @@ namespace HumanStoryteller.Incidents {
         public HumanIncidentParams_VisitorGroup(Target target, HumanLetter letter) : base(target, letter) {
         }
 
+        public override string ToString() {
+            return $"{base.ToString()}, Names: [{OutNames.ToCommaList()}]";
+        }
+
         public override void ExposeData() {
             base.ExposeData();
             Scribe_Collections.Look(ref OutNames, "names", LookMode.Value);
         }
+        
     }
 }

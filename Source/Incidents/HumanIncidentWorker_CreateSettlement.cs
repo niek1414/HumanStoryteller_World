@@ -109,7 +109,7 @@ namespace HumanStoryteller.Incidents {
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, Faction: {Faction}, MapName: {MapName}, Site: {Site}, SiteSizeX: {SiteSizeX}, SiteSizeY: {SiteSizeY}, SettlementName: {SettlementName}, SiteType: {SiteType}, PreGenerate: {PreGenerate}, DecoupleNow: {DecoupleNow}";
+            return $"{base.ToString()}, Faction: [{Faction}], MapName: [{MapName}], Site: [{Site}], SiteSizeX: [{SiteSizeX}], SiteSizeY: [{SiteSizeY}], SettlementName: [{SettlementName}], SiteType: [{SiteType}], PreGenerate: [{PreGenerate}], DecoupleNow: [{DecoupleNow}]";
         }
 
         public override void ExposeData() {

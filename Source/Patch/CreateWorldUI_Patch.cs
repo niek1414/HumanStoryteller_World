@@ -53,7 +53,7 @@ namespace HumanStoryteller.Patch {
                     }
                 }
 
-                var open = initParams.Opening;
+                var open = initParams.Opening.GetWithoutInteractive();
                 if (open != "") {
                     try {
                         if (Current.Game.Scenario.AllParts.First(o => typeof(ScenPart_GameStartDialog) == o.GetType()) is
@@ -64,7 +64,7 @@ namespace HumanStoryteller.Patch {
             }
         }
 
-        private static OverallRainfall SeverityToRainfall(float severity) {
+        public static OverallRainfall SeverityToRainfall(float severity) {
             if (severity == -1) {
                 return OverallRainfall.Normal;
             }
@@ -96,7 +96,7 @@ namespace HumanStoryteller.Patch {
             return OverallRainfall.VeryHigh;
         }
 
-        private static OverallTemperature SeverityToTemperature(float severity) {
+        public static OverallTemperature SeverityToTemperature(float severity) {
             if (severity == -1) {
                 return OverallTemperature.Normal;
             }

@@ -65,7 +65,7 @@ namespace HumanStoryteller.CheckConditions {
         }
 
         public override string ToString() {
-            return $"PawnName: {_pawnName}, Condition: {_condition}";
+            return $"PawnName: [{_pawnName}], Condition: [{_condition}]";
         }
 
         public override void ExposeData() {

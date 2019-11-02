@@ -25,7 +25,7 @@ namespace HumanStoryteller.Incidents {
 
             Map map = (Map) allParams.GetTarget();
             
-            foreach (var pawn in allParams.Names.Filter(map)) {
+            foreach (var pawn in allParams.Pawns.Filter(map)) {
                 if (pawn.DestroyedOrNull() || pawn.Dead) {
                     continue;
                 }
@@ -40,7 +40,7 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_MentalBreak : HumanIncidentParms {
-        public PawnGroupSelector Names = new PawnGroupSelector();
+        public PawnGroupSelector Pawns = new PawnGroupSelector();
         public string MentalBreak = "";
 
         public HumanIncidentParams_MentalBreak() {
@@ -50,12 +50,12 @@ namespace HumanStoryteller.Incidents {
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, Names: {Names}, MentalBreak: {MentalBreak}";
+            return $"{base.ToString()}, Pawns: [{Pawns}], MentalBreak: [{MentalBreak}]";
         }
 
         public override void ExposeData() {
             base.ExposeData();
-            Scribe_Deep.Look(ref Names, "names");
+            Scribe_Deep.Look(ref Pawns, "names");
             Scribe_Values.Look(ref MentalBreak, "mentalBreak");
         }
     }

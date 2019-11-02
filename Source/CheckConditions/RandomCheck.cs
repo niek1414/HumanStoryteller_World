@@ -23,7 +23,7 @@ namespace HumanStoryteller.CheckConditions {
         }
 
         public override string ToString() {
-            return $"Chance: {_chance}";
+            return $"Chance: [{_chance}]";
         }
 
         public override void ExposeData() {

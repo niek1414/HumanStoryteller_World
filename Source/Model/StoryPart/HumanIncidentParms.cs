@@ -18,7 +18,7 @@ namespace HumanStoryteller.Model.StoryPart {
         }
 
         public override string ToString() {
-            return $"T: {Target}";
+            return $"T: [{Target}]";
         }
 
         public IIncidentTarget GetTarget() {

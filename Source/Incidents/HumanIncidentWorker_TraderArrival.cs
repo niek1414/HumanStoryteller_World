@@ -163,7 +163,7 @@ namespace HumanStoryteller.Incidents {
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, Points: {Points}, TraderKind: {TraderKind}, Names: {OutNames}";
+            return $"{base.ToString()}, Points: [{Points}], TraderKind: [{TraderKind}], Names: [{OutNames.ToCommaList()}]";
         }
 
         public override void ExposeData() {

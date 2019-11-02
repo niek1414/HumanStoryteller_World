@@ -43,7 +43,7 @@ namespace HumanStoryteller.Incidents {
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, Enable: {Enable}";
+            return $"{base.ToString()}, Enable: [{Enable}]";
         }
 
         public override void ExposeData() {

@@ -78,7 +78,7 @@ namespace HumanStoryteller.Incidents {
 
         public override string ToString() {
             return
-                $"{base.ToString()}, DestroyItems: {DestroyItems}, DestroyPawns: {DestroyPawns}, DestroyStructures: {DestroyStructures}, DestroyPlants: {DestroyPlants}, Location: {Location}";
+                $"{base.ToString()}, DestroyItems: [{DestroyItems}], DestroyPawns: [{DestroyPawns}], DestroyStructures: [{DestroyStructures}], DestroyPlants: [{DestroyPlants}], Location: [{Location}]";
         }
 
         public override void ExposeData() {

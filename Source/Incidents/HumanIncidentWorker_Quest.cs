@@ -264,7 +264,7 @@ namespace HumanStoryteller.Incidents {
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, QuestType: {QuestType}, ThreatType: {ThreatType}, MapName: {MapName}, OutName: {OutName}, FirstName: {FirstName}, NickName: {NickName}, LastName: {LastName}, Faction: {Faction}, OutNames: {OutNames}, Points: {Points}, Duration: {Duration}, MinTileDist: {MinTileDist}, MaxTileDist: {MaxTileDist}, MineableRock: {MineableRock}, MapItem: {MapItem}, KillReward: {KillReward}, RewardItem: {RewardItem}, RewardFaction: {RewardFaction}, RewardFactionRelation: {RewardFactionRelation}";
+            return $"{base.ToString()}, QuestType: [{QuestType}], ThreatType: [{ThreatType}], MapName: [{MapName}], OutName: [{OutName}], FirstName: [{FirstName}], NickName: [{NickName}], LastName: [{LastName}], Faction: [{Faction}], OutNames: [{OutNames.ToCommaList()}], Points: [{Points}], Duration: [{Duration}], MinTileDist: [{MinTileDist}], MaxTileDist: [{MaxTileDist}], MineableRock: [{MineableRock}], MapItem: [{MapItem}], KillReward: [{KillReward}], RewardItem: [{RewardItem}], RewardFaction: [{RewardFaction}], RewardFactionRelation: [{RewardFactionRelation}]";
         }
 
         public override void ExposeData() {

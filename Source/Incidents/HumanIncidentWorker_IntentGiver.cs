@@ -32,7 +32,7 @@ namespace HumanStoryteller.Incidents {
             Map map = (Map) allParams.GetTarget();
 
             var pawns = new List<Pawn>();
-            foreach (var pawn in allParams.Names.Filter(map)) {
+            foreach (var pawn in allParams.Pawns.Filter(map)) {
                 if (!pawn.DestroyedOrNull() && !pawn.Dead) {
                     pawns.Add(pawn);
                 }
@@ -416,7 +416,7 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_IntentGiver : HumanIncidentParms {
-        public PawnGroupSelector Names = new PawnGroupSelector();
+        public PawnGroupSelector Pawns = new PawnGroupSelector();
         public string IntentType = "";
         public string FirstStringParam = "";
         public string SecondStringParam = "";
@@ -432,12 +432,12 @@ namespace HumanStoryteller.Incidents {
 
         public override string ToString() {
             return
-                $"{base.ToString()}, Names: {Names}, IntentType: {IntentType}, FirstStringParam: {FirstStringParam}, SecondStringParam: {SecondStringParam}, FirstNumberParam: {FirstNumberParam}, FirstBoolParam: {Queue}";
+                $"{base.ToString()}, Pawns: [{Pawns}], IntentType: [{IntentType}], FirstStringParam: [{FirstStringParam}], SecondStringParam: [{SecondStringParam}], FirstNumberParam: [{FirstNumberParam}], FirstBoolParam: [{Queue}]";
         }
 
         public override void ExposeData() {
             base.ExposeData();
-            Scribe_Deep.Look(ref Names, "names");
+            Scribe_Deep.Look(ref Pawns, "names");
             Scribe_Values.Look(ref IntentType, "type");
             Scribe_Values.Look(ref FirstStringParam, "firstStringParam");
             Scribe_Values.Look(ref SecondStringParam, "secondStringParam");

@@ -79,7 +79,7 @@ namespace HumanStoryteller.Incidents {
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, Amount: {Amount}, ShipCrashedPart: {ShipCrashedPart}";
+            return $"{base.ToString()}, Amount: [{Amount}], ShipCrashedPart: [{ShipCrashedPart}]";
         }
 
         public override void ExposeData() {

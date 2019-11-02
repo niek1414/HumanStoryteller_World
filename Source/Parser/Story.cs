@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using HumanStoryteller.Model;
+using HumanStoryteller.Parser.Converter;
 using Newtonsoft.Json;
 
 namespace HumanStoryteller.Parser {
@@ -9,7 +11,7 @@ namespace HumanStoryteller.Parser {
         public List<ParseNode> StoryGraph { get; set; }
 
         public override string ToString() {
-            return $"Name: {Name}, Description: {Description}, StoryGraph: {StoryGraph}";
+            return $"Name: [{Name}], Description: [{Description}], StoryGraph: [{StoryGraph}]";
         }
     }
 }

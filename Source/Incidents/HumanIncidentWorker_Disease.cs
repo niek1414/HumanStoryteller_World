@@ -50,7 +50,7 @@ namespace HumanStoryteller.Incidents {
             }
 
             List<Pawn> list = new List<Pawn>();
-            foreach (var target in allParams.Names.Filter(map)) {
+            foreach (var target in allParams.Pawns.Filter(map)) {
                 if (target.DestroyedOrNull() || target.Dead) continue;
                 list.Add(target);
             }
@@ -173,7 +173,7 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_Disease : HumanIncidentParms {
-        public PawnGroupSelector Names = new PawnGroupSelector();
+        public PawnGroupSelector Pawns = new PawnGroupSelector();
         public string Disease = "";
 
         public HumanIncidentParams_Disease() {
@@ -184,7 +184,7 @@ namespace HumanStoryteller.Incidents {
 
         public override void ExposeData() {
             base.ExposeData();
-            Scribe_Deep.Look(ref Names, "names");
+            Scribe_Deep.Look(ref Pawns, "names");
             Scribe_Values.Look(ref Disease, "disease");
         }
     }

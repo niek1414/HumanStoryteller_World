@@ -30,7 +30,7 @@ namespace HumanStoryteller.CheckConditions {
         }
 
         public override string ToString() {
-            return $"MapName: {_mapName}, CompareType: {_compareType}, Constant: {_constant}";
+            return $"MapName: [{_mapName}], CompareType: [{_compareType}], Constant: [{_constant}]";
         }
 
         public override void ExposeData() {

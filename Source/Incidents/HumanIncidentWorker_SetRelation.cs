@@ -56,7 +56,7 @@ namespace HumanStoryteller.Incidents {
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, FactionRelation: {FactionRelation}, Faction: {Faction}, NewName: {NewName}";
+            return $"{base.ToString()}, FactionRelation: [{FactionRelation}], Faction: [{Faction}], NewName: [{NewName}]";
         }
 
         public override void ExposeData() {

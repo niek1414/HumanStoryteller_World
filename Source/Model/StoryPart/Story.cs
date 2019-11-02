@@ -21,7 +21,7 @@ namespace HumanStoryteller.Model.StoryPart {
         public StoryGraph StoryGraph;
 
         public override string ToString() {
-            return $"Id: {Id}, Name: {Name}, Description: {Description}, Creator: {Creator}, StoryGraph: {StoryGraph}";
+            return $"Id: [{Id}], Name: [{Name}], Description: [{Description}], Creator: [{Creator}], StoryGraph: [{StoryGraph}]";
         }
 
         public void ExposeData() {

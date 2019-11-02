@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Harmony;
 using HumanStoryteller.Model;
 using HumanStoryteller.Model.PawnGroup;
 using HumanStoryteller.Model.StoryPart;
@@ -29,8 +30,8 @@ namespace HumanStoryteller.Incidents {
 
             Map map = (Map) allParams.GetTarget();
 
-            foreach (var pawn in allParams.Names.Filter(map)) {
-                if (pawn.DestroyedOrNull() || pawn.Dead) {
+            foreach (var pawn in allParams.Pawns.Filter(map)) {
+                if (pawn.DestroyedOrNull() || pawn.Dead || pawn.NonHumanlikeOrWildMan()) {
                     continue;
                 }
 
@@ -81,9 +82,27 @@ namespace HumanStoryteller.Incidents {
 
                     pawn.story?.traits?.GainTrait(new Trait(traitDef, data?.degree ?? 0));
                 });
-                //TODO gear
-                //TODO finish item object that is already created in the storycreator
-//                pawn.
+
+                allParams.Gear.ForEach(item => {
+                    if (!item.NotEmpty() || item.Thing.Equals("None")) return;
+                    var thing = item.GetThing();
+                    if (thing == null) return;
+                    try {
+                        if (thing.def.IsApparel && ApparelUtility.HasPartsToWear(pawn, thing.def)) {
+                            pawn.apparel.Wear(thing as Apparel, false);
+                        } else if (thing.def.equipmentType == EquipmentType.Primary) {
+                            if (pawn.equipment.Primary != null) {
+                                pawn.equipment.Remove(pawn.equipment.Primary);
+                            }
+
+                            pawn.equipment.AddEquipment(thing);
+                        } else {
+                            pawn.inventory.innerContainer.Add(thing);
+                        }
+                    } catch (Exception e) {
+                        Tell.Warn("Pawn (" + pawn.Name + ", " + pawn.kindDef.defName + ") cannot wear, equip or add " + thing.def.defName + " (" + thing.Stuff.defName + ") to inventory", e.Message, e.StackTrace);
+                    }
+                });
 
                 var cell = allParams.Location.GetSingleCell(map, false);
                 if (cell.IsValid) {
@@ -199,7 +218,7 @@ namespace HumanStoryteller.Incidents {
         public bool SkillAdd;
 
         public List<String> Traits = new List<string>();
-        public PawnGroupSelector Names = new PawnGroupSelector();
+        public PawnGroupSelector Pawns = new PawnGroupSelector();
         public string FirstName = "";
         public string NickName = "";
         public string LastName = "";
@@ -209,6 +228,7 @@ namespace HumanStoryteller.Incidents {
         public bool Banish;
         public bool SetDrafted;
         public string Faction = "";
+        public List<Item> Gear = new List<Item>();
 
         public Location Location = new Location();
 
@@ -219,12 +239,13 @@ namespace HumanStoryteller.Incidents {
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, SkillAnimals: {SkillAnimals}, SkillArtistic: {SkillArtistic}, SkillConstruction: {SkillConstruction}, SkillCooking: {SkillCooking}, SkillCrafting: {SkillCrafting}, SkillPlants: {SkillPlants}, SkillMedicine: {SkillMedicine}, SkillMelee: {SkillMelee}, SkillMining: {SkillMining}, SkillIntellectual: {SkillIntellectual}, SkillShooting: {SkillShooting}, SkillSocial: {SkillSocial}, AgeBioYear: {AgeBioYear}, SkillAdd: {SkillAdd}, Traits: {Traits}, Names: {Names}, FirstName: {FirstName}, NickName: {NickName}, LastName: {LastName}, Despawn: {Despawn}, Strip: {Strip}, ClearMind: {ClearMind}, Banish: {Banish}, SetDrafted: {SetDrafted}, Faction: {Faction}, Location: {Location}";
+            return
+                $"{base.ToString()}, SkillAnimals: [{SkillAnimals}], SkillArtistic: [{SkillArtistic}], SkillConstruction: [{SkillConstruction}], SkillCooking: [{SkillCooking}], SkillCrafting: [{SkillCrafting}], SkillPlants: [{SkillPlants}], SkillMedicine: [{SkillMedicine}], SkillMelee: [{SkillMelee}], SkillMining: [{SkillMining}], SkillIntellectual: [{SkillIntellectual}], SkillShooting: [{SkillShooting}], SkillSocial: [{SkillSocial}], AgeBioYear: [{AgeBioYear}], SkillAdd: [{SkillAdd}], Traits: [{Traits.ToCommaList()}], Pawns: [{Pawns}], FirstName: [{FirstName}], NickName: [{NickName}], LastName: [{LastName}], Despawn: [{Despawn}], Strip: [{Strip}], ClearMind: [{ClearMind}], Banish: [{Banish}], SetDrafted: [{SetDrafted}], Faction: [{Faction}], Location: [{Location}], Gear: [{Gear.Join()}]";
         }
 
         public override void ExposeData() {
             base.ExposeData();
-            Scribe_Deep.Look(ref Names, "names");
+            Scribe_Deep.Look(ref Pawns, "names");
             Scribe_Values.Look(ref FirstName, "firstName");
             Scribe_Values.Look(ref NickName, "nickName");
             Scribe_Values.Look(ref LastName, "lastName");
@@ -237,6 +258,7 @@ namespace HumanStoryteller.Incidents {
             Scribe_Values.Look(ref Faction, "faction");
             Scribe_Deep.Look(ref Location, "location");
             Scribe_Collections.Look(ref Traits, "traits", LookMode.Value);
+            Scribe_Collections.Look(ref Gear, "gear", LookMode.Deep);
 
             Scribe_Values.Look(ref SkillAdd, "skillAdd");
             Scribe_Deep.Look(ref SkillAnimals, "skillAnimals");

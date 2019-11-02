@@ -73,7 +73,7 @@ namespace HumanStoryteller.Incidents {
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, Radius: {Radius}, Chance: {Chance}";
+            return $"{base.ToString()}, Radius: [{Radius}], Chance: [{Chance}]";
         }
 
         public override void ExposeData() {

@@ -52,7 +52,7 @@ namespace HumanStoryteller.Incidents {
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, Couple: {Couple}, Permanent: {Permanent}";
+            return $"{base.ToString()}, Couple: [{Couple}], Permanent: [{Permanent}]";
         }
 
         public override void ExposeData() {

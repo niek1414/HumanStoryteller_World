@@ -21,7 +21,7 @@ namespace HumanStoryteller.Model.PawnGroup.Filter {
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, Age: {Age}";
+            return $"{base.ToString()}, Age: [{Age}]";
         }
     }
 }

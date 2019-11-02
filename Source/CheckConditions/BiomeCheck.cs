@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Harmony;
 using HumanStoryteller.Incidents;
 using HumanStoryteller.Util;
 using HumanStoryteller.Util.Logging;
@@ -22,7 +23,7 @@ namespace HumanStoryteller.CheckConditions {
         }
 
         public override string ToString() {
-            return $"Biomes: {_biomes}";
+            return $"Biomes: [{_biomes.Join()}]";
         }
 
         public override void ExposeData() {

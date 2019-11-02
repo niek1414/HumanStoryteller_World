@@ -26,7 +26,7 @@ namespace HumanStoryteller.Incidents {
 
             Map map = (Map) allParams.GetTarget();
             
-            foreach (var pawn in allParams.Names.Filter(map)) {
+            foreach (var pawn in allParams.Pawns.Filter(map)) {
                 if (pawn == null) {
                     continue;
                 }
@@ -44,7 +44,7 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_KillPawn : HumanIncidentParms {
-        public PawnGroupSelector Names = new PawnGroupSelector();
+        public PawnGroupSelector Pawns = new PawnGroupSelector();
         public bool Destroy;
 
         public HumanIncidentParams_KillPawn() {
@@ -55,7 +55,7 @@ namespace HumanStoryteller.Incidents {
 
         public override void ExposeData() {
             base.ExposeData();
-            Scribe_Deep.Look(ref Names, "names");
+            Scribe_Deep.Look(ref Pawns, "names");
             Scribe_Values.Look(ref Destroy, "destroy");
         }
     }

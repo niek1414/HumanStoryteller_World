@@ -62,7 +62,7 @@ namespace HumanStoryteller.Incidents {
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, Name: {OutName}";
+            return $"{base.ToString()}, Name: [{OutName}]";
         }
 
         public override void ExposeData() {

@@ -122,6 +122,10 @@ namespace HumanStoryteller.Incidents {
         public HumanIncidentParams_Rules(Target target, HumanLetter letter) : base(target, letter) {
         }
 
+        public override string ToString() {
+            return $"{base.ToString()}, DisallowedBuildings: {DisallowedBuildings.Join()}, DisallowedDesignators: {DisallowedDesignators.Join()}, ExplodeOnDeath: {ExplodeOnDeath}, ExplodeRadius: {ExplodeRadius}, Stats: {Stats.Join()}";
+        }
+
         public override void ExposeData() {
             base.ExposeData();
             Scribe_Collections.Look(ref DisallowedBuildings, "disallowedBuildings", LookMode.Value);

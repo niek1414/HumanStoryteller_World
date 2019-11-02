@@ -3,16 +3,17 @@ using System.Net;
 using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util.Logging;
 using RestSharp;
+using Verse;
 
 namespace HumanStoryteller.Web {
     public static class Storybook {
         public static void GetStory(long id, Action<Story> callback) {
-            Tell.Log($"AutoPoll on story: {id}");
+            Tell.Log($"AutoPoll on story: [{id}]");
             Client.Get($"storybook/story/{id}", (response, handle) => { GetStoryCallback(response, handle, callback); });
         } 
         
         public static Story GetStory(long id) {
-            Tell.Log($"Synchronous poll on story: {id}");
+            Tell.Log($"Synchronous poll on story: [{id}]");
             IRestResponse response = Client.Get($"storybook/story/{id}");
             try {
                 if (response.StatusCode == HttpStatusCode.NotFound) {
@@ -23,10 +24,15 @@ namespace HumanStoryteller.Web {
                 if (!CheckRequestStatus(response)) {
                     return null;
                 }
+              
+                if (response.Content.NullOrEmpty()) {
+                    Tell.Warn("Story does not exist on the server (anymore).");
+                    return null;
+                }
 
                 return Parser.Parser.StoryParser(response.Content);
             } catch (Exception e) {
-                Tell.Err($"Error while parsing story with error: {e.Message}, trace: ___{e.StackTrace}___, and content request: ", response);
+                Tell.Err($"Error while parsing story with error: [{e.Message}], trace: ___{e.StackTrace}___, and content request: ", response);
                 throw;
             }
         }
@@ -42,10 +48,16 @@ namespace HumanStoryteller.Web {
                 if (!CheckRequestStatus(response, handle)) {
                     return;
                 }
+                
+                if (response.Content.NullOrEmpty()) {
+                    Tell.Warn("Story does not exist on the server (anymore).");
+                    callback(null);
+                    return;
+                }
 
                 callback(Parser.Parser.StoryParser(response.Content));
             } catch (Exception e) {
-                Tell.Err($"Error while parsing story with error: {e.Message}, trace: ___{e.StackTrace}___, and content request: ", response);
+                Tell.Err($"Error while parsing story with error: [{e.Message}], trace: ___{e.StackTrace}___, and content request: ", response);
                 throw;
             }
         }
@@ -85,7 +97,7 @@ namespace HumanStoryteller.Web {
             try {
                 callback(Parser.Parser.SummaryParser(response.Content));
             } catch (Exception e) {
-                Tell.Err($"Error while parsing summary with error: {e.Message}, trace: ___{e.StackTrace}___, and content request: ", response);
+                Tell.Err($"Error while parsing summary with error: [{e.Message}], trace: ___{e.StackTrace}___, and content request: ", response);
                 throw;
             }
         }
@@ -102,7 +114,7 @@ namespace HumanStoryteller.Web {
             try {
                 callback(Convert.ToInt32(response.Content));
             } catch (Exception e) {
-                Tell.Err($"Error while parsing rating with error: {e.Message}, trace: ___{e.StackTrace}___, and content request: ", response);
+                Tell.Err($"Error while parsing rating with error: [{e.Message}], trace: ___{e.StackTrace}___, and content request: ", response);
                 throw;
             }
         }
@@ -126,7 +138,7 @@ namespace HumanStoryteller.Web {
             try {
                 callback();
             } catch (Exception e) {
-                Tell.Err($"Error while calling rating set callback with error: {e.Message}, trace: ___{e.StackTrace}___, and content request: ",
+                Tell.Err($"Error while calling rating set callback with error: [{e.Message}], trace: ___{e.StackTrace}___, and content request: ",
                     response);
                 throw;
             }

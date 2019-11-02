@@ -1,10 +1,10 @@
 using Verse;
 
 namespace HumanStoryteller.Model.PawnGroup {
-    public abstract class PawnGroupFilter {
+    public abstract class PawnGroupFilter : IExposable {
         public bool Include;
 
-        protected PawnGroupFilter() {
+        public PawnGroupFilter() {
         }
 
         public bool ExecuteFilter(Pawn p, Map map) {
@@ -15,7 +15,7 @@ namespace HumanStoryteller.Model.PawnGroup {
         protected abstract bool Filter(Pawn p, Map map);
 
         public override string ToString() {
-            return $"Include: {Include}";
+            return $"Include: [{Include}]";
         }
 
         public void ExposeData() {

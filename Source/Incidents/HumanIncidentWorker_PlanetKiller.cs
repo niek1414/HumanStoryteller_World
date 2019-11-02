@@ -50,7 +50,7 @@ namespace HumanStoryteller.Incidents {
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, Duration: {Duration}";
+            return $"{base.ToString()}, Duration: [{Duration}]";
         }
 
         public override void ExposeData() {

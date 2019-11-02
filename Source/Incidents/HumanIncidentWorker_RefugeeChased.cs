@@ -75,8 +75,8 @@ namespace HumanStoryteller.Incidents {
                 if (parms.Letter.Shake) {
                     Find.CameraDriver.shaker.DoShake(4f);
                 }
-                title = parms.Letter.Title;
-                text = parms.Letter.Message;
+                title = parms.Letter.Title.Get();
+                text = parms.Letter.Message.Get();
             }
 
             DiaNode diaNode = new DiaNode(text);
@@ -133,7 +133,7 @@ namespace HumanStoryteller.Incidents {
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, Points: {Points}, Name: {OutName}";
+            return $"{base.ToString()}, Points: [{Points}], Name: [{OutName}]";
         }
 
         public override void ExposeData() {

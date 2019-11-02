@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Harmony;
 using HumanStoryteller.CheckConditions;
 using HumanStoryteller.Util.Logging;
 using Verse;
@@ -47,7 +48,7 @@ namespace HumanStoryteller.Model.StoryPart {
         }
 
         public override string ToString() {
-            return $"StoryEvent: {_storyEvent}, LeftChild: {_leftChild}, RightChild: {_rightChild}, Conditions: {_conditions}, Modifications: {_modifications}, Divider: {Divider}";
+            return $"StoryEvent: [{_storyEvent}], LeftChild: [{_leftChild}], RightChild: [{_rightChild}], Conditions: [{_conditions.Join()}], Modifications: [{_modifications.Join()}], Divider: [{Divider}]";
         }
 
         public string GetUniqueLoadID() {

@@ -168,7 +168,7 @@ namespace HumanStoryteller.Model {
         }
 
         public override string ToString() {
-            return $"FakeConnected: {FakeConnected}, Parent: {Parent}, DecoupledMap: {DecoupledMap}, IsDecoupled: {IsDecoupled}";
+            return $"FakeConnected: [{FakeConnected}], Parent: [{Parent}], DecoupledMap: [{DecoupledMap}], IsDecoupled: [{IsDecoupled}]";
         }
     }
 }

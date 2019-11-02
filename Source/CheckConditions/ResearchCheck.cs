@@ -23,7 +23,7 @@ namespace HumanStoryteller.CheckConditions {
         }
 
         public override string ToString() {
-            return $"Research: {_researchProject}";
+            return $"Research: [{_researchProject}]";
         }
 
         public override void ExposeData() {

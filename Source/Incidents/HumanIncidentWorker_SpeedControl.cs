@@ -75,7 +75,7 @@ namespace HumanStoryteller.Incidents {
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, LockControls: {LockControls}, Speed: {Speed}";
+            return $"{base.ToString()}, LockControls: [{LockControls}], Speed: [{Speed}]";
         }
 
         public override void ExposeData() {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using HumanStoryteller.Util;
 using HumanStoryteller.Util.Logging;
+using RimWorld;
 using Verse;
 
 namespace HumanStoryteller.Model.PawnGroup {
@@ -22,11 +23,13 @@ namespace HumanStoryteller.Model.PawnGroup {
                         return new PawnGroup();
                     }
                     return new PawnGroup(map.mapPawns.AllPawns.ToList());
+                case GroupSource.All:
+                    return new PawnGroup(PawnsFinder.All_AliveOrDead.ToList());
                 case GroupSource.Pawns:
                     var group = new PawnGroup();
                     foreach (var name in Names) {
                         var pawn = PawnUtil.GetPawnByName(name);
-                        if (!pawn.DestroyedOrNull() && !pawn.Dead) {
+                        if (!pawn.DestroyedOrNull()) {
                             group.Add(pawn);
                         }
                     }
@@ -42,7 +45,7 @@ namespace HumanStoryteller.Model.PawnGroup {
         }
 
         public override string ToString() {
-            return $"Type: {Type}, Names: {Names}, Group: {Groups}";
+            return $"Type: [{Type}], Names: [{Names.ToCommaList()}], Group: [{Groups.ToCommaList()}]";
         }
 
         public void ExposeData() {
@@ -55,6 +58,7 @@ namespace HumanStoryteller.Model.PawnGroup {
     public enum GroupSource {
         AllOnMap,
         Pawns,
-        PawnGroup
+        PawnGroup,
+        All
     }
 }

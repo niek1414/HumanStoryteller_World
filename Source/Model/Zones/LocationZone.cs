@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Harmony;
 using HumanStoryteller.Util;
 using HumanStoryteller.Util.Logging;
 using Newtonsoft.Json;
@@ -31,7 +32,7 @@ namespace HumanStoryteller.Model.Zones {
         }
 
         public override string ToString() {
-            return $"Cells: {Cells.ToStringSafeEnumerable()}";
+            return $"Cells: [{Cells.Join()}]";
         }
 
         public void ExposeData() {

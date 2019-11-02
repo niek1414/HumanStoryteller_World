@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Harmony;
 using Verse;
 
 namespace HumanStoryteller.Model.PawnGroup {
@@ -28,6 +29,10 @@ namespace HumanStoryteller.Model.PawnGroup {
 
         public void Add(PawnGroup pawnGroup) {
             pawnGroup.Pawns.ForEach(p => Pawns.Add(p));
+        }
+
+        public override string ToString() {
+            return $"Kinds: [{Pawns.Join()}]";
         }
     }
 }

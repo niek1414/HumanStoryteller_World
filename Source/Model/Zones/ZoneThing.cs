@@ -101,7 +101,7 @@ namespace HumanStoryteller.Model.Zones {
         }
 
         public override string ToString() {
-            return $"X: {X}, Z: {Z}, Rot: {Rot}, DefType: {DefType}, Points: {Points}, Quality: {Quality}, Stuff: {Stuff}, Amount: {Amount}, Faction: {Faction}, Type: {Type}";
+            return $"X: [{X}], Z: [{Z}], Rot: [{Rot}], DefType: [{DefType}], Points: [{Points}], Quality: [{Quality}], Stuff: [{Stuff}], Amount: [{Amount}], Faction: [{Faction}], Type: [{Type}]";
         }
 
         public IntVec3 GetCellLocation(StructureZone parent, IntVec3 offset) {

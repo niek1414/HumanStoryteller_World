@@ -19,13 +19,14 @@ namespace HumanStoryteller.Util {
                     );
                     break;
                 default:
-                    if (first != "" || nick != "" || last != ""){
+                    if (first != "" || nick != "" || last != "") {
                         p.Name = new NameSingle(first + " " + nick + " " + last);
                     }
+
                     break;
             }
         }
-        
+
         public static Pawn GetPawnByName(String name) {
             var pawnBank = HumanStoryteller.StoryComponent.PawnBank;
 
@@ -54,14 +55,21 @@ namespace HumanStoryteller.Util {
             if (HumanStoryteller.StoryComponent.PawnBank.ContainsKey(name)) {
                 RemoveName(name);
             }
-            
+
             Tell.Log("Saved pawn S: " + pawn.Name.ToStringShort + " as I: " + name);
             HumanStoryteller.StoryComponent.PawnBank.Add(name, pawn);
         }
 
         public static void RemoveName(string name) {
-            Tell.Log("Removed pawn with name I: " + name);
+            Tell.Log("Removing pawn with name I: " + name);
             HumanStoryteller.StoryComponent.PawnBank.Remove(name);
+        }
+
+        public static void RemovePawn(Pawn pawn) {
+            Tell.Log("Removing pawn with name D: " + pawn.Name);
+            foreach (var item in HumanStoryteller.StoryComponent.PawnBank.Where(kvp => kvp.Value == pawn).ToList()) {
+                HumanStoryteller.StoryComponent.PawnBank.Remove(item.Key);
+            }
         }
 
         public static Gender GetGender(string genderString) {

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Harmony;
 using HumanStoryteller.Model;
 using HumanStoryteller.Model.PawnGroup;
 using HumanStoryteller.Model.StoryPart;
@@ -149,7 +150,7 @@ namespace HumanStoryteller.Util {
 
         public override string ToString() {
             return
-                $"Initialised: {Initialised}, Story: {Story}, StoryId: {StoryId}, CurrentNodes: {CurrentNodes}, AllNodes: {AllNodes}, VariableBank: {VariableBank}, PawnBank: {PawnBank}, MapBank: {MapBank}, ThreatCycle: {ThreatCycle}, FirstMapOfPlayer: {_firstMapOfPlayer}, SameAsLastEvent: {_sameAsLastEvent}, ReservedPawnKeysWorkingList: {reservedPawnKeysWorkingList}, ReservedPawnValuesWorkingList: {reservedPawnValuesWorkingList}, ReservedMapKeysWorkingList: {reservedMapKeysWorkingList}, ReservedMapValuesWorkingList: {reservedMapValuesWorkingList}, QueueSize: {StoryQueue.Size()}";
+                $"Initialised: [{Initialised}], Story: [{Story}], StoryId: [{StoryId}], CurrentNodes: [{CurrentNodes.Join()}], AllNodes: [{AllNodes.Join()}], VariableBank: [{VariableBank.Join()}], PawnBank: [{PawnBank.Join()}], MapBank: [{MapBank.Join()}], ThreatCycle: [{ThreatCycle}], FirstMapOfPlayer: [{_firstMapOfPlayer}], SameAsLastEvent: [{_sameAsLastEvent}], ReservedPawnKeysWorkingList: [{reservedPawnKeysWorkingList}], ReservedPawnValuesWorkingList: [{reservedPawnValuesWorkingList}], ReservedMapKeysWorkingList: [{reservedMapKeysWorkingList}], ReservedMapValuesWorkingList: [{reservedMapValuesWorkingList}], QueueSize: [{StoryQueue.Size()}]";
         }
     }
 }

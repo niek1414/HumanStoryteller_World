@@ -25,7 +25,7 @@ namespace HumanStoryteller.Model.StoryPart {
         }
 
         public override string ToString() {
-            return $"StoryNode: {_storyNode}, Result: {_result}";
+            return $"StoryNode: [{_storyNode}], Result: [{_result}]";
         }
 
         public void ExposeData() {

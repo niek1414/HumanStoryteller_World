@@ -48,7 +48,7 @@ namespace HumanStoryteller.Incidents {
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, Structure: {Structure}, Location: {Location}";
+            return $"{base.ToString()}, Structure: [{Structure}], Location: [{Location}]";
         }
 
         public override void ExposeData() {

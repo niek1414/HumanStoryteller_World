@@ -118,7 +118,7 @@ namespace HumanStoryteller {
         }
 
         public override string ToString() {
-            return $"Root: {_root}";
+            return $"Root: [{_root}]";
         }
         
         public void ExposeData() {

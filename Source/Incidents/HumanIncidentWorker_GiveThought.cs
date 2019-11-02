@@ -26,7 +26,7 @@ namespace HumanStoryteller.Incidents {
 
             Map map = (Map) allParams.GetTarget();
             
-            foreach (var pawn in allParams.Names.Filter(map)) {
+            foreach (var pawn in allParams.Pawns.Filter(map)) {
                 if (pawn?.needs?.mood?.thoughts?.memories == null) {
                     continue; //Not found or animal/wild man
                 }
@@ -58,7 +58,7 @@ namespace HumanStoryteller.Incidents {
     public class HumanIncidentParams_GiveThought : HumanIncidentParms {
         public Number ThoughtEffect = new Number(0);
         public Number ThoughtDuration = new Number(1);
-        public PawnGroupSelector Names = new PawnGroupSelector();
+        public PawnGroupSelector Pawns = new PawnGroupSelector();
         public string ThoughtType = "";
         public string ThoughtLabel = "";
         public string ThoughtDescription = "";
@@ -74,7 +74,7 @@ namespace HumanStoryteller.Incidents {
             base.ExposeData();
             Scribe_Deep.Look(ref ThoughtEffect, "thoughtEffect");
             Scribe_Deep.Look(ref ThoughtDuration, "thoughtDuration");
-            Scribe_Deep.Look(ref Names, "names");
+            Scribe_Deep.Look(ref Pawns, "names");
             Scribe_Values.Look(ref ThoughtType, "thoughtType");
             Scribe_Values.Look(ref ThoughtLabel, "thoughtLabel");
             Scribe_Values.Look(ref ThoughtDescription, "thoughtDescription");

@@ -4,7 +4,7 @@ namespace HumanStoryteller.Util.Logging {
     public static class Tell {
         public static T AssertNotNull<T>(T obj, string name, string className) {
             if (obj == null) {
-                Err($"nullpointer: {name} in {className}, trying to continue..");
+                Err($"nullpointer: [{name}] in {className}, trying to continue..");
             }
 
             return obj;

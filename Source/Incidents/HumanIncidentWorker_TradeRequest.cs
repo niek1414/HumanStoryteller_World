@@ -217,7 +217,7 @@ namespace HumanStoryteller.Incidents {
 
         public override string ToString() {
             return
-                $"{base.ToString()}, Points: {Points}, Duration: {Duration}, RequestItem: {RequestItem}, RewardItem: {RewardItem}";
+                $"{base.ToString()}, Points: [{Points}], Duration: [{Duration}], RequestItem: [{RequestItem}], RewardItem: [{RewardItem}]";
         }
 
         public override void ExposeData() {

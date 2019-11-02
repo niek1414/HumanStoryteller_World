@@ -116,6 +116,12 @@ namespace HumanStoryteller.Parser.Converter {
                         GetNumeralCompareResponse(GetString(obj, "compareType")),
                         GetNumber(obj["constant"])
                     );
+                case GroupCountCheck.Name:
+                    return new GroupCountCheck(
+                        GetString(obj, "group"),
+                        GetNumeralCompareResponse(GetString(obj, "compareType")),
+                        GetNumber(obj["constant"])
+                    );
                 case BiomeCheck.Name:
                     return new BiomeCheck(obj["biomes"] != null ? obj["biomes"].Values<string>().ToList() : new List<string>());
                 case AudioCheck.Name:

@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using HumanStoryteller.Model;
+using HumanStoryteller.Model.PawnGroup;
 using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util;
 using HumanStoryteller.Util.Logging;
@@ -23,20 +25,20 @@ namespace HumanStoryteller.Incidents {
             Tell.Log($"Executing event {Name} with:{allParams}");
 
             Map map = (Map) allParams.GetTarget();
-            
+
             Pawn pawn = null;
-            if (allParams.Name != "") {
-                pawn = PawnUtil.GetPawnByName(allParams.Name);
-            } else {
+            if (allParams.UnnamedColonist) {
                 if (map.mapPawns.FreeColonists.Where(p => !PawnUtil.PawnExists(p)).TryRandomElement(out Pawn result)) {
                     pawn = result;
                 }
+            } else {
+                pawn = allParams.Pawns.Filter(map).RandomElementWithFallback();
             }
 
             if (pawn == null)
                 return ir;
 
-            PawnUtil.RemoveName(allParams.Name);
+            PawnUtil.RemovePawn(pawn);
             PawnUtil.SavePawnByName(allParams.OutName, pawn);
 
             SendLetter(allParams);
@@ -45,8 +47,9 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_RenamePawn : HumanIncidentParms {
+        public PawnGroupSelector Pawns;
+        public bool UnnamedColonist;
         public string OutName = "";
-        public string Name = "";
 
         public HumanIncidentParams_RenamePawn() {
         }
@@ -55,13 +58,14 @@ namespace HumanStoryteller.Incidents {
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, NewName: {OutName}, Name: {Name}";
+            return $"{base.ToString()}, UnnamedColonist: [{UnnamedColonist}], NewName: [{OutName}], Pawns: [{Pawns}]";
         }
 
         public override void ExposeData() {
             base.ExposeData();
+            Scribe_Values.Look(ref UnnamedColonist, "unnamedColonist");
             Scribe_Values.Look(ref OutName, "newName");
-            Scribe_Values.Look(ref Name, "name");
+            Scribe_Deep.Look(ref Pawns, "pawns");
         }
     }
 }

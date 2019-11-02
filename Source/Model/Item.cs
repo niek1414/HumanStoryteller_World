@@ -27,7 +27,7 @@ namespace HumanStoryteller.Model {
         }
 
         public override string ToString() {
-            return $"Thing: {Thing}, Stuff: {Stuff}, Quality: {Quality}, Amount: {Amount}";
+            return $"Thing: [{Thing}], Stuff: [{Stuff}], Quality: [{Quality}], Amount: [{Amount}]";
         }
 
         public void ExposeData() {

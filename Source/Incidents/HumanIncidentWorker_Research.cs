@@ -45,6 +45,10 @@ namespace HumanStoryteller.Incidents {
         public HumanIncidentParams_Research(Target target, HumanLetter letter) : base(target, letter) {
         }
 
+        public override string ToString() {
+            return $"{base.ToString()}, Projects: [{Projects.ToCommaList()}], FinishCurrent: [{FinishCurrent}]";
+        }
+
         public override void ExposeData() {
             base.ExposeData();
             Scribe_Collections.Look(ref Projects, "projects", LookMode.Value);

@@ -112,7 +112,7 @@ namespace HumanStoryteller.Incidents {
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, Amount: {Amount}, MineableRock: {MineableRock}";
+            return $"{base.ToString()}, Amount: [{Amount}], MineableRock: [{MineableRock}]";
         }
 
         public override void ExposeData() {

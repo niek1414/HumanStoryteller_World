@@ -46,7 +46,7 @@ namespace HumanStoryteller.CheckConditions {
         }
 
         public override string ToString() {
-            return $"Response: {_response}";
+            return $"Response: [{_response}]";
         }
 
         public override void ExposeData() {

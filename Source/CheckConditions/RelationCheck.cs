@@ -30,7 +30,7 @@ namespace HumanStoryteller.CheckConditions {
         }
 
         public override string ToString() {
-            return $"Faction: {_faction}, CompareType: {_compareType}, Constant: {_constant}";
+            return $"Faction: [{_faction}], CompareType: [{_compareType}], Constant: [{_constant}]";
         }
 
         public override void ExposeData() {

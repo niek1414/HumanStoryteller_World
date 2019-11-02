@@ -40,7 +40,7 @@ namespace HumanStoryteller.Incidents {
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, Title: {Title}, Description: {Description}";
+            return $"{base.ToString()}, Title: [{Title}], Description: [{Description}]";
         }
 
         public override void ExposeData() {

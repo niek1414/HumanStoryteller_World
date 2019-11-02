@@ -7,7 +7,11 @@ namespace HumanStoryteller.Util.Overlay {
          * Returns bool. If true the item should be removed from the draw loop.
          */
         bool Step();
+        
+        void HighPrio();
 
         void NotifyEnd();
+
+        bool ShouldBlockInput();
     }
 }

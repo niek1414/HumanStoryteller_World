@@ -323,7 +323,7 @@ namespace HumanStoryteller.Incidents {
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, File: {File}, Author: {Author}, IsSong: {IsSong}, Volume: {Volume}";
+            return $"{base.ToString()}, File: [{File}], Author: [{Author}], IsSong: [{IsSong}], Volume: [{Volume}]";
         }
 
         public override void ExposeData() {

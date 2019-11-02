@@ -131,7 +131,8 @@ namespace HumanStoryteller.Util.Overlay {
         }
 
         private void Draw(float horOffset, float verOffset, float alpha, float masterAlpha) {
-            var outerRect = new Rect(UI.screenWidth - 260 + horOffset, verOffset + 10, 250, 100);
+            const int textBoxSize = 280;
+            var outerRect = new Rect(UI.screenWidth - (textBoxSize + 10) + horOffset, verOffset + 10, textBoxSize, 100);
             Widgets.DrawBoxSolid(outerRect, Mouse.IsOver(outerRect) ? new Color(0.03f, 0.05f, 0.06f, alpha) : new Color(0.08f, 0.1f, 0.11f, alpha));
 
             Rect portret = new Rect(outerRect) {width = 65, height = 65};

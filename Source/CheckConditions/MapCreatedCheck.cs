@@ -25,7 +25,7 @@ namespace HumanStoryteller.CheckConditions {
         }
 
         public override string ToString() {
-            return $"MapName: {_mapName}";
+            return $"MapName: [{_mapName}]";
         }
 
         public override void ExposeData() {

@@ -23,7 +23,7 @@ namespace HumanStoryteller.Incidents {
 
             var sc = HumanStoryteller.StoryComponent;
             if (allParams.Enable) {
-                sc.StoryOverlay.AddItem(new FadeBlack(), true);
+                sc.StoryOverlay.AddItem(new FadeBlack());
             } else {
                 sc.StoryOverlay.NotifyEnd<FadeBlack>();
             }
@@ -43,7 +43,7 @@ namespace HumanStoryteller.Incidents {
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, Enable: {Enable}";
+            return $"{base.ToString()}, Enable: [{Enable}]";
         }
 
         public override void ExposeData() {

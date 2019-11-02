@@ -49,7 +49,7 @@ namespace HumanStoryteller.Incidents {
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, Item: {Item}, InstaPlace: {InstaPlace}, Location: {Location}";
+            return $"{base.ToString()}, Item: [{Item}], InstaPlace: [{InstaPlace}], Location: [{Location}]";
         }
 
         public override void ExposeData() {

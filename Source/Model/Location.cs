@@ -72,7 +72,7 @@ namespace HumanStoryteller.Model {
                 case Zone:
                     return GetZone(target, true)?.RandomCell(IntVec3.Invalid) ?? IntVec3.Invalid;
                 default:
-                    Tell.Warn($"During location parsing, found unknown type: {Type}.");
+                    Tell.Warn($"During location parsing, found unknown type: [{Type}].");
                     return IntVec3.Invalid;
             }
         }
@@ -114,7 +114,7 @@ namespace HumanStoryteller.Model {
                 case "Random":
                     return DropCellFinder.RandomDropSpot(map);
                 default:
-                    Tell.Warn($"During location preset parsing, found unknown preset type: {Value}.");
+                    Tell.Warn($"During location preset parsing, found unknown preset type: [{Value}].");
                     return IntVec3.Invalid;
             }
         }
@@ -123,7 +123,7 @@ namespace HumanStoryteller.Model {
             var x = X?.GetValue() ?? 0;
             var z = Z?.GetValue() ?? 0;
             if (x == -1 || z == -1) {
-                Tell.Warn($"Precise location seems invalid, X: {x} Z: {z}. Using anyway..");
+                Tell.Warn($"Precise location seems invalid, X: [{x}] Z: [{z}]. Using anyway..");
             }
 
             return new IntVec3(Mathf.RoundToInt(x), 0, Mathf.RoundToInt(z));
@@ -140,7 +140,7 @@ namespace HumanStoryteller.Model {
         }
 
         public override string ToString() {
-            return $"Type: {Type}, Value: {Value}, X: {X}, Z: {Z}, Offset: {Offset}";
+            return $"Type: [{Type}], Value: [{Value}], X: [{X}], Z: [{Z}], Offset: [{Offset}]";
         }
 
         public void ExposeData() {

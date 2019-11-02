@@ -16,7 +16,7 @@ namespace HumanStoryteller.Model.StoryPart {
         }
 
         public override string ToString() {
-            return $"Uuid: {Uuid}, Name: {Name}, Incident: {Incident}";
+            return $"Uuid: [{Uuid}], Name: [{Name}], Incident: [{Incident}]";
         }
 
         public void ExposeData() {

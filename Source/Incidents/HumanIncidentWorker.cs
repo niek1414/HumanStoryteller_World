@@ -38,7 +38,7 @@ namespace HumanStoryteller.Incidents {
                         Find.CameraDriver.shaker.DoShake(4f);
                     }
 
-                    l = LetterMaker.MakeLetter(parms.Letter.Title, parms.Letter.Message, parms.Letter.Type, target, relatedFaction);
+                    l = LetterMaker.MakeLetter(parms.Letter.Title.Get(), parms.Letter.Message.Get(), parms.Letter.Type, target, relatedFaction);
                     if (parms.Letter.Force) {
                         l.OpenLetter();
                     }
@@ -54,7 +54,7 @@ namespace HumanStoryteller.Incidents {
                     Find.CameraDriver.shaker.DoShake(4f);
                 }
 
-                var letter = LetterMaker.MakeLetter(parms.Letter.Title, parms.Letter.Message, parms.Letter.Type, target, relatedFaction);
+                var letter = LetterMaker.MakeLetter(parms.Letter.Title.Get(), parms.Letter.Message.Get(), parms.Letter.Type, target, relatedFaction);
                 if (parms.Letter.Force) {
                     letter.OpenLetter();
                 }
