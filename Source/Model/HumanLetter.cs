@@ -4,8 +4,8 @@ using Verse;
 
 namespace HumanStoryteller.Model {
     public class HumanLetter : IExposable {
-        public RichText Title;
-        public RichText Message;
+        public RichText Title = new RichText();
+        public RichText Message = new RichText();
 
         [JsonConverter(typeof(LetterTypeConverter))]
         public LetterDef Type;

@@ -24,11 +24,6 @@ namespace HumanStoryteller.Web {
                 if (!CheckRequestStatus(response)) {
                     return null;
                 }
-              
-                if (response.Content.NullOrEmpty()) {
-                    Tell.Warn("Story does not exist on the server (anymore).");
-                    return null;
-                }
 
                 return Parser.Parser.StoryParser(response.Content);
             } catch (Exception e) {
@@ -46,12 +41,6 @@ namespace HumanStoryteller.Web {
                 }
 
                 if (!CheckRequestStatus(response, handle)) {
-                    return;
-                }
-                
-                if (response.Content.NullOrEmpty()) {
-                    Tell.Warn("Story does not exist on the server (anymore).");
-                    callback(null);
                     return;
                 }
 
@@ -155,9 +144,7 @@ namespace HumanStoryteller.Web {
             }
         }
 
-        private static bool CheckRequestStatus(IRestResponse response, RestRequestAsyncHandle handle = null) {
-            Tell.Debug(response.Content);
-            
+        private static bool CheckRequestStatus(IRestResponse response, RestRequestAsyncHandle handle = null) {            
             if (response.ResponseStatus != ResponseStatus.Completed) {
                 Tell.Warn($"Rest call failed, {response.ResponseStatus}", response);
                 if (handle != null) {

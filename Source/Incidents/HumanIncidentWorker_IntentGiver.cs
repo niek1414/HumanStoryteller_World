@@ -33,7 +33,7 @@ namespace HumanStoryteller.Incidents {
 
             var pawns = new List<Pawn>();
             foreach (var pawn in allParams.Pawns.Filter(map)) {
-                if (!pawn.DestroyedOrNull() && !pawn.Dead) {
+                if (!pawn.DestroyedOrNull() && !pawn.Dead && pawn.Spawned) {
                     pawns.Add(pawn);
                 }
             }

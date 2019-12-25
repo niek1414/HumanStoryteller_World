@@ -6,8 +6,6 @@ using Verse;
 
 namespace HumanStoryteller.Util {
     public class PawnUtil {
-        private static int _cleanupCounter;
-        private const int CleanupCounterMax = 100;
 
         public static void SetDisplayName(Pawn p, string first, string nick = "", string last = "") {
             switch (p.Name) {
@@ -30,20 +28,13 @@ namespace HumanStoryteller.Util {
         public static Pawn GetPawnByName(String name) {
             var pawnBank = HumanStoryteller.StoryComponent.PawnBank;
 
-            _cleanupCounter++;
-            if (_cleanupCounter >= CleanupCounterMax) {
-                _cleanupCounter = 0;
-                foreach (var item in pawnBank.Where(pair =>
-                    pair.Value == null || pair.Value.Discarded).ToList()) {
-                    Tell.Log("Removing pawn with name I: " + item.Key);
-                    pawnBank.Remove(item.Key);
-                }
-            }
-
-            foreach (var pair in pawnBank) {
-                if (pair.Key.ToUpper().Equals(name.ToUpper())) {
-                    Tell.Log("Found pawn with name I: " + name + " S: " + pair.Value.Name.ToStringShort);
-                    return pair.Value;
+            if (pawnBank.ContainsKey(name.ToUpper())) {
+                var pawn = pawnBank[name.ToUpper()];
+                Tell.Log("Found pawn with name I: " + name + " S: " + pawn.Name.ToStringShort);
+                if (pawn.Discarded) {
+                    RemoveName(name);
+                } else {
+                    return pawn;
                 }
             }
 
@@ -52,17 +43,17 @@ namespace HumanStoryteller.Util {
         }
 
         public static void SavePawnByName(String name, Pawn pawn) {
-            if (HumanStoryteller.StoryComponent.PawnBank.ContainsKey(name)) {
+            if (HumanStoryteller.StoryComponent.PawnBank.ContainsKey(name.ToUpper())) {
                 RemoveName(name);
             }
 
             Tell.Log("Saved pawn S: " + pawn.Name.ToStringShort + " as I: " + name);
-            HumanStoryteller.StoryComponent.PawnBank.Add(name, pawn);
+            HumanStoryteller.StoryComponent.PawnBank.Add(name.ToUpper(), pawn);
         }
 
         public static void RemoveName(string name) {
             Tell.Log("Removing pawn with name I: " + name);
-            HumanStoryteller.StoryComponent.PawnBank.Remove(name);
+            HumanStoryteller.StoryComponent.PawnBank.Remove(name.ToUpper());
         }
 
         public static void RemovePawn(Pawn pawn) {
@@ -84,14 +75,7 @@ namespace HumanStoryteller.Util {
         }
 
         public static bool PawnExists(Pawn pawn) {
-            var pawnBank = HumanStoryteller.StoryComponent.PawnBank;
-            foreach (var pair in pawnBank) {
-                if (pair.Value == pawn) {
-                    return true;
-                }
-            }
-
-            return false;
+            return HumanStoryteller.StoryComponent.PawnBank.Any(pair => pair.Value == pawn);
         }
     }
 }

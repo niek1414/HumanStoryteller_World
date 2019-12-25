@@ -10,7 +10,7 @@ namespace HumanStoryteller.Views {
         public override MainTabWindowAnchor Anchor => MainTabWindowAnchor.Right;
         public override Vector2 RequestedTabSize =>  new Vector2(596, 240);
 
-        private int _rating = -1;
+        private int _rating = -2;
         private bool _refreshing;
 
         private static Dictionary<HumanStoryteller.RefreshRate, string> _labels =
@@ -27,7 +27,7 @@ namespace HumanStoryteller.Views {
         }
 
         private void RenderRating(Rect inRect) {
-            if (_rating == -1 && !_refreshing) {
+            if (_rating < 0 && !_refreshing) {
                 _refreshing = true;
                 RefreshRating();
             }
@@ -38,13 +38,21 @@ namespace HumanStoryteller.Views {
                 return;
             }
 
-            string ratingMessage = _rating == -1 ? "NotVoted".Translate() : "Voted".Translate() + ": " + (_rating + 1);
+            string ratingMessage;
+            if (_rating == -1) {
+                ratingMessage = "NotVoted".Translate();
+            } else if (_rating == -2){
+                ratingMessage = "LoadingVote".Translate();
+            } else {
+                ratingMessage = "Voted".Translate() + ": " + (_rating + 1);
+            }
             Widgets.Label(textRect, $"{"RateStory".Translate()}:\n({ratingMessage})");
 
             for (int i = 0; i < 10; i++) {
                 Rect buttonRect = new Rect(inRect.x + 30 + i * 50, inRect.y + 50, 50, 50);
                 if (Widgets.ButtonText(buttonRect, (i + 1).ToString())) {
-                    Storybook.SetRating(HumanStoryteller.StoryId, i, RefreshRating);
+                    _rating = -2;
+                    Storybook.SetRating(HumanStoryteller.StoryId, i, ResetRefresh);
                 }
             }
 
@@ -57,6 +65,10 @@ namespace HumanStoryteller.Views {
                     HumanStoryteller.StoryComponent.ThreatCycle.SetRefreshRate(rates[i]);
                 }
             }
+        }
+
+        private void ResetRefresh() {
+            _refreshing = false;
         }
 
         private void RefreshRating() {

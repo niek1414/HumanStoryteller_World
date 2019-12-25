@@ -228,6 +228,18 @@ namespace HumanStoryteller.Parser.Converter {
                 case HumanIncidentWorker_PointTo.Name:
                     incident = new FiringHumanIncident(new HumanIncidentWorker_PointTo(), new HumanIncidentParams_PointTo());
                     break;
+                case HumanIncidentWorker_TransferPawn.Name:
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_TransferPawn(), new HumanIncidentParams_TransferPawn());
+                    break;
+                case HumanIncidentWorker_BubbleMessage.Name:
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_BubbleMessage(), new HumanIncidentParams_BubbleMessage());
+                    break;
+                case HumanIncidentWorker_Unfog.Name:
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_Unfog(), new HumanIncidentParams_Unfog());
+                    break;
+                case HumanIncidentWorker_OnHit.Name:
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_OnHit(), new HumanIncidentParams_OnHit());
+                    break;
                 default:
                     Parser.LogParseError("incident", type);
                     return new FiringHumanIncident(null);

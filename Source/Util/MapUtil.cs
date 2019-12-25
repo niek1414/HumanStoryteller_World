@@ -15,29 +15,20 @@ namespace HumanStoryteller.Util {
         public static Map GetMapByName(String name, bool warn = true) {
             var mapBank = HumanStoryteller.StoryComponent.MapBank;
 
-            _cleanupCounter++;
-            if (_cleanupCounter >= CleanupCounterMax) {
-                _cleanupCounter = 0;
-                foreach (var item in mapBank.Where(pair => pair.Value == null).ToList()) {
-                    mapBank.Remove(item.Key);
+            if (mapBank.ContainsKey(name.ToUpper())) {
+                var mapContainer = mapBank[name.ToUpper()];
+                if (mapContainer == null) {
+                    RemoveByName(name);
+                    if (warn)
+                        Tell.Warn("Requested map does not exist (anymore)", name);
+                    return null;
                 }
-            }
-
-            foreach (var pair in mapBank) {
-                if (pair.Key.ToUpper().Equals(name.ToUpper())) {
-                    if (pair.Value == null) {
-                        if (warn)
-                            Tell.Warn("Requested map does not exist (anymore)", name);
-                        return null;
-                    }
-
-                    var map = pair.Value.GetMap();
-                    if (map == null && warn) {
-                        Tell.Warn("Requested map is not created yet (check first if map is created)", name);
-                    }
-
-                    return map;
+                var map = mapContainer.GetMap();
+                if (map == null && warn) {
+                    Tell.Warn("Requested map is not created yet (check first if map is created)", name);
                 }
+                
+                return map;
             }
 
             if (warn)
@@ -52,29 +43,17 @@ namespace HumanStoryteller.Util {
         public static MapContainer GetMapContainerByTile(long tile, bool warn = true) {
             var mapBank = HumanStoryteller.StoryComponent.MapBank;
 
-            _cleanupCounter++;
-            if (_cleanupCounter >= CleanupCounterMax) {
-                _cleanupCounter = 0;
-                foreach (var item in mapBank.Where(pair =>
-                    pair.Value == null
-                    || pair.Value.Parent.Tile == -1).ToList()) {
-                    mapBank.Remove(item.Key);
-                }
-            }
-
-            foreach (var pair in mapBank) {
-                if (pair.Value?.Parent.Tile == tile) {
-                    if (pair.Value.IsDecoupled) {
-                        return pair.Value;
-                    }
-
-                    var parent = pair.Value.Parent;
-                    if (parent == null && warn) {
-                        Tell.Warn("Requested map is not created yet (check first if map is created)", tile);
-                    }
-
+            foreach (var pair in mapBank.Where(pair => pair.Value?.Parent.Tile == tile)) {
+                if (pair.Value.IsDecoupled) {
                     return pair.Value;
                 }
+
+                var parent = pair.Value.Parent;
+                if (parent == null && warn) {
+                    Tell.Warn("Requested map is not created yet (check first if map is created)", tile);
+                }
+
+                return pair.Value;
             }
 
             if (warn)
@@ -95,37 +74,37 @@ namespace HumanStoryteller.Util {
         }
 
         public static void SaveMapByName(String name, MapContainer container) {
-            if (HumanStoryteller.StoryComponent.PawnBank.ContainsKey(name)) {
+            if (HumanStoryteller.StoryComponent.PawnBank.ContainsKey(name.ToUpper())) {
                 RemoveByName(name);
             }
 
-            HumanStoryteller.StoryComponent.MapBank.Add(name, container);
+            HumanStoryteller.StoryComponent.MapBank.Add(name.ToUpper(), container);
         }
 
         public static void RemoveByName(string name) {
-            HumanStoryteller.StoryComponent.MapBank.Remove(name);
+            HumanStoryteller.StoryComponent.MapBank.Remove(name.ToUpper());
         }
 
         public static void RemoveByTile(long tile) {
             var mapBank = HumanStoryteller.StoryComponent.MapBank;
 
-            foreach (var pair in mapBank) {
-                if (pair.Value?.Parent.Tile == tile) {
-                    mapBank.Remove(pair.Key);
-                    return;
-                }
+            foreach (var pair in mapBank.Where(pair => pair.Value?.Parent.Tile == tile)) {
+                mapBank.Remove(pair.Key);
+                return;
             }
         }
 
         public static bool MapExists(Map map) {
             var mapBank = HumanStoryteller.StoryComponent.MapBank;
-            foreach (var pair in mapBank) {
-                if (pair.Value?.DecoupledMap == map) {
-                    return true;
-                }
-            }
+            return mapBank.Any(pair => pair.Value?.DecoupledMap == map);
+        }
 
-            return false;
+        public static void AddPersistentMap(Map map) {
+            HumanStoryteller.StoryComponent.PersistentMaps.Add(map);
+        }
+
+        public static bool CheckIfMapIsPersistent(Map map) {
+            return HumanStoryteller.StoryComponent.PersistentMaps.Contains(map);
         }
     }
 }

@@ -23,7 +23,6 @@ namespace HumanStoryteller.Incidents {
 
             var message = new RadioMessage(PawnUtil.GetPawnByName(allParams.Name), allParams.Message.Get());
             HumanStoryteller.StoryComponent?.StoryOverlay.AddRadio(message);
-            Find.History.archive.Add(message);
             
             SendLetter(allParams);
             return ir;

@@ -5,6 +5,7 @@ using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util;
 using HumanStoryteller.Util.Logging;
 using RimWorld;
+using RimWorld.Planet;
 using UnityEngine;
 using Verse;
 
@@ -23,9 +24,17 @@ namespace HumanStoryteller.Incidents {
             Tell.Log($"Executing event {Name} with:{allParams}");
 
             Map map = (Map) allParams.GetTarget();
+            IntVec3 enterCell = CellFinder.RandomEdgeCell(map);
 
-            allParams.Pawns.Filter(map);
-            
+            foreach (var pawn in allParams.Pawns.FilterEnumerable(map)) {
+                if (pawn.Dead) continue;
+                IntVec3 loc = CellFinder.RandomSpawnCellForPawnNear(enterCell, map, 4);
+                if (pawn.Spawned) {
+                    pawn.DeSpawn();
+                }
+                GenSpawn.Spawn(pawn, loc, map);
+            }
+
             SendLetter(parms);
 
             return ir;

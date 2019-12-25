@@ -31,6 +31,16 @@ namespace HumanStoryteller.Patch {
             HarmonyMethod patchIfMapExists = new HarmonyMethod(typeof(Map_Patch).GetMethod("ConnectIfGenerateLayer"));
             HarmonyMethod patchDisconnectMap = new HarmonyMethod(typeof(Map_Patch).GetMethod("DisconnectMapAfterGenerateLayer"));
             harmony.Patch(targetRegenerateSection, patchIfMapExists, patchDisconnectMap);
+
+            MethodInfo shouldRemoveMapNowSettlementBase = AccessTools.Method(typeof(SettlementBase), "ShouldRemoveMapNow");
+            MethodInfo shouldRemoveMapNowSite = AccessTools.Method(typeof(Site), "ShouldRemoveMapNow");
+            MethodInfo shouldRemoveMapNowCaravansBattlefield = AccessTools.Method(typeof(CaravansBattlefield), "ShouldRemoveMapNow");
+            MethodInfo shouldRemoveMapNowDestroyedSettlement = AccessTools.Method(typeof(DestroyedSettlement), "ShouldRemoveMapNow");
+            HarmonyMethod shouldRemoveMapNowPatch = new HarmonyMethod(typeof(Map_Patch).GetMethod("ShouldRemoveMapNow"));
+            harmony.Patch(shouldRemoveMapNowSettlementBase, shouldRemoveMapNowPatch);
+            harmony.Patch(shouldRemoveMapNowSite, shouldRemoveMapNowPatch);
+            harmony.Patch(shouldRemoveMapNowCaravansBattlefield, shouldRemoveMapNowPatch);
+            harmony.Patch(shouldRemoveMapNowDestroyedSettlement, shouldRemoveMapNowPatch);
         }
 
         public static void Settle() {
@@ -43,6 +53,18 @@ namespace HumanStoryteller.Patch {
         public static void Enter(Map map) {
             if (Main_Patch.ShouldNotMessWithGame()) return;
             FloodFillerFog.DebugRefogMap(map);
+        }
+
+        public static bool ShouldRemoveMapNow(MapParent __instance, ref bool __result, out bool alsoRemoveWorldObject) {
+            alsoRemoveWorldObject = false;
+            if (Main_Patch.ShouldNotMessWithGame() || !__instance.HasMap) return true;
+
+            if (MapUtil.CheckIfMapIsPersistent(__instance.Map)) {
+                __result = false;
+                return false;
+            }
+
+            return true;
         }
 
         public static void Arrive(Caravan __instance) {

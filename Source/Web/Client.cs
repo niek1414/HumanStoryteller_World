@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
 using HumanStoryteller.Util;
+using HumanStoryteller.Util.Logging;
 using RestSharp;
 
 namespace HumanStoryteller.Web {
@@ -52,13 +53,14 @@ namespace HumanStoryteller.Web {
         }
 
         public static void Put(string url, Action<IRestResponse, RestRequestAsyncHandle> callback, String ticket = null) {
-            RestClient restClient = CreateRestClient();
-            RestRequest request = new RestRequest(url, Method.PUT);
-            if (ticket != null) {
-                request.AddQueryParameter("ticket", ticket);
-            }
-
-            restClient.ExecuteAsyncGet(request, callback, "PUT");
+//            RestClient restClient = CreateRestClient();
+//            RestRequest request = new RestRequest(url, Method.PUT);
+//            if (ticket != null) {
+//                request.AddQueryParameter("ticket", ticket);
+//            }
+//
+//            restClient.ExecuteAsyncGet(request, callback, "PUT");
+            callback(Curl("PUT", _host + url, "", new Dictionary<string, string>(), ticket), null);
         }
 
         private static RestClient CreateRestClient() {
@@ -90,7 +92,11 @@ namespace HumanStoryteller.Web {
             }
 
             try {
-                var arguments = $"-k {url + (ticket != null ? "?ticket=" + ticket : "")} -X {method}" + (data != "" ? $"--data \"{data}\"" : "");
+                var arguments = $"-k {url} " +
+                                $"-X {method} " +
+                                (data != "" ? $"--data \"{data}\"" : "") +
+                                "-w \"%{http_code}\" " +
+                                "-s";
                 var psi = new ProcessStartInfo {
                     FileName = "curl",
                     Arguments = arguments,
@@ -100,9 +106,12 @@ namespace HumanStoryteller.Web {
                 };
 
                 p = Process.Start(psi);
-
+                var resultString = string.Copy(p.StandardOutput.ReadToEnd());
+                var statusCode = (HttpStatusCode) Enum.Parse(typeof (HttpStatusCode), resultString.Substring(resultString.Length - 3));
+                var content = resultString.Substring(0, resultString.Length - 3);
+                Tell.Debug($"HTTP Request {url} ({statusCode}) \n{content}");
                 return new RestResponse {
-                    ResponseStatus = ResponseStatus.Completed, StatusCode = HttpStatusCode.OK, Content = string.Copy(p.StandardOutput.ReadToEnd())
+                    ResponseStatus = ResponseStatus.Completed, StatusCode = statusCode, Content = content
                 };
             } finally {
                 if (p != null && p.HasExited == false)

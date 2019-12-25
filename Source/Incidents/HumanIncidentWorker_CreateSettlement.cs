@@ -75,15 +75,16 @@ namespace HumanStoryteller.Incidents {
 
                 var newMap = MapGenerator.GenerateMap(new IntVec3(sizeX, 1, sizeY), settlement, generator, settlement.ExtraGenStepDefs);
                 if (allParams.DecoupleNow) {
-                    container = new MapContainer(settlement);
                     container.Decouple(newMap);
+                } else {
+                    MapUtil.AddPersistentMap(newMap);
                 }
             }
 
             if (allParams.MapName != "") {
                 MapUtil.SaveMapByName(allParams.MapName, container);
             }
-
+                        
             SendLetter(parms);
 
             return ir;

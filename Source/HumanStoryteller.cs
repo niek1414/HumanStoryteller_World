@@ -125,6 +125,7 @@ namespace HumanStoryteller {
             Patch.SelectStartingSiteUI_Patch.Patch(harmony);
             Patch.Lord_Patch.Patch(harmony);
             Patch.Map_Patch.Patch(harmony);
+            Patch.Shot_Patch.Patch(harmony);
         }
     }
 }

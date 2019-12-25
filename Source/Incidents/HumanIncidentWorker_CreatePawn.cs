@@ -6,6 +6,7 @@ using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util;
 using HumanStoryteller.Util.Logging;
 using RimWorld;
+using RimWorld.Planet;
 using Verse;
 using Verse.AI.Group;
 
@@ -74,7 +75,7 @@ namespace HumanStoryteller.Incidents {
             ));
 
             PawnUtil.SetDisplayName(pawn, allParams.FirstName, allParams.NickName, allParams.LastName);
-            
+
             if (pawn.Faction == Faction.OfPlayer)
                 Find.StoryWatcher.watcherPopAdaptation.Notify_PawnEvent(pawn, PopAdaptationEvent.GainedColonist);
 
@@ -92,8 +93,10 @@ namespace HumanStoryteller.Incidents {
                     }
                 }
             }
-            //TODO test
-            if (!allParams.NoSpawn) {
+
+            if (allParams.NoSpawn) {
+                Find.WorldPawns.PassToWorld(pawn, PawnDiscardDecideMode.KeepForever);
+            } else {
                 GenSpawn.Spawn(pawn, cell, map);
                 if (pawn.Faction != Faction.OfPlayer) {
                     switch (pawn.Faction.PlayerRelationKind) {
@@ -107,11 +110,11 @@ namespace HumanStoryteller.Incidents {
                             break;
                         case FactionRelationKind.Neutral:
                             RCellFinder.TryFindRandomSpotJustOutsideColony(pawn, out IntVec3 result3);
-                            LordMaker.MakeNewLord(pawn.Faction,  new LordJob_Travel(result3), map, new []{pawn});
+                            LordMaker.MakeNewLord(pawn.Faction, new LordJob_Travel(result3), map, new[] {pawn});
                             break;
                         case FactionRelationKind.Ally:
                             RCellFinder.TryFindRandomSpotJustOutsideColony(pawn, out IntVec3 result4);
-                            LordMaker.MakeNewLord(pawn.Faction,  new LordJob_DefendBase(pawn.Faction, result4), map, new []{pawn});
+                            LordMaker.MakeNewLord(pawn.Faction, new LordJob_DefendBase(pawn.Faction, result4), map, new[] {pawn});
                             break;
                         default:
                             throw new ArgumentOutOfRangeException();
@@ -149,7 +152,8 @@ namespace HumanStoryteller.Incidents {
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, BiologicalAge: [{BiologicalAge}], ChronologicalAge: [{ChronologicalAge}], ApparelMoney: [{ApparelMoney}], GearHealthMin: [{GearHealthMin}], GearHealthMax: [{GearHealthMax}], PawnKind: [{PawnKind}], FirstName: [{FirstName}], NickName: [{NickName}], LastName: [{LastName}], OutName: [{OutName}], Faction: [{Faction}], NewBorn: [{NewBorn}], NoSpawn: [{NoSpawn}], MustBeCapableOfViolence: [{MustBeCapableOfViolence}], Gender: [{Gender}], Weapon: [{Weapon}]";
+            return
+                $"{base.ToString()}, BiologicalAge: [{BiologicalAge}], ChronologicalAge: [{ChronologicalAge}], ApparelMoney: [{ApparelMoney}], GearHealthMin: [{GearHealthMin}], GearHealthMax: [{GearHealthMax}], PawnKind: [{PawnKind}], FirstName: [{FirstName}], NickName: [{NickName}], LastName: [{LastName}], OutName: [{OutName}], Faction: [{Faction}], NewBorn: [{NewBorn}], NoSpawn: [{NoSpawn}], MustBeCapableOfViolence: [{MustBeCapableOfViolence}], Gender: [{Gender}], Weapon: [{Weapon}]";
         }
 
         public override void ExposeData() {

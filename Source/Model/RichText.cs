@@ -16,10 +16,12 @@ namespace HumanStoryteller.Model {
         }
 
         public string GetWithoutInteractive() {
+            if (_html == null) return null;
             return Sanitize(ParseStyle(ParseFont(ParseLineBreak(SanitizeInteractive(_html)))));
         }
 
         public string Get() {
+            if (_html == null) return null;
             return Sanitize(ParseStyle(ParseFont(ParseLineBreak(ParseInteractive(_html)))));
         }
 

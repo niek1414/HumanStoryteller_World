@@ -11,36 +11,34 @@ namespace HumanStoryteller.Model.PawnGroup {
         public PawnGroupSource Source = new PawnGroupSource();
         public List<PawnGroupFilter> Filters = new List<PawnGroupFilter>();
         public Number Limit = new Number();
-        
+
         private readonly Random _r = new Random();
-        
+
         public PawnGroupSelector() {
         }
 
         public List<Pawn> Filter(Map map) {
-            int initCount = 0;
-            var pawns = Source.GetSource(map).Pawns
-                .Where(pawn => {
-                    var r = !pawn.DestroyedOrNull() && !pawn.Discarded;
-                    if (r) {
-                        initCount++;
-                    }
-                    return r;
-                });
+            return FilterEnumerable(map).ToList();
+        }
+
+        public IEnumerable<Pawn> FilterEnumerable(Map map) {
+            var pawns = Source.GetSource(map).Pawns.Where(pawn => !pawn.DestroyedOrNull() && !pawn.Discarded).ToList();
+            var initCount = pawns.Count;
             foreach (var filter in Filters) {
-                pawns = pawns.Where(pawn => filter?.ExecuteFilter(pawn, map) ?? true);
+                pawns = pawns.Where(pawn => filter?.ExecuteFilter(pawn, map) ?? true).ToList();
             }
 
             var limit = (int) Limit.GetValue();
             var realLimit = limit == -1 ? int.MaxValue : limit;
-            var result = pawns.OrderBy(x => _r.NextDouble()).Take(realLimit).ToList();
-            Tell.Log("Filtered group selection, source: " + initCount + " after filter: " + result.Count + " limited if above: " + realLimit);
+            pawns = pawns.OrderBy(x => _r.NextDouble()).Take(realLimit).ToList();
+            Tell.Log("Filtered group selection, source: " + initCount + " after filter: " + pawns.Count + " limited if above: " + realLimit);
             if (HumanStoryteller.DEBUG) {
-                foreach (var pawn in result) {
-                    Tell.Debug("Found pawn: " + pawn.Name + " _ " + pawn.GetInspectString());
+                foreach (var pawn in pawns) {
+                    Tell.Debug("Found pawn: " + pawn.GetTooltip().text);
                 }
             }
-            return result;
+
+            return pawns;
         }
 
         public override string ToString() {

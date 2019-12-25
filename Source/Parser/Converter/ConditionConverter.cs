@@ -132,8 +132,14 @@ namespace HumanStoryteller.Parser.Converter {
                     return new CheatCheck();
                 case CreatedStructureCheck.Name:
                     return new CreatedStructureCheck();
+                case CaravanLocationCheck.Name:
+                    return new CaravanLocationCheck();
+                case QueueEventCheck.Name:
+                    return new QueueEventCheck();
                 case ResearchCheck.Name:
                     return new ResearchCheck(GetResearchProject(GetString(obj, "project")));
+                case PlayerCanSeeCheck.Name:
+                    return new PlayerCanSeeCheck(GetSeeCondition(GetString(obj, "seeConditions")), GetLocation(obj["location"]));
                 default:
                     Parser.LogParseError("condition", type);
                     return null;
@@ -224,6 +230,20 @@ namespace HumanStoryteller.Parser.Converter {
             } catch (KeyNotFoundException) {
                 Parser.LogParseError("health condition", type);
                 return PawnHealthCheck.HealthCondition.Alive;
+            }
+        }
+
+        private PlayerCanSeeCheck.SeeConditions GetSeeCondition(String type) {
+            if (type == null) {
+                Parser.LogParseError("see condition", type);
+                return PlayerCanSeeCheck.SeeConditions.FogAndViewport;
+            }
+
+            try {
+                return (PlayerCanSeeCheck.SeeConditions)Enum.Parse(typeof(PlayerCanSeeCheck.SeeConditions), type);
+            } catch (Exception e) {
+                Parser.LogParseError("see condition, " + e.Message + "___" + e.StackTrace, type);
+                return PlayerCanSeeCheck.SeeConditions.FogAndViewport;
             }
         }
 

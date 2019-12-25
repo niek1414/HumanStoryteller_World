@@ -68,6 +68,7 @@
     <Compile Include="Alert\Alert_NeedStory.cs" />
     <Compile Include="CheckConditions\AudioCheck.cs" />
     <Compile Include="CheckConditions\BiomeCheck.cs" />
+    <Compile Include="CheckConditions\CaravanLocationCheck.cs" />
     <Compile Include="CheckConditions\CheatCheck.cs" />
     <Compile Include="CheckConditions\CheckCondition.cs" />
     <Compile Include="CheckConditions\ColoniesCheck.cs" />
@@ -84,7 +85,9 @@
     <Compile Include="CheckConditions\PawnHealthCheck.cs" />
     <Compile Include="CheckConditions\PawnLocationCheck.cs" />
     <Compile Include="CheckConditions\PawnStateCheck.cs" />
+    <Compile Include="CheckConditions\PlayerCanSeeCheck.cs" />
     <Compile Include="CheckConditions\QuestCheck.cs" />
+    <Compile Include="CheckConditions\QueueEventCheck.cs" />
     <Compile Include="CheckConditions\RandomCheck.cs" />
     <Compile Include="CheckConditions\RelationCheck.cs" />
     <Compile Include="CheckConditions\ResearchCheck.cs" />
@@ -107,6 +110,7 @@
     <Compile Include="Incidents\HumanIncidentWorker_AnimalInsanityMass.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_AnimalInsanitySingle.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_Aurora.cs" />
+    <Compile Include="Incidents\HumanIncidentWorker_BubbleMessage.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_ChapterSplash.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_ControlCamera.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_CoupleDecouple.cs" />
@@ -131,6 +135,7 @@
     <Compile Include="Incidents\HumanIncidentWorker_MentalBreak.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_MeteoriteImpact.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_MovieMode.cs" />
+    <Compile Include="Incidents\HumanIncidentWorker_OnHit.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_OrbitalStrike.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_PawnHealth.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_PlanetKiller.cs" />
@@ -167,6 +172,7 @@
     <Compile Include="Incidents\HumanIncidentWorker_TraderArrival.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_TradeRequest.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_TransferPawn.cs" />
+    <Compile Include="Incidents\HumanIncidentWorker_Unfog.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_VisitorGroup.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_VolcanicWinter.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_WildManWandersIn.cs" />
@@ -202,6 +208,7 @@
     <Compile Include="Model\PawnGroup\PawnGroup.cs" />
     <Compile Include="Model\PawnGroup\PawnGroupSelector.cs" />
     <Compile Include="Model\PawnGroup\PawnGroupSource.cs" />
+    <Compile Include="Model\ReportBank.cs" />
     <Compile Include="Model\RichText.cs" />
     <Compile Include="Model\StoryPart\Connection.cs" />
     <Compile Include="Model\StoryPart\FiringHumanIncident.cs" />
@@ -415,6 +422,7 @@
     <Compile Include="Patch\Main_Patch.cs" />
     <Compile Include="Patch\Map_Patch.cs" />
     <Compile Include="Patch\SelectStartingSiteUI_Patch.cs" />
+    <Compile Include="Patch\Shot_Patch.cs" />
     <Compile Include="Patch\StoryStatus_Patch.cs" />
     <Compile Include="Patch\StorytellerUI_Patch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -424,12 +432,20 @@
     <Compile Include="StorytellerComp_HumanThreatCycle.cs" />
     <Compile Include="StoryGraph.cs" />
     <Compile Include="Model\HumanLetter.cs" />
+    <Compile Include="Util\DrawUtil.cs" />
     <Compile Include="Util\Logging\ObjectDumper.cs" />
     <Compile Include="Util\Logging\Tell.cs" />
     <Compile Include="Util\OSUtil.cs" />
     <Compile Include="Util\Overlay\BlackBars.cs" />
+    <Compile Include="Util\Overlay\BubbleMessage.cs" />
+    <Compile Include="Util\Overlay\BubbleType\IBubbleType.cs" />
+    <Compile Include="Util\Overlay\BubbleType\NormalBubble.cs" />
+    <Compile Include="Util\Overlay\BubbleType\ShoutBubble.cs" />
+    <Compile Include="Util\Overlay\BubbleType\ThinkBubble.cs" />
+    <Compile Include="Util\Overlay\BubbleType\WhisperBubble.cs" />
     <Compile Include="Util\Overlay\ChapterBar.cs" />
     <Compile Include="Util\Overlay\FadeBlack.cs" />
+    <Compile Include="Util\Overlay\IBubbleItem.cs" />
     <Compile Include="Util\Overlay\IRadioItem.cs" />
     <Compile Include="Util\Overlay\OverlayItem.cs" />
     <Compile Include="Util\Overlay\Pointer.cs" />
@@ -437,6 +453,7 @@
     <Compile Include="Util\Overlay\ShowImage.cs" />
     <Compile Include="Util\Overlay\StoryOverlay.cs" />
     <Compile Include="Util\PawnGroupUtil.cs" />
+    <Compile Include="Util\ShotReportUtil.cs" />
     <Compile Include="Views\Extention\WidgetsExtented.cs" />
     <Compile Include="Views\MainTabWindow_CreaterTools.cs" />
     <Compile Include="Views\MainTabWindow_RateTab.cs" />

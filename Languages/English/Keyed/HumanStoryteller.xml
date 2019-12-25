@@ -41,9 +41,10 @@
     <CouldNotFindNode>Could not find node</CouldNotFindNode>
     <NoStorySadFace>No story right now :(</NoStorySadFace>
     <NotVoted>not voted</NotVoted>
+    <LoadingVote>loading..</LoadingVote>
     <Voted>voted</Voted>
     <RateStory>Rate story</RateStory>
-    <SyncRate>Story sync rate with server (Pls use Short only when needed ;)\ne.g. when the story is created by a friend while you play)</SyncRate>
+    <SyncRate>Story sync rate with server (Please use Short only when needed\ne.g. when the story is created by a friend while you play)</SyncRate>
     
     <!--Tab-CopyZone-->
     <ZoneCopyIntro>Here you can copy your home area and integrate it in your story.\nTwo options:\n - Select 'Copy structure' to spawn the same structure, floors &amp; items\n   in your story using the 'Create structure' event.\n - Select 'Copy location' to use the area in 'location' fields in checks &amp; events.</ZoneCopyIntro>

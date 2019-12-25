@@ -81,6 +81,7 @@ namespace HumanStoryteller.Util.Overlay {
                     _timeSinceLastTransition += Time.deltaTime;
                     if (_timeSinceLastTransition >= FadeOutTime) {
                         _isGone = true;
+                        Find.History.archive.Add(this);
                         return true;
                     }
 
@@ -187,7 +188,7 @@ namespace HumanStoryteller.Util.Overlay {
         public void ExposeData() {
             Scribe_Values.Look(ref _timeSinceLastTransition, "timeSinceLastTransition");
             Scribe_Values.Look(ref _currentState, "currentState");
-            Scribe_Values.Look(ref _pawn, "title");
+            Scribe_References.Look(ref _pawn, "pawn");
             Scribe_Values.Look(ref _message, "description");
             Scribe_Values.Look(ref _senderName, "senderName");
             Scribe_Values.Look(ref _startingTick, "startingTick");

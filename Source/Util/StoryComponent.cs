@@ -16,6 +16,8 @@ namespace HumanStoryteller.Util {
         public bool ForcedUpdate;
         public List<StoryEventNode> CurrentNodes = new List<StoryEventNode>();
         public List<StoryNode> AllNodes = new List<StoryNode>();
+        public List<Map> PersistentMaps = new List<Map>();
+        public List<ReportBank> ShotReportBank = new List<ReportBank>();
         public Dictionary<string, float> VariableBank = new Dictionary<string, float>();
         public Dictionary<string, Pawn> PawnBank = new Dictionary<string, Pawn>();
         public Dictionary<string, PawnGroup> PawnGroupBank = new Dictionary<string, PawnGroup>();
@@ -62,6 +64,8 @@ namespace HumanStoryteller.Util {
             ForcedUpdate = false;
             CurrentNodes = new List<StoryEventNode>();
             AllNodes = new List<StoryNode>();
+            PersistentMaps = new List<Map>();
+            ShotReportBank = new List<ReportBank>();
             VariableBank = new Dictionary<string, float>();
             PawnBank = new Dictionary<string, Pawn>();
             PawnGroupBank = new Dictionary<string, PawnGroup>();
@@ -132,6 +136,8 @@ namespace HumanStoryteller.Util {
             Scribe_Values.Look(ref StoryId, "storyId");
             Scribe_Collections.Look(ref CurrentNodes, "currentNode", LookMode.Deep);
             Scribe_Collections.Look(ref AllNodes, "allNodes", LookMode.Deep);
+            Scribe_Collections.Look(ref ShotReportBank, "shotReportBank", LookMode.Deep);
+            Scribe_Collections.Look(ref PersistentMaps, "persistentMaps", LookMode.Reference);
             Scribe_Collections.Look(ref VariableBank, "variableBank", LookMode.Value, LookMode.Value);
             Scribe_Collections.Look(ref PawnBank, "pawnBank", LookMode.Value, LookMode.Reference, ref reservedPawnKeysWorkingList,
                 ref reservedPawnValuesWorkingList);

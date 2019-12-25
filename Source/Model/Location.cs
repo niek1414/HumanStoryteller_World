@@ -96,7 +96,7 @@ namespace HumanStoryteller.Model {
                     }
 
                 case "Center":
-                    if (RCellFinder.TryFindRandomCellNearWith(map.Center, null, map, out var result)) {
+                    if (RCellFinder.TryFindRandomCellNearWith(map.Center, x => true, map, out var result, 5, 500)) {
                         return result;
                     } else {
                         Tell.Warn("No usable cell near center");
