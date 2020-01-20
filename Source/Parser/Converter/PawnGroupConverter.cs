@@ -1,11 +1,9 @@
 using System;
-using HumanStoryteller.Incidents;
 using HumanStoryteller.Model.PawnGroup;
 using HumanStoryteller.Model.PawnGroup.Filter;
-using HumanStoryteller.Model.StoryPart;
+using HumanStoryteller.Util.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using RimWorld;
 
 namespace HumanStoryteller.Parser.Converter {
     public class PawnGroupConverter : JsonConverter {
@@ -89,6 +87,9 @@ namespace HumanStoryteller.Parser.Converter {
                     break;
                 case CanSeeOneOfFilter.Name:
                     pawnGroupFilter = new CanSeeOneOfFilter();
+                    break;
+                case LocationFilter.Name:
+                    pawnGroupFilter = new LocationFilter();
                     break;
                 default:
                     Parser.LogParseError("pawn group", type);

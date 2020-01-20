@@ -12,6 +12,10 @@ namespace HumanStoryteller.Model {
         private const string Preset = "Preset";
         private const string Pawn = "Pawn";
         private const string Precise = "Precise";
+        
+        private bool _hasCachedZone;
+        private LocationZone _cachedZone;
+        private IntVec3 _cachedOffsetForZone;
 
         public string Type = "";
         public string Value = "";
@@ -36,15 +40,17 @@ namespace HumanStoryteller.Model {
         }
 
         public LocationZone GetZone(Map target, bool zoneOnly = false) {
-            if (Type == Zone) {
-                return AreaUtil.StringToLocationZone(Value, Offset?.GetSingleCell(target, true, true) ?? IntVec3.Zero);
+            if (isZone()) {
+                var offset = Offset?.GetSingleCell(target, true, true) ?? IntVec3.Zero;
+                if (!_hasCachedZone || !offset.Equals(_cachedOffsetForZone)) {
+                    _cachedZone = AreaUtil.StringToLocationZone(Value, offset);
+                    _hasCachedZone = true;
+                    _cachedOffsetForZone = offset;
+                }
+                return _cachedZone;//.DeepClone();
             }
 
-            if (zoneOnly) {
-                return new LocationZone();
-            }
-
-            return new LocationZone(new List<ZoneCell> {new ZoneCell(GetSingleCell(target))});
+            return zoneOnly ? null : new LocationZone(new List<ZoneCell> {new ZoneCell(GetSingleCell(target))});
         }
 
         public bool isZone() {

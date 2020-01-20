@@ -44,6 +44,7 @@ namespace HumanStoryteller.Util {
             try {
                 var zone = JsonConvert.DeserializeObject<LocationZone>(json, settings);
                 zone.ApplyOffset(offset);
+                zone.CreateCacheLookup();
                 return zone;
             } catch (JsonSerializationException e) {
                 Tell.Err($"Unable to parse location zone, {e.Message}", e);

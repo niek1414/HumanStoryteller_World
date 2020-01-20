@@ -83,7 +83,7 @@
     <Compile Include="CheckConditions\ItemMapCheck.cs" />
     <Compile Include="CheckConditions\MapCreatedCheck.cs" />
     <Compile Include="CheckConditions\PawnHealthCheck.cs" />
-    <Compile Include="CheckConditions\PawnLocationCheck.cs" />
+    <Compile Include="CheckConditions\OnLocationCheck.cs" />
     <Compile Include="CheckConditions\PawnStateCheck.cs" />
     <Compile Include="CheckConditions\PlayerCanSeeCheck.cs" />
     <Compile Include="CheckConditions\QuestCheck.cs" />
@@ -196,6 +196,7 @@
     <Compile Include="Model\PawnGroup\Filter\IsHumanlikeFilter.cs" />
     <Compile Include="Model\PawnGroup\Filter\IsKidnappedFilter.cs" />
     <Compile Include="Model\PawnGroup\Filter\KindFilter.cs" />
+    <Compile Include="Model\PawnGroup\Filter\LocationFilter.cs" />
     <Compile Include="Model\PawnGroup\Filter\MaleFilter.cs" />
     <Compile Include="Model\PawnGroup\Filter\NaturalAgeUnderFilter.cs" />
     <Compile Include="Model\PawnGroup\Filter\OnFireFilter.cs" />

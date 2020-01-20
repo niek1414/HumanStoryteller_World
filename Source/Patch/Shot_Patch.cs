@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using Harmony;
 using HumanStoryteller.Util;
@@ -57,30 +58,46 @@ namespace HumanStoryteller.Patch {
                     return;
                 }
 
+                ShotReport tempReport = new ShotReport();
+                var traverse = Traverse.Create(tempReport);
+                var traverseOld = Traverse.Create(__result);
+                
                 switch (type.Value) {
                     case ShotReportUtil.HitResponseType.AlwaysHit:
-                        Traverse.Create(__result).Field("factorFromShooterAndDist").SetValue(1f);
-                        Traverse.Create(__result).Field("factorFromEquipment").SetValue(1f);
-                        Traverse.Create(__result).Field("factorFromTargetSize").SetValue(1f);
-                        Traverse.Create(__result).Field("factorFromWeather").SetValue(1f);
-                        Traverse.Create(__result).Field("forcedMissRadius").SetValue(1f);
-                        Traverse.Create(__result).Field("coversOverallBlockChance").SetValue(0f);
-                        Traverse.Create(__result).Field("coveringGas").SetValue(null);
+                        traverse.Field("factorFromShooterAndDist").SetValue(1f);
+                        traverse.Field("factorFromEquipment").SetValue(1f);
+                        traverse.Field("factorFromTargetSize").SetValue(1f);
+                        traverse.Field("factorFromWeather").SetValue(1f);
+                        traverse.Field("forcedMissRadius").SetValue(0f);
+                        traverse.Field("coversOverallBlockChance").SetValue(0f);
+                        traverse.Field("coveringGas").SetValue(null);
+                        
+                        traverse.Field("target").SetValue(traverseOld.Field("target").GetValue());
+                        traverse.Field("distance").SetValue(traverseOld.Field("distance").GetValue());
+                        traverse.Field("covers").SetValue(traverseOld.Field("covers").GetValue());
+                        traverse.Field("shootLine").SetValue(__result.ShootLine);
+                        __result = (ShotReport) Traverse.Create(traverse).Field("_root").GetValue();
                         break;
                     case ShotReportUtil.HitResponseType.AlwaysMis:
-                        Traverse.Create(__result).Field("factorFromShooterAndDist").SetValue(0f);
-                        Traverse.Create(__result).Field("factorFromEquipment").SetValue(0f);
-                        Traverse.Create(__result).Field("factorFromTargetSize").SetValue(0f);
-                        Traverse.Create(__result).Field("factorFromWeather").SetValue(0f);
-                        Traverse.Create(__result).Field("coversOverallBlockChance").SetValue(1f);
-                        Traverse.Create(__result).Field("forcedMissRadius").SetValue(0f);
+                        traverse.Field("factorFromShooterAndDist").SetValue(0f);
+                        traverse.Field("factorFromEquipment").SetValue(0f);
+                        traverse.Field("factorFromTargetSize").SetValue(0f);
+                        traverse.Field("factorFromWeather").SetValue(0f);
+                        traverse.Field("coversOverallBlockChance").SetValue(1f);
+                        traverse.Field("forcedMissRadius").SetValue(0f);
+                        
+                        traverse.Field("coveringGas").SetValue(traverseOld.Field("coveringGas").GetValue());
+                        traverse.Field("target").SetValue(traverseOld.Field("target").GetValue());
+                        traverse.Field("distance").SetValue(traverseOld.Field("distance").GetValue());
+                        traverse.Field("covers").SetValue((List<CoverInfo>)traverseOld.Field("covers").GetValue());
+                        traverse.Field("shootLine").SetValue(__result.ShootLine);
+                        __result = (ShotReport) Traverse.Create(traverse).Field("_root").GetValue();
                         break;
                     case ShotReportUtil.HitResponseType.Unaltered:
                         break;
                     default:
                         throw new ArgumentOutOfRangeException("Unknown HitResponseType: " + type.Value);
                 }
-                
                 Tell.Log("Triggered OnHit event, type: " + type.Value + "\n" + __result.GetTextReadout());
             }
         }

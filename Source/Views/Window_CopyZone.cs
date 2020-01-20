@@ -20,7 +20,7 @@ namespace HumanStoryteller.Views {
             forcePause = true;
         }
 
-        public override Vector2 InitialSize => new Vector2(620f, 530f);
+        public override Vector2 InitialSize => new Vector2(630f, 530f);
 
         public override bool IsDebug => true;
 

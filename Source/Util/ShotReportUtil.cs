@@ -20,7 +20,7 @@ namespace HumanStoryteller.Util {
 
             if (reportBankItem != null) {
                 type = reportBankItem.Type;
-                reportBankItem.Ir.HasQueueEvent();
+                reportBankItem.Ir.QueueEventFired();
                 reportBank.Remove(reportBankItem);
                 return true;
             }

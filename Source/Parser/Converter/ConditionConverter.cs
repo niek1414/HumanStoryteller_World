@@ -4,8 +4,11 @@ using System.Globalization;
 using System.Linq;
 using HumanStoryteller.CheckConditions;
 using HumanStoryteller.Model;
+using HumanStoryteller.Model.PawnGroup;
 using HumanStoryteller.Util;
+using HumanStoryteller.Util.Logging;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 using RimWorld;
 using Verse;
@@ -75,9 +78,8 @@ namespace HumanStoryteller.Parser.Converter {
                     );
                 case RandomCheck.Name:
                     return new RandomCheck(GetNumber(obj["chance"]));
-                case PawnLocationCheck.Name:
-                    return new PawnLocationCheck(GetString(obj, "pawnName"), GetLocation(obj["location"]),
-                        float.Parse(GetString(obj, "radius") ?? "1"));
+                case OnLocationCheck.Name:
+                    return CreateNewOnLocationCheck(obj);
                 case DifficultyCheck.Name:
                     return new DifficultyCheck(GetDifficulty(GetString(obj, "difficulty")));
                 case TimeCheck.Name:
@@ -146,16 +148,53 @@ namespace HumanStoryteller.Parser.Converter {
             }
         }
 
+        private CheckCondition CreateNewOnLocationCheck(JObject obj) {
+            var filter = GetString(obj, "filterCategory");
+            if (filter == null) {
+                Parser.LogParseError("filterCategory", null);
+                return null;
+            }
+
+            var atLeastAmount = GetNumber(obj["atLeastAmount"]);
+            var location = GetLocation(obj["location"]);
+            
+            var category = Enum.Parse(typeof(FilterCategory), filter);
+            switch (category) {
+                case FilterCategory.Pawn:
+                    return new OnLocationCheck(location, GetGroupSelector(obj["pawnGroup"]), atLeastAmount);
+                case FilterCategory.Category:
+                    return new OnLocationCheck(location, GetItemCategoryList(obj, "thingRequestGroups"), atLeastAmount);
+                case FilterCategory.Item:
+                    return new OnLocationCheck(location, GetThingDef(GetString(obj, "item")), atLeastAmount);
+                default:
+                    Parser.LogParseError("filterCategory", category.ToString());
+                    return null;
+            }
+        }
+
         private string GetString(JObject obj, string key) {
             return obj[key]?.Value<string>();
         }
 
         private Number GetNumber(JToken jToken) {
             if (jToken == null) {
-                return null;
+                return new Number();
             }
 
             return (Number) new NumberJsonConverter().ReadJson(jToken, typeof(Number));
+        }
+
+        private PawnGroupSelector GetGroupSelector(JToken jToken) {
+            if (jToken == null) {
+                return null;
+            }
+
+            PawnGroupSelector selector = new PawnGroupSelector();
+            JsonSerializer.Create(new JsonSerializerSettings {
+                NullValueHandling = NullValueHandling.Ignore,
+                Converters = new List<JsonConverter> {new NumberJsonConverter(), new DecimalJsonConverter(), new StringEnumConverter(), new PawnGroupConverter()}
+            }).Populate(jToken.CreateReader(), selector);
+            return selector;
         }
 
         private Location GetLocation(JToken jToken) {
@@ -189,6 +228,24 @@ namespace HumanStoryteller.Parser.Converter {
             return r;
         }
 
+        private List<ThingRequestGroup> GetItemCategoryList(JObject obj, string categoryType) {
+            var token = obj[categoryType];
+            if (token == null) {
+                return new List<ThingRequestGroup>();
+            }
+
+            IEnumerable<string> list = token.Values<string>();
+            if (list == null) {
+                Parser.LogParseError("item category - " + categoryType, null);
+                return new List<ThingRequestGroup>();
+            }
+
+            var r = new List<ThingRequestGroup>();
+            list.ToList().ForEach(item => { r.Add((ThingRequestGroup) Enum.Parse(typeof(ThingRequestGroup), item)); });
+
+            return r;
+        }
+
         private ResearchProjectDef GetResearchProject(String type) {
             if (type == null) {
                 Parser.LogParseError("research project", type);
@@ -202,6 +259,21 @@ namespace HumanStoryteller.Parser.Converter {
 
             Parser.LogParseError("research project", type);
             return ResearchProjectDefOf.CarpetMaking;
+        }
+
+        private ThingDef GetThingDef(String type) {
+            if (type == null) {
+                Parser.LogParseError("thing def", type);
+                return null;
+            }
+
+            var def = DefDatabase<ThingDef>.GetNamed(type, false);
+            if (def != null) {
+                return def;
+            }
+
+            Parser.LogParseError("thing def", type);
+            return null;
         }
 
         private DifficultyDef GetDifficulty(String type) {
@@ -240,7 +312,7 @@ namespace HumanStoryteller.Parser.Converter {
             }
 
             try {
-                return (PlayerCanSeeCheck.SeeConditions)Enum.Parse(typeof(PlayerCanSeeCheck.SeeConditions), type);
+                return (PlayerCanSeeCheck.SeeConditions) Enum.Parse(typeof(PlayerCanSeeCheck.SeeConditions), type);
             } catch (Exception e) {
                 Parser.LogParseError("see condition, " + e.Message + "___" + e.StackTrace, type);
                 return PlayerCanSeeCheck.SeeConditions.FogAndViewport;
