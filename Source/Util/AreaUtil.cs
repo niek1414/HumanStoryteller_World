@@ -14,12 +14,12 @@ using Verse;
 
 namespace HumanStoryteller.Util {
     public class AreaUtil {
-        public static bool AreaLocationToString(IntVec3 origin) {
+        public static string AreaLocationToString(IntVec3 origin) {
             var currentMap = Current.Game.CurrentMap;
             Area_Home zoneToCopy = currentMap.areaManager.Home;
             if (zoneToCopy == null) {
                 Tell.Warn("ZoneToCopy was null");
-                return false;
+                return "";
             }
 
             List<ZoneCell> zoneCells = new List<ZoneCell>();
@@ -33,8 +33,7 @@ namespace HumanStoryteller.Util {
                 new JsonSerializerSettings {DefaultValueHandling = DefaultValueHandling.Ignore});
             var compStr = ZipUtil.Zip(str);
 
-            GUIUtility.systemCopyBuffer = str.Length <= compStr.Length ? str : compStr;
-            return true;
+            return str.Length <= compStr.Length ? str : compStr;
         }
 
         public static LocationZone StringToLocationZone(string compressedJson, IntVec3 offset) {
@@ -52,40 +51,75 @@ namespace HumanStoryteller.Util {
             }
         }
 
-        public static bool AreaObjectsToString(IntVec3 origin, bool buildings, bool items, bool terrain, bool floor, bool pawns) {
+        public static string AreaObjectsToString(IntVec3 origin, bool buildings, bool items, bool terrain, bool floor, bool pawns, bool plants,
+            bool roof) {
             var currentMap = Current.Game.CurrentMap;
             Area_Home zoneToCopy = currentMap.areaManager.Home;
             if (zoneToCopy == null) {
                 Tell.Warn("ZoneToCopy was null");
-                return false;
+                return "";
             }
 
             List<ZoneThing> zoneThings =
                 (from x in currentMap.listerThings.AllThings
                     where (x.def.category == ThingCategory.Item || x.def.category == ThingCategory.Building ||
-                           x.def.category == ThingCategory.Pawn) && zoneToCopy[x.Position]
-                    select x).Select(thing => ItemToZoneThing(thing, buildings, items, pawns)).Where(item => item != null).ToList();
+                           x.def.category == ThingCategory.Pawn || x.def.category == ThingCategory.Plant) && zoneToCopy[x.Position]
+                    select x).Select(thing => ItemToZoneThing(thing, buildings, items, pawns, plants)).Where(item => item != null).ToList();
 
-            for (var i = 0; i < currentMap.terrainGrid.topGrid.Length; i++) {
-                if (!zoneToCopy[i]) {
-                    continue;
+            if (floor || terrain) {
+                for (var i = 0; i < currentMap.terrainGrid.topGrid.Length; i++) {
+                    if (!zoneToCopy[i]) {
+                        continue;
+                    }
+
+                    var def = currentMap.terrainGrid.topGrid[i];
+                    if ((!def.BuildableByPlayer || !floor) && (def.BuildableByPlayer || !terrain)) continue;
+                    IntVec3 loc = currentMap.cellIndices.IndexToCell(i);
+                    zoneThings.Add(new ZoneThing(loc.x, loc.z, def));
                 }
+            }
 
-                var def = currentMap.terrainGrid.topGrid[i];
-                if ((!def.BuildableByPlayer || !floor) && (def.BuildableByPlayer || !terrain)) continue;
-                IntVec3 loc = currentMap.cellIndices.IndexToCell(i);
-                zoneThings.Add(new ZoneThing(loc.x, loc.z, def));
+            if (terrain) {
+                var depthGrid = (float[]) Traverse.Create(currentMap.snowGrid).Field("depthGrid").GetValue();
+                for (var i = 0; i < depthGrid.Length; i++) {
+                    if (!zoneToCopy[i]) {
+                        continue;
+                    }
+
+                    var depth = depthGrid[i];
+                    if (depth <= 0.0) continue;
+                    IntVec3 loc = currentMap.cellIndices.IndexToCell(i);
+                    zoneThings.Add(new ZoneThing(loc.x, loc.z, depth));
+                }
+            }
+
+            if (roof) {
+                var roofGrid = (RoofDef[]) Traverse.Create(currentMap.roofGrid).Field("roofGrid").GetValue();
+                for (var i = 0; i < roofGrid.Length; i++) {
+                    if (!zoneToCopy[i]) {
+                        continue;
+                    }
+
+                    var def = roofGrid[i];
+                    if (def == null) continue;
+                    IntVec3 loc = currentMap.cellIndices.IndexToCell(i);
+                    zoneThings.Add(new ZoneThing(loc.x, loc.z, def));
+                }
             }
 
             StructureZone root = new StructureZone(zoneThings, origin);
             var str = JsonConvert.SerializeObject(root);
             var compStr = ZipUtil.Zip(str);
 
-            GUIUtility.systemCopyBuffer = str.Length <= compStr.Length ? str : compStr;
-            return true;
+            return str.Length <= compStr.Length ? str : compStr;
         }
 
-        private static ZoneThing ItemToZoneThing(Thing thing, bool buildings, bool items, bool pawns) {
+        private static ZoneThing ItemToZoneThing(Thing thing, bool buildings, bool items, bool pawns, bool plants) {
+            if (thing is Corpse) {
+                Tell.Warn("Not yet supporting corpses as export");
+                return null;
+            }
+
             switch (thing.def.category) {
                 case ThingCategory.Building: {
                     if (!buildings) return null;
@@ -100,6 +134,10 @@ namespace HumanStoryteller.Util {
                     thing.TryGetQuality(out var qc);
                     return new ZoneThing(thing.Position.x, thing.Position.z, thing.def, thing.HitPoints, qc, thing.Stuff,
                         thing.stackCount, thing.Faction);
+                }
+                case ThingCategory.Plant: {
+                    if (!plants || !(thing is Plant p)) return null;
+                    return new ZoneThing(p.Position.x, p.Position.z, p.def, p.HitPoints, p.Age, p.Growth);
                 }
                 case ThingCategory.Pawn: {
                     if (!pawns || !(thing is Pawn p)) return null;
@@ -122,7 +160,7 @@ namespace HumanStoryteller.Util {
 
                     var equipment = new List<ZoneThing>();
                     p.equipment?.AllEquipmentListForReading?.ForEach(i => {
-                        var item = ItemToZoneThing(i, false, true, false);
+                        var item = ItemToZoneThing(i, false, true, false, false);
                         if (item != null) {
                             equipment.Add(item);
                         }
@@ -130,7 +168,7 @@ namespace HumanStoryteller.Util {
 
                     var apparel = new List<ZoneThing>();
                     p.apparel?.WornApparel?.ForEach(i => {
-                        var item = ItemToZoneThing(i, false, true, false);
+                        var item = ItemToZoneThing(i, false, true, false, false);
                         if (item != null) {
                             apparel.Add(item);
                         }
@@ -143,15 +181,22 @@ namespace HumanStoryteller.Util {
         }
 
         public static bool StringToAreaObjects(string compressedJson, Map target, IntVec3 offset, IncidentResult_CreatedStructure ir) {
+            string json;
             try {
-                var json = ZipUtil.Unzip(compressedJson);
+                json = ZipUtil.Unzip(compressedJson);
+            } catch (Exception e) {
+                Tell.Warn(e.Message + " __stack: " + e.StackTrace);
+                return false;
+            }
+
+            try {
                 var settings = new JsonSerializerSettings
                     {NullValueHandling = NullValueHandling.Ignore, Converters = new List<JsonConverter> {new DecimalJsonConverter()}};
                 StructureZone root = JsonConvert.DeserializeObject<StructureZone>(json, settings);
                 HumanStoryteller.StoryComponent.StoryQueue.Add(new SpawnItemAction(root, target, offset, ir));
                 return true;
             } catch (Exception e) {
-                Tell.Warn(e.Message + " __stack: " + e.StackTrace);
+                Tell.Warn(e.Message + " __json: " + json + " __stack: " + e.StackTrace);
                 return false;
             }
         }
@@ -167,18 +212,23 @@ namespace HumanStoryteller.Util {
                 target.fogGrid.fogGrid[i] = true;
             }
 
-            foreach (var pawn in target.mapPawns.FreeColonistsSpawned) {
+            foreach (var pawn in target.mapPawns.PawnsInFaction(Faction.OfPlayer)) {
                 FloodFillerFog.FloodUnfog(pawn.Position, target);
             }
 
             var newGrid = target.fogGrid.fogGrid;
             foreach (var thing in root.Things) {
                 var cell = thing.GetCellLocation(root, offset);
+                if (!cell.InBounds(target)) {
+                    continue;
+                }
+
                 var i = cellIndices.CellToIndex(cell);
                 target.fogGrid.fogGrid = previousGrid;
                 target.fogGrid.fogGrid[i] = newGrid[i];
                 target.mapDrawer.MapMeshDirty(cell, MapMeshFlag.FogOfWar);
             }
+
             target.roofGrid.Drawer.SetDirty();
         }
 
@@ -195,10 +245,13 @@ namespace HumanStoryteller.Util {
                 return null;
             }
 
-            Def def = thing.DefTypeObj;
-            if (def == null) {
-                Tell.Warn("Found object with no Def while creating structure");
-                return null;
+            Def def = null;
+            if (!thing.IsSnow()) {
+                def = thing.DefTypeObj;
+                if (def == null) {
+                    Tell.Warn("Found object with no Def while creating structure");
+                    return null;
+                }
             }
 
             ThingDef stuffDef = thing.StuffObj;
@@ -208,7 +261,7 @@ namespace HumanStoryteller.Util {
                 spawnThing = ThingMaker.MakeThing(thingDef, stuffDef);
                 if (thingDef.CanHaveFaction) {
                     var faction = thing.FactionObj;
-                    spawnThing.SetFactionDirect(faction ?? Faction.OfPlayer);
+                    spawnThing.SetFactionDirect(faction);
                 }
 
                 CompRefuelable fuelComp = spawnThing.TryGetComp<CompRefuelable>();
@@ -225,11 +278,32 @@ namespace HumanStoryteller.Util {
                 spawnThing = ItemUtil.TryMakeMinified(spawnThing);
                 if (thingDef.CanHaveFaction) {
                     var faction = thing.FactionObj;
-                    spawnThing.SetFactionDirect(faction ?? Faction.OfPlayer);
+                    spawnThing.SetFactionDirect(faction);
                 }
+            } else if (thing.IsPlant()) {
+                var thingDef = (ThingDef) def;
+                var plant = (Plant) ThingMaker.MakeThing(thingDef);
+
+                if (spawn) {
+                    GenSpawn.Spawn(plant, newLoc, target);
+                }
+
+                return plant;
             } else if (thing.IsFloor()) {
                 if (spawn) {
                     target.terrainGrid.SetTerrain(newLoc, (TerrainDef) def);
+                }
+
+                return new Thing();
+            } else if (thing.IsRoof()) {
+                if (spawn) {
+                    target.roofGrid.SetRoof(newLoc, (RoofDef) def);
+                }
+
+                return new Thing();
+            } else if (thing.IsSnow()) {
+                if (spawn) {
+                    target.snowGrid.SetDepth(newLoc, thing.Depth);
                 }
 
                 return new Thing();
@@ -283,7 +357,7 @@ namespace HumanStoryteller.Util {
 
                 if (spawn) {
                     GenSpawn.Spawn(pawn, newLoc, target);
-                    if (pawn.Faction != Faction.OfPlayer) {
+                    if (pawn.Faction != Faction.OfPlayer && pawn.Faction != null) {
                         var fakeParms = new IncidentParms {
                             faction = pawn.Faction,
                             target = target,

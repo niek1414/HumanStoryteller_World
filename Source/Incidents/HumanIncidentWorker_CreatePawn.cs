@@ -27,12 +27,19 @@ namespace HumanStoryteller.Incidents {
             Tell.Log($"Executing event {Name} with:{allParams}");
 
             Map map = (Map) allParams.GetTarget();
-            if (!CellFinder.TryFindRandomEdgeCellWith(c => map.reachability.CanReachColony(c), map, CellFinder.EdgeRoadChance_Ignore,
-                out IntVec3 cell)) {
-                Tell.Err("No path found from the edge to the colony.");
-                return ir;
+            IntVec3 cell;
+            
+            var optCell = allParams.Location.GetSingleCell(map, false);
+            if (optCell.IsValid) {
+                cell = optCell;
+            } else {
+                if (!CellFinder.TryFindRandomEdgeCellWith(c => map.reachability.CanReachColony(c), map, CellFinder.EdgeRoadChance_Ignore,
+                    out cell)) {
+                    Tell.Err("No path found from the edge to the colony.");
+                    return ir;
+                }
             }
-
+           
             Faction faction;
             try {
                 faction = Find.FactionManager.AllFactions.First(f => f.def.defName == allParams.Faction);
@@ -73,6 +80,7 @@ namespace HumanStoryteller.Incidents {
                 chronologicalAge == -1 ? new float?() : chronologicalAge,
                 allParams.Gender == "" || PawnUtil.GetGender(allParams.Gender) == Gender.None ? new Gender?() : PawnUtil.GetGender(allParams.Gender)
             ));
+            var graphicsChanged = false;
 
             PawnUtil.SetDisplayName(pawn, allParams.FirstName, allParams.NickName, allParams.LastName);
 
@@ -81,6 +89,43 @@ namespace HumanStoryteller.Incidents {
 
             if (allParams.OutName != "") {
                 PawnUtil.SavePawnByName(allParams.OutName, pawn);
+            }
+
+            if (allParams.HairType != "") {
+                var hairDef = DefDatabase<HairDef>.GetNamed(allParams.HairType, false);
+                if (hairDef != null) {
+                    pawn.story.hairDef = hairDef;
+                    graphicsChanged = true;
+                } else {
+                    Tell.Warn("Did not find hair def with name: " + allParams.HairType);
+                }
+            }
+
+            if (allParams.HairColor != "") {
+                var optColor = PawnUtil.HexToColor(allParams.HairColor);
+                if (optColor.HasValue) {
+                    Tell.Debug("Found color: " + optColor);
+                    pawn.story.hairColor = optColor.Value;
+                    graphicsChanged = true;
+                } else {
+                    Tell.Log("Tried to set hair color but could not do to the warning above.");
+                }
+            }
+
+            if (allParams.BodyType != "") {
+                var bodyTypeDef = DefDatabase<BodyTypeDef>.GetNamed(allParams.BodyType, false);
+                if (bodyTypeDef != null) {
+                    pawn.story.bodyType = bodyTypeDef;
+                    graphicsChanged = true;
+                } else {
+                    Tell.Warn("Did not find body type def with name: " + allParams.BodyType);
+                }
+            }
+
+            var melanin = allParams.Melanin.GetValue();
+            if (melanin != -1) {
+                pawn.story.melanin = melanin;
+                graphicsChanged = true;
             }
 
             if (allParams.Weapon.NotEmpty()) {
@@ -93,13 +138,32 @@ namespace HumanStoryteller.Incidents {
                     }
                 }
             }
-
+                
+            if (allParams.RestrictedArea.isSet()) {
+                if (pawn.playerSettings == null) {
+                    pawn.playerSettings = new Pawn_PlayerSettings(pawn);
+                }
+                var areaAllowed = new Area_Allowed(map.areaManager, "RestrictedArea" + pawn.LabelShort + Rand.Int);
+                pawn.playerSettings.AreaRestriction = areaAllowed;
+                allParams.RestrictedArea.GetZone(map).Cells.ForEach(zoneCell => {
+                    var intVec3 = zoneCell.Pos;
+                    if (intVec3.IsValid && intVec3.InBounds(map)) {
+                        areaAllowed[intVec3] = true;
+                    }
+                });
+            }
+            
             if (allParams.NoSpawn) {
                 Find.WorldPawns.PassToWorld(pawn, PawnDiscardDecideMode.KeepForever);
             } else {
                 GenSpawn.Spawn(pawn, cell, map);
+
+                if (graphicsChanged) {
+                    pawn.Drawer.renderer.graphics.ResolveAllGraphics();
+                }
+
                 if (pawn.Faction != Faction.OfPlayer) {
-                    switch (pawn.Faction.PlayerRelationKind) {
+                    switch (pawn.Faction?.PlayerRelationKind ?? FactionRelationKind.Neutral) {
                         case FactionRelationKind.Hostile:
                             IncidentParms fakeParmsAttack = new IncidentParms();
                             fakeParmsAttack.faction = faction;
@@ -121,6 +185,7 @@ namespace HumanStoryteller.Incidents {
                     }
                 }
             }
+
 
             SendLetter(parms);
             return ir;
@@ -144,6 +209,12 @@ namespace HumanStoryteller.Incidents {
         public bool MustBeCapableOfViolence;
         public string Gender = "";
         public Item Weapon = new Item();
+        public string BodyType = "";
+        public Number Melanin = new Number();
+        public string HairType = "";
+        public string HairColor = "";
+        public Location Location = new Location();
+        public Location RestrictedArea = new Location();
 
         public HumanIncidentParams_CreatePawn() {
         }
@@ -153,7 +224,7 @@ namespace HumanStoryteller.Incidents {
 
         public override string ToString() {
             return
-                $"{base.ToString()}, BiologicalAge: [{BiologicalAge}], ChronologicalAge: [{ChronologicalAge}], ApparelMoney: [{ApparelMoney}], GearHealthMin: [{GearHealthMin}], GearHealthMax: [{GearHealthMax}], PawnKind: [{PawnKind}], FirstName: [{FirstName}], NickName: [{NickName}], LastName: [{LastName}], OutName: [{OutName}], Faction: [{Faction}], NewBorn: [{NewBorn}], NoSpawn: [{NoSpawn}], MustBeCapableOfViolence: [{MustBeCapableOfViolence}], Gender: [{Gender}], Weapon: [{Weapon}]";
+                $"{base.ToString()}, BiologicalAge: [{BiologicalAge}], ChronologicalAge: [{ChronologicalAge}], ApparelMoney: [{ApparelMoney}], GearHealthMin: [{GearHealthMin}], GearHealthMax: [{GearHealthMax}], PawnKind: [{PawnKind}], FirstName: [{FirstName}], NickName: [{NickName}], LastName: [{LastName}], OutName: [{OutName}], Faction: [{Faction}], NewBorn: [{NewBorn}], NoSpawn: [{NoSpawn}], MustBeCapableOfViolence: [{MustBeCapableOfViolence}], Gender: [{Gender}], Weapon: [{Weapon}], BodyType: [{BodyType}], Melanin: [{Melanin}], HairType: [{HairType}], HairColor: [{HairColor}]";
         }
 
         public override void ExposeData() {
@@ -174,6 +245,13 @@ namespace HumanStoryteller.Incidents {
             Scribe_Values.Look(ref MustBeCapableOfViolence, "mustBeCapableOfViolence");
             Scribe_Values.Look(ref Gender, "gender");
             Scribe_Deep.Look(ref Weapon, "weapon");
+            Scribe_Deep.Look(ref Location, "location");
+            Scribe_Deep.Look(ref RestrictedArea, "restrictedArea");
+
+            Scribe_Values.Look(ref BodyType, "bodyType");
+            Scribe_Deep.Look(ref Melanin, "melanin");
+            Scribe_Values.Look(ref HairType, "hairType");
+            Scribe_Values.Look(ref HairColor, "hairColor");
         }
     }
 }

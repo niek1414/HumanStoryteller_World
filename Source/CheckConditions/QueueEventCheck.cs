@@ -44,6 +44,10 @@ namespace HumanStoryteller.CheckConditions {
             return _fired;
         }
 
+        public override string ToString() {
+            return $"{base.ToString()}, Fired: {_fired}";
+        }
+
         public override void ExposeData() {
             base.ExposeData();
             Scribe_Values.Look(ref _fired, "fired");

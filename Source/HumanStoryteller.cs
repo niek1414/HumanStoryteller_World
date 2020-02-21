@@ -1,27 +1,32 @@
-﻿using System;
+﻿﻿using System;
 using System.Net;
 using System.Threading;
 using Harmony;
-using HumanStoryteller.Model;
+using HumanStoryteller.DebugConnection;
 using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util;
 using HumanStoryteller.Util.Logging;
 using RimWorld;
 using UnityEngine;
 using Verse;
+using WebSocketSharp.Server;
 
 namespace HumanStoryteller {
     public class HumanStoryteller : Mod {
-        public static string VERSION = "0.4.0";
-        public static string VERSION_NAME = "`Theater`";
+        public static string VERSION = "0.5.0";
+        public static string VERSION_NAME = "`Quality of Life`";
 
-        private HumanStorytellerSettings _settings;
+        public static HumanStorytellerSettings Settings;
 
         public static bool InitiateEventUnsafe = false;
 
-        public const int SHORT_REFRESH = 60000 * 2;
-        public const int MEDIUM_REFRESH = 60000 * 10;
-        public const int LONG_REFRESH = 60000 * 60;
+        public static WebSocketServer DebugWebSocketConnection = null;
+
+        private const int MINUTE = 60000;
+        
+        public const int SHORT_REFRESH = MINUTE * 2;
+        public const int MEDIUM_REFRESH = MINUTE * 10;
+        public const int LONG_REFRESH = MINUTE * 60;
         public const int OFF_REFRESH = Int32.MaxValue;
 
         public const bool DEBUG = true;
@@ -46,7 +51,7 @@ namespace HumanStoryteller {
         public static bool DidInitialParamCheck;
 
         public HumanStoryteller(ModContentPack content) : base(content) {
-            _settings = GetSettings<HumanStorytellerSettings>();
+            Settings = GetSettings<HumanStorytellerSettings>();
             ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
         }
 
@@ -56,9 +61,34 @@ namespace HumanStoryteller {
             listingStandard.CheckboxLabeled("EnableCreatorTools".Translate(), ref HumanStorytellerSettings.EnableCreatorTools,
                 "EnableCreatorToolsToolTip".Translate());
             listingStandard.End();
+            CheckDebugConnectionSetting();
+
             base.DoSettingsWindowContents(inRect);
         }
 
+        public static void CheckDebugConnectionSetting() {
+            if (HumanStorytellerSettings.EnableCreatorTools && DebugWebSocketConnection == null) {
+                Tell.Log("Starting debug connection...");
+                DebugWebSocketConnection = new WebSocketServer(661);
+                DebugWebSocketConnection.AddWebSocketService<DebugWebSocket>("/");
+                try {
+                    DebugWebSocketConnection.Start();
+                    Tell.Log("Debug connection started, you can now connect with the Storymaker!");
+                } catch (InvalidOperationException e) {
+                    Tell.Err(e.Message);
+                }
+            } else if (!HumanStorytellerSettings.EnableCreatorTools && DebugWebSocketConnection != null) {
+                Tell.Log("Closing debug connection...");
+                try {
+                    DebugWebSocketConnection.Stop();
+                    DebugWebSocketConnection = null;
+                    Tell.Log("Debug connection closed");
+                } catch (InvalidOperationException e) {
+                    Tell.Err(e.Message);
+                }
+            }
+        }
+        
         public override string SettingsCategory() {
             return "HumanStoryteller".Translate();
         }
@@ -100,14 +130,18 @@ namespace HumanStoryteller {
             }
 
             InitiateEventUnsafe = false;
+            
+            DebugWebSocket.TryUpdateRunners();
         }
     }
 
     public class HumanStorytellerSettings : ModSettings {
         public static bool EnableCreatorTools;
+        public static bool HadInitialIntroduction;
 
         public override void ExposeData() {
             Scribe_Values.Look(ref EnableCreatorTools, "enableCreatorTools");
+            Scribe_Values.Look(ref HadInitialIntroduction, "hadInitialIntroduction");
             base.ExposeData();
         }
     }

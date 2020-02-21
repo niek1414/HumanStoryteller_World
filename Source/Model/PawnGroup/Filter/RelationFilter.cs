@@ -13,7 +13,7 @@ namespace HumanStoryteller.Model.PawnGroup.Filter {
         }
 
         protected override bool Filter(Pawn p, Map map) {
-            return Type.Contains(Faction.OfPlayer == p.Faction ? FactionRelationKind.Ally : p.Faction.RelationWith(Faction.OfPlayer).kind);
+            return Type.Contains(Faction.OfPlayer == p.Faction ? FactionRelationKind.Ally : Faction.OfPlayer.RelationWith(p.Faction, true)?.kind ?? FactionRelationKind.Neutral);
         }
         
         protected override void ExposeFilter() {

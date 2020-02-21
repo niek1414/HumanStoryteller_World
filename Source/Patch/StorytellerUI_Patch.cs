@@ -114,6 +114,14 @@ namespace HumanStoryteller.Patch {
         public static void DrawStorytellerSelectionInterface(Rect rect, ref StorytellerDef chosenStoryteller, ref DifficultyDef difficulty,
             Listing_Standard infoListing) {
             if (chosenStoryteller.defName != "Human") return;
+            if (!HumanStorytellerSettings.HadInitialIntroduction) {
+                HumanStorytellerSettings.HadInitialIntroduction = true;
+                HumanStoryteller.Settings.Write();
+                var text = "InitialIntroduction".Translate();
+                var title = "InitialIntroductionTitle".Translate();
+                Dialog_MessageBox window = new Dialog_MessageBox(text, "OK".Translate(), null, null, null, title);
+                Find.WindowStack.Add(window);
+            }
 
             Rect filter = new Rect(rect.x + 140, rect.y + 440, 300, 190);
             DrawFilter(filter);

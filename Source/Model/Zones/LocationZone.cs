@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿﻿using System.Collections.Generic;
 using Harmony;
 using HumanStoryteller.Util.Logging;
 using Newtonsoft.Json;

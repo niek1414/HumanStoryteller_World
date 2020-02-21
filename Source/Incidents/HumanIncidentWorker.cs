@@ -166,6 +166,10 @@ namespace HumanStoryteller.Incidents {
             Scribe_Deep.Look(ref Target, "target");
         }
 
+        public override string ToString() {
+            return $"Target: {Target}, Id: {Id}";
+        }
+
         public string GetUniqueLoadID() {
             return $"IncidentResult_{_id}";
         }

@@ -70,6 +70,10 @@ namespace HumanStoryteller.CheckConditions {
             Parent = parent;
         }
 
+        public override string ToString() {
+            return $"{base.ToString()}, Parent tile: {Parent.Tile}";
+        }
+
         public override void ExposeData() {
             base.ExposeData();
             Scribe_References.Look(ref Parent, "parent");

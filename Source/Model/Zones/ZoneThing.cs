@@ -8,19 +8,22 @@ using Verse;
 namespace HumanStoryteller.Model.Zones {
     [JsonObject(MemberSerialization.OptIn)]
     public class ZoneThing : IExposable {
-        [JsonProperty("X")][DefaultValue(-1)] public long X;
-        [JsonProperty("Z")][DefaultValue(-1)] public long Z;
-        [JsonProperty("R")][DefaultValue(-1)] public long Rot;
+        [JsonProperty("A")][DefaultValue(-1)] public long X;
+        [JsonProperty("B")][DefaultValue(-1)] public long Z;
+        [JsonProperty("C")][DefaultValue(-1)] public long Rot;
         [JsonProperty("D")][DefaultValue("")] public string DefType;
-        [JsonProperty("P")][DefaultValue(-1)] public long Points;
-        [JsonProperty("Q")][DefaultValue(-1)] public long Quality;
-        [JsonProperty("S")][DefaultValue("")] public string Stuff;
-        [JsonProperty("A")][DefaultValue(-1)] public long Amount;
-        [JsonProperty("F")][DefaultValue("")] public string Faction;
-        [JsonProperty("T")][DefaultValue("")] public string Type;
-        [JsonProperty("G")][DefaultValue(-1)] public float Gauge;
-        [JsonProperty("E")][DefaultValue(null)] public List<ZoneThing> Equipment;
-        [JsonProperty("AP")][DefaultValue(null)] public List<ZoneThing> Apparel;
+        [JsonProperty("E")][DefaultValue(-1)] public long Points;
+        [JsonProperty("F")][DefaultValue(-1)] public long Quality;
+        [JsonProperty("G")][DefaultValue("")] public string Stuff;
+        [JsonProperty("H")][DefaultValue(-1)] public long Amount;
+        [JsonProperty("I")][DefaultValue("")] public string Faction;
+        [JsonProperty("J")][DefaultValue("")] public string Type;
+        [JsonProperty("K")][DefaultValue(-1)] public float Gauge;
+        [JsonProperty("L")][DefaultValue(-1)] public long Age;
+        [JsonProperty("M")][DefaultValue(-1)] public float Growth;
+        [JsonProperty("O")][DefaultValue(-1)] public float Depth;
+        [JsonProperty("P")][DefaultValue(null)] public List<ZoneThing> Equipment;
+        [JsonProperty("Q")][DefaultValue(null)] public List<ZoneThing> Apparel;
 
         public ZoneThing() {
             X = -1;
@@ -30,6 +33,8 @@ namespace HumanStoryteller.Model.Zones {
             Quality = -1;
             Amount = -1;
             Gauge = -1;
+            Age = -1;
+            Growth = -1;
         }
 
         public ZoneThing(int x, int z, Def kindDef, int points, Faction owner, string name, List<ZoneThing> equipment, List<ZoneThing> apparel) 
@@ -60,9 +65,28 @@ namespace HumanStoryteller.Model.Zones {
             FactionObj = owner ?? RimWorld.Faction.OfPlayer;
         }
 
-        public ZoneThing(int x, int z, Def defType) 
+        public ZoneThing(int x, int z, Def defType, int points, int age, float growth) 
+            : this(x, z, defType?.defName, null) {
+            Type = "V";
+            Age = age;
+            Growth = growth;
+            Points = points;
+        }
+
+        public ZoneThing(int x, int z, TerrainDef defType) 
             : this(x, z, defType?.defName, null) {
             Type = "F";
+        }
+
+        public ZoneThing(int x, int z, RoofDef defType) 
+            : this(x, z, defType?.defName, null) {
+            Type = "R";
+        }
+
+        public ZoneThing(int x, int z, float depth) 
+            : this(x, z, null, null) {
+            Type = "S";
+            Depth = depth;
         }
 
         private ZoneThing(int x, int z, string defType, string stuff) : this() {
@@ -88,6 +112,18 @@ namespace HumanStoryteller.Model.Zones {
             return Type == "P";
         }
 
+        public bool IsPlant() {
+            return Type == "V";
+        }
+
+        public bool IsRoof() {
+            return Type == "R";
+        }
+
+        public bool IsSnow() {
+            return Type == "S";
+        }
+
         public void ExposeData() {
             Scribe_Values.Look(ref X, "x");
             Scribe_Values.Look(ref Z, "z");
@@ -98,10 +134,17 @@ namespace HumanStoryteller.Model.Zones {
             Scribe_Values.Look(ref Stuff, "stuff");
             Scribe_Values.Look(ref Amount, "amount");
             Scribe_Values.Look(ref Faction, "faction");
+            Scribe_Values.Look(ref Type, "type");
+            Scribe_Values.Look(ref Gauge, "gauge");
+            Scribe_Values.Look(ref Age, "age");
+            Scribe_Values.Look(ref Growth, "growth");
+            Scribe_Values.Look(ref Depth, "depth");
+            Scribe_Collections.Look(ref Equipment, "Equipment", LookMode.Deep);
+            Scribe_Collections.Look(ref Apparel, "Apparel", LookMode.Deep);
         }
 
         public override string ToString() {
-            return $"X: [{X}], Z: [{Z}], Rot: [{Rot}], DefType: [{DefType}], Points: [{Points}], Quality: [{Quality}], Stuff: [{Stuff}], Amount: [{Amount}], Faction: [{Faction}], Type: [{Type}]";
+            return $"X: {X}, Z: {Z}, Rot: {Rot}, DefType: {DefType}, Points: {Points}, Quality: {Quality}, Stuff: {Stuff}, Amount: {Amount}, Faction: {Faction}, Type: {Type}, Gauge: {Gauge}, Age: {Age}, Growth: {Growth}, Depth: {Depth}, Equipment: [{Equipment.ToStringSafeEnumerable()}], Apparel: [{Apparel.ToStringSafeEnumerable()}]";
         }
 
         public IntVec3 GetCellLocation(StructureZone parent, IntVec3 offset) {
@@ -117,13 +160,22 @@ namespace HumanStoryteller.Model.Zones {
 
         public Faction FactionObj {
             get => FactionUtility.DefaultFactionFrom(DefDatabase<FactionDef>.GetNamed(Faction, false));
-            set => Faction = value.def.defName;
+            set => Faction = value?.def?.defName;
         }
 
         public Def DefTypeObj {
             get {
                 if (IsFloor()) {
                     return DefDatabase<TerrainDef>.GetNamed(DefType, false);
+                }
+                if (IsPlant()) {
+                    return DefDatabase<ThingDef>.GetNamed(DefType, false);
+                }
+                if (IsRoof()) {
+                    return DefDatabase<RoofDef>.GetNamed(DefType, false);
+                }
+                if (IsSnow()) {
+                    return null;
                 }
                 if (IsPawn()) {
                     return DefDatabase<PawnKindDef>.GetNamed(DefType, false);

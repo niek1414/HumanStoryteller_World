@@ -63,7 +63,7 @@ namespace HumanStoryteller.Views {
 
         private void RenderLaneInfo(Rect inRect) {
             Rect textRect = new Rect(inRect.x, inRect.y, inRect.width, 50);
-            Widgets.Label(textRect, "--DevMode window--");
+            Widgets.Label(textRect, "--DevMode window-- (Disable in the HS Mod settings)");
 
             Rect textRect2 = new Rect(inRect.x, inRect.y + 25, inRect.width, 50);
             Widgets.Label(textRect2, "EventLanes".Translate() + ":");

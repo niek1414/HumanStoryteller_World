@@ -260,7 +260,7 @@ namespace HumanStoryteller.Incidents {
             soundDef.subSounds = new List<SubSoundDef> {
                 new SubSoundDef {
                     grains = new List<AudioGrain> {new SoundGrain(audioClip)},
-                    volumeRange = new FloatRange(volume * 30, volume * 30),
+                    volumeRange = new FloatRange(volume * 100, volume * 100),
                     filters = o.subSounds[0].filters,
                     name = "subsound_" + Guid.NewGuid(),
                     distRange = o.subSounds[0].distRange,

@@ -69,6 +69,10 @@ namespace HumanStoryteller.CheckConditions {
             LetterAnswer = letterAnswer;
         }
 
+        public override string ToString() {
+            return $"{base.ToString()}, Letter title: {Letter.title}, LetterAnswer: {LetterAnswer.ToString()}";
+        }
+
         public override void ExposeData() {
             base.ExposeData();
             Scribe_References.Look(ref Letter, "letter");

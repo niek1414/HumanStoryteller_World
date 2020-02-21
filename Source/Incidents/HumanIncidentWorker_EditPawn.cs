@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using Harmony;
 using HumanStoryteller.Model;
 using HumanStoryteller.Model.PawnGroup;
@@ -31,6 +32,8 @@ namespace HumanStoryteller.Incidents {
             Map map = (Map) allParams.GetTarget();
 
             foreach (var pawn in allParams.Pawns.Filter(map)) {
+                var graphicsChanged = false;
+
                 if (pawn.DestroyedOrNull() || pawn.Dead || pawn.NonHumanlikeOrWildMan()) {
                     continue;
                 }
@@ -43,6 +46,43 @@ namespace HumanStoryteller.Incidents {
 
                 PawnUtil.SetDisplayName(pawn, allParams.FirstName, allParams.NickName, allParams.LastName);
 
+                if (allParams.HairType != "") {
+                    var hairDef = DefDatabase<HairDef>.GetNamed(allParams.HairType, false);
+                    if (hairDef != null) {
+                        pawn.story.hairDef = hairDef;
+                        graphicsChanged = true;
+                    } else {
+                        Tell.Warn("Did not find hair def with name: " + allParams.HairType);
+                    }
+                }
+
+                if (allParams.HairColor != "") {
+                    var optColor = PawnUtil.HexToColor(allParams.HairColor);
+                    if (optColor.HasValue) {
+                        Tell.Debug("Found color: " + optColor);
+                        pawn.story.hairColor = optColor.Value;
+                        graphicsChanged = true;
+                    } else {
+                        Tell.Log("Tried to set hair color but could not do to the warning above.");
+                    }
+                }
+
+                if (allParams.BodyType != "") {
+                    var bodyTypeDef = DefDatabase<BodyTypeDef>.GetNamed(allParams.BodyType, false);
+                    if (bodyTypeDef != null) {
+                        pawn.story.bodyType = bodyTypeDef;
+                        graphicsChanged = true;
+                    } else {
+                        Tell.Warn("Did not find body type def with name: " + allParams.BodyType);
+                    }
+                }
+
+                var melanin = allParams.Melanin.GetValue();
+                if (melanin != -1) {
+                    pawn.story.melanin = melanin;
+                    graphicsChanged = true;
+                }
+                
                 if (allParams.Strip) {
                     pawn.Strip();
                 }
@@ -100,7 +140,9 @@ namespace HumanStoryteller.Incidents {
                             pawn.inventory.innerContainer.Add(thing);
                         }
                     } catch (Exception e) {
-                        Tell.Warn("Pawn (" + pawn.Name + ", " + pawn.kindDef.defName + ") cannot wear, equip or add " + thing.def.defName + " (" + thing.Stuff.defName + ") to inventory", e.Message, e.StackTrace);
+                        Tell.Warn(
+                            "Pawn (" + pawn.Name + ", " + pawn.kindDef.defName + ") cannot wear, equip or add " + thing.def.defName + " (" +
+                            thing.Stuff.defName + ") to inventory", e.Message, e.StackTrace);
                     }
                 });
 
@@ -112,6 +154,20 @@ namespace HumanStoryteller.Incidents {
 
                 if (allParams.Banish) {
                     PawnBanishUtility.Banish(pawn);
+                }
+                
+                if (allParams.RestrictedArea.isSet()) {
+                    if (pawn.playerSettings == null) {
+                        pawn.playerSettings = new Pawn_PlayerSettings(pawn);
+                    }
+                    var areaAllowed = new Area_Allowed(map.areaManager, "RestrictedArea" + pawn.LabelShort + Rand.Int);
+                    pawn.playerSettings.AreaRestriction = areaAllowed;
+                    allParams.RestrictedArea.GetZone(map).Cells.ForEach(zoneCell => {
+                        var intVec3 = zoneCell.Pos;
+                        if (intVec3.IsValid && intVec3.InBounds(map)) {
+                            areaAllowed[intVec3] = true;
+                        }
+                    });
                 }
 
                 var bioYear = allParams.AgeBioYear.GetValue();
@@ -192,6 +248,10 @@ namespace HumanStoryteller.Incidents {
                     pawn.skills.GetSkill(SkillDefOf.Social).Level =
                         Mathf.RoundToInt((allParams.SkillAdd ? pawn.skills.GetSkill(SkillDefOf.Social).Level : 0) + skillSocial);
                 }
+
+                if (graphicsChanged) {
+                    pawn.Drawer.renderer.graphics.ResolveAllGraphics();
+                }
             }
 
             SendLetter(parms);
@@ -215,6 +275,11 @@ namespace HumanStoryteller.Incidents {
         public Number SkillSocial = new Number();
         public Number AgeBioYear = new Number();
 
+        public string BodyType = "";
+        public Number Melanin = new Number();
+        public string HairType = "";
+        public string HairColor = "";
+
         public bool SkillAdd;
 
         public List<String> Traits = new List<string>();
@@ -231,6 +296,7 @@ namespace HumanStoryteller.Incidents {
         public List<Item> Gear = new List<Item>();
 
         public Location Location = new Location();
+        public Location RestrictedArea = new Location();
 
         public HumanIncidentParams_EditPawn() {
         }
@@ -238,9 +304,9 @@ namespace HumanStoryteller.Incidents {
         public HumanIncidentParams_EditPawn(Target target, HumanLetter letter) : base(target, letter) {
         }
 
+
         public override string ToString() {
-            return
-                $"{base.ToString()}, SkillAnimals: [{SkillAnimals}], SkillArtistic: [{SkillArtistic}], SkillConstruction: [{SkillConstruction}], SkillCooking: [{SkillCooking}], SkillCrafting: [{SkillCrafting}], SkillPlants: [{SkillPlants}], SkillMedicine: [{SkillMedicine}], SkillMelee: [{SkillMelee}], SkillMining: [{SkillMining}], SkillIntellectual: [{SkillIntellectual}], SkillShooting: [{SkillShooting}], SkillSocial: [{SkillSocial}], AgeBioYear: [{AgeBioYear}], SkillAdd: [{SkillAdd}], Traits: [{Traits.ToCommaList()}], Pawns: [{Pawns}], FirstName: [{FirstName}], NickName: [{NickName}], LastName: [{LastName}], Despawn: [{Despawn}], Strip: [{Strip}], ClearMind: [{ClearMind}], Banish: [{Banish}], SetDrafted: [{SetDrafted}], Faction: [{Faction}], Location: [{Location}], Gear: [{Gear.Join()}]";
+            return $"{base.ToString()}, SkillAnimals: [{SkillAnimals}], SkillArtistic: [{SkillArtistic}], SkillConstruction: [{SkillConstruction}], SkillCooking: [{SkillCooking}], SkillCrafting: [{SkillCrafting}], SkillPlants: [{SkillPlants}], SkillMedicine: [{SkillMedicine}], SkillMelee: [{SkillMelee}], SkillMining: [{SkillMining}], SkillIntellectual: [{SkillIntellectual}], SkillShooting: [{SkillShooting}], SkillSocial: [{SkillSocial}], AgeBioYear: [{AgeBioYear}], BodyType: [{BodyType}], Melanin: [{Melanin}], HairType: [{HairType}], HairColor: [{HairColor}], SkillAdd: [{SkillAdd}], Traits: [{Traits.ToStringSafeEnumerable()}], Pawns: [{Pawns}], FirstName: [{FirstName}], NickName: [{NickName}], LastName: [{LastName}], Despawn: [{Despawn}], Strip: [{Strip}], ClearMind: [{ClearMind}], Banish: [{Banish}], SetDrafted: [{SetDrafted}], Faction: [{Faction}], Gear: [{Gear.ToStringSafeEnumerable()}], Location: [{Location}]";
         }
 
         public override void ExposeData() {
@@ -249,6 +315,12 @@ namespace HumanStoryteller.Incidents {
             Scribe_Values.Look(ref FirstName, "firstName");
             Scribe_Values.Look(ref NickName, "nickName");
             Scribe_Values.Look(ref LastName, "lastName");
+
+            Scribe_Values.Look(ref BodyType, "bodyType");
+            Scribe_Deep.Look(ref Melanin, "melanin");
+            Scribe_Values.Look(ref HairType, "hairType");
+            Scribe_Values.Look(ref HairColor, "hairColor");
+
             Scribe_Values.Look(ref Despawn, "despawn");
             Scribe_Values.Look(ref Strip, "strip");
             Scribe_Values.Look(ref ClearMind, "clearMind");
@@ -257,6 +329,7 @@ namespace HumanStoryteller.Incidents {
             Scribe_Deep.Look(ref AgeBioYear, "ageBioYear");
             Scribe_Values.Look(ref Faction, "faction");
             Scribe_Deep.Look(ref Location, "location");
+            Scribe_Deep.Look(ref RestrictedArea, "restrictedArea");
             Scribe_Collections.Look(ref Traits, "traits", LookMode.Value);
             Scribe_Collections.Look(ref Gear, "gear", LookMode.Deep);
 

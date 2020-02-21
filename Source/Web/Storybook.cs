@@ -9,11 +9,19 @@ namespace HumanStoryteller.Web {
     public static class Storybook {
         public static void GetStory(long id, Action<Story> callback) {
             Tell.Log($"AutoPoll on story: [{id}]");
+            if (id == -1) {
+                Tell.Warn("Ether the id was unknown or this is a local story");
+                return;
+            }
             Client.Get($"storybook/story/{id}", (response, handle) => { GetStoryCallback(response, handle, callback); });
         } 
         
         public static Story GetStory(long id) {
             Tell.Log($"Synchronous poll on story: [{id}]");
+            if (id == -1) {
+                Tell.Warn("Ether the id was unknown or this is a local story");
+                return null;
+            }
             IRestResponse response = Client.Get($"storybook/story/{id}");
             try {
                 if (response.StatusCode == HttpStatusCode.NotFound) {

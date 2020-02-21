@@ -37,6 +37,11 @@ namespace HumanStoryteller.Patch {
             MethodInfo highPrio = AccessTools.Method(typeof(WindowStack), "HandleEventsHighPriority");
             HarmonyMethod disableUserInput = new HarmonyMethod(typeof(StoryStatus_Patch).GetMethod("DisableUserInput"));
             harmony.Patch(highPrio, null, disableUserInput);
+            
+            // Disable valid region checks when async adding structures
+            MethodInfo getValidRegionAt = AccessTools.Method(typeof(RegionGrid), "GetValidRegionAt");
+            HarmonyMethod onValidRegionAt = new HarmonyMethod(typeof(StoryStatus_Patch).GetMethod("OnValidRegionAt"));
+            harmony.Patch(getValidRegionAt, onValidRegionAt);
 
             // Disable all UI clutter
             MethodInfo mapUI = AccessTools.Method(typeof(MapInterface), "MapInterfaceOnGUI_BeforeMainTabs");
@@ -131,6 +136,12 @@ namespace HumanStoryteller.Patch {
             var sc = HumanStoryteller.StoryComponent;
             if (sc.StoryStatus.JumpException) return true;
             return !(sc.StoryStatus.DisableCameraControls || sc.StoryStatus.MovieMode || sc.StoryOverlay.ShouldBlockInput());
+        }
+
+        public static bool OnValidRegionAt() {
+            if (Main_Patch.ShouldNotMessWithGame() || LongEventHandler.ForcePause) return true;
+            var sc = HumanStoryteller.StoryComponent;
+            return !sc.StoryStatus.CreatingStructure;
         }
     }
 }

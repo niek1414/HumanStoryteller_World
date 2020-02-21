@@ -10,6 +10,7 @@ namespace HumanStoryteller {
         private int _forceSlowMotionUntil;
         public bool JumpException;
         public bool MovieMode;
+        public bool CreatingStructure;
         
         public StoryStatus() {
         }
@@ -21,7 +22,7 @@ namespace HumanStoryteller {
         }
 
         public void ExposeData() {
-            //JumpException purposely ignored.
+            //JumpException & CreatingStructure purposely ignored.
             Scribe_Values.Look(ref DisableSpeedControls, "disableSpeedControls");
             Scribe_Values.Look(ref DisableCameraControls, "disableCameraControls");
             Scribe_Values.Look(ref ShowWorld, "showWorld");

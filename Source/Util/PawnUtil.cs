@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using HumanStoryteller.Util.Logging;
+using UnityEngine;
 using Verse;
 
 namespace HumanStoryteller.Util {
@@ -76,6 +78,39 @@ namespace HumanStoryteller.Util {
 
         public static bool PawnExists(Pawn pawn) {
             return HumanStoryteller.StoryComponent.PawnBank.Any(pair => pair.Value == pawn);
+        }
+
+        public static Color? HexToColor(string hex) {
+            if (hex.IndexOf('#') != -1)
+                hex = hex.Replace("#", "");
+ 
+            int red;
+            int green;
+            int blue;
+            try {
+
+                switch (hex.Length) {
+                    case 6:
+                        //#RRGGBB
+                        red = int.Parse(hex.Substring(0, 2), NumberStyles.AllowHexSpecifier);
+                        green = int.Parse(hex.Substring(2, 2), NumberStyles.AllowHexSpecifier);
+                        blue = int.Parse(hex.Substring(4, 2), NumberStyles.AllowHexSpecifier);
+                        return new Color(red / 255f, green / 255f, blue / 255f);
+                    case 3:
+                        //#RGB
+                        red = int.Parse(hex[0].ToString() + hex[0], NumberStyles.AllowHexSpecifier);
+                        green = int.Parse(hex[1].ToString() + hex[1], NumberStyles.AllowHexSpecifier);
+                        blue = int.Parse(hex[2].ToString() + hex[2], NumberStyles.AllowHexSpecifier);
+                        return new Color(red / 255f, green / 255f, blue / 255f);
+                    default:
+                        Tell.Warn("Color has a wrong amount of characters: " + hex);
+                        break;
+                }
+
+            } catch (Exception e) {
+                Tell.Warn("Color has a wrong format: " + hex, e);
+            }
+            return null;
         }
     }
 }

@@ -145,7 +145,15 @@ namespace HumanStoryteller.Util {
                 ref reservedPawnGroupValuesWorkingList);
             Scribe_Collections.Look(ref MapBank, "mapBank", LookMode.Value, LookMode.Deep, ref reservedMapKeysWorkingList,
                 ref reservedMapValuesWorkingList);
-
+            if (!Find.Maps.Contains(_firstMapOfPlayer)) {
+                _firstMapOfPlayer = null;
+            }
+            if (!Find.Maps.Contains(_sameAsLastEvent)) {
+                _sameAsLastEvent = null;
+            }
+            if (!Find.Maps.Contains(_lastColonizedMap)) {
+                _lastColonizedMap = null;
+            }
             Scribe_References.Look(ref _firstMapOfPlayer, "firstMapOfPlayer");
             Scribe_References.Look(ref _sameAsLastEvent, "sameAsLastEvent");
             Scribe_References.Look(ref _lastColonizedMap, "lastColonizedMap");

@@ -26,6 +26,7 @@ namespace HumanStoryteller.Model.Action {
         }
 
         public void Action() {
+            HumanStoryteller.StoryComponent.StoryStatus.CreatingStructure = true;
             if (!_triedForContainer) {
                 _triedForContainer = true;
                 _container = MapUtil.GetMapContainerByTile(Target.Tile, false);
@@ -54,6 +55,7 @@ namespace HumanStoryteller.Model.Action {
 
             Find.PlaySettings.autoHomeArea = autoHomeArea;
             if (end) {
+                HumanStoryteller.StoryComponent.StoryStatus.CreatingStructure = false;
                 Target.regionAndRoomUpdater.Enabled = true;
                 Target.regionAndRoomUpdater.TryRebuildDirtyRegionsAndRooms();
                 AreaUtil.FloodStructureZone(Target, Root, Offset);

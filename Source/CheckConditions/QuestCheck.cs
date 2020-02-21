@@ -79,6 +79,10 @@ namespace HumanStoryteller.CheckConditions {
             AnyEnemiesInitially = anyEnemiesInitially;
         }
 
+        public override string ToString() {
+            return $"{base.ToString()}, Parent tile: {Parent.Tile}, AnyEnemiesInitially: {AnyEnemiesInitially}";
+        }
+
         public override void ExposeData() {
             base.ExposeData();
             Scribe_References.Look(ref Parent, "parent");

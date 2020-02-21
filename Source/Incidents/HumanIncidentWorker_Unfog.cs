@@ -74,7 +74,7 @@ namespace HumanStoryteller.Incidents {
         public override void ExposeData() {
             base.ExposeData();
             Scribe_Values.Look(ref Unfog, "unfog");
-            Scribe_Values.Look(ref Location, "location");
+            Scribe_Deep.Look(ref Location, "location");
         }
     }
 }

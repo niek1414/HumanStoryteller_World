@@ -2,14 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Timers;
-using HumanStoryteller.Model;
+using HumanStoryteller.DebugConnection;
 using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util;
 using HumanStoryteller.Util.Logging;
 using HumanStoryteller.Web;
 using RimWorld;
-using UnityEngine;
-using UnityStandardAssets.ImageEffects;
 using Verse;
 using Timer = System.Timers.Timer;
 
@@ -28,6 +26,7 @@ namespace HumanStoryteller {
         private int _consecutiveEventCounter;
         private bool _init;
         public readonly Timer RefreshTimer = new Timer();
+        public readonly Timer ActionTimer = new Timer();
 
         public static void Tick() {
             HumanStoryteller.HumanStorytellerGame = false;
@@ -54,8 +53,6 @@ namespace HumanStoryteller {
             }
 
             if (HumanStoryteller.StoryComponent.Story == null) return;
-            
-            HumanStoryteller.StoryComponent.StoryQueue.Tick();
 
             var interval =
                 Find.TickManager.CurTimeSpeed == TimeSpeed.Superfast ||
@@ -79,6 +76,8 @@ namespace HumanStoryteller {
                     } else {
                         Tell.Warn("Returned a incident that was not defined");
                     }
+
+                    DebugWebSocket.TryUpdateRunners();
                 }
             }
         }
@@ -183,12 +182,10 @@ namespace HumanStoryteller {
 
 //            string str1 = "";
 //            string str2 = "";
-//            foreach (var def in from d in DefDatabase<TraitDef>.AllDefs
+//            foreach (var def in from d in DefDatabase<HairDef>.AllDefs
 //                select d) {
-//                foreach (var data in def.degreeDatas) {
-//                    str1 += def.defName + "|" + data.degree + "\n";
-//                    str2 += data.label.CapitalizeFirst() + "\n";
-//                }
+//                    str1 += def.defName + "\n";
+//                    str2 += def.label.CapitalizeFirst() + "\n";
 //            }
 //
 //            Tell.Log(str1);
@@ -201,6 +198,13 @@ namespace HumanStoryteller {
             RefreshTimer.Elapsed += CheckStoryRefresh;
             RefreshTimer.Interval = HumanStoryteller.LONG_REFRESH;
             RefreshTimer.Enabled = true;
+
+            ActionTimer.Elapsed += (sender, args) => {
+                if (Current.Game == null || HumanStoryteller.StoryComponent == null || HumanStoryteller.StoryComponent.Story == null || !HumanStoryteller.StoryComponent.Initialised) return;
+                HumanStoryteller.StoryComponent.StoryQueue.Tick();
+            };
+            ActionTimer.Interval = 100;
+            ActionTimer.Enabled = true;
         }
 
         public HumanStoryteller.RefreshRate CurrentRate => _currentRate;

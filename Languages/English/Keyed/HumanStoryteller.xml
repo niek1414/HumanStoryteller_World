@@ -8,6 +8,8 @@
     
     <!--Story select-->
     <StoryNotFound>Story was not found in the storybook.\nThe creator may have removed the story.\nIf you reloaded this game the last received story will continue playing.</StoryNotFound>
+    <InitialIntroductionTitle>Welcome to the storybook!</InitialIntroductionTitle>
+    <InitialIntroduction>Here you can find &amp; play stories that are published by others.\nOnce your in a story you can rate it. The best stories are shown at the top.\n\nWant to make your own story? Its easy, just go to `https://storyteller.keyboxsoftware.nl`.\n\nHave fun!\nNiek</InitialIntroduction>
     <LoadingStory>Browsing storybook</LoadingStory>
     <LoadingStoryFailed>This Book was lost..\n\nIt seems that the story can not be found.\nThe creator may have removed the story or something went wrong while pre-reading the story.\nPlease notify the mod dev if there is a error.</LoadingStoryFailed>
     <StoryList>Storybook story's</StoryList>
@@ -48,15 +50,20 @@
     
     <!--Tab-CopyZone-->
     <ZoneCopyIntro>Here you can copy your home area and integrate it in your story.\nTwo options:\n - Select 'Copy structure' to spawn the same structure, floors &amp; items\n   in your story using the 'Create structure' event.\n - Select 'Copy location' to use the area in 'location' fields in checks &amp; events.</ZoneCopyIntro>
+    <ZoneCopyIntroShort>Here you can copy your home area and integrate it in your story.</ZoneCopyIntroShort>
     <CopyStructure>Copy structure</CopyStructure>
     <CopyLocation>Copy location</CopyLocation>
+    <ClearHomeZone>Clear home zone</ClearHomeZone>
     <ZoneCopyOrigin>The origin is the zero point of the area and can be used to place the area relative to e.g. a pawn</ZoneCopyOrigin>
     <ZoneCopyNow>Copy to clipboard</ZoneCopyNow>
+    <SendZoneToMaker>Send back to storymaker</SendZoneToMaker>
     <BuildingZoneCopy>Copy buildings &amp; structures</BuildingZoneCopy>
     <ItemZoneCopy>Copy items</ItemZoneCopy>
     <TerrainZoneCopy>Copy terrain (non-buildable ground)</TerrainZoneCopy>
     <FloorZoneCopy>Copy floor (buildable ground)</FloorZoneCopy>
     <PawnsZoneCopy>Copy pawns (Only kind, name, faction, weapons &amp; gear)</PawnsZoneCopy>
+    <PlantsZoneCopy>Copy plants</PlantsZoneCopy>
+    <RoofZoneCopy>Copy roof</RoofZoneCopy>
     <WarnZoneCopy>For performance (and my poor server) please only select the required categories</WarnZoneCopy>
 
     <!--Incidents-->
@@ -74,7 +81,7 @@
     <Clear>Clear</Clear>
     <Pick>Pick</Pick>
     <EnableCreatorTools>Enable creator tools</EnableCreatorTools>
-    <EnableCreatorToolsToolTip>Shows tile numbers, cell numbers, enables story debug tab, lets you copy zones and locations, and more!</EnableCreatorToolsToolTip>
+    <EnableCreatorToolsToolTip>Enable storymaker debug connection, shows tile numbers, cell numbers, lets you copy zones and locations, and more!</EnableCreatorToolsToolTip>
     
     
 </LanguageData>

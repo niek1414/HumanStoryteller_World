@@ -1,8 +1,9 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Harmony;
 using HumanStoryteller.Incidents;
+using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Patch;
 using HumanStoryteller.Util.Logging;
 using HumanStoryteller.Web;
@@ -19,11 +20,14 @@ namespace HumanStoryteller {
             Tell.Log("Init - version " + HumanStoryteller.VERSION + " " + HumanStoryteller.VERSION_NAME);
         }
 
-        public static void StartHumanStorytellerGame(string storyId, string stageIdentifier) {
-            List<Page> pageList = new List<Page>();
-            pageList.Add(new Page_CreateWorldParams());
-            pageList.Add(new Page_SelectStartingSite());
-            pageList.Add(new Page_ConfigureStartingPawns {nextAct = PageUtility.InitGameStart});
+        public static void StartHumanStorytellerGame(string storyId, string stageIdentifier, Story story = null) {
+            List<Page> pageList = new List<Page> {
+                new Page_CreateWorldParams(),
+                new Page_SelectStartingSite(),
+                new Page_ConfigureStartingPawns {
+                    nextAct = PageUtility.InitGameStart
+                }
+            };
 
             Current.Game = new Game {InitData = new GameInitData(), Scenario = ScenarioDefOf.Crashlanded.scenario};
             Current.Game.Scenario.PreConfigure();
@@ -31,8 +35,8 @@ namespace HumanStoryteller {
             HumanStoryteller.StoryComponent.StoryId = int.Parse(storyId);
             LongEventHandler.QueueLongEvent(
                 delegate {
-                    HumanStoryteller.GetStoryCallback(Storybook.GetStory(HumanStoryteller.StoryComponent.StoryId));
-                    LongEventHandler.ExecuteWhenFinished(() => { AfterStoryLoad(stageIdentifier, pageList); });
+                    HumanStoryteller.GetStoryCallback(story ?? Storybook.GetStory(HumanStoryteller.StoryComponent.StoryId));
+                    LongEventHandler.ExecuteWhenFinished(delegate { AfterStoryLoad(stageIdentifier, pageList); });
                 }, "LoadingStory",
                 true, StorytellerUI_Patch.ErrorWhileLoadingStory);
         }

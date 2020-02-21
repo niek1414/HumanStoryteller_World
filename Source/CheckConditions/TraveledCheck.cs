@@ -44,6 +44,10 @@ namespace HumanStoryteller.CheckConditions {
             return _reached;
         }
 
+        public override string ToString() {
+            return $"{base.ToString()}, Reached: {_reached}";
+        }
+
         public override void ExposeData() {
             base.ExposeData();
             Scribe_Values.Look(ref _reached, "reached");

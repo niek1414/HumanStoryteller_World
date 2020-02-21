@@ -41,6 +41,10 @@ namespace HumanStoryteller.CheckConditions {
             EndAfter = endAfter;
         }
 
+        public override string ToString() {
+            return $"{base.ToString()}, EndAfter: {EndAfter}";
+        }
+
         public override void ExposeData() {
             base.ExposeData();
             Scribe_Values.Look(ref EndAfter, "endAfter");

@@ -44,6 +44,10 @@ namespace HumanStoryteller.CheckConditions {
             return _created;
         }
 
+        public override string ToString() {
+            return $"{base.ToString()}, Created: {_created}";
+        }
+
         public override void ExposeData() {
             base.ExposeData();
             Scribe_Values.Look(ref _created, "reached");

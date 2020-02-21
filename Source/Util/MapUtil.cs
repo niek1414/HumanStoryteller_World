@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HumanStoryteller.DebugConnection;
 using HumanStoryteller.Model;
 using HumanStoryteller.Util.Logging;
 using RimWorld;
@@ -9,9 +10,6 @@ using Verse;
 
 namespace HumanStoryteller.Util {
     public class MapUtil {
-        private static int _cleanupCounter;
-        private const int CleanupCounterMax = 10;
-
         public static Map GetMapByName(String name, bool warn = true) {
             var mapBank = HumanStoryteller.StoryComponent.MapBank;
 
@@ -74,7 +72,7 @@ namespace HumanStoryteller.Util {
         }
 
         public static void SaveMapByName(String name, MapContainer container) {
-            if (HumanStoryteller.StoryComponent.PawnBank.ContainsKey(name.ToUpper())) {
+            if (HumanStoryteller.StoryComponent.MapBank.ContainsKey(name.ToUpper())) {
                 RemoveByName(name);
             }
 

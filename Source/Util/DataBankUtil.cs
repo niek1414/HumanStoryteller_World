@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using HumanStoryteller.DebugConnection;
 using HumanStoryteller.Model;
 using HumanStoryteller.Util.Logging;
 using RimWorld;
@@ -56,13 +57,11 @@ namespace HumanStoryteller.Util {
         public static float GetValueFromVariable(string variable) {
             switch (variable) {
                 case "_DAYS":
-                    return GenDate.DaysPassed;
+                    return GetDaysPassed();
                 case "_TREAT_POINTS":
-                    return StorytellerUtility.DefaultThreatPointsNow(HumanStoryteller.StoryComponent.SameAsLastEvent);
+                    return GetThreatPoints();
                 case "_WEALTH":
-                    float total = 0;
-                    Find.Maps.FindAll(x => x.ParentFaction.IsPlayer).ForEach(m => total += m.wealthWatcher.WealthTotal);
-                    return total;
+                    return GetWealth();
             }
 
             Dictionary<string, float> variableBank = HumanStoryteller.StoryComponent.VariableBank;
@@ -72,6 +71,20 @@ namespace HumanStoryteller.Util {
             }
 
             return variableBank[variable];
+        }
+
+        public static int GetDaysPassed() {
+            return GenDate.DaysPassed;
+        }
+
+        public static float GetThreatPoints() {
+            return StorytellerUtility.DefaultThreatPointsNow(HumanStoryteller.StoryComponent.SameAsLastEvent);
+        }
+
+        public static float GetWealth() {
+            float total = 0;
+            Find.Maps.FindAll(x => x.ParentFaction.IsPlayer).ForEach(m => total += m.wealthWatcher.WealthTotal);
+            return total;
         }
 
         public static bool CompareValueWithConst(float value, CompareType type, float constant) {

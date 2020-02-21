@@ -46,6 +46,7 @@ namespace HumanStoryteller.Patch {
                     StorytellerCompProperties_HumanThreatCycle.StartHumanStorytellerGame(split[1], split[2]);
                 }
             }
+            HumanStoryteller.CheckDebugConnectionSetting();
         }
 
         public static bool ShouldNotMessWithGame() {
