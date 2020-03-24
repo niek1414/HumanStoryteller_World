@@ -131,9 +131,11 @@
     <Compile Include="Incidents\HumanIncidentWorker_CropBlight.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_DeleteItems.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_DestroyPosition.cs" />
+    <Compile Include="Incidents\HumanIncidentWorker_DisableStoryEvent.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_Disease.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_Eclipse.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_EditPawn.cs" />
+    <Compile Include="Incidents\HumanIncidentWorker_Explosion.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_FadeBlack.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_FlashStorm.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_GiveThought.cs" />
@@ -445,6 +447,7 @@
     <Compile Include="StoryGraph.cs" />
     <Compile Include="Model\HumanLetter.cs" />
     <Compile Include="Util\DrawUtil.cs" />
+    <Compile Include="Util\ExtractDefs.cs" />
     <Compile Include="Util\Logging\ObjectDumper.cs" />
     <Compile Include="Util\Logging\Tell.cs" />
     <Compile Include="Util\OSUtil.cs" />

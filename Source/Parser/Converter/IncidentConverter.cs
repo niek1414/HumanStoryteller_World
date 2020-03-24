@@ -240,6 +240,12 @@ namespace HumanStoryteller.Parser.Converter {
                 case HumanIncidentWorker_OnHit.Name:
                     incident = new FiringHumanIncident(new HumanIncidentWorker_OnHit(), new HumanIncidentParams_OnHit());
                     break;
+                case HumanIncidentWorker_DisableStoryEvent.Name:
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_DisableStoryEvent(), new HumanIncidentParams_DisableStoryEvent());
+                    break;
+                case HumanIncidentWorker_Explosion.Name:
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_Explosion(), new HumanIncidentParams_Explosion());
+                    break;
                 default:
                     Parser.LogParseError("incident", type);
                     return new FiringHumanIncident(null);

@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using System.Net;
 using System.Threading;
 using Harmony;
@@ -13,17 +13,19 @@ using WebSocketSharp.Server;
 
 namespace HumanStoryteller {
     public class HumanStoryteller : Mod {
-        public static string VERSION = "0.5.0";
+        public static float VERSION = 0.5f;
         public static string VERSION_NAME = "`Quality of Life`";
 
+        public static ModContentPack ContentPack;
         public static HumanStorytellerSettings Settings;
 
         public static bool InitiateEventUnsafe = false;
+        public static int ConcurrentActions = 0;
 
         public static WebSocketServer DebugWebSocketConnection = null;
 
         private const int MINUTE = 60000;
-        
+
         public const int SHORT_REFRESH = MINUTE * 2;
         public const int MEDIUM_REFRESH = MINUTE * 10;
         public const int LONG_REFRESH = MINUTE * 60;
@@ -51,6 +53,7 @@ namespace HumanStoryteller {
         public static bool DidInitialParamCheck;
 
         public HumanStoryteller(ModContentPack content) : base(content) {
+            HumanStoryteller.ContentPack = content;
             Settings = GetSettings<HumanStorytellerSettings>();
             ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
         }
@@ -88,7 +91,7 @@ namespace HumanStoryteller {
                 }
             }
         }
-        
+
         public override string SettingsCategory() {
             return "HumanStoryteller".Translate();
         }
@@ -108,12 +111,28 @@ namespace HumanStoryteller {
                 Messages.Message("StoryNotFound".Translate(), MessageTypeDefOf.NegativeEvent, false);
                 return;
             }
-
             var sc = StoryComponent;
+
+            var beforeLoad = Time.realtimeSinceStartup;
+            Tell.Log("Start preloading all nodes");
+            ConcurrentActions = 0;
+            var allNodes = story.StoryGraph.GetAllNodes();
+            foreach (var node in allNodes) {
+                node.StoryEvent.Incident.Worker.PreLoad(node.StoryEvent.Incident.Parms);
+            }
+
+            while (ConcurrentActions != 0) {
+                LongEventHandler.SetCurrentEventText("StoryAssets".Translate() + "(" + ConcurrentActions + ")");
+                Thread.Sleep(10);
+            }
+
+            Tell.Log("Preloading completed in " + (Time.realtimeSinceStartup - beforeLoad));
+            
             InitiateEventUnsafe = true;
             Thread.Sleep(1000); //Give some time to finish undergoing event executions
             sc.Story = story;
-            sc.AllNodes = sc.Story.StoryGraph.GetAllNodes();
+            sc.AllNodes = allNodes;
+
             if (sc.CurrentNodes.Count == 0) {
                 sc.CurrentNodes.Add(new StoryEventNode(sc.Story.StoryGraph.Root, Find.TickManager.TicksGame / 600));
             } else {

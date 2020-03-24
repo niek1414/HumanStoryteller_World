@@ -25,6 +25,14 @@ namespace HumanStoryteller.Patch {
             MethodInfo readoutOnUpdate = AccessTools.Method(typeof(TargetHighlighter), "TargetHighlighterUpdate");
             HarmonyMethod onUpdate = new HarmonyMethod(typeof(Main_Patch).GetMethod("OnUpdate"));
             harmony.Patch(readoutOnUpdate, onUpdate);
+            
+            MethodInfo checkOrUpdateGameOver = AccessTools.Method(typeof(GameEnder), "CheckOrUpdateGameOver");
+            HarmonyMethod onPossibleGameOver = new HarmonyMethod(typeof(Main_Patch).GetMethod("OnPossibleGameOver"));
+            harmony.Patch(checkOrUpdateGameOver, onPossibleGameOver);
+            
+            MethodInfo canNameAnythingNow = AccessTools.Method(typeof(NamePlayerFactionAndSettlementUtility), "CanNameAnythingNow");
+            HarmonyMethod onTryNameAnything = new HarmonyMethod(typeof(Main_Patch).GetMethod("OnTryNameAnything"));
+            harmony.Patch(canNameAnythingNow, onTryNameAnything);
 
 //            MethodInfo debugMethod = AccessTools.Method(typeof(Building), "Destroy");
 //            HarmonyMethod debug = new HarmonyMethod(typeof(Main_Patch).GetMethod("DebugFunction"));
@@ -33,8 +41,8 @@ namespace HumanStoryteller.Patch {
             /** LOG TO FILE (if console is to small/limited)
             MethodBase log = AccessTools.Method(typeof(LogMessageQueue), "Enqueue");
             HarmonyMethod logConstr = new HarmonyMethod(typeof(Main_Patch).GetMethod("logConstr"));
-            harmony.Patch(log, logConstr);
-            */
+            harmony.Patch(log, logConstr);*/
+            
         }
 
         public static void CheckQuickStart() {
@@ -81,6 +89,18 @@ namespace HumanStoryteller.Patch {
             if (HumanStoryteller.HumanStorytellerGame && HumanStoryteller.StoryComponent.Initialised) {
                 HumanStoryteller.StoryComponent?.StoryOverlay?.DrawHighPrio();
             }
+        }
+
+        public static bool OnPossibleGameOver() {
+            if (ShouldNotMessWithGame()) return true;
+
+            return !HumanStoryteller.StoryComponent.StoryStatus.DisableGameOverDialog;
+        }
+
+        public static bool OnTryNameAnything() {
+            if (ShouldNotMessWithGame()) return true;
+
+            return !HumanStoryteller.StoryComponent.StoryStatus.DisableNameColonyDialog;
         }
 
         public static void logConstr(LogMessage msg) {

@@ -4,6 +4,7 @@ using Verse;
 
 namespace HumanStoryteller.Util.Overlay {
     public class FadeBlack : IOverlayItem {
+        private readonly bool _showLoading;
         private const int EnterTime = 3;
         private const int LeaveTime = 3;
 
@@ -17,6 +18,10 @@ namespace HumanStoryteller.Util.Overlay {
         private State _currentState = State.FadeIn;
 
         public FadeBlack() {
+        }
+
+        public FadeBlack(bool showLoading) {
+            _showLoading = showLoading;
         }
 
 
@@ -75,6 +80,17 @@ namespace HumanStoryteller.Util.Overlay {
             var rect = new Rect(0, 0, UI.screenWidth, UI.screenHeight);
 
             Widgets.DrawBoxSolid(rect, new Color(0.08f, 0.1f, 0.11f, alpha));
+            if (_showLoading && alpha == 1) {
+                var beforeFont = Text.Font;
+                var beforeAnchor = Text.Anchor;
+                Text.Font = GameFont.Medium;
+                Text.Anchor = TextAnchor.MiddleLeft;
+                GUI.color = new Color(1, 1, 1, Mathf.Min(1, Mathf.Max(0, Mathf.Sin(_timeSinceLastTransition) + 0.25f)));
+                Widgets.Label(new Rect(UI.screenWidth - 150, UI.screenHeight - 80, 100, 45), "LoadingLongEvent".Translate());
+                GUI.color = Color.white;
+                Text.Font = beforeFont;
+                Text.Anchor = beforeAnchor;
+            }
         }
 
         public void ExposeData() {

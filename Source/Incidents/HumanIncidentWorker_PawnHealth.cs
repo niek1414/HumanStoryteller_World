@@ -51,6 +51,22 @@ namespace HumanStoryteller.Incidents {
                     case "StabBodyPart":
                         HediffGiverUtility.TryApply(pawn, HediffDefOf.Stab, allParams.BodyPart != ""? new List<BodyPartDef>{DefDatabase<BodyPartDef>.GetNamed(allParams.BodyPart, false)} : pawn.health.hediffSet.GetNotMissingParts().Select(o => o.def).ToList());
                         break;
+                    default:
+                        var hediffDef = HediffDef.Named(allParams.HealthAction);
+                        if (hediffDef == null) {
+                            Tell.Warn("Unknown heldiff: " + allParams.HealthAction);
+                            return ir;
+                        }
+
+                        if (!HediffGiverUtility.TryApply(pawn, hediffDef,
+                            allParams.BodyPart != ""
+                                ? new List<BodyPartDef> {DefDatabase<BodyPartDef>.GetNamed(allParams.BodyPart, false)}
+                                : pawn.health.hediffSet.GetNotMissingParts().Select(o => o.def).ToList())) {
+                            if (!HediffGiverUtility.TryApply(pawn, hediffDef, null)) {
+                                Tell.Warn("Failed to apply hediff: " + allParams.HealthAction, allParams.BodyPart);
+                            }
+                        }
+                        break;
                 }
             }
 

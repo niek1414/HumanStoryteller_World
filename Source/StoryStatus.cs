@@ -11,6 +11,8 @@ namespace HumanStoryteller {
         public bool JumpException;
         public bool MovieMode;
         public bool CreatingStructure;
+        public bool DisableGameOverDialog;
+        public bool DisableNameColonyDialog;
         
         public StoryStatus() {
         }
@@ -29,6 +31,8 @@ namespace HumanStoryteller {
             Scribe_Values.Look(ref MovieMode, "movieMode");
             Scribe_TargetInfo.Look(ref FollowThing, "followThing");
             Scribe_Values.Look(ref _forceSlowMotionUntil, "forceSlowMotionUntil");
+            Scribe_Values.Look(ref DisableGameOverDialog, "disableGameOverDialog");
+            Scribe_Values.Look(ref DisableNameColonyDialog, "disableNameColonyDialog");
         }
     }
 }

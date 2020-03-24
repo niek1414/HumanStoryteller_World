@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Timers;
+using Harmony;
 using HumanStoryteller.DebugConnection;
 using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util;
 using HumanStoryteller.Util.Logging;
 using HumanStoryteller.Web;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using RimWorld;
 using Verse;
 using Timer = System.Timers.Timer;
@@ -16,7 +19,7 @@ namespace HumanStoryteller {
         private HumanStoryteller.RefreshRate _currentRate = HumanStoryteller.RefreshRate.Long;
         private static readonly MainButtonDef RateButtonDef = DefDatabase<MainButtonDef>.AllDefs.First(x => x.defName == "RateTab");
         private static readonly MainButtonDef ToolsButtonDef = DefDatabase<MainButtonDef>.AllDefs.First(x => x.defName == "CreatorTools");
-        
+
         protected StorytellerCompProperties_HumanThreatCycle Props =>
             (StorytellerCompProperties_HumanThreatCycle) props;
 
@@ -54,6 +57,8 @@ namespace HumanStoryteller {
 
             if (HumanStoryteller.StoryComponent.Story == null) return;
 
+            StoryQueueTick();
+            
             var interval =
                 Find.TickManager.CurTimeSpeed == TimeSpeed.Superfast ||
                 Find.TickManager.CurTimeSpeed == TimeSpeed.Ultrafast
@@ -94,14 +99,14 @@ namespace HumanStoryteller {
                 Tell.Log("TickOffset: " + IntervalsPassed + ", Concurrent lanes: " + HumanStoryteller.StoryComponent.CurrentNodes.Count);
             }
 
-            if (HumanStoryteller.StoryComponent.CurrentNodes.Count > 15) {
-                Tell.Warn("More concurrent lanes then 15, this can hurt performance badly. This is because the storymaker used to much dividers.");
+            if (HumanStoryteller.StoryComponent.CurrentNodes.Count > 150) {
+                Tell.Warn("More concurrent lanes then 150, this can hurt performance badly. This is because the storymaker used to much dividers.");
             }
 
             if (HumanStoryteller.StoryComponent.CurrentNodes.Count > 500) {
                 Tell.Warn("More concurrent lanes then 500, probably unintentionally created by" +
-                         " looping over a divider or merging multiple concurrent lanes.\n" +
-                         "Unused lanes will be cleared! This means that if the story is updated, you may not be able to continue where you left off if you finished the story before.");
+                          " looping over a divider or merging multiple concurrent lanes.\n" +
+                          "Unused lanes will be cleared! This means that if the story is updated, you may not be able to continue where you left off if you finished the story before.");
             }
 
             for (var i = 0; i < HumanStoryteller.StoryComponent.CurrentNodes.Count; i++) {
@@ -132,7 +137,7 @@ namespace HumanStoryteller {
                     _consecutiveEventCounter += 2; //Always execute a divider's children together
                     yield return right;
                 } else {
-                    if (HumanStoryteller.StoryComponent.CurrentNodes.Count > 400 && sn.LeftChild == null && sn.RightChild == null) {
+                    if (HumanStoryteller.StoryComponent.CurrentNodes.Count > 150 && sn.LeftChild == null && sn.RightChild == null) {
                         HumanStoryteller.StoryComponent.CurrentNodes[i] = null;
                     } else {
                         StoryNode newEvent =
@@ -180,17 +185,6 @@ namespace HumanStoryteller {
                 $"HumanStoryteller {"Story".Translate()}: #{HumanStoryteller.StoryComponent.StoryId}, {"ALPHA_BUILD".Translate()}: {HumanStoryteller.VERSION_NAME} ({HumanStoryteller.VERSION})",
                 MessageTypeDefOf.PositiveEvent);
 
-//            string str1 = "";
-//            string str2 = "";
-//            foreach (var def in from d in DefDatabase<HairDef>.AllDefs
-//                select d) {
-//                    str1 += def.defName + "\n";
-//                    str2 += def.label.CapitalizeFirst() + "\n";
-//            }
-//
-//            Tell.Log(str1);
-//            Tell.Log(str2);
-
             if (HumanStoryteller.IsNoStory) {
                 Storybook.GetStory(HumanStoryteller.StoryComponent.StoryId, story => HumanStoryteller.GetStoryCallback(story, this));
             }
@@ -199,12 +193,25 @@ namespace HumanStoryteller {
             RefreshTimer.Interval = HumanStoryteller.LONG_REFRESH;
             RefreshTimer.Enabled = true;
 
-            ActionTimer.Elapsed += (sender, args) => {
-                if (Current.Game == null || HumanStoryteller.StoryComponent == null || HumanStoryteller.StoryComponent.Story == null || !HumanStoryteller.StoryComponent.Initialised) return;
+            // ActionTimer.Elapsed += (sender, args) => { StoryQueueTick(); };
+            // ActionTimer.Interval = 100;
+            // ActionTimer.Enabled = true;
+            
+            //WRITE DEFS
+            FileLog.Log(JsonConvert.SerializeObject(ExtractDefs.ExtractCurrentDefs(), Formatting.None, new JsonSerializerSettings {
+                NullValueHandling = NullValueHandling.Ignore,
+                Converters = new List<JsonConverter> {new StringEnumConverter()}
+            }));
+        }
+
+        private static void StoryQueueTick() {
+            try {
+                if (Current.Game == null || HumanStoryteller.StoryComponent == null || HumanStoryteller.StoryComponent.Story == null ||
+                    !HumanStoryteller.StoryComponent.Initialised) return;
                 HumanStoryteller.StoryComponent.StoryQueue.Tick();
-            };
-            ActionTimer.Interval = 100;
-            ActionTimer.Enabled = true;
+            } catch (Exception e) {
+                Tell.Err("Error while ticking story queue, " + e.Message, e);
+            }
         }
 
         public HumanStoryteller.RefreshRate CurrentRate => _currentRate;

@@ -31,7 +31,7 @@ namespace HumanStoryteller.Util.Overlay {
         public bool Step() {
             if (_loadedImage == null) {
                 if (_loadedingImage == null) {
-                    _loadedingImage = new WWW(GenFilePaths.SafeURIForUnityWWWFromPath(_url).Substring(8));
+                    _loadedingImage = new WWW(GenFilePaths.SafeURIForUnityWWWFromPath(_url));
                 }
 
                 try {

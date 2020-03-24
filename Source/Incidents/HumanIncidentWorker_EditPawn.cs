@@ -31,7 +31,7 @@ namespace HumanStoryteller.Incidents {
 
             Map map = (Map) allParams.GetTarget();
 
-            foreach (var pawn in allParams.Pawns.Filter(map)) {
+            foreach (var pawn in allParams.Pawns.Filter(map)) {Tell.Debug("a");
                 var graphicsChanged = false;
 
                 if (pawn.DestroyedOrNull() || pawn.Dead || pawn.NonHumanlikeOrWildMan()) {
@@ -49,6 +49,9 @@ namespace HumanStoryteller.Incidents {
                 if (allParams.HairType != "") {
                     var hairDef = DefDatabase<HairDef>.GetNamed(allParams.HairType, false);
                     if (hairDef != null) {
+                        if (pawn.story == null) {
+                            pawn.story = new Pawn_StoryTracker(pawn);
+                        }
                         pawn.story.hairDef = hairDef;
                         graphicsChanged = true;
                     } else {
@@ -59,7 +62,9 @@ namespace HumanStoryteller.Incidents {
                 if (allParams.HairColor != "") {
                     var optColor = PawnUtil.HexToColor(allParams.HairColor);
                     if (optColor.HasValue) {
-                        Tell.Debug("Found color: " + optColor);
+                        if (pawn.story == null) {
+                            pawn.story = new Pawn_StoryTracker(pawn);
+                        }
                         pawn.story.hairColor = optColor.Value;
                         graphicsChanged = true;
                     } else {
@@ -70,6 +75,9 @@ namespace HumanStoryteller.Incidents {
                 if (allParams.BodyType != "") {
                     var bodyTypeDef = DefDatabase<BodyTypeDef>.GetNamed(allParams.BodyType, false);
                     if (bodyTypeDef != null) {
+                        if (pawn.story == null) {
+                            pawn.story = new Pawn_StoryTracker(pawn);
+                        }
                         pawn.story.bodyType = bodyTypeDef;
                         graphicsChanged = true;
                     } else {
@@ -79,6 +87,9 @@ namespace HumanStoryteller.Incidents {
 
                 var melanin = allParams.Melanin.GetValue();
                 if (melanin != -1) {
+                    if (pawn.story == null) {
+                        pawn.story = new Pawn_StoryTracker(pawn);
+                    }
                     pawn.story.melanin = melanin;
                     graphicsChanged = true;
                 }
@@ -88,12 +99,15 @@ namespace HumanStoryteller.Incidents {
                 }
 
                 if (allParams.ClearMind) {
-                    pawn.jobs.ClearQueuedJobs();
-                    pawn.jobs.EndCurrentJob(JobCondition.InterruptForced);
+                    pawn.jobs?.ClearQueuedJobs();
+                    pawn.jobs?.EndCurrentJob(JobCondition.InterruptForced);
                     pawn.GetLord()?.Notify_PawnLost(pawn, PawnLostCondition.LeftVoluntarily);
                     pawn.ClearMind();
                 }
 
+                if (pawn.drafter == null) {
+                    pawn.drafter = new Pawn_DraftController(pawn);
+                }
                 pawn.drafter.Drafted = allParams.SetDrafted;
 
                 if (allParams.Faction != "") {

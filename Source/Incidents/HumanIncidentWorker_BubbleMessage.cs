@@ -23,7 +23,7 @@ namespace HumanStoryteller.Incidents {
 
             var pawn = PawnUtil.GetPawnByName(allParams.Name);
             if (pawn != null) {
-                var message = new BubbleMessage(pawn, allParams.Message.Get(), allParams.BubbleType);
+                var message = new BubbleMessage(pawn, allParams.Message.Get() ?? "", allParams.BubbleType);
                 HumanStoryteller.StoryComponent?.StoryOverlay.AddBubble(message);
             }
 

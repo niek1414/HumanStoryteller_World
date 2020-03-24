@@ -5,12 +5,14 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading;
+using Harmony;
 using HumanStoryteller.CheckConditions;
 using HumanStoryteller.Helper.SoundHelper;
 using HumanStoryteller.Model;
 using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util;
 using HumanStoryteller.Util.Logging;
+using HumanStoryteller.Web;
 using RestSharp;
 using RimWorld;
 using UnityEngine;
@@ -26,7 +28,7 @@ namespace HumanStoryteller.Incidents {
         private static String CachePath = (OSUtil.IsWindows ? "C:\\" : "/") +
                                           Path.Combine(Path.Combine("tmp", "RimWorld"), Path.Combine("HumanStoryteller", "audio"));
 
-        private const string SoundCloudDownloader = "http://soundclouddownloader.info";
+        private const string DriveDownloader = "https://drive.google.com/uc";
         private const string FreeSoundDownloader = "http://freesound.org/data/previews/";
 
         protected override IncidentResult Execute(HumanIncidentParms parms) {
@@ -42,76 +44,111 @@ namespace HumanStoryteller.Incidents {
             Tell.Log($"Executing event {Name} with:{allParams}");
             IncidentResult_Audio irAudio = new IncidentResult_Audio();
 
-            string filePath;
-            string message;
-            if (allParams.File.StartsWith("s__")) {
-                filePath = "/iframe-api/?t=" + allParams.File.Substring(3);
-//                filePath = "https://api.soundcloud.com/tracks/" + allParams.File.Substring(3) + "/download?client_id=NmW1FlPaiL94ueEu7oziOWjYEzZzQDcK";
-                message = "Audio by " + allParams.Author;
-                RestClient restClient = new RestClient(SoundCloudDownloader) {
-                    UserAgent = "HumanStoryteller"
-                };
-                RestRequest request = new RestRequest(filePath, Method.GET);
-                restClient.ExecuteAsyncGet(request, (response, handle) => {
-                    string downloadUrl;
-                    if (response.StatusCode != HttpStatusCode.OK) {
-                        Tell.Log("Ignored failed audio request");
-                        return;
-                    }
+            var message = "Audio by " + allParams.Author;
+            var id = FileToId(allParams.File, out var drive);
+            var path = Path.Combine(CachePath,
+                OSUtil.SaveFileName(id) + (id.EndsWith(".mp3", StringComparison.CurrentCultureIgnoreCase) ? "" : ".mp3"));
 
-                    if (response.Content.NullOrEmpty()) {
-                        Tell.Err("Response for SoundCloud download link is empty..");
-                    }
-
-                    try {
-                        var urlStart = response.Content.IndexOf("/download.php", StringComparison.Ordinal);
-                        var urlEnd = response.Content.IndexOf("\"", urlStart, StringComparison.Ordinal);
-                        downloadUrl = response.Content.Substring(urlStart, urlEnd - urlStart);
-                    } catch (Exception e) {
-                        Tell.Err(e.Message, e);
-                        return;
-                    }
-
-                    DownloadFile(SoundCloudDownloader + downloadUrl, irAudio, allParams, message, true, allParams.File.Substring(3));
-                }, "GET");
+            if (drive) {
+                PlayFileOrConvert(path, irAudio, allParams, message);
             } else {
-                if (allParams.File.StartsWith("f__")) {
-                    filePath = FreeSoundDownloader + allParams.File.Substring(3);
-                    message = "Audio by " + allParams.Author + " on FreeSound.org";
-                    DownloadFile(filePath, irAudio, allParams, message, false, allParams.File.Substring(3));
-                } else {
-                    filePath = FreeSoundDownloader + allParams.File;
-                    message = "Audio by " + allParams.Author + " on FreeSound.org";
-                    DownloadFile(filePath, irAudio, allParams, message, false, allParams.File);
-                }
+                PlayFileOrConvert(path, irAudio, allParams, message + " on FreeSound.org");
             }
 
             return irAudio;
         }
 
-        private static void DownloadFile(string url, IncidentResult_Audio ir, HumanIncidentParams_PlayAudio allParams, string message,
-            bool soundCloud = false, string id = "") {
+        public override void PreLoad(HumanIncidentParms parms) {
+            if (!(parms is HumanIncidentParams_PlayAudio)) {
+                Tell.Err("Tried to preload " + GetType() + " but param type was " + parms.GetType());
+                return;
+            }
+
+            HumanIncidentParams_PlayAudio
+                allParams = Tell.AssertNotNull((HumanIncidentParams_PlayAudio) parms, nameof(parms), GetType().Name);
+            Tell.Log($"Preloading event {Name} with:{allParams}");
+
+            Interlocked.Increment(ref HumanStoryteller.ConcurrentActions);
+
+            var thread = new Thread(() => {
+                var id = FileToId(allParams.File, out var drive);
+
+                if (drive) {
+                    DownloadAndPreloadFile(DriveDownloader + "?export=download&id=" + id, id);
+                } else {
+                    DownloadAndPreloadFile(FreeSoundDownloader + id, id);
+                }
+
+                Interlocked.Decrement(ref HumanStoryteller.ConcurrentActions);
+            }) {Name = "Preload audio " + allParams.File};
+            thread.Start();
+        }
+
+        private void DownloadAndPreloadFile(string url, string id) {
             try {
                 Directory.CreateDirectory(CachePath);
-                var tmpPath = Path.Combine(CachePath, id.Replace('/', '-').Replace('\\', '=') + (soundCloud ? ".mp3" : ""));
-                if (File.Exists(tmpPath)) {
-                    Tell.Log("Audio from cache (" + tmpPath + ")");
-                    LoadAndConvertFile(tmpPath, ir, allParams, message);
-                } else {
-                    Tell.Log("Downloading audio from: " + url + (soundCloud ? " (cloudID: " + id + ")" : ""));
-                    RestClient client = new RestClient(url);
-                    client.ExecuteAsync(new RestRequest(), response => {
-                        Tell.Debug("res", response, tmpPath);
-                        using (FileStream fs = File.Create(tmpPath)) {
-                            fs.Write(response.RawBytes, 0, response.RawBytes.Length);
-                        }
+                var tmpPath = Path.Combine(CachePath,
+                    OSUtil.SaveFileName(id) + (id.EndsWith(".mp3", StringComparison.CurrentCultureIgnoreCase) ? "" : ".mp3"));
 
-                        LoadAndConvertFile(tmpPath, ir, allParams, message);
-                    });
+                Client.DownloadFile(tmpPath, url);
+                LoadAndConvertFile(tmpPath);
+            } catch (Exception e) {
+                Tell.Err("Exception in preloading audio " + url, e);
+            }
+        }
+
+        private static void LoadAndConvertFile(string filePath) {
+            if (!HasMp3Support() && ".mp3".EqualsIgnoreCase(Path.GetExtension(filePath))) {
+                filePath = filePath.Remove(filePath.Length - 3) + "wav";
+                if (!File.Exists(filePath)) {
+                    ConvertWithAfConvert(filePath, filePath);
+                }
+            }
+
+            void LoadClipWithManager() {
+                try {
+                    Manager.Load(filePath);
+                } catch (ArgumentNullException) {
+                    Tell.Warn("Corrupt audio file found, removing from cache");
+                    File.Delete(filePath);
+                    throw;
+                }
+            }
+
+            try {
+                if (HasMp3Support()) {
+                    LoadClipWithManager();
+                } else {
+                    filePath = GenFilePaths.SafeURIForUnityWWWFromPath(filePath);
+                    var www = new WWW(filePath);
+
+                    while (!www.isDone) {
+                        Thread.Sleep(40);
+                    }
+
+                    if (www.error != null)
+                        Tell.Err(www.error);
+                    var audioClip = www.GetAudioClip(false, false, AudioType.UNKNOWN);
+                    audioClip.LoadAudioData();
+                    audioClip.name = Path.GetFileNameWithoutExtension(filePath);
+                    ((Dictionary<string, AudioClip>) Traverse.Create(typeof(Manager)).Field("cache").GetValue()).Add(filePath, audioClip);
                 }
             } catch (Exception e) {
-                Tell.Err("Exception in play audio:", e);
+                Tell.Err(e.Message, e);
             }
+        }
+
+        private static string FileToId(string file, out bool drive) {
+            drive = false;
+            var id = file;
+            if (file.StartsWith("f__")) {
+                id = file.Substring(3);
+            } else if (file.StartsWith("d__")) {
+                id = file.Substring(3);
+                drive = true;
+            }
+
+            return id;
         }
 
         private static bool HasMp3Support() {
@@ -131,7 +168,7 @@ namespace HumanStoryteller.Incidents {
             return true;
         }
 
-        private static void LoadAndConvertFile(string filePath, IncidentResult_Audio ir, HumanIncidentParams_PlayAudio allParams, string message) {
+        private static void PlayFileOrConvert(string filePath, IncidentResult_Audio ir, HumanIncidentParams_PlayAudio allParams, string message) {
             if (!HasMp3Support() && ".mp3".EqualsIgnoreCase(Path.GetExtension(filePath))) {
                 var wavPath = filePath.Remove(filePath.Length - 3) + "wav";
                 if (!File.Exists(wavPath)) {
@@ -170,40 +207,14 @@ namespace HumanStoryteller.Incidents {
         }
 
         private static void PlayFile(string url, IncidentResult_Audio ir, HumanIncidentParams_PlayAudio allParams, string message) {
-            AudioClip LoadClipWithManager() {
-                try {
-                    return Manager.Load(url);
-                } catch (ArgumentNullException) {
-                    Tell.Warn("Corrupt audio file found, removing from cache");
-                    File.Delete(url);
-                    throw;
-                }
-            }
-
             try {
-                AudioClip audioClip;
-                if (HasMp3Support()) {
-                    audioClip = LoadClipWithManager();
-                } else {
-                    url = GenFilePaths.SafeURIForUnityWWWFromPath(url);
-                    var www = new WWW(url);
+                AudioClip audioClip = Manager.Load(url);
 
-                    while (!www.isDone) {
-                        Thread.Sleep(40);
-                    }
-
-                    if (www.error != null)
-                        Tell.Err(www.error);
-                    audioClip = www.GetAudioClip(false, false, AudioType.UNKNOWN);
-                    audioClip.LoadAudioData();
-                    audioClip.name = Path.GetFileNameWithoutExtension(url);
-                }
-
-                while (audioClip.loadState == AudioDataLoadState.Loading || audioClip.loadState == AudioDataLoadState.Unloaded) {
+                while (audioClip.loadState == AudioDataLoadState.Loading) {
                     Thread.Sleep(40);
                 }
 
-                if (audioClip.loadState == AudioDataLoadState.Failed) {
+                if (audioClip.loadState != AudioDataLoadState.Loaded) {
                     Tell.Warn("Unable to load audio file: " + url);
                     return;
                 }

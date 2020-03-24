@@ -22,7 +22,6 @@ namespace HumanStoryteller.Util.Overlay {
         public BlackBars() {
         }
 
-
         public bool Step() {
             _timeSinceLastTransition += Time.deltaTime;
             float coverSize;

@@ -1,3 +1,4 @@
+using HumanStoryteller.Incidents;
 using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util;
 using HumanStoryteller.Util.Logging;
@@ -28,16 +29,17 @@ namespace HumanStoryteller.DebugConnection.Incoming {
                 return;
             }
 
+            IncidentResult incidentResult = null;
             if (sn.StoryEvent?.Incident?.Worker != null) {
                 var incident = sn.StoryEvent.Incident;
-                incident.Worker.ExecuteIncident(incident.Parms);
+                incidentResult = incident.Worker.ExecuteIncident(incident.Parms);
                 DataBankUtil.ProcessVariableModifications(sn.Modifications);
             } else {
                 Tell.Warn("Unable to execute node with uuid " + Uuid + ", the incident that was not defined");
             }
 
             if (WithRunner) {
-                HumanStoryteller.StoryComponent.CurrentNodes.Add(new StoryEventNode(sn, Find.TickManager.TicksGame / 600));
+                HumanStoryteller.StoryComponent.CurrentNodes.Add(new StoryEventNode(sn, Find.TickManager.TicksGame / 600, incidentResult));
                 DebugWebSocket.TryUpdateRunners();
             }
         }

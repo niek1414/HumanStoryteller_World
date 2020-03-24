@@ -276,7 +276,7 @@ namespace HumanStoryteller.Util {
                 spawnThing = ThingMaker.MakeThing(thingDef, stuffDef);
                 spawnThing.stackCount = Mathf.RoundToInt(thing.Amount);
                 spawnThing = ItemUtil.TryMakeMinified(spawnThing);
-                if (thingDef.CanHaveFaction) {
+                if (thingDef.CanHaveFaction) {GraphicDatabase.AllGraphicsLoaded();
                     var faction = thing.FactionObj;
                     spawnThing.SetFactionDirect(faction);
                 }

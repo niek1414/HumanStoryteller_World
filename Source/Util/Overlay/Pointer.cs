@@ -12,6 +12,9 @@ namespace HumanStoryteller.Util.Overlay {
         private Map _map;
         private IntVec3 _location;
 
+        public Pointer() {
+        }
+
         public Pointer(Map map, IntVec3 location) {
             _map = map;
             _location = location;

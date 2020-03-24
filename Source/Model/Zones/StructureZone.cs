@@ -29,9 +29,9 @@ namespace HumanStoryteller.Model.Zones {
         }
 
         public override string ToString() {
-            if (HumanStoryteller.DEBUG) {
-                return $"Origin: [{OriginX}]:{OriginZ} Things: [{Things.Join()}]";
-            }
+            // if (HumanStoryteller.DEBUG) {
+            //     return $"Origin: [{OriginX}]:{OriginZ} Things: [{Things.Join()}]";
+            // }
             return $"Origin: [{OriginX}]:{OriginZ} Things (printing amount): [{Things.Count}]";
         }
 

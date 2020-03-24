@@ -60,7 +60,7 @@ namespace HumanStoryteller.Util.Overlay {
                 _visibleTime += (messageWords - 7) / wordsPerSecond;
             }
 
-            if (_pawn == null) {
+            if (_pawn == null || message.Equals("")) {
                 Hide(true);
             }
         }
@@ -269,7 +269,7 @@ namespace HumanStoryteller.Util.Overlay {
             Scribe_Values.Look(ref _timeSinceLastTransition, "timeSinceLastTransition");
             Scribe_Values.Look(ref _currentState, "currentState");
             Scribe_References.Look(ref _pawn, "pawn");
-            Scribe_Deep.Look(ref _message, "message");
+            Scribe_Values.Look(ref _message, "message");
             Scribe_Values.Look(ref _startingTick, "startingTick");
             Scribe_Values.Look(ref _type, "type");
             Scribe_Values.Look(ref _isGone, "isGone");

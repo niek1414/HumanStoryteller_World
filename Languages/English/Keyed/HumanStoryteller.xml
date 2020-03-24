@@ -11,6 +11,7 @@
     <InitialIntroductionTitle>Welcome to the storybook!</InitialIntroductionTitle>
     <InitialIntroduction>Here you can find &amp; play stories that are published by others.\nOnce your in a story you can rate it. The best stories are shown at the top.\n\nWant to make your own story? Its easy, just go to `https://storyteller.keyboxsoftware.nl`.\n\nHave fun!\nNiek</InitialIntroduction>
     <LoadingStory>Browsing storybook</LoadingStory>
+    <StoryAssets>Loading story assets</StoryAssets>
     <LoadingStoryFailed>This Book was lost..\n\nIt seems that the story can not be found.\nThe creator may have removed the story or something went wrong while pre-reading the story.\nPlease notify the mod dev if there is a error.</LoadingStoryFailed>
     <StoryList>Storybook story's</StoryList>
     <StoryTitleInput>Story title</StoryTitleInput>
@@ -25,6 +26,7 @@
     <Rating>Rating</Rating>
     <Votes>Votes</Votes>
     <FilterOnName>Click to filter on name</FilterOnName>
+    <VersionToLow>Mod version to low</VersionToLow>
     
     <!--Tab-->
     <ShortDuration>Short\n(2 min)</ShortDuration>

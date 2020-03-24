@@ -1,9 +1,10 @@
 namespace HumanStoryteller.Model.StoryPart {
     public class StorySummary {
-        public StorySummary(long id, string name, string description, string username, string badges, long creator, string avatar, float rating, long votes, bool featured) {
+        public StorySummary(long id, string name, string description, float version, string username, string badges, long creator, string avatar, float rating, long votes, bool featured) {
             Id = id;
             Name = name;
             Description = description;
+            Version = version;
             Creator = creator;
             Badges = badges;
             Username = username;
@@ -16,6 +17,7 @@ namespace HumanStoryteller.Model.StoryPart {
         public long Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        public float Version { get; set; }
         public long Creator { get; set; }
         public string Badges { get; set; }
         public string Username { get; set; }

@@ -28,13 +28,13 @@ namespace HumanStoryteller.Incidents.Jobs {
 
         public override void UpdateAllDuties() {
             LordToilData_Travel data = Data;
-            for (int index = 0; index < lord.ownedPawns.Count; ++index)
+            for (int index = 0; index < lord.ownedPawns.Count; index++)
                 if (index == 0) {
                     lord.ownedPawns[index].mindState.duty = new PawnDuty(DefDatabase<DutyDef>.GetNamed("TravelExact"), data.dest) {
                         maxDanger = maxDanger
                     };
                 } else {
-                    lord.ownedPawns[index].mindState.duty = new PawnDuty(DutyDefOf.TravelOrLeave, data.dest) {
+                    lord.ownedPawns[index].mindState.duty = new PawnDuty(DutyDefOf.TravelOrWait, data.dest) {
                         maxDanger = maxDanger
                     };
                 }
@@ -46,7 +46,7 @@ namespace HumanStoryteller.Incidents.Jobs {
             LordToilData_Travel data = Data;
             bool foundNotArrived = false;
             bool foundLiving = false;
-            for (int index = 0; index < lord.ownedPawns.Count; ++index) {
+            for (int index = 0; index < lord.ownedPawns.Count; index++) {
                 Pawn ownedPawn = lord.ownedPawns[index];
                 if (ownedPawn == null || ownedPawn.Dead || ownedPawn.Destroyed || !ownedPawn.Spawned) {
                     continue;

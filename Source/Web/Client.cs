@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Net;
 using HumanStoryteller.Util;
 using HumanStoryteller.Util.Logging;
@@ -8,6 +9,7 @@ using RestSharp;
 
 namespace HumanStoryteller.Web {
     public static class Client {
+        private static object Lock = new object();
         private static string _host = "https://modstoryteller.keyboxsoftware.nl/";
 
         public static void Get(string url, Action<IRestResponse, RestRequestAsyncHandle> callback, String ticket = null) {
@@ -98,7 +100,7 @@ namespace HumanStoryteller.Web {
                                 "-w \"%{http_code}\" " +
                                 "-s";
                 var psi = new ProcessStartInfo {
-                    FileName = "curl",
+                    FileName = OSUtil.GetCurlCommandLocation(),
                     Arguments = arguments,
                     RedirectStandardOutput = true,
                     UseShellExecute = false,
@@ -107,7 +109,7 @@ namespace HumanStoryteller.Web {
 
                 p = Process.Start(psi);
                 var resultString = string.Copy(p.StandardOutput.ReadToEnd());
-                var statusCode = (HttpStatusCode) Enum.Parse(typeof (HttpStatusCode), resultString.Substring(resultString.Length - 3));
+                var statusCode = (HttpStatusCode) Enum.Parse(typeof(HttpStatusCode), resultString.Substring(resultString.Length - 3));
                 var content = resultString.Substring(0, resultString.Length - 3);
                 Tell.Debug($"HTTP Request {url} ({statusCode}) \n{content}");
                 return new RestResponse {
@@ -120,6 +122,92 @@ namespace HumanStoryteller.Web {
                     } catch (InvalidOperationException) {
                         //Ignore
                     }
+            }
+        }
+
+        public static void DownloadFile(string path, string url) {
+            if (File.Exists(path)) {
+                Tell.Log("Retrieved from file cache (" + path + ")");
+            } else {
+                lock (Lock) {
+                    if (File.Exists(path + ".lock")) {
+                        Tell.Log("Already a lockfile (" + path + ")");
+                        return;
+                    }
+
+                    using (FileStream fs = File.Create(path + ".lock")) {
+                        //Reserve 
+                    }
+                }
+
+                Tell.Log("Downloading file from: " + url);
+                if (true) {
+                    DownloadFileUsingCurl(path, url);
+#pragma warning disable 162
+                    // ReSharper disable once HeuristicUnreachableCode
+                } else {
+                    // ReSharper disable once HeuristicUnreachableCode
+                    DownloadFileUsingMono(path, url); //maybe usable in RimWorld version 1.1
+                }
+#pragma warning restore 162
+            }
+        }
+
+        private static void DownloadFileUsingMono(string path, string url) {
+            RestClient client = new RestClient(url) {
+                UserAgent = "HumanStoryteller",
+                FollowRedirects = true
+            };
+
+            var response = client.Execute(new RestRequest());
+
+            if (!File.Exists(path) && File.Exists(path + ".lock")) {
+                using (FileStream fs = File.Create(path)) {
+                    fs.Write(response.RawBytes, 0, response.RawBytes.Length);
+                }
+
+                File.Delete(path + ".lock");
+            } else {
+                Tell.Log("Downloaded file twice");
+            }
+        }
+
+        private static void DownloadFileUsingCurl(string path, string url) {
+            Process p = null;
+
+            try {
+                var arguments = $"-k {url} " +
+                                "-X GET " +
+                                "-w \"%{http_code}\" " +
+                                "-s " +
+                                $"-o {path}";
+                var psi = new ProcessStartInfo {
+                    FileName = OSUtil.GetCurlCommandLocation(),
+                    Arguments = arguments,
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+
+                p = Process.Start(psi);
+                var resultString = string.Copy(p.StandardOutput.ReadToEnd());
+                var statusCode = (HttpStatusCode) Enum.Parse(typeof(HttpStatusCode), resultString);
+                var intCode = (int) statusCode;
+                Tell.Debug($"HTTP File download {url} ({statusCode})");
+                if (intCode < 199 || intCode > 299) {
+                    Tell.Warn("Unable to download file: " + statusCode);
+                }
+            } catch (Exception e) {
+                Tell.Err($"Error while downloading: {url} to {path}", e);
+            } finally {
+                if (p != null && p.HasExited == false)
+                    try {
+                        p.Kill();
+                    } catch (InvalidOperationException) {
+                        //Ignore
+                    }
+
+                File.Delete(path + ".lock");
             }
         }
     }

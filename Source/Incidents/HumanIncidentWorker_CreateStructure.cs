@@ -29,6 +29,8 @@ namespace HumanStoryteller.Incidents {
                 if (!AreaUtil.StringToAreaObjects(allParams.Structure, map, cell.IsValid ? cell : IntVec3.Zero, (IncidentResult_CreatedStructure) ir)) {
                     Tell.Warn("Unable to translate string into spawnable objects. For more info ^");
                 }
+            } else {
+                Tell.Warn("Empty structure string, nothing will spawn!");
             }
 
             SendLetter(parms);

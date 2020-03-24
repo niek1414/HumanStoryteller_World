@@ -2,12 +2,13 @@ using System.Collections.Generic;
 using Harmony;
 using HumanStoryteller.Model.Action;
 using HumanStoryteller.Util;
+using HumanStoryteller.Util.Logging;
 using Verse;
 
 namespace HumanStoryteller {
     public class StoryQueue : IExposable {
         public List<IStoryAction> Queue = new List<IStoryAction>();
-        
+
         public void Add(IStoryAction action) {
             Queue.Add(action);
         }

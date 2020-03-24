@@ -42,31 +42,33 @@ namespace HumanStoryteller.Incidents {
                 Tell.Warn("No pawns found to give intent to");
                 return ir;
             }
-            
+
             var lordJob = ResolveLordJob(pawns, allParams, map);
             if (lordJob == null) {
                 var job = ResolveJob(pawns, allParams, map);
                 if (job != null) {
                     job.playerForced = true;
-                    job.expiryInterval = Mathf.RoundToInt(allParams.FirstNumberParam.GetValue());
+                    var expiryInterval = Mathf.RoundToInt(allParams.FirstNumberParam.GetValue());
+                    job.expiryInterval = expiryInterval == -1 ? 999999 : expiryInterval;
                     foreach (var pawn in pawns) {
-                        if (!allParams.Queue) {
-                            pawn.jobs.ClearQueuedJobs();
-                            pawn.jobs.EndCurrentJob(JobCondition.InterruptForced);
                             pawn.GetLord()?.Notify_PawnLost(pawn, PawnLostCondition.ForcedToJoinOtherLord);
+                        if (!allParams.Queue) {
                         }
 
                         if (job.targetA.Cell.Equals(new IntVec3(-1, -2, -3))) {
                             job.targetA = pawn.Position;
                         }
 
-                        pawn.jobs.StartJob(job, JobCondition.InterruptForced);
+                        if (allParams.Queue) {
+                            pawn.jobs.jobQueue.EnqueueLast(job);
+                        } else {
+                            pawn.jobs.ClearQueuedJobs();
+                            pawn.jobs.StartJob(job, JobCondition.InterruptForced);
+                        }
                     }
                 }
             } else {
                 foreach (var t in pawns) {
-                    t.jobs.ClearQueuedJobs();
-                    t.jobs.EndCurrentJob(JobCondition.InterruptForced);
                     t.GetLord()?.Notify_PawnLost(t, PawnLostCondition.ForcedToJoinOtherLord);
                 }
 
@@ -83,6 +85,11 @@ namespace HumanStoryteller.Incidents {
                     foreach (var t in pawns) {
                         t.mindState.duty.locomotion = GetUrgencyFromString(allParams.SecondStringParam);
                     }
+                }
+
+                foreach (var t in pawns) {
+                    t.jobs.ClearQueuedJobs();
+                    t.jobs.EndCurrentJob(JobCondition.InterruptForced);
                 }
             }
 

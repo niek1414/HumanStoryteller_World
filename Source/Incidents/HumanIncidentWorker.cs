@@ -25,6 +25,10 @@ namespace HumanStoryteller.Incidents {
             return ir;
         }
 
+        public virtual void PreLoad(HumanIncidentParms parms) {
+            //Can be overridden
+        }
+
         protected abstract IncidentResult Execute(HumanIncidentParms parms);
 
         protected void SendLetter(HumanIncidentParms parms, String title, String message, LetterDef type, LookTargets target,
