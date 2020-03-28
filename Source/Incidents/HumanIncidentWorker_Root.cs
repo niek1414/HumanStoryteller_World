@@ -24,6 +24,7 @@ namespace HumanStoryteller.Incidents {
         public Number Coverage = new Number();
         public Number Rainfall = new Number();
         public Number Temperature = new Number();
+        public Number Population = new Number();
         public Number Site = new Number();
         public Number MapSize = new Number();
         
@@ -31,7 +32,7 @@ namespace HumanStoryteller.Incidents {
         }
 
         public override string ToString() {
-            return $"{base.ToString()}, OverrideMapGen: [{OverrideMapGen}], OverrideMapLoc: [{OverrideMapLoc}], Seed: [{Seed}], Opening: [{Opening}], StartSeason: [{StartSeason}], PawnAmount: [{PawnAmount}], Coverage: [{Coverage}], Rainfall: [{Rainfall}], Temperature: [{Temperature}], Site: [{Site}], MapSize: [{MapSize}]";
+            return $"{base.ToString()}, OverrideMapGen: [{OverrideMapGen}], OverrideMapLoc: [{OverrideMapLoc}], Seed: [{Seed}], Opening: [{Opening}], StartSeason: [{StartSeason}], PawnAmount: [{PawnAmount}], Coverage: [{Coverage}], Rainfall: [{Rainfall}], Temperature: [{Temperature}], Population: [{Population}], Site: [{Site}], MapSize: [{MapSize}]";
         }
 
         public override void ExposeData() {
@@ -44,6 +45,7 @@ namespace HumanStoryteller.Incidents {
             Scribe_Deep.Look(ref Coverage, "coverage");
             Scribe_Deep.Look(ref Rainfall, "rainfall");
             Scribe_Deep.Look(ref Temperature, "temperature");
+            Scribe_Deep.Look(ref Population, "population");
             Scribe_Deep.Look(ref Site, "site");
             Scribe_Deep.Look(ref MapSize, "mapSize");
         }

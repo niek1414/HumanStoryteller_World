@@ -52,20 +52,20 @@ namespace HumanStoryteller.Incidents {
             LordMaker.MakeNewLord(factionResult, lordJob, map, list);
 
             Pawn pawn = list.Find(x => factionResult.leader == x);
-            string letterLabel;
-            string letterText;
+            TaggedString letterLabel;
+            TaggedString letterText;
             if (list.Count == 1) {
-                string value = string.Empty;
-                string value2 = pawn == null
-                    ? string.Empty
+                TaggedString value = string.Empty;
+                TaggedString value2 = pawn == null
+                    ? (TaggedString) string.Empty
                     : "\n\n" + "SingleVisitorArrivesLeaderInfo".Translate(list[0].Named("PAWN")).AdjustedFor(list[0]);
                 letterLabel = "LetterLabelSingleVisitorArrives".Translate();
                 letterText = "SingleVisitorArrives"
                     .Translate(list[0].story.Title, factionResult.Name, list[0].Name.ToStringFull, value, value2, list[0].Named("PAWN"))
                     .AdjustedFor(list[0]);
             } else {
-                string value3 = string.Empty;
-                string value4 = pawn == null ? string.Empty : "\n\n" + "GroupVisitorsArriveLeaderInfo".Translate(pawn.LabelShort, pawn);
+                TaggedString value3 = string.Empty;
+                TaggedString value4 = pawn == null ? (TaggedString) string.Empty : "\n\n" + "GroupVisitorsArriveLeaderInfo".Translate(pawn.LabelShort, pawn);
                 letterLabel = "LetterLabelGroupVisitorsArrive".Translate();
                 letterText = "GroupVisitorsArrive".Translate(factionResult.Name, value3, value4);
             }

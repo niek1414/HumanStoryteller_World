@@ -86,8 +86,8 @@ namespace HumanStoryteller.Incidents {
                     }
                 }
 
-                string letterLabel = "LetterLabelTraderCaravanArrival".Translate(factionResult.Name, kindDef.label).CapitalizeFirst();
-                string letterText = "LetterTraderCaravanArrival".Translate(factionResult.Name, kindDef.label).CapitalizeFirst();
+                TaggedString letterLabel = "LetterLabelTraderCaravanArrival".Translate(factionResult.Name, kindDef.label).CapitalizeFirst();
+                TaggedString letterText = "LetterTraderCaravanArrival".Translate(factionResult.Name, kindDef.label).CapitalizeFirst();
                 PawnRelationUtility.Notify_PawnsSeenByPlayer_Letter(list, ref letterLabel, ref letterText,
                     "LetterRelatedPawnsNeutralGroup".Translate(Faction.OfPlayer.def.pawnsPlural), true);
                 SendLetter(allParams, letterLabel, letterText, LetterDefOf.PositiveEvent, list[0], factionResult);

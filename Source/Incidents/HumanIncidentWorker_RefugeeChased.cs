@@ -59,13 +59,13 @@ namespace HumanStoryteller.Incidents {
             defaultPawnGroupMakerParms.points = IncidentWorker_Raid.AdjustedRaidPoints(defaultPawnGroupMakerParms.points, raidParms.raidArrivalMode,
                 raidParms.raidStrategy, defaultPawnGroupMakerParms.faction, PawnGroupKindDefOf.Combat);
             IEnumerable<PawnKindDef> pawnKinds = PawnGroupMakerUtility.GeneratePawnKindsExample(defaultPawnGroupMakerParms);
-            PawnGenerationRequest request = new PawnGenerationRequest(PawnKindDefOf.SpaceRefugee, null, PawnGenerationContext.NonPlayer, -1, false,
-                false, false, false, true, false, 20f, false, true, true, false, false, false, false, null, null, null, null, null, null, null);
-            Pawn refugee = PawnGenerator.GeneratePawn(request);
+            Pawn refugee = PawnGenerator.GeneratePawn(new PawnGenerationRequest(PawnKindDefOf.SpaceRefugee,
+                DownedRefugeeQuestUtility.GetRandomFactionForRefugee(), PawnGenerationContext.NonPlayer, -1, false, false, false, false, true, false,
+                20f));
             refugee.relations.everSeenByPlayer = true;
             PawnUtil.SavePawnByName(allParams.OutName, refugee);
 
-            string text = "RefugeeChasedInitial".Translate(refugee.Name.ToStringFull, refugee.story.Title, enemyFac.def.pawnsPlural, enemyFac.Name,
+            TaggedString text = "RefugeeChasedInitial".Translate(refugee.Name.ToStringFull, refugee.story.Title, enemyFac.def.pawnsPlural, enemyFac.Name,
                 refugee.ageTracker.AgeBiologicalYears, PawnUtility.PawnKindsToCommaList(pawnKinds, true), refugee.Named("PAWN"));
             text = text.AdjustedFor(refugee);
             PawnRelationUtility.TryAppendRelationsWithColonistsInfo(ref text, refugee);
@@ -75,6 +75,7 @@ namespace HumanStoryteller.Incidents {
                 if (parms.Letter.Shake) {
                     Find.CameraDriver.shaker.DoShake(4f);
                 }
+
                 title = parms.Letter.Title.Get();
                 text = parms.Letter.Message.Get();
             }

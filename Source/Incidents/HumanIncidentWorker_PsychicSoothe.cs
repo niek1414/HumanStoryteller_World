@@ -29,7 +29,7 @@ namespace HumanStoryteller.Incidents {
                 ? paramsDuration * 60000f
                 : IncidentDef.Named("PsychicSoothe").durationDays.RandomInRange * 60000f);
             GameCondition_PsychicEmanation gameCondition_PsychicEmanation =
-                (GameCondition_PsychicEmanation) GameConditionMaker.MakeCondition(GameConditionDefOf.PsychicSoothe, duration, 0);
+                (GameCondition_PsychicEmanation) GameConditionMaker.MakeCondition(GameConditionDefOf.PsychicSoothe, duration);
 
             Gender g = PawnUtil.GetGender(allParams.Gender);
 

@@ -42,8 +42,8 @@ namespace HumanStoryteller.Incidents {
             }
             GenSpawn.Spawn(pawn, cell, map);
             IncidentDef def = IncidentDef.Named("WildManWandersIn");
-            string title = def.letterLabel.Formatted(pawn.LabelShort, pawn.Named("PAWN"));
-            string text = def.letterText.Formatted(pawn.LabelShort, pawn.Named("PAWN")).AdjustedFor(pawn).CapitalizeFirst();
+            TaggedString title = def.letterLabel.Formatted(pawn.LabelShort, pawn.Named("PAWN"));
+            TaggedString text = def.letterText.Formatted(pawn.LabelShort, pawn.Named("PAWN")).AdjustedFor(pawn).CapitalizeFirst();
             PawnRelationUtility.TryAppendRelationsWithColonistsInfo(ref text, ref title, pawn);
             SendLetter(allParams, title, text, def.letterDef, pawn);
             

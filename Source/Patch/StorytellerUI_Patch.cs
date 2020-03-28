@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using Harmony;
-using HumanStoryteller.Model;
+using HarmonyLib;
 using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util.Logging;
 using HumanStoryteller.Web;
@@ -59,7 +57,7 @@ namespace HumanStoryteller.Patch {
         }
 
 
-        public static void Patch(HarmonyInstance harmony) {
+        public static void Patch(Harmony harmony) {
             MethodInfo targetMain = AccessTools.Method(typeof(StorytellerUI), "DrawStorytellerSelectionInterface");
             MethodInfo targetPre = AccessTools.Method(typeof(Page_SelectStoryteller), "PreOpen");
             MethodInfo targetPost = AccessTools.Method(typeof(Page_SelectStoryteller), "CanDoNext");

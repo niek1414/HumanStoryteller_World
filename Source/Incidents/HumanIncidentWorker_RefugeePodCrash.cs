@@ -36,8 +36,8 @@ namespace HumanStoryteller.Incidents {
             PawnUtil.SetDisplayName(pawn, allParams.FirstName, allParams.NickName, allParams.LastName);
             
             pawn.guest.getRescuedThoughtOnUndownedBecauseOfPlayer = true;
-            string title = "LetterLabelRefugeePodCrash".Translate();
-            string text = "RefugeePodCrash".Translate(pawn.Named("PAWN")).AdjustedFor(pawn);
+            TaggedString title = "LetterLabelRefugeePodCrash".Translate();
+            TaggedString text = "RefugeePodCrash".Translate(pawn.Named("PAWN")).AdjustedFor(pawn);
             text += "\n\n";
             text = pawn.Faction == null
                 ? text + "RefugeePodCrash_Factionless".Translate(pawn.Named("PAWN")).AdjustedFor(pawn)

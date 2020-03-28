@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Harmony;
+using HarmonyLib;
 using HumanStoryteller.Model;
 using HumanStoryteller.Model.PawnGroup;
 using HumanStoryteller.Model.StoryPart;

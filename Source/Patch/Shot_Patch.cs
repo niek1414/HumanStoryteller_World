@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Harmony;
+using HarmonyLib;
 using HumanStoryteller.Util;
 using HumanStoryteller.Util.Logging;
-using RimWorld.Planet;
 using Verse;
 
 namespace HumanStoryteller.Patch {
@@ -14,7 +13,7 @@ namespace HumanStoryteller.Patch {
         public Shot_Patch() {
         }
 
-        public static void Patch(HarmonyInstance harmony) {
+        public static void Patch(Harmony harmony) {
             MethodInfo targetTryCastShot = AccessTools.Method(typeof(Verb_LaunchProjectile), "TryCastShot");
             HarmonyMethod patchPreTryCastShot = new HarmonyMethod(typeof(Shot_Patch).GetMethod("TryCastShotPre"));
             HarmonyMethod patchPostTryCastShot = new HarmonyMethod(typeof(Shot_Patch).GetMethod("TryCastShotPost"));

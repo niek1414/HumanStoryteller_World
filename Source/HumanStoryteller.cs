@@ -1,7 +1,7 @@
-using System;
+﻿using System;
 using System.Net;
 using System.Threading;
-using Harmony;
+using HarmonyLib;
 using HumanStoryteller.DebugConnection;
 using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util;
@@ -171,7 +171,7 @@ namespace HumanStoryteller {
     [StaticConstructorOnStartup]
     static class HarmonyPatches {
         static HarmonyPatches() {
-            HarmonyInstance harmony = HarmonyInstance.Create("rimworld.keyboxsoftware.humanstoryteller");
+            Harmony harmony = new Harmony("rimworld.keyboxsoftware.humanstoryteller");
 
             Patch.Main_Patch.Patch(harmony);
             Patch.StoryStatus_Patch.Patch(harmony);

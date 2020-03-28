@@ -1,5 +1,5 @@
 using System.Reflection;
-using Harmony;
+using HarmonyLib;
 using RimWorld;
 using RimWorld.Planet;
 using UnityEngine;
@@ -7,7 +7,7 @@ using Verse;
 
 namespace HumanStoryteller.Patch {
     public class StoryStatus_Patch {
-        public static void Patch(HarmonyInstance harmony) {
+        public static void Patch(Harmony harmony) {
             //TODO fix on load when this is enabled
             // Slow motion
             MethodInfo speedMultiplier = AccessTools.Method(typeof(TickManager), "get_TickRateMultiplier");
@@ -123,9 +123,9 @@ namespace HumanStoryteller.Patch {
             }
 
             if (Event.current != null
-                && Event.current.type != EventType.layout
-                && Event.current.type != EventType.repaint
-                && Event.current.type != EventType.ignore
+                && Event.current.type != EventType.Layout
+                && Event.current.type != EventType.Repaint
+                && Event.current.type != EventType.Ignore
                 && !KeyBindingDefOf.Dev_ToggleDebugLog.KeyDownEvent) {
                 Event.current.Use();
             }

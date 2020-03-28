@@ -43,8 +43,8 @@ namespace HumanStoryteller.Incidents {
                 flag = TryStartFireNear(culprit);
             }
 
-            string value = culprit.def != ThingDefOf.PowerConduit
-                ? Find.ActiveLanguageWorker.WithIndefiniteArticlePostProcessed(culprit.Label)
+            TaggedString value = culprit.def != ThingDefOf.PowerConduit
+                ? (TaggedString) Find.ActiveLanguageWorker.WithIndefiniteArticlePostProcessed(culprit.Label)
                 : "AnElectricalConduit".Translate();
             StringBuilder stringBuilder = new StringBuilder();
             if (flag) {

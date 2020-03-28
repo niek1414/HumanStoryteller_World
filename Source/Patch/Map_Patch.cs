@@ -1,6 +1,6 @@
 using System;
 using System.Reflection;
-using Harmony;
+using HarmonyLib;
 using HumanStoryteller.Util;
 using HumanStoryteller.Util.Logging;
 using RimWorld.Planet;
@@ -8,7 +8,7 @@ using Verse;
 
 namespace HumanStoryteller.Patch {
     public class Map_Patch {
-        public static void Patch(HarmonyInstance harmony) {
+        public static void Patch(Harmony harmony) {
             MethodInfo targetEmpty = AccessTools.Method(typeof(SettleInEmptyTileUtility), "Settle");
             MethodInfo targetExisting = AccessTools.Method(typeof(SettleInExistingMapUtility), "Settle");
             HarmonyMethod patchSettle = new HarmonyMethod(typeof(Map_Patch).GetMethod("Settle"));

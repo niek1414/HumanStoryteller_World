@@ -1,6 +1,5 @@
 using System.Collections.Generic;
-using Harmony;
-using RimWorld;
+using HarmonyLib;
 using RimWorld.Planet;
 using Verse;
 
@@ -21,7 +20,8 @@ namespace HumanStoryteller.Helper.QuestHelper {
             return $"Names: [{_names.Join()}]";
         }
         
-        public override void ExposeData() {
+        public new void ExposeData() {
+            base.ExposeData();
             Scribe_Collections.Look(ref _names, "names", LookMode.Value);
             if (Scribe.mode == LoadSaveMode.LoadingVars) {
                 def = new QuestSitePartDef(_names);

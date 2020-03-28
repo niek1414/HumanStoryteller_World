@@ -75,7 +75,7 @@ namespace HumanStoryteller.Incidents {
                 allParams.NewBorn,
                 false, false, true,
                 allParams.MustBeCapableOfViolence,
-                1F, true, true, true, false, false, false, false, null, null, null,
+                1F, false, true, true, false, false, false, false, false, 0F, null, 1F, null, null, null, null, null,
                 biologicalAge == -1 ? new float?() : biologicalAge,
                 chronologicalAge == -1 ? new float?() : chronologicalAge,
                 allParams.Gender == "" || PawnUtil.GetGender(allParams.Gender) == Gender.None ? new Gender?() : PawnUtil.GetGender(allParams.Gender)

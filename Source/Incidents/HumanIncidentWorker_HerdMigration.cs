@@ -102,9 +102,7 @@ namespace HumanStoryteller.Incidents {
         private List<Pawn> GenerateAnimals(PawnKindDef animalKind, int animalsCount, int tile) {
             List<Pawn> list = new List<Pawn>();
             for (int i = 0; i < animalsCount; i++) {
-                PawnGenerationRequest request = new PawnGenerationRequest(animalKind, null, PawnGenerationContext.NonPlayer, tile, false, false,
-                    false, false, true, false, 1f, false, true, true, false, false, false, false, null, null, null, null, null, null, null);
-                Pawn item = PawnGenerator.GeneratePawn(request);
+                Pawn item = PawnGenerator.GeneratePawn(new PawnGenerationRequest(animalKind, null, PawnGenerationContext.NonPlayer, tile));
                 list.Add(item);
             }
 

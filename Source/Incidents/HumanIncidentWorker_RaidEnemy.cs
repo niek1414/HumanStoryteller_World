@@ -126,9 +126,10 @@ namespace HumanStoryteller.Incidents {
                 stringBuilder.AppendLine(p.KindLabel + " - " + str);
             }
 
-            string letterText = GetLetterText(fakeParms, list);
-            PawnRelationUtility.Notify_PawnsSeenByPlayer_Letter(list, ref strategy.letterLabelEnemy, ref letterText,
-                "LetterRelatedPawnsRaidEnemy".Translate(Faction.OfPlayer.def.pawnsPlural, faction.def.pawnsPlural), true);
+            TaggedString letterText = GetLetterText(fakeParms, list);
+            TaggedString labelEnemy = strategy.letterLabelEnemy;
+            PawnRelationUtility.Notify_PawnsSeenByPlayer_Letter(list, ref labelEnemy, ref letterText,
+                "LetterRelatedPawnsRaidEnemy".Translate(Faction.OfPlayer.def.pawnsPlural, faction.def.pawnsPlural), false, true);
             List<TargetInfo> list2 = new List<TargetInfo>();
             if (fakeParms.pawnGroups != null) {
                 List<List<Pawn>> list3 = IncidentParmsUtility.SplitIntoGroups(list, fakeParms.pawnGroups);

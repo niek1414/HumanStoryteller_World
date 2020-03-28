@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using Harmony;
+using HarmonyLib;
 using Verse;
 
 namespace HumanStoryteller.Model.PawnGroup {

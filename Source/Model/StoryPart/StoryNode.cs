@@ -1,5 +1,5 @@
 ﻿﻿using System.Collections.Generic;
-using Harmony;
+using HarmonyLib;
 using HumanStoryteller.CheckConditions;
 using HumanStoryteller.Util.Logging;
 using Verse;

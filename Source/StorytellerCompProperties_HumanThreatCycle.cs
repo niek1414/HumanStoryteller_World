@@ -1,7 +1,7 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Harmony;
+using HarmonyLib;
 using HumanStoryteller.Incidents;
 using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Patch;
@@ -57,6 +57,7 @@ namespace HumanStoryteller {
             var seedString = GenText.RandomSeedString();
             var rainfall = OverallRainfall.Normal;
             var temperature = OverallTemperature.Normal;
+            var population = OverallPopulation.Normal;
             var initParams = HumanStoryteller.StoryComponent.Story.StoryGraph.InitParams();
             if (initParams != null && initParams.OverrideMapGen) {
                 if (initParams.Seed != "") {
@@ -73,6 +74,10 @@ namespace HumanStoryteller {
 
                 if (initParams.Temperature.GetValue() != -1) {
                     temperature = CreateWorldUI_Patch.SeverityToTemperature(initParams.Temperature.GetValue());
+                }
+
+                if (initParams.Population.GetValue() != -1) {
+                    population = CreateWorldUI_Patch.SeverityToPopulation(initParams.Population.GetValue());
                 }
 
                 var value = initParams.PawnAmount.GetValue();
@@ -96,7 +101,7 @@ namespace HumanStoryteller {
 
             LongEventHandler.QueueLongEvent(() => {
                 Find.GameInitData.ResetWorldRelatedMapInitData();
-                Current.Game.World = WorldGenerator.GenerateWorld(planetCoverage, seedString, rainfall, temperature);
+                Current.Game.World = WorldGenerator.GenerateWorld(planetCoverage, seedString, rainfall, temperature, population);
                 LongEventHandler.ExecuteWhenFinished(() => {
                     MemoryUtility.UnloadUnusedUnityAssets();
                     AfterWorldGeneration(stageIdentifier, initParams, pageList);

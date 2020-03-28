@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using HumanStoryteller.Model;
 using HumanStoryteller.Model.StoryPart;
-using HumanStoryteller.Util;
 using HumanStoryteller.Util.Logging;
 using RimWorld;
 using UnityEngine;
 using Verse;
+using Verse.AI.Group;
 
 namespace HumanStoryteller.Incidents {
     class HumanIncidentWorker_ShipPartCrash : HumanIncidentWorker {
@@ -25,43 +26,54 @@ namespace HumanStoryteller.Incidents {
 
             Map map = (Map) allParams.GetTarget();
 
-            ThingDef part;
+            ThingDef shipPartDef;
             if (allParams.ShipCrashedPart != "") {
-                part = ThingDef.Named(allParams.ShipCrashedPart);
+                shipPartDef = ThingDef.Named(allParams.ShipCrashedPart);
             } else {
-                part = ThingDefOf.CrashedPsychicEmanatorShipPart;
+                shipPartDef = ThingDefOf.MechCapsule;
             }
-
-            var amount = allParams.Amount.GetValue();
-            int countToSpawn = Mathf.RoundToInt(amount);
 
             List<TargetInfo> list = new List<TargetInfo>();
-            float shrapnelDirection = Rand.Range(0f, 360f);
-            for (int i = 0; i < countToSpawn; i++) {
-                if (!CellFinderLoose.TryFindSkyfallerCell(
-                    part == ThingDefOf.ShipChunk ? ThingDefOf.ShipChunkIncoming : ThingDefOf.CrashedShipPartIncoming, map, out var cell, 14,
-                    default(IntVec3), -1, false, true, true, true)) {
-                    break;
+            IntVec3 intVec = MechClusterUtility.FindDropPodLocation(map, delegate(IntVec3 spot)
+            {
+                if (!spot.Fogged(map) && GenConstruct.CanBuildOnTerrain(shipPartDef, spot, map, Rot4.North))
+                {
+                    return GenConstruct.CanBuildOnTerrain(shipPartDef, new IntVec3(spot.x - Mathf.CeilToInt((float)shipPartDef.size.x / 2f), spot.y, spot.z), map, Rot4.North);
                 }
-
-                if (part == ThingDefOf.ShipChunk) {
-                    SkyfallerMaker.SpawnSkyfaller(ThingDefOf.ShipChunkIncoming, ThingDefOf.ShipChunk, cell, map);
-                } else {
-                    Building_CrashedShipPart building_CrashedShipPart = (Building_CrashedShipPart) ThingMaker.MakeThing(part);
-                    building_CrashedShipPart.SetFaction(Faction.OfMechanoids);
-                    building_CrashedShipPart.GetComp<CompSpawnerMechanoidsOnDamaged>().pointsLeft =
-                        Mathf.Max(StorytellerUtility.DefaultThreatPointsNow(map) * 0.9f, 300f);
-                    Skyfaller skyfaller = SkyfallerMaker.MakeSkyfaller(ThingDefOf.CrashedShipPartIncoming, building_CrashedShipPart);
-                    skyfaller.shrapnelDirection = shrapnelDirection;
-                    GenSpawn.Spawn(skyfaller, cell, map);
-                }
-                list.Add(new TargetInfo(cell, map));
+                return false;
+            });
+            if (intVec == IntVec3.Invalid)
+            {
+                Tell.Warn("ShipPartCrash is trying to use a invalid location");
             }
+            float points = Mathf.Max(StorytellerUtility.DefaultThreatPointsNow(map) * 0.9f, 300f);
+            List<Pawn> list2 = PawnGroupMakerUtility.GeneratePawns(new PawnGroupMakerParms
+            {
+                groupKind = PawnGroupKindDefOf.Combat,
+                tile = map.Tile,
+                faction = Faction.OfMechanoids,
+                points = points
+            }).ToList();
+            Thing thing = ThingMaker.MakeThing(shipPartDef);
+            thing.SetFaction(Faction.OfMechanoids);
+            LordMaker.MakeNewLord(Faction.OfMechanoids, new LordJob_SleepThenMechanoidsDefend(new List<Thing>
+            {
+                thing
+            }, Faction.OfMechanoids, 28f, intVec, false, false), map, list2);
+            DropPodUtility.DropThingsNear(intVec, map, list2);
+            foreach (Pawn item in list2)
+            {
+                item.TryGetComp<CompCanBeDormant>()?.ToSleep();
+            }
+            list.AddRange(from p in list2
+                select new TargetInfo(p));
+            GenSpawn.Spawn(SkyfallerMaker.MakeSkyfaller(ThingDefOf.CrashedShipPartIncoming, thing), intVec, map);
+            list.Add(new TargetInfo(intVec, map));
 
-            if (part == ThingDefOf.ShipChunk) {
+            if (shipPartDef == ThingDefOf.ShipChunk) {
                 SendLetter(allParams, ThingDefOf.ShipChunk.label, "MessageShipChunkDrop".Translate(), LetterDefOf.PositiveEvent, list);
             } else {
-                SendLetter(allParams, part.label, part.description, LetterDefOf.ThreatSmall, list);
+                SendLetter(allParams, shipPartDef.label, shipPartDef.description, LetterDefOf.ThreatSmall, list);
             }
 
             return ir;

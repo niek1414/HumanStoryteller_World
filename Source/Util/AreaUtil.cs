@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Harmony;
+using HarmonyLib;
 using HumanStoryteller.CheckConditions;
 using HumanStoryteller.Model.Action;
 using HumanStoryteller.Model.Zones;

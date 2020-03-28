@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using Harmony;
-using RimWorld;
+using HarmonyLib;
 using Verse;
 
 namespace HumanStoryteller.Model.PawnGroup.Filter {

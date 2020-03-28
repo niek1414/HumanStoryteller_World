@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using HumanStoryteller.Util;
 using RimWorld;
 
 namespace HumanStoryteller.Helper.QuestHelper {
@@ -12,10 +11,6 @@ namespace HumanStoryteller.Helper.QuestHelper {
             workerClass = typeof(QuestSitePartWorker);
         }
 
-        public new SiteCoreOrPartWorkerBase Worker => new QuestSitePartWorker(_names);
-        
-        protected override SiteCoreOrPartWorkerBase CreateWorker() {
-            return new QuestSitePartWorker(_names);
-        }
+        public new SitePartWorker Worker => new QuestSitePartWorker(_names);
     }
 }

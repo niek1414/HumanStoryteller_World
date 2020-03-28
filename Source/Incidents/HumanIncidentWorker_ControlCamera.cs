@@ -1,11 +1,9 @@
 using System;
-using Harmony;
+using HarmonyLib;
 using HumanStoryteller.Model;
 using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util;
 using HumanStoryteller.Util.Logging;
-using HumanStoryteller.Util.Overlay;
-using RimWorld;
 using RimWorld.Planet;
 using UnityEngine;
 using Verse;

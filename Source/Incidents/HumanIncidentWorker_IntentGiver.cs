@@ -129,7 +129,9 @@ namespace HumanStoryteller.Incidents {
 
                     return new LordJob_PrisonBreak(groupUpLoc, spot, Rand.Value < 0.5f ? list[0].thingIDNumber : -1);
                 case "DefendAndExpandHive":
-                    return new LordJob_DefendAndExpandHive(true);
+                    var pawnParams = new SpawnedPawnParams();
+                    pawnParams.aggressive = true;
+                    return new LordJob_DefendAndExpandHive(pawnParams);
                 case "StageThenAttack":
                     IntVec3 entrySpot1 = list[0].PositionHeld;
                     IntVec3 stageLoc1 = RCellFinder.FindSiegePositionFrom(entrySpot1, map);
@@ -145,12 +147,12 @@ namespace HumanStoryteller.Incidents {
 
                     return new LordJob_Siege(list[0].Faction, stageLoc2, num);
                 case "Joinable_Party":
-                    if (!RCellFinder.TryFindPartySpot(list[0], out IntVec3 result1)) {
+                    if (!RCellFinder.TryFindGatheringSpot(list[0], GatheringDefOf.Party, out IntVec3 result1)) {
                         Tell.Warn("Didn't find party spot.");
                         return null;
                     }
 
-                    return new LordJob_Joinable_Party(result1, list[0]);
+                    return new LordJob_Joinable_Party(result1, list[0], GatheringDefOf.Party);
                 case "Kidnap":
                     return new LordJob_Kidnap();
                 case "AssaultColony":
@@ -167,7 +169,7 @@ namespace HumanStoryteller.Incidents {
                     RCellFinder.TryFindRandomSpotJustOutsideColony(list[0], out IntVec3 result5);
                     return new LordJob_TradeWithColony(list[0].Faction, result5);
                 case "SleepThenAssaultColony":
-                    return new LordJob_SleepThenAssaultColony(list[0].Faction, true);
+                    return new LordJob_SleepThenAssaultColony(list[0].Faction);
                 case "TravelAndExit":
                     return new LordJob_TravelAndExit(allParams.Location.GetSingleCell(map));
                 case "Travel":
@@ -192,9 +194,9 @@ namespace HumanStoryteller.Incidents {
                         return null;
                     }
 
-                    return new Job(JobDefOf.Hunt, p1);
+                    return JobMaker.MakeJob(JobDefOf.Hunt, p1);
                 case "Wait":
-                    return new Job(JobDefOf.Wait);
+                    return JobMaker.MakeJob(JobDefOf.Wait);
                 case "AttackMelee":
                     var p2 = PawnUtil.GetPawnByName(allParams.FirstStringParam);
 
@@ -203,7 +205,7 @@ namespace HumanStoryteller.Incidents {
                         return null;
                     }
 
-                    return new Job(JobDefOf.AttackMelee, p2);
+                    return JobMaker.MakeJob(JobDefOf.AttackMelee, p2);
                 case "AttackStatic":
                     var p3 = PawnUtil.GetPawnByName(allParams.FirstStringParam);
 
@@ -212,7 +214,7 @@ namespace HumanStoryteller.Incidents {
                         return null;
                     }
 
-                    return new Job(JobDefOf.AttackStatic, p3);
+                    return JobMaker.MakeJob(JobDefOf.AttackStatic, p3);
                 case "Follow":
                     var p4 = PawnUtil.GetPawnByName(allParams.FirstStringParam);
 
@@ -221,7 +223,7 @@ namespace HumanStoryteller.Incidents {
                         return null;
                     }
 
-                    return new Job(JobDefOf.Follow, p4);
+                    return JobMaker.MakeJob(JobDefOf.Follow, p4);
                 case "FollowClose":
                     var p5 = PawnUtil.GetPawnByName(allParams.FirstStringParam);
 
@@ -230,7 +232,7 @@ namespace HumanStoryteller.Incidents {
                         return null;
                     }
 
-                    var job = new Job(JobDefOf.FollowClose, p5);
+                    var job = JobMaker.MakeJob(JobDefOf.FollowClose, p5);
                     job.followRadius = 3f;
                     return job;
                 case "Strip":
@@ -241,7 +243,7 @@ namespace HumanStoryteller.Incidents {
                         return null;
                     }
 
-                    return new Job(JobDefOf.Strip, p6);
+                    return JobMaker.MakeJob(JobDefOf.Strip, p6);
                 case "TradeWithPawn":
                     var p7 = PawnUtil.GetPawnByName(allParams.FirstStringParam);
 
@@ -250,7 +252,7 @@ namespace HumanStoryteller.Incidents {
                         return null;
                     }
 
-                    return new Job(JobDefOf.TradeWithPawn, p7);
+                    return JobMaker.MakeJob(JobDefOf.TradeWithPawn, p7);
                 case "SocialFight":
                     var p8 = PawnUtil.GetPawnByName(allParams.FirstStringParam);
 
@@ -263,7 +265,7 @@ namespace HumanStoryteller.Incidents {
                         return null;
                     }
 
-                    var job2 = new Job(JobDefOf.SocialFight, p8);
+                    var job2 = JobMaker.MakeJob(JobDefOf.SocialFight, p8);
                     job2.verbToUse = verb;
                     return job2;
                 case "Insult":
@@ -274,7 +276,7 @@ namespace HumanStoryteller.Incidents {
                         return null;
                     }
 
-                    return new Job(JobDefOf.Insult, p9);
+                    return JobMaker.MakeJob(JobDefOf.Insult, p9);
                 case "Ignite":
                     var p10 = PawnUtil.GetPawnByName(allParams.FirstStringParam);
 
@@ -283,9 +285,9 @@ namespace HumanStoryteller.Incidents {
                         return null;
                     }
 
-                    return new Job(JobDefOf.Ignite, p10);
+                    return JobMaker.MakeJob(JobDefOf.Ignite, p10);
                 case "LayDown":
-                    return new Job(JobDefOf.LayDown, new LocalTargetInfo(new IntVec3(-1, -2, -3)));
+                    return JobMaker.MakeJob(JobDefOf.LayDown, new LocalTargetInfo(new IntVec3(-1, -2, -3)));
                 case "Rescue":
                     var p12 = PawnUtil.GetPawnByName(allParams.FirstStringParam);
 
@@ -300,7 +302,7 @@ namespace HumanStoryteller.Incidents {
                         return null;
                     }
 
-                    Job job3 = new Job(JobDefOf.Rescue, p12, buildingBed);
+                    Job job3 = JobMaker.MakeJob(JobDefOf.Rescue, p12, buildingBed);
                     job3.count = 1;
                     return job3;
                 case "Capture":
@@ -317,7 +319,7 @@ namespace HumanStoryteller.Incidents {
                         return null;
                     }
 
-                    Job job4 = new Job(JobDefOf.Capture, p13, buildingBed2);
+                    Job job4 = JobMaker.MakeJob(JobDefOf.Capture, p13, buildingBed2);
                     job4.count = 1;
                     return job4;
                 case "ReleasePrisoner":
@@ -332,7 +334,7 @@ namespace HumanStoryteller.Incidents {
                         return null;
                     }
 
-                    Job job5 = new Job(JobDefOf.ReleasePrisoner, p14, result);
+                    Job job5 = JobMaker.MakeJob(JobDefOf.ReleasePrisoner, p14, result);
                     job5.count = 1;
                     return job5;
                 case "Kidnap":
@@ -347,7 +349,7 @@ namespace HumanStoryteller.Incidents {
                         return null;
                     }
 
-                    Job job6 = new Job(JobDefOf.Kidnap, p15, spot);
+                    Job job6 = JobMaker.MakeJob(JobDefOf.Kidnap, p15, spot);
                     job6.count = 1;
                     return job6;
                 case "PrisonerExecution":
@@ -358,7 +360,7 @@ namespace HumanStoryteller.Incidents {
                         return null;
                     }
 
-                    return new Job(JobDefOf.PrisonerExecution, p16);
+                    return JobMaker.MakeJob(JobDefOf.PrisonerExecution, p16);
                 case "Slaughter":
                     var p17 = PawnUtil.GetPawnByName(allParams.FirstStringParam);
 
@@ -367,11 +369,11 @@ namespace HumanStoryteller.Incidents {
                         return null;
                     }
 
-                    return new Job(JobDefOf.Slaughter, p17);
+                    return JobMaker.MakeJob(JobDefOf.Slaughter, p17);
                 case "Vomit":
-                    return new Job(JobDefOf.Vomit);
+                    return JobMaker.MakeJob(JobDefOf.Vomit);
                 case "UnloadYourInventory":
-                    return new Job(JobDefOf.UnloadYourInventory);
+                    return JobMaker.MakeJob(JobDefOf.UnloadYourInventory);
                 default:
                     Tell.Warn("Didn't resolve intent type (job).");
                     return null;

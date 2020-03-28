@@ -1,7 +1,7 @@
 using System;
 using System.Reflection;
-using Harmony;
-using HumanStoryteller.Util;
+using System.Text.RegularExpressions;
+using HarmonyLib;
 using HumanStoryteller.Util.Logging;
 using RimWorld;
 using UnityEngine;
@@ -9,7 +9,7 @@ using Verse;
 
 namespace HumanStoryteller.Patch {
     public class Main_Patch {
-        public static void Patch(HarmonyInstance harmony) {
+        public static void Patch(Harmony harmony) {
             MethodInfo quickstart = AccessTools.Method(typeof(QuickStarter), "CheckQuickStart");
             HarmonyMethod checkQuickstart = new HarmonyMethod(typeof(Main_Patch).GetMethod("CheckQuickStart"));
             harmony.Patch(quickstart, checkQuickstart);

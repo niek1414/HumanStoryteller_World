@@ -1,12 +1,11 @@
 using System.Reflection;
-using Harmony;
+using HarmonyLib;
 using HumanStoryteller.Helper.IntentHelper;
-using HumanStoryteller.Util;
 using Verse.AI.Group;
 
 namespace HumanStoryteller.Patch {
     public class Lord_Patch {
-        public static void Patch(HarmonyInstance harmony) {
+        public static void Patch(Harmony harmony) {
             MethodInfo target = AccessTools.Method(typeof(Lord), "ReceiveMemo");
             HarmonyMethod pre = new HarmonyMethod(typeof(Lord_Patch).GetMethod("ReceiveMemo"));
             harmony.Patch(target, pre);

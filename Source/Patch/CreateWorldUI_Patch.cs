@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 using System.Reflection;
-using Harmony;
+using HarmonyLib;
 using RimWorld;
 using RimWorld.Planet;
 using UnityEngine;
@@ -9,7 +9,7 @@ using Verse;
 
 namespace HumanStoryteller.Patch {
     public class CreateWorldUI_Patch {
-        public static void Patch(HarmonyInstance harmony) {
+        public static void Patch(Harmony harmony) {
             MethodInfo targetMain = AccessTools.Method(typeof(Page_CreateWorldParams), "DoWindowContents");
 
             HarmonyMethod draw = new HarmonyMethod(typeof(CreateWorldUI_Patch).GetMethod("DoWindowContents"));
@@ -42,7 +42,11 @@ namespace HumanStoryteller.Patch {
                     Traverse.Create(page).Field("temperature").SetValue(SeverityToTemperature(initParams.Temperature.GetValue()));
                 }
 
-                Widgets.Label(new Rect(rect.x, rect.y + 250, rect.width, 30), "ParametersOverriden".Translate());
+                if (initParams.Population.GetValue() != -1) {
+                    Traverse.Create(page).Field("population").SetValue(SeverityToPopulation(initParams.Population.GetValue()));
+                }
+
+                Widgets.Label(new Rect(rect.x, rect.y + 280, rect.width, 30), "ParametersOverriden".Translate());
 
                 var value = initParams.PawnAmount.GetValue();
                 if (value != -1) {
@@ -126,6 +130,34 @@ namespace HumanStoryteller.Patch {
             }
 
             return OverallTemperature.VeryHot;
+        }
+
+        public static OverallPopulation SeverityToPopulation(float severity) {
+            if (severity == -1) {
+                return OverallPopulation.Normal;
+            }
+
+            if (severity < 0.2f) {
+                return OverallPopulation.Little;
+            }
+
+            if (severity < 0.4f) {
+                return OverallPopulation.LittleBitLess;
+            }
+
+            if (severity < 0.6f) {
+                return OverallPopulation.Normal;
+            }
+
+            if (severity < 0.8f) {
+                return OverallPopulation.LittleBitMore;
+            }
+
+            if (severity < 1f) {
+                return OverallPopulation.High;
+            }
+
+            return OverallPopulation.VeryHigh;
         }
     }
 }

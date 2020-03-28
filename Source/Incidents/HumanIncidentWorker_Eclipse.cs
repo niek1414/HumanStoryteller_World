@@ -28,8 +28,8 @@ namespace HumanStoryteller.Incidents {
             int duration = Mathf.RoundToInt(allParamsDuration != -1
                 ? allParamsDuration * 60000f
                 : def.durationDays.RandomInRange * 60000f);
-            GameCondition_Eclipse gameCondition_Eclipse =
-                (GameCondition_Eclipse) GameConditionMaker.MakeCondition(GameConditionDefOf.Eclipse, duration);
+            GameCondition_NoSunlight gameCondition_Eclipse =
+                (GameCondition_NoSunlight) GameConditionMaker.MakeCondition(GameConditionDefOf.Eclipse, duration);
             map.gameConditionManager.RegisterCondition(gameCondition_Eclipse);
             SendLetter(allParams, def.letterLabel, def.letterText, def.letterDef, null);
             return ir;

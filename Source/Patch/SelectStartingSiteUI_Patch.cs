@@ -1,13 +1,12 @@
 using System.Reflection;
-using Harmony;
-using HumanStoryteller.Util;
+using HarmonyLib;
 using RimWorld;
 using UnityEngine;
 using Verse;
 
 namespace HumanStoryteller.Patch {
     public class SelectStartingSiteUI_Patch {
-        public static void Patch(HarmonyInstance harmony) {
+        public static void Patch(Harmony harmony) {
             MethodInfo targetMain = AccessTools.Method(typeof(Page_SelectStartingSite), "ExtraOnGUI");
 
             HarmonyMethod draw = new HarmonyMethod(typeof(SelectStartingSiteUI_Patch).GetMethod("ExtraOnGUI"));

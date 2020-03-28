@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
-using Harmony;
 using HumanStoryteller.Model;
 using HumanStoryteller.Model.PawnGroup;
 using HumanStoryteller.Model.StoryPart;
@@ -151,7 +149,7 @@ namespace HumanStoryteller.Incidents {
 
                             pawn.equipment.AddEquipment(thing);
                         } else {
-                            pawn.inventory.innerContainer.Add(thing);
+                            pawn.inventory.innerContainer.TryAdd(thing);
                         }
                     } catch (Exception e) {
                         Tell.Warn(

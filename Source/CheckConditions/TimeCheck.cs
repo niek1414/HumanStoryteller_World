@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Harmony;
+using HarmonyLib;
 using HumanStoryteller.Incidents;
 using HumanStoryteller.Util.Logging;
 using RimWorld;
