@@ -1,7 +1,6 @@
 using System;
 using HumanStoryteller.Model;
 using HumanStoryteller.Model.StoryPart;
-using HumanStoryteller.Util;
 using HumanStoryteller.Util.Logging;
 using Verse;
 
@@ -22,8 +21,12 @@ namespace HumanStoryteller.Incidents {
 
             Map map = (Map) allParams.GetTarget();
 
-            allParams.Location.GetZone(map).Cells.ForEach(cell => {
-                cell.Pos.GetThingList(map).ForEach(thing => {
+            var list = allParams.Location.GetZone(map).Cells;
+            list.ForEach(cell => {
+                if (allParams.DestroyRoof) {
+                    map.roofGrid.SetRoof(cell.Pos, null);
+                }
+                cell.Pos.GetThingList(map).ListFullCopy().ForEach(thing => {
                     if (!thing.def.destroyable) return;
                     switch (thing.def.category) {
                         case ThingCategory.None:
@@ -52,9 +55,13 @@ namespace HumanStoryteller.Incidents {
                             return;
                         case ThingCategory.Ethereal:
                             return;
+                        default:
+                            return;
                     }
 
-                    thing.Destroy();
+                    if (thing.def.destroyable) {
+                        thing.Destroy();
+                    }
                 });
             });
 
@@ -64,6 +71,7 @@ namespace HumanStoryteller.Incidents {
     }
 
     public class HumanIncidentParams_DestroyPosition : HumanIncidentParms {
+        public bool DestroyRoof;
         public bool DestroyItems;
         public bool DestroyPawns;
         public bool DestroyStructures;
@@ -78,11 +86,12 @@ namespace HumanStoryteller.Incidents {
 
         public override string ToString() {
             return
-                $"{base.ToString()}, DestroyItems: [{DestroyItems}], DestroyPawns: [{DestroyPawns}], DestroyStructures: [{DestroyStructures}], DestroyPlants: [{DestroyPlants}], Location: [{Location}]";
+                $"{base.ToString()}, DestroyItems: [{DestroyRoof}],  DestroyItems: [{DestroyItems}], DestroyPawns: [{DestroyPawns}], DestroyStructures: [{DestroyStructures}], DestroyPlants: [{DestroyPlants}], Location: [{Location}]";
         }
 
         public override void ExposeData() {
             base.ExposeData();
+            Scribe_Values.Look(ref DestroyRoof, "DestroyRoof");
             Scribe_Values.Look(ref DestroyItems, "destroyItems");
             Scribe_Values.Look(ref DestroyPawns, "destroyPawns");
             Scribe_Values.Look(ref DestroyStructures, "destroyStructures");

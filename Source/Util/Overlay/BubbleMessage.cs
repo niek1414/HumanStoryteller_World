@@ -1,6 +1,4 @@
 using System;
-using HumanStoryteller.Model;
-using HumanStoryteller.Util.Logging;
 using HumanStoryteller.Util.Overlay.BubbleType;
 using RimWorld;
 using UnityEngine;
@@ -34,7 +32,7 @@ namespace HumanStoryteller.Util.Overlay {
         private State _currentState = State.FadeIn;
 
         private Pawn _pawn;
-        private String _message;
+        private string _message;
         private int _startingTick;
         private int _id;
         private bool _isGone;
@@ -45,7 +43,7 @@ namespace HumanStoryteller.Util.Overlay {
         public BubbleMessage() {
         }
 
-        public BubbleMessage(Pawn pawn, String message, BubbleType type) : this() {
+        public BubbleMessage(Pawn pawn, string message, BubbleType type) : this() {
             _startingTick = GenTicks.TicksGame;
             _id = Rand.Int;
             _pawn = pawn;
@@ -214,7 +212,7 @@ namespace HumanStoryteller.Util.Overlay {
                 var pos = DrawUtil.LabelDrawPosFor(_pawn, 0.3f, 1.6f);
 
                 var outer = new Rect(pos.x - width / 2f, pos.y - height, width, height);
-                var inner = new Rect(outer.x + paddingWidth, outer.y + paddingHeight, outer.width - paddingWidth * 2f,
+                var inner = new Rect(outer.x - 2 + paddingWidth, outer.y + paddingHeight, outer.width + 4 - paddingWidth * 2f,
                     outer.height - paddingHeight * 2f);
 
                 var pointer = _typeImpl.Pointer();

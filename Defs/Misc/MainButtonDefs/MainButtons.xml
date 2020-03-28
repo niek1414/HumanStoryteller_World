@@ -5,13 +5,13 @@
         <label>Rate story</label>
         <description>Rate this story (from the storyteller mod)</description>
         <tabWindowClass>HumanStoryteller.Views.MainTabWindow_RateTab</tabWindowClass>
-        <order>498</order>
+        <order>78</order>
     </MainButtonDef>
     <MainButtonDef>
         <defName>CreatorTools</defName>
         <label>Creator tools</label>
         <description>Tools for creating your ultimate story (from the storyteller mod)</description>
         <tabWindowClass>HumanStoryteller.Views.MainTabWindow_CreatorTools</tabWindowClass>
-        <order>499</order>
+        <order>79</order>
     </MainButtonDef>
 </Defs>

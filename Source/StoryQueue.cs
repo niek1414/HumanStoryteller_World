@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using Harmony;
 using HumanStoryteller.Model.Action;
-using HumanStoryteller.Util;
-using HumanStoryteller.Util.Logging;
 using Verse;
 
 namespace HumanStoryteller {

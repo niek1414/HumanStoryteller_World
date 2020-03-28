@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net;
 using System.Threading;
 using Harmony;
@@ -52,8 +52,9 @@ namespace HumanStoryteller {
         public static bool CreatorTools => HumanStorytellerSettings.EnableCreatorTools;
         public static bool DidInitialParamCheck;
 
+
         public HumanStoryteller(ModContentPack content) : base(content) {
-            HumanStoryteller.ContentPack = content;
+            ContentPack = content;
             Settings = GetSettings<HumanStorytellerSettings>();
             ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
         }
@@ -111,6 +112,7 @@ namespace HumanStoryteller {
                 Messages.Message("StoryNotFound".Translate(), MessageTypeDefOf.NegativeEvent, false);
                 return;
             }
+
             var sc = StoryComponent;
 
             var beforeLoad = Time.realtimeSinceStartup;
@@ -127,7 +129,7 @@ namespace HumanStoryteller {
             }
 
             Tell.Log("Preloading completed in " + (Time.realtimeSinceStartup - beforeLoad));
-            
+
             InitiateEventUnsafe = true;
             Thread.Sleep(1000); //Give some time to finish undergoing event executions
             sc.Story = story;
@@ -149,7 +151,7 @@ namespace HumanStoryteller {
             }
 
             InitiateEventUnsafe = false;
-            
+
             DebugWebSocket.TryUpdateRunners();
         }
     }

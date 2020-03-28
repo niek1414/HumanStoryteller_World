@@ -258,7 +258,8 @@ namespace HumanStoryteller.Util {
 
             if (thing.IsBuilding()) {
                 var thingDef = (ThingDef) def;
-                spawnThing = ThingMaker.MakeThing(thingDef, stuffDef);
+
+                spawnThing = ThingMaker.MakeThing(thingDef, CorrectStuffForThingDef(thingDef, stuffDef));
                 if (thingDef.CanHaveFaction) {
                     var faction = thing.FactionObj;
                     spawnThing.SetFactionDirect(faction);
@@ -273,10 +274,11 @@ namespace HumanStoryteller.Util {
                 }
             } else if (thing.IsItem()) {
                 var thingDef = (ThingDef) def;
-                spawnThing = ThingMaker.MakeThing(thingDef, stuffDef);
+                spawnThing = ThingMaker.MakeThing(thingDef, CorrectStuffForThingDef(thingDef, stuffDef));
                 spawnThing.stackCount = Mathf.RoundToInt(thing.Amount);
                 spawnThing = ItemUtil.TryMakeMinified(spawnThing);
-                if (thingDef.CanHaveFaction) {GraphicDatabase.AllGraphicsLoaded();
+                if (thingDef.CanHaveFaction) {
+                    GraphicDatabase.AllGraphicsLoaded();
                     var faction = thing.FactionObj;
                     spawnThing.SetFactionDirect(faction);
                 }
@@ -381,6 +383,22 @@ namespace HumanStoryteller.Util {
             }
 
             return spawnThing;
+        }
+
+        private static ThingDef CorrectStuffForThingDef(ThingDef thing, ThingDef stuff) {
+            if (stuff != null && !stuff.IsStuff) {
+                return GenStuff.DefaultStuffFor(thing);
+            }
+
+            if (thing.MadeFromStuff && stuff == null) {
+                return GenStuff.DefaultStuffFor(thing);
+            }
+
+            if (!thing.MadeFromStuff && stuff != null) {
+                return null;
+            }
+
+            return stuff;
         }
     }
 }

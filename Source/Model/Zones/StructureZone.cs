@@ -1,8 +1,6 @@
 ﻿﻿using System;
 using System.Collections.Generic;
-using Harmony;
-using HumanStoryteller.Util;
-using HumanStoryteller.Util.Logging;
+ using HumanStoryteller.Util.Logging;
 using Verse;
 
 namespace HumanStoryteller.Model.Zones {

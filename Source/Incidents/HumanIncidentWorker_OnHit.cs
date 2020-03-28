@@ -1,16 +1,10 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using HumanStoryteller.CheckConditions;
 using HumanStoryteller.Model;
 using HumanStoryteller.Model.PawnGroup;
 using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util;
 using HumanStoryteller.Util.Logging;
-using RimWorld;
-using RimWorld.Planet;
-using UnityEngine;
 using Verse;
 
 namespace HumanStoryteller.Incidents {

@@ -25,24 +25,23 @@ namespace HumanStoryteller.Patch {
             MethodInfo readoutOnUpdate = AccessTools.Method(typeof(TargetHighlighter), "TargetHighlighterUpdate");
             HarmonyMethod onUpdate = new HarmonyMethod(typeof(Main_Patch).GetMethod("OnUpdate"));
             harmony.Patch(readoutOnUpdate, onUpdate);
-            
+
             MethodInfo checkOrUpdateGameOver = AccessTools.Method(typeof(GameEnder), "CheckOrUpdateGameOver");
             HarmonyMethod onPossibleGameOver = new HarmonyMethod(typeof(Main_Patch).GetMethod("OnPossibleGameOver"));
             harmony.Patch(checkOrUpdateGameOver, onPossibleGameOver);
-            
+
             MethodInfo canNameAnythingNow = AccessTools.Method(typeof(NamePlayerFactionAndSettlementUtility), "CanNameAnythingNow");
             HarmonyMethod onTryNameAnything = new HarmonyMethod(typeof(Main_Patch).GetMethod("OnTryNameAnything"));
             harmony.Patch(canNameAnythingNow, onTryNameAnything);
 
-//            MethodInfo debugMethod = AccessTools.Method(typeof(Building), "Destroy");
-//            HarmonyMethod debug = new HarmonyMethod(typeof(Main_Patch).GetMethod("DebugFunction"));
-//            harmony.Patch(debugMethod, debug);
+            MethodInfo stripTags = AccessTools.Method(typeof(ColoredText), "StripTags");
+            HarmonyMethod stripTagMethod = new HarmonyMethod(typeof(Main_Patch).GetMethod("StripTags"));
+            harmony.Patch(stripTags, stripTagMethod);
 
             /** LOG TO FILE (if console is to small/limited)
             MethodBase log = AccessTools.Method(typeof(LogMessageQueue), "Enqueue");
             HarmonyMethod logConstr = new HarmonyMethod(typeof(Main_Patch).GetMethod("logConstr"));
             harmony.Patch(log, logConstr);*/
-            
         }
 
         public static void CheckQuickStart() {
@@ -54,6 +53,7 @@ namespace HumanStoryteller.Patch {
                     StorytellerCompProperties_HumanThreatCycle.StartHumanStorytellerGame(split[1], split[2]);
                 }
             }
+
             HumanStoryteller.CheckDebugConnectionSetting();
         }
 
@@ -101,6 +101,18 @@ namespace HumanStoryteller.Patch {
             if (ShouldNotMessWithGame()) return true;
 
             return !HumanStoryteller.StoryComponent.StoryStatus.DisableNameColonyDialog;
+        }
+
+        public static Regex Tag = new Regex("<(?!.*size)[^>]*>");
+
+        public static bool StripTags(ref string __result, string s) {
+            if (s.NullOrEmpty() || s.IndexOf('<') < 0) {
+                __result = s;
+                return false;
+            }
+
+            __result = Tag.Replace(s, string.Empty);
+            return false;
         }
 
         public static void logConstr(LogMessage msg) {

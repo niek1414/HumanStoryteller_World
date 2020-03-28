@@ -1,11 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using HumanStoryteller.DebugConnection;
 using HumanStoryteller.Model;
 using HumanStoryteller.Util.Logging;
-using RimWorld;
-using RimWorld.Planet;
 using Verse;
 
 namespace HumanStoryteller.Util {

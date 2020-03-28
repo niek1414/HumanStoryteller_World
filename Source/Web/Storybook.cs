@@ -3,7 +3,6 @@ using System.Net;
 using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util.Logging;
 using RestSharp;
-using Verse;
 
 namespace HumanStoryteller.Web {
     public static class Storybook {

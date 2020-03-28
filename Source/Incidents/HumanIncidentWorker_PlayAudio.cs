@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Threading;
-using Harmony;
+using HarmonyLib;
 using HumanStoryteller.CheckConditions;
 using HumanStoryteller.Helper.SoundHelper;
 using HumanStoryteller.Model;
@@ -13,7 +12,6 @@ using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util;
 using HumanStoryteller.Util.Logging;
 using HumanStoryteller.Web;
-using RestSharp;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -25,6 +23,7 @@ namespace HumanStoryteller.Incidents {
     class HumanIncidentWorker_PlayAudio : HumanIncidentWorker {
         public const String Name = "PlayAudio";
 
+        private static object Lock = new object();
         private static String CachePath = (OSUtil.IsWindows ? "C:\\" : "/") +
                                           Path.Combine(Path.Combine("tmp", "RimWorld"), Path.Combine("HumanStoryteller", "audio"));
 
@@ -71,15 +70,17 @@ namespace HumanStoryteller.Incidents {
             Interlocked.Increment(ref HumanStoryteller.ConcurrentActions);
 
             var thread = new Thread(() => {
-                var id = FileToId(allParams.File, out var drive);
-
-                if (drive) {
-                    DownloadAndPreloadFile(DriveDownloader + "?export=download&id=" + id, id);
-                } else {
-                    DownloadAndPreloadFile(FreeSoundDownloader + id, id);
+                try {
+                    var id = FileToId(allParams.File, out var drive);
+                    if (drive) {
+                        DownloadAndPreloadFile(DriveDownloader + "?export=download&id=" + id, id);
+                    } else {
+                        DownloadAndPreloadFile(FreeSoundDownloader + id, id);
+                    }
+                    Interlocked.Decrement(ref HumanStoryteller.ConcurrentActions);
+                } catch (Exception e) {
+                    Tell.Err("Error in audio preload", e);
                 }
-
-                Interlocked.Decrement(ref HumanStoryteller.ConcurrentActions);
             }) {Name = "Preload audio " + allParams.File};
             thread.Start();
         }
@@ -107,7 +108,9 @@ namespace HumanStoryteller.Incidents {
 
             void LoadClipWithManager() {
                 try {
-                    Manager.Load(filePath);
+                    lock (Lock) {
+                        Manager.Load(filePath);
+                    }
                 } catch (ArgumentNullException) {
                     Tell.Warn("Corrupt audio file found, removing from cache");
                     File.Delete(filePath);

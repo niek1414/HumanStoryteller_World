@@ -17,8 +17,6 @@ namespace HumanStoryteller.Helper.QuestHelper {
             def = new QuestSitePartDef(_names);
         }
 
-        public override SiteCoreOrPartDefBase Def => new QuestSitePartDef(_names);
-        
         public override string ToString() {
             return $"Names: [{_names.Join()}]";
         }

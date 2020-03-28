@@ -1,4 +1,4 @@
-﻿﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Harmony;
@@ -21,24 +21,28 @@ namespace HumanStoryteller {
         }
 
         public static void StartHumanStorytellerGame(string storyId, string stageIdentifier, Story story = null) {
-            List<Page> pageList = new List<Page> {
-                new Page_CreateWorldParams(),
-                new Page_SelectStartingSite(),
-                new Page_ConfigureStartingPawns {
-                    nextAct = PageUtility.InitGameStart
-                }
-            };
+            try {
+                List<Page> pageList = new List<Page> {
+                    new Page_CreateWorldParams(),
+                    new Page_SelectStartingSite(),
+                    new Page_ConfigureStartingPawns {
+                        nextAct = PageUtility.InitGameStart
+                    }
+                };
 
-            Current.Game = new Game {InitData = new GameInitData(), Scenario = ScenarioDefOf.Crashlanded.scenario};
-            Current.Game.Scenario.PreConfigure();
-            Current.Game.storyteller = new Storyteller(DefDatabase<StorytellerDef>.GetNamed("Human"), DifficultyDefOf.Rough);
-            HumanStoryteller.StoryComponent.StoryId = int.Parse(storyId);
-            LongEventHandler.QueueLongEvent(
-                delegate {
-                    HumanStoryteller.GetStoryCallback(story ?? Storybook.GetStory(HumanStoryteller.StoryComponent.StoryId));
-                    LongEventHandler.ExecuteWhenFinished(delegate { AfterStoryLoad(stageIdentifier, pageList); });
-                }, "LoadingStory",
-                true, StorytellerUI_Patch.ErrorWhileLoadingStory);
+                Current.Game = new Game {InitData = new GameInitData(), Scenario = ScenarioDefOf.Crashlanded.scenario};
+                Current.Game.Scenario.PreConfigure();
+                Current.Game.storyteller = new Storyteller(DefDatabase<StorytellerDef>.GetNamed("Human"), DifficultyDefOf.Rough);
+                HumanStoryteller.StoryComponent.StoryId = int.Parse(storyId);
+                LongEventHandler.QueueLongEvent(
+                    delegate {
+                        HumanStoryteller.GetStoryCallback(story ?? Storybook.GetStory(HumanStoryteller.StoryComponent.StoryId));
+                        LongEventHandler.ExecuteWhenFinished(delegate { AfterStoryLoad(stageIdentifier, pageList); });
+                    }, "LoadingStory",
+                    true, StorytellerUI_Patch.ErrorWhileLoadingStory);
+            } catch (Exception e) {
+                Tell.Err(e.Message);
+            }
         }
 
         private static void AfterStoryLoad(string stageIdentifier, List<Page> pageList) {

@@ -1,9 +1,5 @@
 using System;
-using HumanStoryteller.Model;
 using HumanStoryteller.Model.StoryPart;
-using RimWorld;
-using UnityEngine;
-using Verse;
 
 namespace HumanStoryteller.Incidents {
     class HumanIncidentWorker_Nothing : HumanIncidentWorker {

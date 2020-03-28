@@ -1,10 +1,7 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using HumanStoryteller.Incidents;
 using HumanStoryteller.Util;
 using HumanStoryteller.Util.Logging;
-using RimWorld;
 using Verse;
 
 namespace HumanStoryteller.CheckConditions {

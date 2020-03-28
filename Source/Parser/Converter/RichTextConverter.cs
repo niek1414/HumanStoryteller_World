@@ -1,7 +1,5 @@
 using System;
-using System.Globalization;
 using HumanStoryteller.Model;
-using HumanStoryteller.Util;
 using HumanStoryteller.Util.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;

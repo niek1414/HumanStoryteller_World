@@ -1,7 +1,6 @@
 using System;
 using HumanStoryteller.Model.PawnGroup;
 using HumanStoryteller.Model.PawnGroup.Filter;
-using HumanStoryteller.Util.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 

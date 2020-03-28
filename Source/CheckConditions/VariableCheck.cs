@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using HumanStoryteller.Incidents;
 using HumanStoryteller.Model;
 using HumanStoryteller.Util;

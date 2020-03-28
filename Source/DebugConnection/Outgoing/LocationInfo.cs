@@ -1,7 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
-using HumanStoryteller.Model.StoryPart;
-
 namespace HumanStoryteller.DebugConnection.Outgoing {
     public class LocationInfo : Message {
         public string Value { get; set; }

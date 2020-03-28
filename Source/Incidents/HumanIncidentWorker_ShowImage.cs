@@ -7,7 +7,6 @@ using HumanStoryteller.Util;
 using HumanStoryteller.Util.Logging;
 using HumanStoryteller.Util.Overlay;
 using HumanStoryteller.Web;
-using RestSharp;
 using Verse;
 
 namespace HumanStoryteller.Incidents {

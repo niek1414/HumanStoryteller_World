@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Timers;
-using Harmony;
+using HarmonyLib;
 using HumanStoryteller.DebugConnection;
 using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util;
@@ -198,10 +198,10 @@ namespace HumanStoryteller {
             // ActionTimer.Enabled = true;
             
             //WRITE DEFS
-            FileLog.Log(JsonConvert.SerializeObject(ExtractDefs.ExtractCurrentDefs(), Formatting.None, new JsonSerializerSettings {
-                NullValueHandling = NullValueHandling.Ignore,
-                Converters = new List<JsonConverter> {new StringEnumConverter()}
-            }));
+            // FileLog.Log(JsonConvert.SerializeObject(ExtractDefs.ExtractCurrentDefs(), Formatting.None, new JsonSerializerSettings {
+            //     NullValueHandling = NullValueHandling.Ignore,
+            //     Converters = new List<JsonConverter> {new StringEnumConverter()}
+            // }));
         }
 
         private static void StoryQueueTick() {

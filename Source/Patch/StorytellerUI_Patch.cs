@@ -6,7 +6,6 @@ using System.Text.RegularExpressions;
 using Harmony;
 using HumanStoryteller.Model;
 using HumanStoryteller.Model.StoryPart;
-using HumanStoryteller.Util;
 using HumanStoryteller.Util.Logging;
 using HumanStoryteller.Web;
 using RimWorld;
@@ -75,6 +74,7 @@ namespace HumanStoryteller.Patch {
         }
 
         public static void PreOpen() {
+            HumanStoryteller.StoryComponent.Reset();
             Current.Game.Scenario = Current.Game.Scenario.CopyForEditing();
             reset();
             RefreshList(false);
@@ -314,7 +314,7 @@ namespace HumanStoryteller.Patch {
             
             if (Mouse.IsOver(avatar)) {
                 _infoHover = new CreatorInfo(story, avatar);
-            } else if (story.Version < HumanStoryteller.VERSION && !selected && Widgets.ButtonInvisible(rect)) {
+            } else if (story.Version <= HumanStoryteller.VERSION && !selected && Widgets.ButtonInvisible(rect)) {
                 _selectedSummary = story;
                 if (HumanStoryteller.StoryComponent.Initialised) {
                     HumanStoryteller.StoryComponent.StoryId = story.Id;

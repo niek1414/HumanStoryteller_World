@@ -1,6 +1,6 @@
 using System;
 using System.IO;
-using HumanStoryteller.Model.StoryPart;
+using System.Linq;
 using HumanStoryteller.Util.Logging;
 
 namespace HumanStoryteller.Util {
@@ -26,9 +26,9 @@ namespace HumanStoryteller.Util {
         
         public static string GetCurlCommandLocation() {
             if (IsWindows) {
-                var curlPath = HumanStoryteller.ContentPack.AssembliesFolder + "curl.exe";
+                var curlPath = HumanStoryteller.ContentPack.foldersToLoadDescendingOrder.First() + "\\Assemblies\\curl.exe";
                 if (!File.Exists(curlPath)) {
-                    Tell.Warn("Not found shipped cURL and on a windows OS, this is no problem for windows 10 users...");
+                    Tell.Warn("Not found shipped cURL in " + curlPath + " and on a windows OS, this is no problem for windows 10 users...");
                 } else {
                     return curlPath;
                 }

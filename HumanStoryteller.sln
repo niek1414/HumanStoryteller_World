@@ -9,9 +9,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwitchStories", "..\..\..\.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glitterworld-Prime", "..\..\..\..\..\..\..\Users\niek1\Desktop\GlitterworldPrime\Glitterworld-Prime.csproj", "{FF22CD6D-974F-4DA7-8380-AF06972AAD10}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "..\..\..\..\..\..\..\Users\niek1\Desktop\refrence\Assembly-CSharp.csproj", "{685FEC7F-32C3-465F-A317-E7C7BC2F9162}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestHumanStoryteller", "TestHumanStoryteller\TestHumanStoryteller.csproj", "{F6780427-65C1-4EE6-9D10-057E52C0F43C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "..\..\..\..\..\..\..\Users\niek1\Desktop\RimWorld stuff\refrence 1.1\Assembly-CSharp.csproj", "{B00D6798-261A-4C5F-B3C5-29468DBE75DF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

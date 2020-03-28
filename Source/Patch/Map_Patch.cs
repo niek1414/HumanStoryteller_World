@@ -14,8 +14,9 @@ namespace HumanStoryteller.Patch {
             HarmonyMethod patchSettle = new HarmonyMethod(typeof(Map_Patch).GetMethod("Settle"));
             harmony.Patch(targetEmpty, null, patchSettle);
             harmony.Patch(targetExisting, null, patchSettle);
-            
-            MethodInfo targetEnter = AccessTools.Method(typeof(CaravanEnterMapUtility), "Enter", new[]{typeof(Caravan), typeof(Map), typeof(Func<Pawn, IntVec3>), typeof(CaravanDropInventoryMode), typeof(bool)});
+
+            MethodInfo targetEnter = AccessTools.Method(typeof(CaravanEnterMapUtility), "Enter",
+                new[] {typeof(Caravan), typeof(Map), typeof(Func<Pawn, IntVec3>), typeof(CaravanDropInventoryMode), typeof(bool)});
             HarmonyMethod patchEnter = new HarmonyMethod(typeof(Map_Patch).GetMethod("Enter"));
             harmony.Patch(targetEnter, null, patchEnter);
 
@@ -32,7 +33,7 @@ namespace HumanStoryteller.Patch {
             HarmonyMethod patchDisconnectMap = new HarmonyMethod(typeof(Map_Patch).GetMethod("DisconnectMapAfterGenerateLayer"));
             harmony.Patch(targetRegenerateSection, patchIfMapExists, patchDisconnectMap);
 
-            MethodInfo shouldRemoveMapNowSettlementBase = AccessTools.Method(typeof(SettlementBase), "ShouldRemoveMapNow");
+            MethodInfo shouldRemoveMapNowSettlementBase = AccessTools.Method(typeof(Settlement), "ShouldRemoveMapNow");
             MethodInfo shouldRemoveMapNowSite = AccessTools.Method(typeof(Site), "ShouldRemoveMapNow");
             MethodInfo shouldRemoveMapNowCaravansBattlefield = AccessTools.Method(typeof(CaravansBattlefield), "ShouldRemoveMapNow");
             MethodInfo shouldRemoveMapNowDestroyedSettlement = AccessTools.Method(typeof(DestroyedSettlement), "ShouldRemoveMapNow");
@@ -89,7 +90,7 @@ namespace HumanStoryteller.Patch {
             } catch (NullReferenceException) {
                 Tell.Log("Nullpointer on map load right after save, has no impact on gameplay (but really should be fixed in the future...)");
             }
-    }
+        }
 
         public static void ConnectIfGenerateLayer(Section __instance, out bool __state) {
             __state = false;
@@ -98,7 +99,7 @@ namespace HumanStoryteller.Patch {
                 MapUtil.GetMapContainerByTile(__instance.map.Tile).FakeConnect();
                 __state = true;
             } else {
-                Tell.Warn("Generating layer for unknown map. Is map null? : " + (__instance.map == null) , __instance.map.ToStringSafe());
+                Tell.Warn("Generating layer for unknown map. Is map null? : " + (__instance.map == null), __instance.map.ToStringSafe());
             }
         }
 

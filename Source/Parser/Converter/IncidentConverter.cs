@@ -177,12 +177,6 @@ namespace HumanStoryteller.Parser.Converter {
                 case HumanIncidentWorker_MentalBreak.Name:
                     incident = new FiringHumanIncident(new HumanIncidentWorker_MentalBreak(), new HumanIncidentParams_MentalBreak());
                     break;
-                case HumanIncidentWorker_Quest.Name:
-                    incident = new FiringHumanIncident(new HumanIncidentWorker_Quest(), new HumanIncidentParams_Quest());
-                    break;
-                case HumanIncidentWorker_TradeRequest.Name:
-                    incident = new FiringHumanIncident(new HumanIncidentWorker_TradeRequest(), new HumanIncidentParams_TradeRequest());
-                    break;
                 case HumanIncidentWorker_CreateSettlement.Name:
                     incident = new FiringHumanIncident(new HumanIncidentWorker_CreateSettlement(), new HumanIncidentParams_CreateSettlement());
                     break;

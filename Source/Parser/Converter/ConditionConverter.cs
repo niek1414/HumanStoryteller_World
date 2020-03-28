@@ -6,7 +6,6 @@ using HumanStoryteller.CheckConditions;
 using HumanStoryteller.Model;
 using HumanStoryteller.Model.PawnGroup;
 using HumanStoryteller.Util;
-using HumanStoryteller.Util.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
