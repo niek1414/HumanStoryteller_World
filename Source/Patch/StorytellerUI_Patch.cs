@@ -314,7 +314,7 @@ namespace HumanStoryteller.Patch {
             
             if (Mouse.IsOver(avatar)) {
                 _infoHover = new CreatorInfo(story, avatar);
-            } else if (story.Version < HumanStoryteller.VERSION && !selected && Widgets.ButtonInvisible(rect)) {
+            } else if (story.Version <= HumanStoryteller.VERSION && !selected && Widgets.ButtonInvisible(rect)) {
                 _selectedSummary = story;
                 if (HumanStoryteller.StoryComponent.Initialised) {
                     HumanStoryteller.StoryComponent.StoryId = story.Id;

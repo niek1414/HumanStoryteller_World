@@ -23,7 +23,7 @@ namespace HumanStoryteller.Incidents {
             Map map = (Map) allParams.GetTarget();
 
             allParams.Location.GetZone(map).Cells.ForEach(cell => {
-                cell.Pos.GetThingList(map).ForEach(thing => {
+                cell.Pos.GetThingList(map).ListFullCopy().ForEach(thing => {
                     if (!thing.def.destroyable) return;
                     switch (thing.def.category) {
                         case ThingCategory.None:
