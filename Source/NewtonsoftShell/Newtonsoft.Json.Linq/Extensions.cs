@@ -1,12 +1,11 @@
-using Newtonsoft.Json.Utilities;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
-using HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Linq;
+using HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Utilities;
+using HumanStoryteller.NewtonsoftShell.System.Diagnostics.CodeAnalysis;
 
-namespace Newtonsoft.Json.Linq
+namespace HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Linq
 {
 	
 	
@@ -165,7 +164,7 @@ namespace Newtonsoft.Json.Linq
 				}
 				type = Nullable.GetUnderlyingType(type);
 			}
-			return (U)System.Convert.ChangeType(jValue.Value, type, CultureInfo.InvariantCulture);
+			return (U)global::System.Convert.ChangeType(jValue.Value, type, CultureInfo.InvariantCulture);
 		}
 
 		public static IJEnumerable<JToken> AsJEnumerable(this IEnumerable<JToken> source)

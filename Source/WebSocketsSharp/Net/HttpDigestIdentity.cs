@@ -29,7 +29,7 @@
 using System.Collections.Specialized;
 using System.Security.Principal;
 
-namespace WebSocketSharp.Net
+namespace HumanStoryteller.WebSocketsSharp.Net
 {
   /// <summary>
   /// Holds the username and other parameters from

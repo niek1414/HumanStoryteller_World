@@ -37,9 +37,9 @@ using System;
 using System.Collections.Specialized;
 using System.IO;
 using System.Text;
-using WebSocketSharp.Net;
+using HumanStoryteller.WebSocketsSharp.Net;
 
-namespace WebSocketSharp
+namespace HumanStoryteller.WebSocketsSharp
 {
   internal class HttpRequest : HttpBase
   {

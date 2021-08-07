@@ -1,14 +1,14 @@
-using Newtonsoft.Json.Utilities;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Utilities;
+using HumanStoryteller.NewtonsoftShell.System.Runtime.CompilerServices;
 
-namespace Newtonsoft.Json.Linq
+namespace HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Linq
 {
 	
 	

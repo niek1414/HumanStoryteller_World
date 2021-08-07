@@ -1,6 +1,6 @@
-using Newtonsoft.Json.Utilities;
+using HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Utilities;
 
-namespace Newtonsoft.Json.Serialization
+namespace HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Serialization
 {
 	public class KebabCaseNamingStrategy : NamingStrategy
 	{

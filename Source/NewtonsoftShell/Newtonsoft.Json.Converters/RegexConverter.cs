@@ -1,11 +1,11 @@
-using Newtonsoft.Json.Bson;
-using Newtonsoft.Json.Serialization;
-using Newtonsoft.Json.Utilities;
 using System;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Bson;
+using HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Serialization;
+using HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Utilities;
 
-namespace Newtonsoft.Json.Converters
+namespace HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Converters
 {
 	
 	

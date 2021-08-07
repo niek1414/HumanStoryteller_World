@@ -40,7 +40,7 @@
 
 using System;
 
-namespace WebSocketSharp.Net
+namespace HumanStoryteller.WebSocketsSharp.Net
 {
   internal sealed class HttpListenerPrefix
   {

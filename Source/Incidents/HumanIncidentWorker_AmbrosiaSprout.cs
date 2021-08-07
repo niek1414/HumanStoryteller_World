@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using HumanStoryteller.Model;
+using HumanStoryteller.Model.Incident;
 using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util.Logging;
 using RimWorld;
@@ -14,17 +15,17 @@ namespace HumanStoryteller.Incidents {
 
         public static readonly IntRange CountRange = new IntRange(10, 20);
 
-        protected override IncidentResult Execute(HumanIncidentParms parms) {
+        protected override IncidentResult Execute(HumanIncidentParams @params) {
             IncidentResult ir = new IncidentResult();
             IncidentDef def = DefDatabase<IncidentDef>.GetNamed("AmbrosiaSprout");
 
-            if (!(parms is HumanIncidentParams_AmbrosiaSprout)) {
-                Tell.Err("Tried to execute " + GetType() + " but param type was " + parms.GetType());
+            if (!(@params is HumanIncidentParams_AmbrosiaSprout)) {
+                Tell.Err("Tried to execute " + GetType() + " but param type was " + @params.GetType());
                 return ir;
             }
 
             HumanIncidentParams_AmbrosiaSprout allParams =
-                Tell.AssertNotNull((HumanIncidentParams_AmbrosiaSprout) parms, nameof(parms), GetType().Name);
+                Tell.AssertNotNull((HumanIncidentParams_AmbrosiaSprout) @params, nameof(@params), GetType().Name);
             Tell.Log($"Executing event {Name} with:{allParams}");
 
             Map map = (Map) allParams.GetTarget();
@@ -102,7 +103,7 @@ namespace HumanStoryteller.Incidents {
         }
     }
 
-    public class HumanIncidentParams_AmbrosiaSprout : HumanIncidentParms {
+    public class HumanIncidentParams_AmbrosiaSprout : HumanIncidentParams {
         public Number Amount = new Number(HumanIncidentWorker_AmbrosiaSprout.CountRange.RandomInRange);
         public Number Range = new Number(6);
         public string PlantKind = "";

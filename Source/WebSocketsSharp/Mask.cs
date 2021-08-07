@@ -26,7 +26,7 @@
  */
 #endregion
 
-namespace WebSocketSharp
+namespace HumanStoryteller.WebSocketsSharp
 {
   /// <summary>
   /// Indicates whether the payload data of a WebSocket frame is masked.

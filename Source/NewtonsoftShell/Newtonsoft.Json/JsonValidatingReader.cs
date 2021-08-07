@@ -1,16 +1,14 @@
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Schema;
-using Newtonsoft.Json.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Numerics;
 using System.Text.RegularExpressions;
 using HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Linq;
+using HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Schema;
+using HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Utilities;
 
-namespace Newtonsoft.Json
+namespace HumanStoryteller.NewtonsoftShell.Newtonsoft.Json
 {
 	[Obsolete("JSON Schema validation has been moved to its own package. See https://www.newtonsoft.com/jsonschema for more details.")]
 	public class JsonValidatingReader : JsonReader, IJsonLineInfo

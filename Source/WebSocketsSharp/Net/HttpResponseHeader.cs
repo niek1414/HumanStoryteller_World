@@ -37,7 +37,7 @@
  */
 #endregion
 
-namespace WebSocketSharp.Net
+namespace HumanStoryteller.WebSocketsSharp.Net
 {
   /// <summary>
   /// Contains the HTTP headers that can be specified in a server response.

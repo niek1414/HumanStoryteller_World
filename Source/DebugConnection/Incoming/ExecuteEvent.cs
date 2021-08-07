@@ -23,25 +23,8 @@ namespace HumanStoryteller.DebugConnection.Incoming {
                 return;
             }
 
-            var sn = HumanStoryteller.StoryComponent.Story.StoryGraph.GetCurrentNode(Uuid);
-            if (sn == null) {
-                Tell.Warn("Unable to execute node with uuid " + Uuid + ", not found");
-                return;
-            }
-
-            IncidentResult incidentResult = null;
-            if (sn.StoryEvent?.Incident?.Worker != null) {
-                var incident = sn.StoryEvent.Incident;
-                incidentResult = incident.Worker.ExecuteIncident(incident.Parms);
-                DataBankUtil.ProcessVariableModifications(sn.Modifications);
-            } else {
-                Tell.Warn("Unable to execute node with uuid " + Uuid + ", the incident that was not defined");
-            }
-
-            if (WithRunner) {
-                HumanStoryteller.StoryComponent.CurrentNodes.Add(new StoryEventNode(sn, Find.TickManager.TicksGame / 600, incidentResult));
-                DebugWebSocket.TryUpdateRunners();
-            }
+            HumanStoryteller.StoryComponent.StoryArc.LongStoryController.TryExecuteEvent(Uuid, WithRunner);
+            HumanStoryteller.StoryComponent.StoryArc.ShortStoryController.TryExecuteEvent(Uuid, WithRunner);
         }
     }
 }

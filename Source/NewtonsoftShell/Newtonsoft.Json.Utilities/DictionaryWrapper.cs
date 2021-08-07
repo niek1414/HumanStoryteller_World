@@ -1,12 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading;
+using HumanStoryteller.NewtonsoftShell.System.Diagnostics.CodeAnalysis;
+using HumanStoryteller.NewtonsoftShell.System.Runtime.CompilerServices;
 
-namespace Newtonsoft.Json.Utilities
+namespace HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Utilities
 {
 	
 	

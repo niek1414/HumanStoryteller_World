@@ -1,6 +1,6 @@
 using System;
 
-namespace Newtonsoft.Json.Converters
+namespace HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Converters
 {
 	public abstract class DateTimeConverterBase : JsonConverter
 	{

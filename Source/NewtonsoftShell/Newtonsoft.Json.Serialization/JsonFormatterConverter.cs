@@ -1,11 +1,10 @@
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Utilities;
 using System;
 using System.Globalization;
 using System.Runtime.Serialization;
 using HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Linq;
+using HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Utilities;
 
-namespace Newtonsoft.Json.Serialization
+namespace HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Serialization
 {
 	
 	
@@ -30,7 +29,7 @@ namespace Newtonsoft.Json.Serialization
 		private T GetTokenValue< T>(object value)
 		{
 			ValidationUtils.ArgumentNotNull(value, "value");
-			return (T)System.Convert.ChangeType(((JValue)value).Value, typeof(T), CultureInfo.InvariantCulture);
+			return (T)global::System.Convert.ChangeType(((JValue)value).Value, typeof(T), CultureInfo.InvariantCulture);
 		}
 
 		
@@ -49,7 +48,7 @@ namespace Newtonsoft.Json.Serialization
 		{
 			ValidationUtils.ArgumentNotNull(value, "value");
 			JValue jValue = value as JValue;
-			return System.Convert.ChangeType((jValue != null) ? jValue.Value : value, typeCode, CultureInfo.InvariantCulture);
+			return global::System.Convert.ChangeType((jValue != null) ? jValue.Value : value, typeCode, CultureInfo.InvariantCulture);
 		}
 
 		public bool ToBoolean(object value)

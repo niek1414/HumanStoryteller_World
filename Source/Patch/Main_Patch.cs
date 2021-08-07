@@ -18,9 +18,9 @@ namespace HumanStoryteller.Patch {
             HarmonyMethod tick = new HarmonyMethod(typeof(StorytellerComp_HumanThreatCycle).GetMethod("Tick"));
             harmony.Patch(storytellerTick, tick);
 
-            MethodInfo readoutOnGUI = AccessTools.Method(typeof(MouseoverReadout), "MouseoverReadoutOnGUI");
-            HarmonyMethod onGUI = new HarmonyMethod(typeof(Main_Patch).GetMethod("OnGUI"));
-            harmony.Patch(readoutOnGUI, null, onGUI);
+            //MethodInfo readoutOnGUI = AccessTools.Method(typeof(MapInterface), "MapInterfaceOnGUI_AfterMainTabs");
+            //HarmonyMethod onGUI = new HarmonyMethod(typeof(Main_Patch).GetMethod("OnGUI"));
+            //harmony.Patch(readoutOnGUI, null, onGUI);
 
             MethodInfo readoutOnUpdate = AccessTools.Method(typeof(TargetHighlighter), "TargetHighlighterUpdate");
             HarmonyMethod onUpdate = new HarmonyMethod(typeof(Main_Patch).GetMethod("OnUpdate"));
@@ -59,8 +59,7 @@ namespace HumanStoryteller.Patch {
 
         public static bool ShouldNotMessWithGame() {
             if (Current.Game == null) return true;
-            var sc = HumanStoryteller.StoryComponent;
-            return HumanStoryteller.IsNoStory || sc == null || !sc.Initialised;
+            return HumanStoryteller.IsNoStory || HumanStoryteller.StoryComponent == null || !HumanStoryteller.StoryComponent.Initialised;
         }
 
         public static void DebugFunction(Thing __instance) {
@@ -68,22 +67,22 @@ namespace HumanStoryteller.Patch {
             Tell.Debug("mapIndexOrState: " + Traverse.Create(__instance).Field("mapIndexOrState").GetValue());
         }
 
-        public static void OnGUI() {
-            try {
-                if (HumanStoryteller.HumanStorytellerGame && HumanStoryteller.StoryComponent.Initialised) {
-                    HumanStoryteller.StoryComponent?.StoryOverlay?.DrawOverlay();
-                }
-
-                if (!HumanStoryteller.CreatorTools) return;
-                if (UI.MouseCell().InBounds(Find.CurrentMap)) {
-                    Text.Font = GameFont.Small;
-                    Widgets.Label(new Rect(5, 5, 400, 30),
-                        "tile:" + UI.MouseCell().x + ":" + UI.MouseCell().y + ":" + UI.MouseCell().z + " (storymaker info)");
-                }
-            } catch (Exception e) {
-                Tell.Err("Error while drawing overlay, " + e.Message, e);
-            }
-        }
+        //public static void OnGUI() {
+        //    try {
+        //        if (HumanStoryteller.HumanStorytellerGame && HumanStoryteller.StoryComponent.Initialised) {
+        //            HumanStoryteller.StoryComponent?.StoryOverlay?.DrawOverlay();
+        //        }
+        //
+        //        if (!HumanStoryteller.CreatorTools) return;
+        //        if (UI.MouseCell().InBounds(Find.CurrentMap)) {
+        //            Text.Font = GameFont.Small;
+        //            Widgets.Label(new Rect(5, 5, 400, 30),
+        //                "tile:" + UI.MouseCell().x + ":" + UI.MouseCell().y + ":" + UI.MouseCell().z + " (storymaker info)");
+        //        }
+        //    } catch (Exception e) {
+        //        Tell.Err("Error while drawing overlay, " + e.Message, e);
+        //    }
+        //}
 
         public static void OnUpdate() {
             if (HumanStoryteller.HumanStorytellerGame && HumanStoryteller.StoryComponent.Initialised) {
@@ -106,9 +105,8 @@ namespace HumanStoryteller.Patch {
         public static Regex Tag = new Regex("<(?!.*size)[^>]*>");
 
         public static bool StripTags(ref string __result, string s) {
-            if (s.NullOrEmpty() || s.IndexOf('<') < 0) {
-                __result = s;
-                return false;
+            if (s.NullOrEmpty() || (s.IndexOf("(*") != -1 && s.IndexOf("(/") != -1)) {
+                return true;
             }
 
             __result = Tag.Replace(s, string.Empty);

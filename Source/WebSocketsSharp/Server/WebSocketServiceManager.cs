@@ -32,7 +32,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 
-namespace WebSocketSharp.Server
+namespace HumanStoryteller.WebSocketsSharp.Server
 {
   /// <summary>
   /// Provides the management function for the WebSocket services.

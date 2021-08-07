@@ -1,5 +1,3 @@
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Utilities;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,11 +5,11 @@ using System.Diagnostics;
 using System.Dynamic;
 using System.Globalization;
 using System.Linq;
-using System.Numerics;
 using System.Runtime.Serialization;
 using HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Linq;
+using HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Utilities;
 
-namespace Newtonsoft.Json.Serialization
+namespace HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Serialization
 {
 	
 	

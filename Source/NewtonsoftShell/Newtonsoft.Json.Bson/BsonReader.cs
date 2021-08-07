@@ -1,11 +1,11 @@
-using Newtonsoft.Json.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text;
+using HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Utilities;
 
-namespace Newtonsoft.Json.Bson
+namespace HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Bson
 {
 	[Obsolete("BSON reading and writing has been moved to its own package. See https://www.nuget.org/packages/Newtonsoft.Json.Bson for more details.")]
 	public class BsonReader : JsonReader

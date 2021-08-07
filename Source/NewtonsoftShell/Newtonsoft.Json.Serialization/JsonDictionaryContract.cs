@@ -1,12 +1,12 @@
-using Newtonsoft.Json.Utilities;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Reflection;
-using System.Runtime.CompilerServices;
+using HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Utilities;
+using HumanStoryteller.NewtonsoftShell.System.Runtime.CompilerServices;
 
-namespace Newtonsoft.Json.Serialization
+namespace HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Serialization
 {
 	
 	

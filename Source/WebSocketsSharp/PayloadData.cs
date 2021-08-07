@@ -30,7 +30,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace WebSocketSharp
+namespace HumanStoryteller.WebSocketsSharp
 {
   internal class PayloadData : IEnumerable<byte>
   {

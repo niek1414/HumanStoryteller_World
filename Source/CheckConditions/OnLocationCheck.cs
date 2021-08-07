@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using HumanStoryteller.Incidents;
 using HumanStoryteller.Model;
+using HumanStoryteller.Model.Incident;
 using HumanStoryteller.Model.PawnGroup;
 using HumanStoryteller.Util.Logging;
 using Verse;

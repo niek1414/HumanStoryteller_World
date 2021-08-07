@@ -1,10 +1,10 @@
-using Newtonsoft.Json.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Utilities;
 
-namespace Newtonsoft.Json.Serialization
+namespace HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Serialization
 {
 	
 	

@@ -26,7 +26,7 @@ namespace HumanStoryteller.Util {
         
         public static string GetCurlCommandLocation() {
             if (IsWindows) {
-                var curlPath = HumanStoryteller.ContentPack.foldersToLoadDescendingOrder.First() + "\\Assemblies\\curl.exe";
+                var curlPath = GetAssemblyPath() + "curl.exe";
                 if (!File.Exists(curlPath)) {
                     Tell.Warn("Not found shipped cURL in " + curlPath + " and on a windows OS, this is no problem for windows 10 users...");
                 } else {
@@ -34,6 +34,10 @@ namespace HumanStoryteller.Util {
                 }
             }
             return "curl";
+        }
+
+        public static string GetAssemblyPath() {
+            return HumanStoryteller.ContentPack.foldersToLoadDescendingOrder.First() + "/Assemblies/";
         }
     }
 }

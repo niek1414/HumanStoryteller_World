@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
 using HumanStoryteller.DebugConnection.Outgoing;
+using HumanStoryteller.Model.StoryPart;
+using HumanStoryteller.NewtonsoftShell.Newtonsoft.Json;
+using HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Converters;
 using HumanStoryteller.Util.Logging;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
+using HumanStoryteller.WebSocketsSharp;
+using HumanStoryteller.WebSocketsSharp.Server;
 using Verse;
-using WebSocketSharp;
-using WebSocketSharp.Server;
 
 namespace HumanStoryteller.DebugConnection {
     public class DebugWebSocket : WebSocketBehavior {
@@ -17,7 +18,18 @@ namespace HumanStoryteller.DebugConnection {
         public static void TryUpdateRunners() {
             if (!CanSend()) return;
             if (Current.Game == null || HumanStoryteller.StoryComponent == null || HumanStoryteller.IsNoStory) return;
-            SendObject(new Runners(HumanStoryteller.StoryComponent.CurrentNodes));
+            var current = new List<StoryEventNode>();
+            var longCurrent = HumanStoryteller.StoryComponent.StoryArc.LongStoryController.CurrentNodes();
+            if (longCurrent != null) {
+                current.AddRange(longCurrent);
+            }
+
+            var shortCurrent = HumanStoryteller.StoryComponent.StoryArc.ShortStoryController.CurrentNodes();
+            if (shortCurrent != null) {
+                current.AddRange(shortCurrent);
+            }
+
+            SendObject(new Runners(current));
         }
 
         public static void TryUpdateDataBanks() {

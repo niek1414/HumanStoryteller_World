@@ -8,6 +8,7 @@ using HarmonyLib;
 using HumanStoryteller.CheckConditions;
 using HumanStoryteller.Helper.SoundHelper;
 using HumanStoryteller.Model;
+using HumanStoryteller.Model.Incident;
 using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util;
 using HumanStoryteller.Util.Logging;
@@ -28,18 +29,18 @@ namespace HumanStoryteller.Incidents {
                                           Path.Combine(Path.Combine("tmp", "RimWorld"), Path.Combine("HumanStoryteller", "audio"));
 
         private const string DriveDownloader = "https://drive.google.com/uc";
-        private const string FreeSoundDownloader = "http://freesound.org/data/previews/";
+        private const string FreeSoundDownloader = "https://freesound.org/data/previews/";
 
-        protected override IncidentResult Execute(HumanIncidentParms parms) {
+        protected override IncidentResult Execute(HumanIncidentParams @params) {
             IncidentResult ir = new IncidentResult();
 
-            if (!(parms is HumanIncidentParams_PlayAudio)) {
-                Tell.Err("Tried to execute " + GetType() + " but param type was " + parms.GetType());
+            if (!(@params is HumanIncidentParams_PlayAudio)) {
+                Tell.Err("Tried to execute " + GetType() + " but param type was " + @params.GetType());
                 return ir;
             }
 
             HumanIncidentParams_PlayAudio
-                allParams = Tell.AssertNotNull((HumanIncidentParams_PlayAudio) parms, nameof(parms), GetType().Name);
+                allParams = Tell.AssertNotNull((HumanIncidentParams_PlayAudio) @params, nameof(@params), GetType().Name);
             Tell.Log($"Executing event {Name} with:{allParams}");
             IncidentResult_Audio irAudio = new IncidentResult_Audio();
 
@@ -57,14 +58,14 @@ namespace HumanStoryteller.Incidents {
             return irAudio;
         }
 
-        public override void PreLoad(HumanIncidentParms parms) {
-            if (!(parms is HumanIncidentParams_PlayAudio)) {
-                Tell.Err("Tried to preload " + GetType() + " but param type was " + parms.GetType());
+        public override void PreLoad(HumanIncidentParams @params) {
+            if (!(@params is HumanIncidentParams_PlayAudio)) {
+                Tell.Err("Tried to preload " + GetType() + " but param type was " + @params.GetType());
                 return;
             }
 
             HumanIncidentParams_PlayAudio
-                allParams = Tell.AssertNotNull((HumanIncidentParams_PlayAudio) parms, nameof(parms), GetType().Name);
+                allParams = Tell.AssertNotNull((HumanIncidentParams_PlayAudio) @params, nameof(@params), GetType().Name);
             Tell.Log($"Preloading event {Name} with:{allParams}");
 
             Interlocked.Increment(ref HumanStoryteller.ConcurrentActions);
@@ -83,6 +84,17 @@ namespace HumanStoryteller.Incidents {
                 }
             }) {Name = "Preload audio " + allParams.File};
             thread.Start();
+            //try {
+            //    var id = FileToId(allParams.File, out var drive);
+            //    if (drive) {
+            //        DownloadAndPreloadFile(DriveDownloader + "?export=download&id=" + id, id);
+            //    } else {
+            //        DownloadAndPreloadFile(FreeSoundDownloader + id, id);
+            //    }
+            //    Interlocked.Decrement(ref HumanStoryteller.ConcurrentActions);
+            //} catch (Exception e) {
+            //    Tell.Err("Error in audio preload", e);
+            //}
         }
 
         private void DownloadAndPreloadFile(string url, string id) {
@@ -322,7 +334,7 @@ namespace HumanStoryteller.Incidents {
         }
     }
 
-    public class HumanIncidentParams_PlayAudio : HumanIncidentParms {
+    public class HumanIncidentParams_PlayAudio : HumanIncidentParams {
         public string File = "";
         public string Author = "";
         public bool IsSong;

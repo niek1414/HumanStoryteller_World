@@ -31,7 +31,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Security.Principal;
 
-namespace WebSocketSharp.Net.WebSockets
+namespace HumanStoryteller.WebSocketsSharp.Net.WebSockets
 {
   /// <summary>
   /// Exposes the access to the information in a WebSocket handshake request.
@@ -58,7 +58,7 @@ namespace WebSocketSharp.Net.WebSockets
     /// Gets the HTTP cookies included in the handshake request.
     /// </summary>
     /// <value>
-    /// A <see cref="WebSocketSharp.Net.CookieCollection"/> that contains
+    /// A <see cref="Net.CookieCollection"/> that contains
     /// the cookies.
     /// </value>
     public abstract CookieCollection CookieCollection { get; }
@@ -215,7 +215,7 @@ namespace WebSocketSharp.Net.WebSockets
     /// the client and server.
     /// </summary>
     /// <value>
-    /// A <see cref="WebSocketSharp.WebSocket"/>.
+    /// A <see cref="WebSocketsSharp.WebSocket"/>.
     /// </value>
     public abstract WebSocket WebSocket { get; }
 

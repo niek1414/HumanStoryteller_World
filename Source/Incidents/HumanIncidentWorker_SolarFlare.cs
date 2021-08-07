@@ -1,5 +1,6 @@
 using System;
 using HumanStoryteller.Model;
+using HumanStoryteller.Model.Incident;
 using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util.Logging;
 using RimWorld;
@@ -10,16 +11,16 @@ namespace HumanStoryteller.Incidents {
     class HumanIncidentWorker_SolarFlare : HumanIncidentWorker {
         public const String Name = "SolarFlare";
 
-        protected override IncidentResult Execute(HumanIncidentParms parms) {
+        protected override IncidentResult Execute(HumanIncidentParams @params) {
             IncidentResult ir = new IncidentResult();
 
-            if (!(parms is HumanIncidentParams_SolarFlare)) {
-                Tell.Err("Tried to execute " + GetType() + " but param type was " + parms.GetType());
+            if (!(@params is HumanIncidentParams_SolarFlare)) {
+                Tell.Err("Tried to execute " + GetType() + " but param type was " + @params.GetType());
                 return ir;
             }
 
             HumanIncidentParams_SolarFlare
-                allParams = Tell.AssertNotNull((HumanIncidentParams_SolarFlare) parms, nameof(parms), GetType().Name);
+                allParams = Tell.AssertNotNull((HumanIncidentParams_SolarFlare) @params, nameof(@params), GetType().Name);
             Tell.Log($"Executing event {Name} with:{allParams}");
 
             Map map = (Map) allParams.GetTarget();
@@ -36,7 +37,7 @@ namespace HumanStoryteller.Incidents {
         }
     }
 
-    public class HumanIncidentParams_SolarFlare : HumanIncidentParms {
+    public class HumanIncidentParams_SolarFlare : HumanIncidentParams {
         public Number Duration = new Number();
 
         public HumanIncidentParams_SolarFlare() {

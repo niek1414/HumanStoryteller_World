@@ -1,6 +1,6 @@
 using System;
 
-namespace Newtonsoft.Json.Utilities
+namespace HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Utilities
 {
 	internal static class MathUtils
 	{

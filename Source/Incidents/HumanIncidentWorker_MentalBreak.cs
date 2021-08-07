@@ -1,5 +1,6 @@
 using System;
 using HumanStoryteller.Model;
+using HumanStoryteller.Model.Incident;
 using HumanStoryteller.Model.PawnGroup;
 using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util.Logging;
@@ -9,16 +10,16 @@ namespace HumanStoryteller.Incidents {
     class HumanIncidentWorker_MentalBreak : HumanIncidentWorker {
         public const String Name = "MentalBreak";
 
-        protected override IncidentResult Execute(HumanIncidentParms parms) {
+        protected override IncidentResult Execute(HumanIncidentParams @params) {
             IncidentResult ir = new IncidentResult();
 
-            if (!(parms is HumanIncidentParams_MentalBreak)) {
-                Tell.Err("Tried to execute " + GetType() + " but param type was " + parms.GetType());
+            if (!(@params is HumanIncidentParams_MentalBreak)) {
+                Tell.Err("Tried to execute " + GetType() + " but param type was " + @params.GetType());
                 return ir;
             }
 
             HumanIncidentParams_MentalBreak allParams =
-                Tell.AssertNotNull((HumanIncidentParams_MentalBreak) parms, nameof(parms), GetType().Name);
+                Tell.AssertNotNull((HumanIncidentParams_MentalBreak) @params, nameof(@params), GetType().Name);
             Tell.Log($"Executing event {Name} with:{allParams}");
 
             Map map = (Map) allParams.GetTarget();
@@ -31,13 +32,13 @@ namespace HumanStoryteller.Incidents {
                 DefDatabase<MentalBreakDef>.GetNamed(allParams.MentalBreak).Worker.TryStart(pawn, null, false);
             }
 
-            SendLetter(parms);
+            SendLetter(@params);
 
             return ir;
         }
     }
 
-    public class HumanIncidentParams_MentalBreak : HumanIncidentParms {
+    public class HumanIncidentParams_MentalBreak : HumanIncidentParams {
         public PawnGroupSelector Pawns = new PawnGroupSelector();
         public string MentalBreak = "";
 

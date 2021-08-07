@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Text;
 
-namespace Newtonsoft.Json.Serialization
+namespace HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Serialization
 {
 	
 	

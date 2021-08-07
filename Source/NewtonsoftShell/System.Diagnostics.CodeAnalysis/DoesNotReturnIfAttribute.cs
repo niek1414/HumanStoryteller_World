@@ -1,4 +1,6 @@
-namespace System.Diagnostics.CodeAnalysis
+using System;
+
+namespace HumanStoryteller.NewtonsoftShell.System.Diagnostics.CodeAnalysis
 {
 	[AttributeUsage(AttributeTargets.Parameter, Inherited = false)]
 	internal class DoesNotReturnIfAttribute : Attribute

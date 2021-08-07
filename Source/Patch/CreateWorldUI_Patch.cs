@@ -21,7 +21,7 @@ namespace HumanStoryteller.Patch {
             if (HumanStoryteller.IsNoStory) return;
             if (Find.WindowStack == null) return;
             if (Find.WindowStack.currentlyDrawnWindow is Page_CreateWorldParams page) {
-                var initParams = HumanStoryteller.StoryComponent.Story.StoryGraph.InitParams();
+                var initParams = HumanStoryteller.StoryComponent.StoryArc.LongStoryController.StoryParams();
                 if (initParams == null) return;
 
                 if (!initParams.OverrideMapGen)

@@ -1,4 +1,5 @@
 using System;
+using HumanStoryteller.Model.Incident;
 using Verse;
 
 namespace HumanStoryteller.Model.PawnGroup.Filter {

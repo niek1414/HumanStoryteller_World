@@ -29,10 +29,10 @@
 using System;
 using System.Collections.Specialized;
 using System.IO;
-using WebSocketSharp.Net;
-using WebSocketSharp.Net.WebSockets;
+using HumanStoryteller.WebSocketsSharp.Net;
+using HumanStoryteller.WebSocketsSharp.Net.WebSockets;
 
-namespace WebSocketSharp.Server
+namespace HumanStoryteller.WebSocketsSharp.Server
 {
   /// <summary>
   /// Exposes a set of methods and properties used to define the behavior of

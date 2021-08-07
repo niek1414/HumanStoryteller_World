@@ -1,5 +1,7 @@
+using System;
 using System.Reflection;
 using HarmonyLib;
+using HumanStoryteller.Util.Logging;
 using RimWorld;
 using RimWorld.Planet;
 using UnityEngine;
@@ -30,8 +32,8 @@ namespace HumanStoryteller.Patch {
             MethodInfo preventProp = AccessTools.Method(typeof(CameraDriver), "get_AnythingPreventsCameraMotion");
             HarmonyMethod cameraDollyPrevention = new HarmonyMethod(typeof(StoryStatus_Patch).GetMethod("CameraDollyPrevention"));
             harmony.Patch(preventProp, null, cameraDollyPrevention);
-            MethodInfo isInputBlockedNow = AccessTools.Method(typeof(Mouse), "get_IsInputBlockedNow");
-            harmony.Patch(isInputBlockedNow, null, cameraDollyPrevention);
+            //MethodInfo isInputBlockedNow = AccessTools.Method(typeof(Mouse), "get_IsInputBlockedNow");
+            //harmony.Patch(isInputBlockedNow, null, cameraDollyPrevention);
 
             // Disable all user events
             MethodInfo highPrio = AccessTools.Method(typeof(WindowStack), "HandleEventsHighPriority");
@@ -45,8 +47,10 @@ namespace HumanStoryteller.Patch {
 
             // Disable all UI clutter
             MethodInfo mapUI = AccessTools.Method(typeof(MapInterface), "MapInterfaceOnGUI_BeforeMainTabs");
+            MethodInfo mainUI = AccessTools.Method(typeof(MainButtonsRoot), "MainButtonsOnGUI");
             HarmonyMethod removeUI = new HarmonyMethod(typeof(StoryStatus_Patch).GetMethod("RemoveUI"));
             harmony.Patch(mapUI, removeUI);
+            harmony.Patch(mainUI, removeUI);
             MethodInfo cellInfoUI = AccessTools.Method(typeof(MouseoverReadout), "MouseoverReadoutOnGUI");
             harmony.Patch(cellInfoUI, removeUI);
             MethodInfo alertUI = AccessTools.Method(typeof(AlertsReadout), "AlertsReadoutOnGUI");
@@ -79,23 +83,28 @@ namespace HumanStoryteller.Patch {
 
         public static bool RemoveUIAndShowForcedPauseWindows(WindowStack __instance) {
             var shouldNotRemoveUI = RemoveUI();
-            if (!shouldNotRemoveUI) {
-                if (Current.Game.tickManager.CurTimeSpeed == TimeSpeed.Paused) {
-                    Current.Game.tickManager.CurTimeSpeed = TimeSpeed.Normal;
-                }
 
-                foreach (var w in __instance.Windows) {
-                    if (w.forcePause || w.GetType() == typeof(EditWindow_Log)) {
-                        w.ExtraOnGUI();
-                        if (w.drawShadow) {
-                            GUI.color = new Color(1f, 1f, 1f, w.shadowAlpha);
-                            Widgets.DrawShadowAround(w.windowRect);
-                            GUI.color = Color.white;
+            try { 
+                if (!shouldNotRemoveUI) {
+                    if (Current.Game.tickManager.CurTimeSpeed == TimeSpeed.Paused) {
+                        Current.Game.tickManager.CurTimeSpeed = TimeSpeed.Normal;
+                    }
+
+                    foreach (var w in __instance.Windows) {
+                        if (w.forcePause || w.GetType() == typeof(EditWindow_Log)) {
+                            w.ExtraOnGUI();
+                            if (w.drawShadow) {
+                                GUI.color = new Color(1f, 1f, 1f, w.shadowAlpha);
+                                Widgets.DrawShadowAround(w.windowRect);
+                                GUI.color = Color.white;
+                            }
+
+                            w.WindowOnGUI();
                         }
-
-                        w.WindowOnGUI();
                     }
                 }
+            } catch(Exception e) {
+                Tell.Warn("Error while executing patch: RemoveUIAndShowForcedPauseWindows", e);
             }
 
             return shouldNotRemoveUI;

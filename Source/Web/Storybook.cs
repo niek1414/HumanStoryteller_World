@@ -6,7 +6,7 @@ using RestSharp;
 
 namespace HumanStoryteller.Web {
     public static class Storybook {
-        public static void GetStory(long id, Action<Story> callback) {
+        public static void GetStory(long id, Action<StoryArc> callback) {
             Tell.Log($"AutoPoll on story: [{id}]");
             if (id == -1) {
                 Tell.Warn("Ether the id was unknown or this is a local story");
@@ -15,7 +15,7 @@ namespace HumanStoryteller.Web {
             Client.Get($"storybook/story/{id}", (response, handle) => { GetStoryCallback(response, handle, callback); });
         } 
         
-        public static Story GetStory(long id) {
+        public static StoryArc GetStory(long id) {
             Tell.Log($"Synchronous poll on story: [{id}]");
             if (id == -1) {
                 Tell.Warn("Ether the id was unknown or this is a local story");
@@ -39,7 +39,7 @@ namespace HumanStoryteller.Web {
             }
         }
 
-        private static void GetStoryCallback(IRestResponse response, RestRequestAsyncHandle handle, Action<Story> callback) {
+        private static void GetStoryCallback(IRestResponse response, RestRequestAsyncHandle handle, Action<StoryArc> callback) {
             try {
                 if (response.StatusCode == HttpStatusCode.NotFound) {
                     Tell.Warn("Story does not exist on the server (anymore).");

@@ -44,7 +44,7 @@ using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
-namespace WebSocketSharp.Net
+namespace HumanStoryteller.WebSocketsSharp.Net
 {
   /// <summary>
   /// Represents an incoming HTTP request to a <see cref="HttpListener"/>

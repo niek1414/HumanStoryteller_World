@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using HarmonyLib;
 using HumanStoryteller.Model;
+using HumanStoryteller.Model.Incident;
 using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util;
 using HumanStoryteller.Util.Logging;
@@ -13,14 +14,14 @@ namespace HumanStoryteller.Incidents {
         public const String Name = "Rules";
 
 
-        protected override IncidentResult Execute(HumanIncidentParms parms) {
+        protected override IncidentResult Execute(HumanIncidentParams @params) {
             IncidentResult ir = new IncidentResult();
-            if (!(parms is HumanIncidentParams_Rules)) {
-                Tell.Err("Tried to execute " + GetType() + " but param type was " + parms.GetType());
+            if (!(@params is HumanIncidentParams_Rules)) {
+                Tell.Err("Tried to execute " + GetType() + " but param type was " + @params.GetType());
                 return ir;
             }
 
-            HumanIncidentParams_Rules allParams = Tell.AssertNotNull((HumanIncidentParams_Rules) parms, nameof(parms), GetType().Name);
+            HumanIncidentParams_Rules allParams = Tell.AssertNotNull((HumanIncidentParams_Rules) @params, nameof(@params), GetType().Name);
             Tell.Log($"Executing event {Name} with:{allParams}");
 
             Traverse.Create(Current.Game.Rules).Field("disallowedBuildings").SetValue(new List<BuildableDef>());
@@ -103,13 +104,13 @@ namespace HumanStoryteller.Incidents {
                 ScenarioEditorUtil.AddPart(Current.Game.Scenario, part);
             }
 
-            SendLetter(parms);
+            SendLetter(@params);
 
             return ir;
         }
     }
 
-    public class HumanIncidentParams_Rules : HumanIncidentParms {
+    public class HumanIncidentParams_Rules : HumanIncidentParams {
         public List<string> DisallowedBuildings = new List<string>();
         public List<string> DisallowedDesignators = new List<string>();
         public bool ExplodeOnDeath;

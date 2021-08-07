@@ -1,13 +1,12 @@
-using Newtonsoft.Json.Utilities;
 using System;
 using System.Globalization;
 using System.IO;
-using System.Numerics;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Utilities;
+using HumanStoryteller.NewtonsoftShell.System.Runtime.CompilerServices;
 
-namespace Newtonsoft.Json
+namespace HumanStoryteller.NewtonsoftShell.Newtonsoft.Json
 {
 	
 	

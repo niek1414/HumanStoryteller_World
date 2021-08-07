@@ -26,7 +26,7 @@
  */
 #endregion
 
-namespace WebSocketSharp
+namespace HumanStoryteller.WebSocketsSharp
 {
   /// <summary>
   /// Indicates the WebSocket frame type.

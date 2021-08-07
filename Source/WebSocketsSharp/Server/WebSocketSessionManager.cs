@@ -33,7 +33,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 
-namespace WebSocketSharp.Server
+namespace HumanStoryteller.WebSocketsSharp.Server
 {
   /// <summary>
   /// Provides the management function for the sessions in a WebSocket service.

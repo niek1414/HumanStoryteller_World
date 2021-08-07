@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace Newtonsoft.Json.Schema
+namespace HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Schema
 {
 	[Serializable]
 	[Obsolete("JSON Schema validation has been moved to its own package. See https://www.newtonsoft.com/jsonschema for more details.")]

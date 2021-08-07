@@ -39,9 +39,9 @@
 
 using System;
 using System.Security.Principal;
-using WebSocketSharp.Net.WebSockets;
+using HumanStoryteller.WebSocketsSharp.Net.WebSockets;
 
-namespace WebSocketSharp.Net
+namespace HumanStoryteller.WebSocketsSharp.Net
 {
   /// <summary>
   /// Provides the access to the HTTP request and response objects used by

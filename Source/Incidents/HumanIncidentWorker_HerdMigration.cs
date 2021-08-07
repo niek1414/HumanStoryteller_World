@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using HumanStoryteller.Model;
+using HumanStoryteller.Model.Incident;
 using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util.Logging;
 using RimWorld;
@@ -16,16 +17,16 @@ namespace HumanStoryteller.Incidents {
 
         private static readonly IntRange AnimalsCount = new IntRange(3, 5);
 
-        protected override IncidentResult Execute(HumanIncidentParms parms) {
+        protected override IncidentResult Execute(HumanIncidentParams @params) {
             IncidentResult ir = new IncidentResult();
 
-            if (!(parms is HumanIncidentParams_HerdMigration)) {
-                Tell.Err("Tried to execute " + GetType() + " but param type was " + parms.GetType());
+            if (!(@params is HumanIncidentParams_HerdMigration)) {
+                Tell.Err("Tried to execute " + GetType() + " but param type was " + @params.GetType());
                 return ir;
             }
 
             HumanIncidentParams_HerdMigration allParams =
-                Tell.AssertNotNull((HumanIncidentParams_HerdMigration) parms, nameof(parms), GetType().Name);
+                Tell.AssertNotNull((HumanIncidentParams_HerdMigration) @params, nameof(@params), GetType().Name);
             Tell.Log($"Executing event {Name} with:{allParams}");
 
             Map map = (Map) allParams.GetTarget();
@@ -110,7 +111,7 @@ namespace HumanStoryteller.Incidents {
         }
     }
 
-    public class HumanIncidentParams_HerdMigration : HumanIncidentParms {
+    public class HumanIncidentParams_HerdMigration : HumanIncidentParams {
         public Number Amount = new Number();
         public string AnimalKind = "";
 

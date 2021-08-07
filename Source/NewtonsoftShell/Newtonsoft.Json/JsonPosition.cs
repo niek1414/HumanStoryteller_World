@@ -1,11 +1,11 @@
-using Newtonsoft.Json.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text;
+using HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Utilities;
 
-namespace Newtonsoft.Json
+namespace HumanStoryteller.NewtonsoftShell.Newtonsoft.Json
 {
 	
 	

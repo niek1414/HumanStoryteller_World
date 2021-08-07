@@ -41,7 +41,7 @@ using System;
 using System.IO;
 using System.Text;
 
-namespace WebSocketSharp.Net
+namespace HumanStoryteller.WebSocketsSharp.Net
 {
   internal class ResponseStream : Stream
   {

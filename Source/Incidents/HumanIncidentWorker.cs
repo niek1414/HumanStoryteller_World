@@ -7,42 +7,42 @@ using Verse;
 
 namespace HumanStoryteller.Incidents {
     public abstract class HumanIncidentWorker : IExposable {
-        private void PreExecute(HumanIncidentParms parms) {
-            HumanStoryteller.StoryComponent.SameAsLastEvent = (Map) parms.GetTarget();
-            MapUtil.GetMapContainerByTile(parms.Target.GetTileFromTarget(false), false)?.FakeConnect();
+        private void PreExecute(HumanIncidentParams @params) {
+            HumanStoryteller.StoryComponent.SameAsLastEvent = (Map) @params.GetTarget();
+            MapUtil.GetMapContainerByTile(@params.Target.GetTileFromTarget(false), false)?.FakeConnect();
         }
 
-        private void PostExecute(HumanIncidentParms parms, IncidentResult incidentResult) {
-            MapUtil.GetMapContainerByTile(parms.Target.GetTileFromTarget(false), false)?.FakeDisconnect();
-            incidentResult.Target = parms.Target;
+        private void PostExecute(HumanIncidentParams @params, IncidentResult incidentResult) {
+            MapUtil.GetMapContainerByTile(@params.Target.GetTileFromTarget(false), false)?.FakeDisconnect();
+            incidentResult.Target = @params.Target;
         }
 
-        public IncidentResult ExecuteIncident(HumanIncidentParms parms) {
-            PreExecute(parms);
-            IncidentResult ir = Execute(parms);
-            PostExecute(parms, ir);
+        public IncidentResult ExecuteIncident(HumanIncidentParams @params) {
+            PreExecute(@params);
+            IncidentResult ir = Execute(@params);
+            PostExecute(@params, ir);
             return ir;
         }
 
-        public virtual void PreLoad(HumanIncidentParms parms) {
+        public virtual void PreLoad(HumanIncidentParams @params) {
             //Can be overridden
         }
 
-        protected abstract IncidentResult Execute(HumanIncidentParms parms);
+        protected abstract IncidentResult Execute(HumanIncidentParams @params);
 
-        protected void SendLetter(HumanIncidentParms parms, String title, String message, LetterDef type, LookTargets target,
+        protected void SendLetter(HumanIncidentParams @params, String title, String message, LetterDef type, LookTargets target,
             Faction relatedFaction = null, string debugInfo = null) {
-            if (parms.Letter != null) {
+            if (@params.Letter != null) {
                 Letter l;
-                if (parms.Letter.Type == null) {
+                if (@params.Letter.Type == null) {
                     l = LetterMaker.MakeLetter(title, message, type, target, relatedFaction);
                 } else {
-                    if (parms.Letter.Shake) {
+                    if (@params.Letter.Shake) {
                         Find.CameraDriver.shaker.DoShake(4f);
                     }
 
-                    l = LetterMaker.MakeLetter(parms.Letter.Title.Get(), parms.Letter.Message.Get(), parms.Letter.Type, target, relatedFaction);
-                    if (parms.Letter.Force) {
+                    l = LetterMaker.MakeLetter(@params.Letter.Title.Get(), @params.Letter.Message.Get(), @params.Letter.Type, target, relatedFaction);
+                    if (@params.Letter.Force) {
                         l.OpenLetter();
                     }
                 }
@@ -51,14 +51,14 @@ namespace HumanStoryteller.Incidents {
             }
         }
 
-        protected void SendLetter(HumanIncidentParms parms, LookTargets target = null, Faction relatedFaction = null, string debugInfo = null) {
-            if (parms.Letter?.Type != null) {
-                if (parms.Letter.Shake) {
+        protected void SendLetter(HumanIncidentParams @params, LookTargets target = null, Faction relatedFaction = null, string debugInfo = null) {
+            if (@params.Letter?.Type != null) {
+                if (@params.Letter.Shake) {
                     Find.CameraDriver.shaker.DoShake(4f);
                 }
 
-                var letter = LetterMaker.MakeLetter(parms.Letter.Title.Get(), parms.Letter.Message.Get(), parms.Letter.Type, target, relatedFaction);
-                if (parms.Letter.Force) {
+                var letter = LetterMaker.MakeLetter(@params.Letter.Title.Get(), @params.Letter.Message.Get(), @params.Letter.Type, target, relatedFaction);
+                if (@params.Letter.Force) {
                     letter.OpenLetter();
                 }
 

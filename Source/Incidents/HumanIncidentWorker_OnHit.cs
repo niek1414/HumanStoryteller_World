@@ -1,6 +1,7 @@
 using System;
 using HumanStoryteller.CheckConditions;
 using HumanStoryteller.Model;
+using HumanStoryteller.Model.Incident;
 using HumanStoryteller.Model.PawnGroup;
 using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util;
@@ -11,16 +12,16 @@ namespace HumanStoryteller.Incidents {
     class HumanIncidentWorker_OnHit : HumanIncidentWorker {
         public const String Name = "OnHit";
 
-        protected override IncidentResult Execute(HumanIncidentParms parms) {
+        protected override IncidentResult Execute(HumanIncidentParams @params) {
             IncidentResult ir = new IncidentResult();
 
-            if (!(parms is HumanIncidentParams_OnHit)) {
-                Tell.Err("Tried to execute " + GetType() + " but param type was " + parms.GetType());
+            if (!(@params is HumanIncidentParams_OnHit)) {
+                Tell.Err("Tried to execute " + GetType() + " but param type was " + @params.GetType());
                 return ir;
             }
 
             HumanIncidentParams_OnHit allParams =
-                Tell.AssertNotNull((HumanIncidentParams_OnHit) parms, nameof(parms), GetType().Name);
+                Tell.AssertNotNull((HumanIncidentParams_OnHit) @params, nameof(@params), GetType().Name);
             Tell.Log($"Executing event {Name} with:{allParams}");
 
             var qir = new IncidentResult_QueueEvent();
@@ -31,7 +32,7 @@ namespace HumanStoryteller.Incidents {
         }
     }
 
-    public class HumanIncidentParams_OnHit : HumanIncidentParms {
+    public class HumanIncidentParams_OnHit : HumanIncidentParams {
         public PawnGroupSelector ReceivingPawns = new PawnGroupSelector();
         public PawnGroupSelector SendingPawns = new PawnGroupSelector();
         public ShotReportUtil.HitResponseType HitResponse = ShotReportUtil.HitResponseType.AlwaysHit;

@@ -5,9 +5,7 @@ using System.Globalization;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Utilities;
+using HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Utilities;
 
 namespace HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Linq
 {

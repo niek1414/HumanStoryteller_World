@@ -1,12 +1,10 @@
-using Newtonsoft.Json.Utilities;
 using System;
 using System.Globalization;
-using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
-using HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Linq;
+using HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Utilities;
 
-namespace Newtonsoft.Json.Linq
+namespace HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Linq
 {
 	
 	

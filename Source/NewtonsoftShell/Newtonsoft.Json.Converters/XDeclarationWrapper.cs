@@ -1,7 +1,7 @@
 using System.Xml;
 using System.Xml.Linq;
 
-namespace Newtonsoft.Json.Converters
+namespace HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Converters
 {
 	
 	

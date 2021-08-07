@@ -48,10 +48,10 @@ using System.Net.Sockets;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
-using WebSocketSharp.Net;
-using WebSocketSharp.Net.WebSockets;
+using HumanStoryteller.WebSocketsSharp.Net;
+using HumanStoryteller.WebSocketsSharp.Net.WebSockets;
 
-namespace WebSocketSharp
+namespace HumanStoryteller.WebSocketsSharp
 {
   /// <summary>
   /// Implements the WebSocket interface.

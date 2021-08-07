@@ -1,6 +1,6 @@
-using System.Runtime.CompilerServices;
+using HumanStoryteller.NewtonsoftShell.System.Runtime.CompilerServices;
 
-namespace Newtonsoft.Json.Converters
+namespace HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Converters
 {
 	
 	internal interface IXmlDocument : IXmlNode

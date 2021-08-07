@@ -1,7 +1,8 @@
 ﻿﻿using System.Collections.Generic;
 using HarmonyLib;
 using HumanStoryteller.CheckConditions;
-using HumanStoryteller.Util.Logging;
+ using HumanStoryteller.Model.Incident;
+ using HumanStoryteller.Util.Logging;
 using Verse;
 
 namespace HumanStoryteller.Model.StoryPart {

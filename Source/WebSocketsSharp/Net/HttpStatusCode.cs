@@ -36,7 +36,7 @@
  */
 #endregion
 
-namespace WebSocketSharp.Net
+namespace HumanStoryteller.WebSocketsSharp.Net
 {
   /// <summary>
   /// Contains the values of the HTTP status codes.

@@ -3,7 +3,7 @@ using System.Globalization;
 using System.IO;
 using System.Xml;
 
-namespace Newtonsoft.Json.Utilities
+namespace HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Utilities
 {
 	
 	

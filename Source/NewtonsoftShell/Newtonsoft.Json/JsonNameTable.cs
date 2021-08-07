@@ -1,4 +1,4 @@
-namespace Newtonsoft.Json
+namespace HumanStoryteller.NewtonsoftShell.Newtonsoft.Json
 {
 	public abstract class JsonNameTable
 	{

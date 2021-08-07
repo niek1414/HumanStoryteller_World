@@ -1,5 +1,6 @@
 using System;
 using HumanStoryteller.Model;
+using HumanStoryteller.Model.Incident;
 using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util.Logging;
 using UnityEngine;
@@ -9,15 +10,15 @@ namespace HumanStoryteller.Incidents {
     class HumanIncidentWorker_DeleteItems : HumanIncidentWorker {
         public const String Name = "DeleteItems";
 
-        protected override IncidentResult Execute(HumanIncidentParms parms) {
+        protected override IncidentResult Execute(HumanIncidentParams @params) {
             IncidentResult ir = new IncidentResult();
-            if (!(parms is HumanIncidentParams_DeleteItems)) {
-                Tell.Err("Tried to execute " + GetType() + " but param type was " + parms.GetType());
+            if (!(@params is HumanIncidentParams_DeleteItems)) {
+                Tell.Err("Tried to execute " + GetType() + " but param type was " + @params.GetType());
                 return ir;
             }
 
             HumanIncidentParams_DeleteItems allParams =
-                Tell.AssertNotNull((HumanIncidentParams_DeleteItems) parms, nameof(parms), GetType().Name);
+                Tell.AssertNotNull((HumanIncidentParams_DeleteItems) @params, nameof(@params), GetType().Name);
             Tell.Log($"Executing event {Name} with:{allParams}");
 
             Map map = (Map) allParams.GetTarget();
@@ -26,7 +27,7 @@ namespace HumanStoryteller.Incidents {
                 RemoveThingsOfType(removeDef, Mathf.RoundToInt(allParams.Amount.GetValue()), map);
             }
 
-            SendLetter(parms);
+            SendLetter(@params);
 
             return ir;
         }
@@ -53,7 +54,7 @@ namespace HumanStoryteller.Incidents {
         }
     }
 
-    public class HumanIncidentParams_DeleteItems : HumanIncidentParms {
+    public class HumanIncidentParams_DeleteItems : HumanIncidentParams {
         public Number Amount = new Number(1);
         public string Item = "";
 

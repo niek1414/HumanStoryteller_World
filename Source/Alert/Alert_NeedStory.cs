@@ -1,6 +1,6 @@
 using Verse;
 
-namespace HumanStoryteller
+namespace HumanStoryteller.Alert
 {
 	public class Alert_NeedStory : RimWorld.Alert
 	{

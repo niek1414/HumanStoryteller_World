@@ -1,5 +1,6 @@
 using System;
 using HumanStoryteller.Model;
+using HumanStoryteller.Model.Incident;
 using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util;
 using HumanStoryteller.Util.Logging;
@@ -11,16 +12,16 @@ namespace HumanStoryteller.Incidents {
     class HumanIncidentWorker_PsychicDrone : HumanIncidentWorker {
         public const String Name = "PsychicDrone";
 
-        protected override IncidentResult Execute(HumanIncidentParms parms) {
+        protected override IncidentResult Execute(HumanIncidentParams @params) {
             IncidentResult ir = new IncidentResult();
 
-            if (!(parms is HumanIncidentParams_PsychicDrone)) {
-                Tell.Err("Tried to execute " + GetType() + " but param type was " + parms.GetType());
+            if (!(@params is HumanIncidentParams_PsychicDrone)) {
+                Tell.Err("Tried to execute " + GetType() + " but param type was " + @params.GetType());
                 return ir;
             }
 
             HumanIncidentParams_PsychicDrone
-                allParams = Tell.AssertNotNull((HumanIncidentParams_PsychicDrone) parms, nameof(parms), GetType().Name);
+                allParams = Tell.AssertNotNull((HumanIncidentParams_PsychicDrone) @params, nameof(@params), GetType().Name);
             Tell.Log($"Executing event {Name} with:{allParams}");
 
             Map map = (Map) allParams.GetTarget();
@@ -63,7 +64,7 @@ namespace HumanStoryteller.Incidents {
         }
     }
 
-    public class HumanIncidentParams_PsychicDrone : HumanIncidentParms {
+    public class HumanIncidentParams_PsychicDrone : HumanIncidentParams {
         public Number Duration = new Number();
         public string Gender = "";
         public string PsyLevel = "";

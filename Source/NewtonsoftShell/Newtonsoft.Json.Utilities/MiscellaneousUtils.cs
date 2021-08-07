@@ -1,10 +1,10 @@
 using System;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text.RegularExpressions;
+using HumanStoryteller.NewtonsoftShell.System.Diagnostics.CodeAnalysis;
 
-namespace Newtonsoft.Json.Utilities
+namespace HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Utilities
 {
 	
 	

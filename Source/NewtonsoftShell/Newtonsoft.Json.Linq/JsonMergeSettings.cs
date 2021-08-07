@@ -1,6 +1,6 @@
 using System;
 
-namespace Newtonsoft.Json.Linq
+namespace HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Linq
 {
 	public class JsonMergeSettings
 	{

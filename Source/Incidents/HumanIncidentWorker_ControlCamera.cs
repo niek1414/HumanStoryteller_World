@@ -1,6 +1,7 @@
 using System;
 using HarmonyLib;
 using HumanStoryteller.Model;
+using HumanStoryteller.Model.Incident;
 using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util;
 using HumanStoryteller.Util.Logging;
@@ -12,15 +13,15 @@ namespace HumanStoryteller.Incidents {
     class HumanIncidentWorker_ControlCamera : HumanIncidentWorker {
         public const String Name = "ControlCamera";
 
-        protected override IncidentResult Execute(HumanIncidentParms parms) {
+        protected override IncidentResult Execute(HumanIncidentParams @params) {
             IncidentResult ir = new IncidentResult();
-            if (!(parms is HumanIncidentParams_ControlCamera)) {
-                Tell.Err("Tried to execute " + GetType() + " but param type was " + parms.GetType());
+            if (!(@params is HumanIncidentParams_ControlCamera)) {
+                Tell.Err("Tried to execute " + GetType() + " but param type was " + @params.GetType());
                 return ir;
             }
 
             HumanIncidentParams_ControlCamera
-                allParams = Tell.AssertNotNull((HumanIncidentParams_ControlCamera) parms, nameof(parms), GetType().Name);
+                allParams = Tell.AssertNotNull((HumanIncidentParams_ControlCamera) @params, nameof(@params), GetType().Name);
             Tell.Log($"Executing event {Name} with:{allParams}");
             
             var sc = HumanStoryteller.StoryComponent;
@@ -28,7 +29,7 @@ namespace HumanStoryteller.Incidents {
             
             if (allParams.ShowTile) {
                 CameraJumper.TryShowWorld();
-                Find.WorldCameraDriver.JumpTo(parms.Target.GetTileFromTarget());
+                Find.WorldCameraDriver.JumpTo(@params.Target.GetTileFromTarget());
             } else {
                 if (allParams.Location.isSet()) {
                     CameraJumper.TryHideWorld();
@@ -63,7 +64,7 @@ namespace HumanStoryteller.Incidents {
         }
     }
 
-    public class HumanIncidentParams_ControlCamera : HumanIncidentParms {
+    public class HumanIncidentParams_ControlCamera : HumanIncidentParams {
         public Location Location = new Location();
         public Number Zoom = new Number();
         public bool LockCamera;

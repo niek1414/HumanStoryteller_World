@@ -26,7 +26,7 @@
  */
 #endregion
 
-namespace WebSocketSharp
+namespace HumanStoryteller.WebSocketsSharp
 {
   /// <summary>
   /// Indicates the state of a WebSocket connection.

@@ -32,9 +32,9 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Text;
 using System.Threading;
-using WebSocketSharp.Net;
+using HumanStoryteller.WebSocketsSharp.Net;
 
-namespace WebSocketSharp
+namespace HumanStoryteller.WebSocketsSharp
 {
   internal abstract class HttpBase
   {

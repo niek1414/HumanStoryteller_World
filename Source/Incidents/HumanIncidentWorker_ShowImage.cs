@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Threading;
 using HumanStoryteller.Model;
+using HumanStoryteller.Model.Incident;
 using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util;
 using HumanStoryteller.Util.Logging;
@@ -16,15 +17,15 @@ namespace HumanStoryteller.Incidents {
         private static String CachePath = (OSUtil.IsWindows ? "C:\\" : "/") +
                                           Path.Combine(Path.Combine("tmp", "RimWorld"), Path.Combine("HumanStoryteller", "image"));
 
-        protected override IncidentResult Execute(HumanIncidentParms parms) {
+        protected override IncidentResult Execute(HumanIncidentParams @params) {
             IncidentResult ir = new IncidentResult();
-            if (!(parms is HumanIncidentParams_ShowImage)) {
-                Tell.Err("Tried to execute " + GetType() + " but param type was " + parms.GetType());
+            if (!(@params is HumanIncidentParams_ShowImage)) {
+                Tell.Err("Tried to execute " + GetType() + " but param type was " + @params.GetType());
                 return ir;
             }
 
             HumanIncidentParams_ShowImage
-                allParams = Tell.AssertNotNull((HumanIncidentParams_ShowImage) parms, nameof(parms), GetType().Name);
+                allParams = Tell.AssertNotNull((HumanIncidentParams_ShowImage) @params, nameof(@params), GetType().Name);
             Tell.Log($"Executing event {Name} with:{allParams}");
 
             var sc = HumanStoryteller.StoryComponent;
@@ -40,14 +41,14 @@ namespace HumanStoryteller.Incidents {
             return ir;
         }
 
-        public override void PreLoad(HumanIncidentParms parms) {
-            if (!(parms is HumanIncidentParams_ShowImage)) {
-                Tell.Err("Tried to preload " + GetType() + " but param type was " + parms.GetType());
+        public override void PreLoad(HumanIncidentParams @params) {
+            if (!(@params is HumanIncidentParams_ShowImage)) {
+                Tell.Err("Tried to preload " + GetType() + " but param type was " + @params.GetType());
                 return;
             }
 
             HumanIncidentParams_ShowImage
-                allParams = Tell.AssertNotNull((HumanIncidentParams_ShowImage) parms, nameof(parms), GetType().Name);
+                allParams = Tell.AssertNotNull((HumanIncidentParams_ShowImage) @params, nameof(@params), GetType().Name);
             Tell.Log($"Preloading event {Name} with:{allParams}");
 
             if (allParams.RemoveAll) return;
@@ -69,7 +70,7 @@ namespace HumanStoryteller.Incidents {
         }
     }
 
-    public class HumanIncidentParams_ShowImage : HumanIncidentParms {
+    public class HumanIncidentParams_ShowImage : HumanIncidentParams {
         public bool RemoveAll;
         public string Url;
 

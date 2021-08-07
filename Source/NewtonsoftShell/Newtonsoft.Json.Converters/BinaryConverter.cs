@@ -1,10 +1,9 @@
-using Newtonsoft.Json.Utilities;
 using System;
 using System.Collections.Generic;
-using System.Data.SqlTypes;
 using System.Globalization;
+using HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Utilities;
 
-namespace Newtonsoft.Json.Converters
+namespace HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Converters
 {
 	
 	

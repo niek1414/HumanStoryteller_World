@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using HumanStoryteller.Model;
+using HumanStoryteller.Model.Incident;
 using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util.Logging;
 using Verse;
@@ -10,14 +11,14 @@ namespace HumanStoryteller.Incidents {
         public const String Name = "Research";
 
 
-        protected override IncidentResult Execute(HumanIncidentParms parms) {
+        protected override IncidentResult Execute(HumanIncidentParams @params) {
             IncidentResult ir = new IncidentResult();
-            if (!(parms is HumanIncidentParams_Research)) {
-                Tell.Err("Tried to execute " + GetType() + " but param type was " + parms.GetType());
+            if (!(@params is HumanIncidentParams_Research)) {
+                Tell.Err("Tried to execute " + GetType() + " but param type was " + @params.GetType());
                 return ir;
             }
 
-            HumanIncidentParams_Research allParams = Tell.AssertNotNull((HumanIncidentParams_Research) parms, nameof(parms), GetType().Name);
+            HumanIncidentParams_Research allParams = Tell.AssertNotNull((HumanIncidentParams_Research) @params, nameof(@params), GetType().Name);
             Tell.Log($"Executing event {Name} with:{allParams}");
 
             if (allParams.FinishCurrent) {
@@ -28,13 +29,13 @@ namespace HumanStoryteller.Incidents {
                 Current.Game.researchManager.FinishProject(ResearchProjectDef.Named(project));
             }
 
-            SendLetter(parms);
+            SendLetter(@params);
 
             return ir;
         }
     }
 
-    public class HumanIncidentParams_Research : HumanIncidentParms {
+    public class HumanIncidentParams_Research : HumanIncidentParams {
         public List<string> Projects = new List<string>();
         public bool FinishCurrent;
 

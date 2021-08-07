@@ -1,8 +1,8 @@
 ﻿﻿using System.Collections.Generic;
 using HarmonyLib;
-using HumanStoryteller.Util.Logging;
-using Newtonsoft.Json;
-using Verse;
+ using HumanStoryteller.NewtonsoftShell.Newtonsoft.Json;
+ using HumanStoryteller.Util.Logging;
+ using Verse;
 
 namespace HumanStoryteller.Model.Zones {
     public class LocationZone : IExposable  {

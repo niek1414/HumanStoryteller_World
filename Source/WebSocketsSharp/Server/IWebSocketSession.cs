@@ -27,9 +27,9 @@
 #endregion
 
 using System;
-using WebSocketSharp.Net.WebSockets;
+using HumanStoryteller.WebSocketsSharp.Net.WebSockets;
 
-namespace WebSocketSharp.Server
+namespace HumanStoryteller.WebSocketsSharp.Server
 {
   /// <summary>
   /// Exposes the access to the information in a WebSocket session.

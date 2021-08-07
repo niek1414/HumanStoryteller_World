@@ -20,7 +20,7 @@ namespace HumanStoryteller {
             Tell.Log("Init - version " + HumanStoryteller.VERSION + " " + HumanStoryteller.VERSION_NAME);
         }
 
-        public static void StartHumanStorytellerGame(string storyId, string stageIdentifier, Story story = null) {
+        public static void StartHumanStorytellerGame(string storyId, string stageIdentifier, StoryArc story = null) {
             try {
                 List<Page> pageList = new List<Page> {
                     new Page_CreateWorldParams(),
@@ -58,7 +58,7 @@ namespace HumanStoryteller {
             var rainfall = OverallRainfall.Normal;
             var temperature = OverallTemperature.Normal;
             var population = OverallPopulation.Normal;
-            var initParams = HumanStoryteller.StoryComponent.Story.StoryGraph.InitParams();
+            var initParams = HumanStoryteller.StoryComponent.StoryArc.LongStoryController.StoryParams();
             if (initParams != null && initParams.OverrideMapGen) {
                 if (initParams.Seed != "") {
                     seedString = initParams.Seed;
@@ -109,7 +109,7 @@ namespace HumanStoryteller {
             }, "GeneratingWorld", true, null);
         }
 
-        private static void AfterWorldGeneration(string stageIdentifier, HumanIncidentParams_Root initParams, List<Page> pageList) {
+        private static void AfterWorldGeneration(string stageIdentifier, HumanIncidentParams_LongEntry initParamsLong, List<Page> pageList) {
             if (stageIdentifier.Equals("S")) {
                 Find.WindowStack.Add(PageUtility.StitchedPages(pageList));
                 Find.World.renderer.RegenerateAllLayersNow();
@@ -118,14 +118,14 @@ namespace HumanStoryteller {
 
             pageList.RemoveAt(0);
 
-            if (initParams.OverrideMapLoc) {
-                var site = Mathf.RoundToInt(initParams.Site.GetValue());
+            if (initParamsLong.OverrideMapLoc) {
+                var site = Mathf.RoundToInt(initParamsLong.Site.GetValue());
                 if (site != -1) {
                     Find.GameInitData.startingTile = site;
                 }
 
-                if (initParams.StartSeason != "") {
-                    switch (initParams.StartSeason) {
+                if (initParamsLong.StartSeason != "") {
+                    switch (initParamsLong.StartSeason) {
                         case "Auto":
                             Find.GameInitData.startingSeason = Season.Undefined;
                             break;
@@ -150,7 +150,7 @@ namespace HumanStoryteller {
                     }
                 }
 
-                var mapSize = Mathf.RoundToInt(initParams.MapSize.GetValue());
+                var mapSize = Mathf.RoundToInt(initParamsLong.MapSize.GetValue());
                 if (mapSize != -1) {
                     Find.GameInitData.mapSize = mapSize;
                 }

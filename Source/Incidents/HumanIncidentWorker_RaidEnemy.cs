@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using HumanStoryteller.Model;
+using HumanStoryteller.Model.Incident;
 using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util;
 using HumanStoryteller.Util.Logging;
@@ -14,15 +15,15 @@ namespace HumanStoryteller.Incidents {
     class HumanIncidentWorker_RaidEnemy : HumanIncidentWorker {
         public const String Name = "RaidEnemy";
 
-        protected override IncidentResult Execute(HumanIncidentParms parms) {
+        protected override IncidentResult Execute(HumanIncidentParams @params) {
             IncidentResult ir = new IncidentResult();
 
-            if (!(parms is HumanIncidentParams_RaidEnemy)) {
-                Tell.Err("Tried to execute " + GetType() + " but param type was " + parms.GetType());
+            if (!(@params is HumanIncidentParams_RaidEnemy)) {
+                Tell.Err("Tried to execute " + GetType() + " but param type was " + @params.GetType());
                 return ir;
             }
 
-            HumanIncidentParams_RaidEnemy allParams = Tell.AssertNotNull((HumanIncidentParams_RaidEnemy) parms, nameof(parms), GetType().Name);
+            HumanIncidentParams_RaidEnemy allParams = Tell.AssertNotNull((HumanIncidentParams_RaidEnemy) @params, nameof(@params), GetType().Name);
             Tell.Log($"Executing event {Name} with:{allParams}");
 
             Map map = (Map) allParams.GetTarget();
@@ -64,7 +65,7 @@ namespace HumanStoryteller.Incidents {
                     select d).TryRandomElementByWeight(d => d.Worker.SelectionWeight(map, fakeParms.points), out fakeParms.raidStrategy)) {
                     Log.Warning("No raid stategy for " + faction + " with points " + points + ", groupKind=" + PawnGroupKindDefOf.Combat +
                                 "\nparms=" +
-                                parms);
+                                @params);
                     fakeParms.raidStrategy = RaidStrategyDefOf.ImmediateAttack;
                 }
             }
@@ -215,7 +216,7 @@ namespace HumanStoryteller.Incidents {
         }
     }
 
-    public class HumanIncidentParams_RaidEnemy : HumanIncidentParms {
+    public class HumanIncidentParams_RaidEnemy : HumanIncidentParams {
         public Number Points = new Number();
         public Number Amount = new Number();
         public String Faction = "";

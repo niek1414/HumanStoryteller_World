@@ -2,7 +2,7 @@ using System;
 using System.Reflection;
 using System.Reflection.Emit;
 
-namespace Newtonsoft.Json.Utilities
+namespace HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Utilities
 {
 	
 	

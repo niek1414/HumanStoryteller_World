@@ -1,7 +1,7 @@
 using System.Threading;
+using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util.Logging;
 using Verse;
-using Story = HumanStoryteller.Model.StoryPart.Story;
 
 namespace HumanStoryteller.DebugConnection.Incoming {
     public class LoadStory : IncomingMessage {
@@ -17,25 +17,25 @@ namespace HumanStoryteller.DebugConnection.Incoming {
 
         public override void Handle() {
             Tell.Log("Handling incoming message: " + ToString());
-            var story = Parser.Parser.StoryParser(Story);
+            var storyArc = Parser.Parser.StoryParser(Story);
             if (Reboot) {
-                UnloadAndReloadWithLocalStory("G", story);
+                UnloadAndReloadWithLocalStory("G", storyArc);
             } else {
                 if (!GenScene.InPlayScene) {
-                    UnloadAndReloadWithLocalStory("W", story);
+                    UnloadAndReloadWithLocalStory("W", storyArc);
                 } else {
-                    HumanStoryteller.GetStoryCallback(story);
+                    HumanStoryteller.GetStoryCallback(storyArc);
                 }
             }
         }
 
-        private static void UnloadAndReloadWithLocalStory(string identifier, Story story) {
+        private static void UnloadAndReloadWithLocalStory(string identifier, StoryArc storyArc) {
             GenScene.GoToMainMenu();
             LongEventHandler.QueueLongEvent(() =>
             {
                 var newThread = new Thread(delegate() {
                     Thread.Sleep(500);
-                    StorytellerCompProperties_HumanThreatCycle.StartHumanStorytellerGame("-1", identifier, story);
+                    StorytellerCompProperties_HumanThreatCycle.StartHumanStorytellerGame("-1", identifier, storyArc);
                 });
                 newThread.Start();
             }, "LoadingLongEvent", true, null);

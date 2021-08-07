@@ -37,7 +37,7 @@
  */
 #endregion
 
-namespace WebSocketSharp.Net
+namespace HumanStoryteller.WebSocketsSharp.Net
 {
   /// <summary>
   /// Specifies the scheme for authentication.

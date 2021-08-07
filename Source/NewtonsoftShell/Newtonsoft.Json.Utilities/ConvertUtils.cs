@@ -1,12 +1,11 @@
-using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
-using System.Numerics;
 using System.Reflection;
+using HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Serialization;
 
-namespace Newtonsoft.Json.Utilities
+namespace HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Utilities
 {
 	
 	
@@ -337,7 +336,7 @@ namespace Newtonsoft.Json.Utilities
 						return ConvertResult.Success;
 					}
 				}
-				value = System.Convert.ChangeType(initialValue, targetType, culture);
+				value = global::System.Convert.ChangeType(initialValue, targetType, culture);
 				return ConvertResult.Success;
 			}
 			if (initialValue is DateTime)
@@ -382,7 +381,7 @@ namespace Newtonsoft.Json.Utilities
 				}
 
 				if (targetType == typeof(byte[])) {
-					value = System.Convert.FromBase64String(text);
+					value = global::System.Convert.FromBase64String(text);
 					return ConvertResult.Success;
 				}
 

@@ -1,9 +1,9 @@
-using Newtonsoft.Json.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Utilities;
 
-namespace Newtonsoft.Json.Linq
+namespace HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Linq
 {
 	
 	

@@ -1,4 +1,4 @@
-using Newtonsoft.Json;
+using HumanStoryteller.NewtonsoftShell.Newtonsoft.Json;
 using UnityEngine;
 using Verse;
 

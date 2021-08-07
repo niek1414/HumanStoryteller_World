@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
+using HumanStoryteller.Model.Incident;
 using HumanStoryteller.Util.Logging;
 using Verse;
 

@@ -1,6 +1,6 @@
 using System;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using HumanStoryteller.NewtonsoftShell.Newtonsoft.Json;
+using HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Linq;
 using RimWorld;
 using Verse;
 

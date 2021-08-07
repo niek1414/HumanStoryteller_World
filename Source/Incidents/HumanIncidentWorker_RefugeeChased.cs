@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using HumanStoryteller.CheckConditions;
 using HumanStoryteller.Model;
+using HumanStoryteller.Model.Incident;
 using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util;
 using HumanStoryteller.Util.Logging;
@@ -18,16 +19,16 @@ namespace HumanStoryteller.Incidents {
 
         private static readonly FloatRange RaidPointsFactorRange = new FloatRange(1f, 1.6f);
 
-        protected override IncidentResult Execute(HumanIncidentParms parms) {
+        protected override IncidentResult Execute(HumanIncidentParams @params) {
             IncidentResult ir = new IncidentResult();
 
-            if (!(parms is HumanIncidentParams_RefugeeChased)) {
-                Tell.Err("Tried to execute " + GetType() + " but param type was " + parms.GetType());
+            if (!(@params is HumanIncidentParams_RefugeeChased)) {
+                Tell.Err("Tried to execute " + GetType() + " but param type was " + @params.GetType());
                 return ir;
             }
 
             HumanIncidentParams_RefugeeChased
-                allParams = Tell.AssertNotNull((HumanIncidentParams_RefugeeChased) parms, nameof(parms), GetType().Name);
+                allParams = Tell.AssertNotNull((HumanIncidentParams_RefugeeChased) @params, nameof(@params), GetType().Name);
             Tell.Log($"Executing event {Name} with:{allParams}");
 
             Map map = (Map) allParams.GetTarget();
@@ -71,13 +72,13 @@ namespace HumanStoryteller.Incidents {
             PawnRelationUtility.TryAppendRelationsWithColonistsInfo(ref text, refugee);
 
             string title = "RefugeeChasedTitle".Translate(map.Parent.Label);
-            if (parms.Letter?.Type != null) {
-                if (parms.Letter.Shake) {
+            if (@params.Letter?.Type != null) {
+                if (@params.Letter.Shake) {
                     Find.CameraDriver.shaker.DoShake(4f);
                 }
 
-                title = parms.Letter.Title.Get();
-                text = parms.Letter.Message.Get();
+                title = @params.Letter.Title.Get();
+                text = @params.Letter.Message.Get();
             }
 
             DiaNode diaNode = new DiaNode(text);
@@ -123,7 +124,7 @@ namespace HumanStoryteller.Incidents {
         }
     }
 
-    public class HumanIncidentParams_RefugeeChased : HumanIncidentParms {
+    public class HumanIncidentParams_RefugeeChased : HumanIncidentParams {
         public Number Points = new Number();
         public string OutName = "";
 

@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using HumanStoryteller.Model;
+using HumanStoryteller.Model.Incident;
 using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util.Logging;
 using RimWorld;
@@ -11,15 +12,15 @@ namespace HumanStoryteller.Incidents {
     class HumanIncidentWorker_SetRelation : HumanIncidentWorker {
         public const String Name = "SetRelation";
 
-        protected override IncidentResult Execute(HumanIncidentParms parms) {
+        protected override IncidentResult Execute(HumanIncidentParams @params) {
             IncidentResult ir = new IncidentResult();
 
-            if (!(parms is HumanIncidentParams_SetRelation)) {
-                Tell.Err("Tried to execute " + GetType() + " but param type was " + parms.GetType());
+            if (!(@params is HumanIncidentParams_SetRelation)) {
+                Tell.Err("Tried to execute " + GetType() + " but param type was " + @params.GetType());
                 return ir;
             }
 
-            HumanIncidentParams_SetRelation allParams = Tell.AssertNotNull((HumanIncidentParams_SetRelation) parms, nameof(parms), GetType().Name);
+            HumanIncidentParams_SetRelation allParams = Tell.AssertNotNull((HumanIncidentParams_SetRelation) @params, nameof(@params), GetType().Name);
             Tell.Log($"Executing event {Name} with:{allParams}");
 
 
@@ -37,13 +38,13 @@ namespace HumanStoryteller.Incidents {
             } catch (InvalidOperationException) {
             }
 
-            SendLetter(parms);
+            SendLetter(@params);
 
             return ir;
         }
     }
 
-    public class HumanIncidentParams_SetRelation : HumanIncidentParms {
+    public class HumanIncidentParams_SetRelation : HumanIncidentParams {
         public Number FactionRelation = new Number(0);
         public string Faction = "";
         public string NewName = "";

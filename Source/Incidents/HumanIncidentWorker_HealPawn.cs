@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using HumanStoryteller.Model;
+using HumanStoryteller.Model.Incident;
 using HumanStoryteller.Model.PawnGroup;
 using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util.Logging;
@@ -11,16 +12,16 @@ namespace HumanStoryteller.Incidents {
     class HumanIncidentWorker_HealPawn : HumanIncidentWorker {
         public const String Name = "HealPawn";
 
-        protected override IncidentResult Execute(HumanIncidentParms parms) {
+        protected override IncidentResult Execute(HumanIncidentParams @params) {
             IncidentResult ir = new IncidentResult();
 
-            if (!(parms is HumanIncidentParams_HealPawn)) {
-                Tell.Err("Tried to execute " + GetType() + " but param type was " + parms.GetType());
+            if (!(@params is HumanIncidentParams_HealPawn)) {
+                Tell.Err("Tried to execute " + GetType() + " but param type was " + @params.GetType());
                 return ir;
             }
 
             HumanIncidentParams_HealPawn allParams =
-                Tell.AssertNotNull((HumanIncidentParams_HealPawn) parms, nameof(parms), GetType().Name);
+                Tell.AssertNotNull((HumanIncidentParams_HealPawn) @params, nameof(@params), GetType().Name);
             Tell.Log($"Executing event {Name} with:{allParams}");
             
             Map map = (Map) allParams.GetTarget();
@@ -44,13 +45,13 @@ namespace HumanStoryteller.Incidents {
                 }
             }
 
-            SendLetter(parms);
+            SendLetter(@params);
 
             return ir;
         }
     }
 
-    public class HumanIncidentParams_HealPawn : HumanIncidentParms {
+    public class HumanIncidentParams_HealPawn : HumanIncidentParams {
         public PawnGroupSelector Pawns = new PawnGroupSelector();
         public bool Miracle;
 

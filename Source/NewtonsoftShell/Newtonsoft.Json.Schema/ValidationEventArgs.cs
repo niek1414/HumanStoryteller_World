@@ -1,7 +1,7 @@
-using Newtonsoft.Json.Utilities;
 using System;
+using HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Utilities;
 
-namespace Newtonsoft.Json.Schema
+namespace HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Schema
 {
 	[Obsolete("JSON Schema validation has been moved to its own package. See https://www.newtonsoft.com/jsonschema for more details.")]
 	public class ValidationEventArgs : EventArgs

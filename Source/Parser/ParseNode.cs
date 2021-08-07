@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 using HumanStoryteller.CheckConditions;
 using HumanStoryteller.Model;
+using HumanStoryteller.Model.Incident;
 using HumanStoryteller.Model.StoryPart;
+using HumanStoryteller.NewtonsoftShell.Newtonsoft.Json;
 using HumanStoryteller.Parser.Converter;
-using Newtonsoft.Json;
 
 namespace HumanStoryteller.Parser {
     public class ParseNode {

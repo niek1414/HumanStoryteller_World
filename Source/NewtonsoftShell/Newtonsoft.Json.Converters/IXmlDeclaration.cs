@@ -1,4 +1,4 @@
-namespace Newtonsoft.Json.Converters
+namespace HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Converters
 {
 	
 	internal interface IXmlDeclaration : IXmlNode

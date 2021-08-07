@@ -1,8 +1,8 @@
 using System;
 using HumanStoryteller.Model.PawnGroup;
 using HumanStoryteller.Model.PawnGroup.Filter;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using HumanStoryteller.NewtonsoftShell.Newtonsoft.Json;
+using HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Linq;
 
 namespace HumanStoryteller.Parser.Converter {
     public class PawnGroupConverter : JsonConverter {

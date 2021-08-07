@@ -1,5 +1,6 @@
 using System;
 using HumanStoryteller.Model;
+using HumanStoryteller.Model.Incident;
 using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util;
 using HumanStoryteller.Util.Logging;
@@ -10,15 +11,15 @@ namespace HumanStoryteller.Incidents {
     class HumanIncidentWorker_BubbleMessage : HumanIncidentWorker {
         public const String Name = "BubbleMessage";
 
-        protected override IncidentResult Execute(HumanIncidentParms parms) {
+        protected override IncidentResult Execute(HumanIncidentParams @params) {
             IncidentResult ir = new IncidentResult();
-            if (!(parms is HumanIncidentParams_BubbleMessage)) {
-                Tell.Err("Tried to execute " + GetType() + " but param type was " + parms.GetType());
+            if (!(@params is HumanIncidentParams_BubbleMessage)) {
+                Tell.Err("Tried to execute " + GetType() + " but param type was " + @params.GetType());
                 return ir;
             }
 
             HumanIncidentParams_BubbleMessage
-                allParams = Tell.AssertNotNull((HumanIncidentParams_BubbleMessage) parms, nameof(parms), GetType().Name);
+                allParams = Tell.AssertNotNull((HumanIncidentParams_BubbleMessage) @params, nameof(@params), GetType().Name);
             Tell.Log($"Executing event {Name} with:{allParams}");
 
             var pawn = PawnUtil.GetPawnByName(allParams.Name);
@@ -32,7 +33,7 @@ namespace HumanStoryteller.Incidents {
         }
     }
 
-    public class HumanIncidentParams_BubbleMessage : HumanIncidentParms {
+    public class HumanIncidentParams_BubbleMessage : HumanIncidentParams {
         public string Name = "";
         public RichText Message = new RichText();
         public BubbleMessage.BubbleType BubbleType = BubbleMessage.BubbleType.Normal;

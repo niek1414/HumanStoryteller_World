@@ -28,7 +28,7 @@
 
 using System;
 
-namespace WebSocketSharp.Net
+namespace HumanStoryteller.WebSocketsSharp.Net
 {
   [Flags]
   internal enum HttpHeaderType

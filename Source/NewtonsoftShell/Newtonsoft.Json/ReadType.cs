@@ -1,4 +1,4 @@
-namespace Newtonsoft.Json
+namespace HumanStoryteller.NewtonsoftShell.Newtonsoft.Json
 {
 	internal enum ReadType
 	{

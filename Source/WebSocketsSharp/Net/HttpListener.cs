@@ -50,7 +50,7 @@ using System.Collections.Generic;
 using System.Security.Principal;
 
 // TODO: Logging.
-namespace WebSocketSharp.Net
+namespace HumanStoryteller.WebSocketsSharp.Net
 {
   /// <summary>
   /// Provides a simple, programmatically controlled HTTP listener.
@@ -146,9 +146,9 @@ namespace WebSocketSharp.Net
     /// Gets or sets the scheme used to authenticate the clients.
     /// </summary>
     /// <value>
-    /// One of the <see cref="WebSocketSharp.Net.AuthenticationSchemes"/> enum values,
+    /// One of the <see cref="Net.AuthenticationSchemes"/> enum values,
     /// represents the scheme used to authenticate the clients. The default value is
-    /// <see cref="WebSocketSharp.Net.AuthenticationSchemes.Anonymous"/>.
+    /// <see cref="Net.AuthenticationSchemes.Anonymous"/>.
     /// </value>
     /// <exception cref="ObjectDisposedException">
     /// This listener has been closed.

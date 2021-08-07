@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Newtonsoft.Json;
+using HumanStoryteller.NewtonsoftShell.Newtonsoft.Json;
 using RimWorld;
 using UnityEngine;
 using Verse;

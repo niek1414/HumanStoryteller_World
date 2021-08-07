@@ -1,7 +1,7 @@
 using System;
 using System.Diagnostics;
 
-namespace Newtonsoft.Json.Serialization
+namespace HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Serialization
 {
 	
 	public interface ITraceWriter

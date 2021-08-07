@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
-namespace Newtonsoft.Json.Schema
+namespace HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Schema
 {
 	[Obsolete("JSON Schema validation has been moved to its own package. See https://www.newtonsoft.com/jsonschema for more details.")]
 	internal class JsonSchemaNode

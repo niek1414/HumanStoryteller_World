@@ -1,5 +1,6 @@
 using System;
 using HumanStoryteller.Model;
+using HumanStoryteller.Model.Incident;
 using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util.Logging;
 using RimWorld;
@@ -12,14 +13,14 @@ namespace HumanStoryteller.Incidents {
 
         private static readonly FloatRange CountPerColonistRange = new FloatRange(1f, 1.5f);
 
-        protected override IncidentResult Execute(HumanIncidentParms parms) {
+        protected override IncidentResult Execute(HumanIncidentParams @params) {
             IncidentResult ir = new IncidentResult();
-            if (!(parms is HumanIncidentParams_Alphabeavers)) {
-                Tell.Err("Tried to execute " + GetType() + " but param type was " + parms.GetType());
+            if (!(@params is HumanIncidentParams_Alphabeavers)) {
+                Tell.Err("Tried to execute " + GetType() + " but param type was " + @params.GetType());
                 return ir;
             }
 
-            HumanIncidentParams_Alphabeavers allParams = Tell.AssertNotNull((HumanIncidentParams_Alphabeavers) parms, nameof(parms), GetType().Name);
+            HumanIncidentParams_Alphabeavers allParams = Tell.AssertNotNull((HumanIncidentParams_Alphabeavers) @params, nameof(@params), GetType().Name);
             Tell.Log($"Executing event {Name} with:{allParams}");
 
             Map map = (Map) allParams.GetTarget();
@@ -54,7 +55,7 @@ namespace HumanStoryteller.Incidents {
         }
     }
 
-    public class HumanIncidentParams_Alphabeavers : HumanIncidentParms {
+    public class HumanIncidentParams_Alphabeavers : HumanIncidentParams {
         public Number Amount = new Number();
 
         public HumanIncidentParams_Alphabeavers() {

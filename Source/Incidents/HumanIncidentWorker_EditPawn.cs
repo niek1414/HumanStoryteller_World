@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using HumanStoryteller.Model;
+using HumanStoryteller.Model.Incident;
 using HumanStoryteller.Model.PawnGroup;
 using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util;
@@ -15,16 +16,16 @@ namespace HumanStoryteller.Incidents {
     class HumanIncidentWorker_EditPawn : HumanIncidentWorker {
         public const String Name = "EditPawn";
 
-        protected override IncidentResult Execute(HumanIncidentParms parms) {
+        protected override IncidentResult Execute(HumanIncidentParams @params) {
             IncidentResult ir = new IncidentResult();
 
-            if (!(parms is HumanIncidentParams_EditPawn)) {
-                Tell.Err("Tried to execute " + GetType() + " but param type was " + parms.GetType());
+            if (!(@params is HumanIncidentParams_EditPawn)) {
+                Tell.Err("Tried to execute " + GetType() + " but param type was " + @params.GetType());
                 return ir;
             }
 
             HumanIncidentParams_EditPawn allParams =
-                Tell.AssertNotNull((HumanIncidentParams_EditPawn) parms, nameof(parms), GetType().Name);
+                Tell.AssertNotNull((HumanIncidentParams_EditPawn) @params, nameof(@params), GetType().Name);
             Tell.Log($"Executing event {Name} with:{allParams}");
 
             Map map = (Map) allParams.GetTarget();
@@ -266,13 +267,13 @@ namespace HumanStoryteller.Incidents {
                 }
             }
 
-            SendLetter(parms);
+            SendLetter(@params);
 
             return ir;
         }
     }
 
-    public class HumanIncidentParams_EditPawn : HumanIncidentParms {
+    public class HumanIncidentParams_EditPawn : HumanIncidentParams {
         public Number SkillAnimals = new Number();
         public Number SkillArtistic = new Number();
         public Number SkillConstruction = new Number();

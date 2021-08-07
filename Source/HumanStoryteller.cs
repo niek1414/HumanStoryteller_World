@@ -3,18 +3,21 @@ using System.Net;
 using System.Threading;
 using HarmonyLib;
 using HumanStoryteller.DebugConnection;
+using HumanStoryteller.IntegrityTest;
 using HumanStoryteller.Model.StoryPart;
+using HumanStoryteller.Parser;
 using HumanStoryteller.Util;
 using HumanStoryteller.Util.Logging;
+using HumanStoryteller.WebSocketsSharp.Server;
 using RimWorld;
 using UnityEngine;
 using Verse;
-using WebSocketSharp.Server;
+using StoryArc = HumanStoryteller.Model.StoryPart.StoryArc;
 
 namespace HumanStoryteller {
     public class HumanStoryteller : Mod {
-        public static float VERSION = 0.5f;
-        public static string VERSION_NAME = "`Quality of Life`";
+        public static float VERSION = 0.6f;
+        public static string VERSION_NAME = "`Revival`";
 
         public static ModContentPack ContentPack;
         public static HumanStorytellerSettings Settings;
@@ -44,10 +47,10 @@ namespace HumanStoryteller {
             Tell.AssertNotNull(Current.Game?.GetComponent<StoryComponent>(), nameof(StoryComponent), "HumanStoryteller");
 
         public static bool HumanStorytellerGame;
-        public static bool IsNoStory => StoryComponent.Story == null;
+        public static bool IsNoStory => Current.Game?.GetComponent<StoryComponent>()?.StoryArc == null;
 
         public static long StoryId =>
-            IsNoStory ? -1 : Tell.AssertNotNull(StoryComponent.Story.Id, nameof(StoryComponent.Story.Id), "HumanStoryteller");
+            IsNoStory ? -1 : Tell.AssertNotNull(StoryComponent.StoryArc.Id, nameof(StoryComponent.StoryArc.Id), "HumanStoryteller");
 
         public static bool CreatorTools => HumanStorytellerSettings.EnableCreatorTools;
         public static bool DidInitialParamCheck;
@@ -60,11 +63,22 @@ namespace HumanStoryteller {
         }
 
         public override void DoSettingsWindowContents(Rect inRect) {
-            Listing_Standard listingStandard = new Listing_Standard();
-            listingStandard.Begin(inRect);
-            listingStandard.CheckboxLabeled("EnableCreatorTools".Translate(), ref HumanStorytellerSettings.EnableCreatorTools,
+            Listing_Standard ls = new Listing_Standard();
+            ls.Begin(inRect);
+            ls.CheckboxLabeled("EnableCreatorTools".Translate(), ref HumanStorytellerSettings.EnableCreatorTools,
                 "EnableCreatorToolsToolTip".Translate());
-            listingStandard.End();
+            Rect rect = ls.GetRect(50f);
+            Widgets.Label(rect.LeftHalf(), "IntegrityTestDesc".Translate());
+            var clicked = Widgets.ButtonText(rect.RightHalf(), "IntegrityTest".Translate());
+            ls.Gap(ls.verticalSpacing);
+            if (clicked) {
+                var exception = TestController.ExecuteAllTests();
+                if (exception != null) {
+                    Tell.Err("Exception while executing integrity test:", exception);
+                }
+            }
+
+            ls.End();
             CheckDebugConnectionSetting();
 
             base.DoSettingsWindowContents(inRect);
@@ -97,14 +111,14 @@ namespace HumanStoryteller {
             return "HumanStoryteller".Translate();
         }
 
-        public static void GetStoryCallback(Story story, StorytellerComp_HumanThreatCycle cycle = null) {
+        public static void GetStoryCallback(StoryArc storyArc, StorytellerComp_HumanThreatCycle cycle = null) {
             if (cycle != null && (Current.Game == null || StoryComponent == null || !(Find.TickManager.TicksGame > 0))) {
                 cycle.RefreshTimer.Enabled = false;
                 Tell.Warn("Tried to get story while not in-game");
                 return;
             }
 
-            if (story == null) {
+            if (storyArc == null) {
                 if (cycle != null) {
                     cycle.RefreshTimer.Enabled = false;
                 }
@@ -118,10 +132,8 @@ namespace HumanStoryteller {
             var beforeLoad = Time.realtimeSinceStartup;
             Tell.Log("Start preloading all nodes");
             ConcurrentActions = 0;
-            var allNodes = story.StoryGraph.GetAllNodes();
-            foreach (var node in allNodes) {
-                node.StoryEvent.Incident.Worker.PreLoad(node.StoryEvent.Incident.Parms);
-            }
+            storyArc.LongStoryController.PreLoad();
+            storyArc.ShortStoryController.PreLoad();
 
             while (ConcurrentActions != 0) {
                 LongEventHandler.SetCurrentEventText("StoryAssets".Translate() + "(" + ConcurrentActions + ")");
@@ -132,24 +144,11 @@ namespace HumanStoryteller {
 
             InitiateEventUnsafe = true;
             Thread.Sleep(1000); //Give some time to finish undergoing event executions
-            sc.Story = story;
-            sc.AllNodes = allNodes;
 
-            if (sc.CurrentNodes.Count == 0) {
-                sc.CurrentNodes.Add(new StoryEventNode(sc.Story.StoryGraph.Root, Find.TickManager.TicksGame / 600));
-            } else {
-                for (int i = 0; i < sc.CurrentNodes.Count; i++) {
-                    var foundNode =
-                        sc.Story.StoryGraph.GetCurrentNode(sc.CurrentNodes[i]?.StoryNode
-                            .StoryEvent.Uuid);
-                    sc.CurrentNodes[i] = foundNode == null
-                        ? null
-                        : new StoryEventNode(foundNode, sc.CurrentNodes[i].ExecuteTick, sc.CurrentNodes[i].Result);
-                }
+            storyArc.LongStoryController.UpdateCurrentNodes(sc.StoryArc);
+            storyArc.ShortStoryController.UpdateCurrentNodes(sc.StoryArc);
 
-                sc.CurrentNodes.RemoveAll(item => item == null);
-            }
-
+            sc.StoryArc = storyArc;
             InitiateEventUnsafe = false;
 
             DebugWebSocket.TryUpdateRunners();

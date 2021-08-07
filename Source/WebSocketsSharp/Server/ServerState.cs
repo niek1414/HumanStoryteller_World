@@ -26,7 +26,7 @@
  */
 #endregion
 
-namespace WebSocketSharp.Server
+namespace HumanStoryteller.WebSocketsSharp.Server
 {
   internal enum ServerState
   {

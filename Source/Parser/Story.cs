@@ -1,15 +1,17 @@
 using System.Collections.Generic;
-using Newtonsoft.Json;
+using HumanStoryteller.NewtonsoftShell.Newtonsoft.Json;
+using Verse;
 
 namespace HumanStoryteller.Parser {
     public class Story {
-        public string Name { get; set; }
-        public string Description { get; set; }
-        [JsonProperty(PropertyName = "story")]
+        [JsonProperty(PropertyName = "uuid")]
+        public string Id { get; set; }
+        
+        [JsonProperty(PropertyName = "graph")]
         public List<ParseNode> StoryGraph { get; set; }
 
         public override string ToString() {
-            return $"Name: [{Name}], Description: [{Description}], StoryGraph: [{StoryGraph}]";
+            return $"Id: [{Id}], StoryGraph: [{StoryGraph.ToStringSafeEnumerable()}]";
         }
     }
 }

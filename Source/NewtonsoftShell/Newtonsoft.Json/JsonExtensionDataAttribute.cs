@@ -1,6 +1,6 @@
 using System;
 
-namespace Newtonsoft.Json
+namespace HumanStoryteller.NewtonsoftShell.Newtonsoft.Json
 {
 	[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
 	public class JsonExtensionDataAttribute : Attribute

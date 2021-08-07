@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Dynamic;
 
-namespace Newtonsoft.Json.Utilities
+namespace HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Utilities
 {
 	
 	

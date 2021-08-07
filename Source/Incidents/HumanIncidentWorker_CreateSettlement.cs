@@ -1,5 +1,6 @@
 using System;
 using HumanStoryteller.Model;
+using HumanStoryteller.Model.Incident;
 using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util;
 using HumanStoryteller.Util.Logging;
@@ -12,15 +13,15 @@ namespace HumanStoryteller.Incidents {
     class HumanIncidentWorker_CreateSettlement : HumanIncidentWorker {
         public const String Name = "CreateSettlement";
 
-        protected override IncidentResult Execute(HumanIncidentParms parms) {
+        protected override IncidentResult Execute(HumanIncidentParams @params) {
             IncidentResult ir = new IncidentResult();
-            if (!(parms is HumanIncidentParams_CreateSettlement)) {
-                Tell.Err("Tried to execute " + GetType() + " but param type was " + parms.GetType());
+            if (!(@params is HumanIncidentParams_CreateSettlement)) {
+                Tell.Err("Tried to execute " + GetType() + " but param type was " + @params.GetType());
                 return ir;
             }
 
             HumanIncidentParams_CreateSettlement allParams =
-                Tell.AssertNotNull((HumanIncidentParams_CreateSettlement) parms, nameof(parms), GetType().Name);
+                Tell.AssertNotNull((HumanIncidentParams_CreateSettlement) @params, nameof(@params), GetType().Name);
             Tell.Log($"Executing event {Name} with:{allParams}");
 
             Map map = (Map) allParams.GetTarget();
@@ -41,7 +42,7 @@ namespace HumanStoryteller.Incidents {
             if (site != -1) {
                 tileResult = Mathf.RoundToInt(site);
             } else {
-                TileFinder.TryFindNewSiteTile(out int tile, 7, 27, false, true, map.Tile);
+                TileFinder.TryFindNewSiteTile(out int tile, 7, 27, false, TileFinderMode.Near, map.Tile);
                 tileResult = tile;
             }
 
@@ -85,13 +86,13 @@ namespace HumanStoryteller.Incidents {
                 MapUtil.SaveMapByName(allParams.MapName, container);
             }
                         
-            SendLetter(parms);
+            SendLetter(@params);
 
             return ir;
         }
     }
 
-    public class HumanIncidentParams_CreateSettlement : HumanIncidentParms {
+    public class HumanIncidentParams_CreateSettlement : HumanIncidentParams {
         public string Faction = "";
         public string MapName = "";
         public Number Site = new Number();

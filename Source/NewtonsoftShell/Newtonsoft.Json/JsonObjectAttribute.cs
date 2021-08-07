@@ -1,6 +1,6 @@
 using System;
 
-namespace Newtonsoft.Json
+namespace HumanStoryteller.NewtonsoftShell.Newtonsoft.Json
 {
 	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Interface, AllowMultiple = false)]
 	public sealed class JsonObjectAttribute : JsonContainerAttribute

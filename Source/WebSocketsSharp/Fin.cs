@@ -26,7 +26,7 @@
  */
 #endregion
 
-namespace WebSocketSharp
+namespace HumanStoryteller.WebSocketsSharp
 {
   /// <summary>
   /// Indicates whether a WebSocket frame is the final frame of a message.

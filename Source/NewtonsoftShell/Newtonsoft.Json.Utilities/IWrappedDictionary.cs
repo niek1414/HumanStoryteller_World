@@ -1,6 +1,6 @@
 using System.Collections;
 
-namespace Newtonsoft.Json.Utilities
+namespace HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Utilities
 {
 	internal interface IWrappedDictionary : IDictionary, ICollection, IEnumerable
 	{

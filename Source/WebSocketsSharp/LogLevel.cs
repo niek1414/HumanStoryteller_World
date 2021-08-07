@@ -26,7 +26,7 @@
  */
 #endregion
 
-namespace WebSocketSharp
+namespace HumanStoryteller.WebSocketsSharp
 {
   /// <summary>
   /// Specifies the logging level.

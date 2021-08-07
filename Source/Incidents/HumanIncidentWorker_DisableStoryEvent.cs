@@ -1,5 +1,6 @@
 using System;
 using HumanStoryteller.Model;
+using HumanStoryteller.Model.Incident;
 using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util.Logging;
 using Verse;
@@ -8,15 +9,15 @@ namespace HumanStoryteller.Incidents {
     class HumanIncidentWorker_DisableStoryEvent : HumanIncidentWorker {
         public const String Name = "DisableStoryEvent";
 
-        protected override IncidentResult Execute(HumanIncidentParms parms) {
+        protected override IncidentResult Execute(HumanIncidentParams @params) {
             IncidentResult ir = new IncidentResult();
-            if (!(parms is HumanIncidentParams_DisableStoryEvent)) {
-                Tell.Err("Tried to execute " + GetType() + " but param type was " + parms.GetType());
+            if (!(@params is HumanIncidentParams_DisableStoryEvent)) {
+                Tell.Err("Tried to execute " + GetType() + " but param type was " + @params.GetType());
                 return ir;
             }
 
             HumanIncidentParams_DisableStoryEvent
-                allParams = Tell.AssertNotNull((HumanIncidentParams_DisableStoryEvent) parms, nameof(parms), GetType().Name);
+                allParams = Tell.AssertNotNull((HumanIncidentParams_DisableStoryEvent) @params, nameof(@params), GetType().Name);
             Tell.Log($"Executing event {Name} with:{allParams}");
 
             var sc = HumanStoryteller.StoryComponent;
@@ -28,7 +29,7 @@ namespace HumanStoryteller.Incidents {
         }
     }
 
-    public class HumanIncidentParams_DisableStoryEvent : HumanIncidentParms {
+    public class HumanIncidentParams_DisableStoryEvent : HumanIncidentParams {
         public bool DisableGameOverDialog;
         public bool DisableNameColonyDialog;
 

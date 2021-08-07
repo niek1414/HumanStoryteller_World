@@ -17,7 +17,7 @@ namespace HumanStoryteller.CheckConditions {
         }
 
         public override bool Check(IncidentResult result, int checkPosition) {
-            return Find.Storyteller.difficulty.defName.Equals(_difficulty.defName);
+            return Find.Storyteller.difficultyDef.defName.Equals(_difficulty.defName);
         }
 
         public override string ToString() {

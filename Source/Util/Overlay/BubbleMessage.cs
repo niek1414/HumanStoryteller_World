@@ -289,8 +289,7 @@ namespace HumanStoryteller.Util.Overlay {
                     bool prevPref = Prefs.HatsOnlyOnMap;
                     Prefs.HatsOnlyOnMap = false;
                     GUI.color = _pawn.relations.everSeenByPlayer ? new Color(1f, 1f, 1f, 1f) : new Color(0f, 0f, 0f, 1f);
-                    icon = PortraitsCache.Get(_pawn, new Rect {width = 65, height = 65}.ContractedBy(1f).size, new Vector3(0, 0, 0.4f),
-                        2.5f);
+                    icon = PortraitsCache.Get(_pawn, new Rect {width = 65, height = 65}.ContractedBy(1f).size, Rot4.South, new Vector3(0, 0, 0.4f), 2.5f);
                     GUI.color = new Color(1f, 1f, 1f, 1f);
                     Prefs.HatsOnlyOnMap = prevPref;
                 }

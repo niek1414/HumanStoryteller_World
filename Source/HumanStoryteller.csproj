@@ -4,41 +4,37 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{D7D21B4A-1DA7-41D8-B202-C58CA8FA62AA}</ProjectGuid>
+    <ProjectGuid>{15106BAB-3112-4919-962A-BE908408B416}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HumanStoryteller</RootNamespace>
     <AssemblyName>HumanStoryteller</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <TargetFramework>net472</TargetFramework>
     <FileAlignment>512</FileAlignment>
-    <LangVersion>7.3</LangVersion>
+    <Deterministic>true</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>embedded</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\v1.1\Assemblies\</OutputPath>
+    <OutputPath>..\v1.3\Assemblies\</OutputPath>
     <DefineConstants>
     </DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\HumanStoryteller - Release\v1.1\Assemblies\</OutputPath>
+    <OutputPath>..\..\HumanStoryteller - Release\v1.3\Assemblies\</OutputPath>
     <DefineConstants>
     </DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-    <Reference Include="0Harmony, Version=2.0.0.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Lib.Harmony.2.0.0.1\lib\net472\0Harmony.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>..\..\..\RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
@@ -112,10 +108,6 @@
     </Reference>
     <Reference Include="UnityEngine.DSPGraphModule">
       <HintPath>..\..\..\RimWorldWin64_Data\Managed\UnityEngine.DSPGraphModule.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="UnityEngine.FileSystemHttpModule">
-      <HintPath>..\..\..\RimWorldWin64_Data\Managed\UnityEngine.FileSystemHttpModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.GameCenterModule">
@@ -389,6 +381,7 @@
     <Compile Include="Incidents\HumanIncidentWorker_Disease.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_Eclipse.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_EditPawn.cs" />
+    <Compile Include="Incidents\HumanIncidentWorker_Exit.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_Explosion.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_FadeBlack.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_FlashStorm.cs" />
@@ -416,13 +409,15 @@
     <Compile Include="Incidents\HumanIncidentWorker_RenamePawn.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_Research.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_ResourcePodCrash.cs" />
-    <Compile Include="Incidents\HumanIncidentWorker_Root.cs" />
+    <Compile Include="Incidents\HumanIncidentWorker_LongEntry.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_Rules.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_SavePawnGroup.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_SelfTame.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_SetRelation.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_ShipPartCrash.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_ShortCircuit.cs" />
+    <Compile Include="Incidents\HumanIncidentWorker_ShortEntry.cs" />
+    <Compile Include="Incidents\HumanIncidentWorker_ShortExit.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_ShowImage.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_SolarFlare.cs" />
     <Compile Include="Incidents\HumanIncidentWorker_SpeedControl.cs" />
@@ -443,12 +438,21 @@
     <Compile Include="Incidents\HumanIncidentWorker_WildManWandersIn.cs" />
     <Compile Include="Incidents\Jobs\LordJob_TravelExact.cs" />
     <Compile Include="Incidents\Jobs\LordToil_TravelExact.cs" />
+    <Compile Include="IntegrityTest\StoryLoadingModule.cs" />
+    <Compile Include="IntegrityTest\TestController.cs" />
+    <Compile Include="IntegrityTest\TestModule.cs" />
+    <Compile Include="LongStoryController.cs" />
     <Compile Include="Model\Action\SpawnItemAction.cs" />
     <Compile Include="Model\Action\StoryAction.cs" />
-    <Compile Include="Model\Item.cs" />
-    <Compile Include="Model\Location.cs" />
-    <Compile Include="Model\MapContainer.cs" />
-    <Compile Include="Model\Number.cs" />
+    <Compile Include="Model\Incident\HumanLetter.cs" />
+    <Compile Include="Model\Incident\Item.cs" />
+    <Compile Include="Model\Incident\Location.cs" />
+    <Compile Include="Model\Incident\MapContainer.cs" />
+    <Compile Include="Model\Incident\Number.cs" />
+    <Compile Include="Model\Incident\ReportBank.cs" />
+    <Compile Include="Model\Incident\RichText.cs" />
+    <Compile Include="Model\Incident\VariableModifications.cs" />
+    <Compile Include="Model\LongStoryGraph.cs" />
     <Compile Include="Model\PawnGroup\Filter\AwakeFilter.cs" />
     <Compile Include="Model\PawnGroup\Filter\CanReachFilter.cs" />
     <Compile Include="Model\PawnGroup\Filter\CanSeeOneOfFilter.cs" />
@@ -474,21 +478,23 @@
     <Compile Include="Model\PawnGroup\PawnGroup.cs" />
     <Compile Include="Model\PawnGroup\PawnGroupSelector.cs" />
     <Compile Include="Model\PawnGroup\PawnGroupSource.cs" />
-    <Compile Include="Model\ReportBank.cs" />
-    <Compile Include="Model\RichText.cs" />
+    <Compile Include="Model\ShortStoryGraph.cs" />
+    <Compile Include="Model\StoryComponent.cs" />
+    <Compile Include="Model\StoryGraph.cs" />
     <Compile Include="Model\StoryPart\Connection.cs" />
     <Compile Include="Model\StoryPart\FiringHumanIncident.cs" />
-    <Compile Include="Model\StoryPart\HumanIncidentParms.cs" />
-    <Compile Include="Model\StoryPart\Story.cs" />
+    <Compile Include="Model\StoryPart\HumanIncidentParams.cs" />
+    <Compile Include="Model\StoryPart\StoryArc.cs" />
     <Compile Include="Model\StoryPart\StoryEvent.cs" />
     <Compile Include="Model\StoryPart\StoryEventNode.cs" />
     <Compile Include="Model\StoryPart\StoryNode.cs" />
     <Compile Include="Model\StoryPart\StorySummary.cs" />
+    <Compile Include="Model\StoryQueue.cs" />
+    <Compile Include="Model\StoryStatus.cs" />
     <Compile Include="Model\Zones\LocationZone.cs" />
     <Compile Include="Model\Zones\StructureZone.cs" />
     <Compile Include="Model\Zones\ZoneCell.cs" />
     <Compile Include="Model\Zones\ZoneThing.cs" />
-    <Compile Include="Model\VariableModifications.cs" />
     <Compile Include="NewtonsoftShell\Microsoft.CodeAnalysis\EmbeddedAttribute.cs" />
     <Compile Include="NewtonsoftShell\Newtonsoft.Json.Bson\BsonArray.cs" />
     <Compile Include="NewtonsoftShell\Newtonsoft.Json.Bson\BsonBinary.cs" />
@@ -768,6 +774,7 @@
     <Compile Include="Parser\Converter\RichTextConverter.cs" />
     <Compile Include="Parser\Parser.cs" />
     <Compile Include="Parser\Story.cs" />
+    <Compile Include="Parser\StoryArc.cs" />
     <Compile Include="Parser\ParseNode.cs" />
     <Compile Include="Patch\CreateWorldUI_Patch.cs" />
     <Compile Include="Patch\Lord_Patch.cs" />
@@ -778,12 +785,9 @@
     <Compile Include="Patch\StoryStatus_Patch.cs" />
     <Compile Include="Patch\StorytellerUI_Patch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StoryQueue.cs" />
-    <Compile Include="StoryStatus.cs" />
+    <Compile Include="ShortStoryController.cs" />
     <Compile Include="StorytellerCompProperties_HumanThreatCycle.cs" />
     <Compile Include="StorytellerComp_HumanThreatCycle.cs" />
-    <Compile Include="StoryGraph.cs" />
-    <Compile Include="Model\HumanLetter.cs" />
     <Compile Include="Util\DrawUtil.cs" />
     <Compile Include="Util\ExtractDefs.cs" />
     <Compile Include="Util\Logging\ObjectDumper.cs" />
@@ -807,8 +811,8 @@
     <Compile Include="Util\Overlay\StoryOverlay.cs" />
     <Compile Include="Util\PawnGroupUtil.cs" />
     <Compile Include="Util\ShotReportUtil.cs" />
+    <Compile Include="Util\StoryGraphWalkerUtil.cs" />
     <Compile Include="Views\Extention\WidgetsExtented.cs" />
-    <Compile Include="Views\MainTabWindow_CreaterTools.cs" />
     <Compile Include="Views\MainTabWindow_RateTab.cs" />
     <Compile Include="Util\DataBankUtil.cs" />
     <Compile Include="Util\ItemUtil.cs" />
@@ -816,7 +820,6 @@
     <Compile Include="Util\ScenarioEditorUtil.cs" />
     <Compile Include="Util\AreaUtil.cs" />
     <Compile Include="Util\PawnUtil.cs" />
-    <Compile Include="Util\StoryComponent.cs" />
     <Compile Include="Util\ZipUtil.cs" />
     <Compile Include="WebSocketsSharp\ByteOrder.cs" />
     <Compile Include="WebSocketsSharp\CloseEventArgs.cs" />
@@ -927,31 +930,28 @@
     <Content Include="WebSocketsSharp\websocket-sharp.snk" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="WebSocketsSharp\obj\Debug_Ubuntu\TempPE" />
+    <Folder Include="WebSocketsSharp\obj\Debug_Ubuntu\TempPE\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Lib.Harmony" Version="2.0.0.1" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PreBuildEvent>
-    </PreBuildEvent>
-  </PropertyGroup>
   <PropertyGroup>
     <StartAction>Program</StartAction>
-    <StartProgram>$(SolutionDir)..\..\RimWorldWin.exe</StartProgram>
+    <StartProgram>$(SolutionDir)..\..\RimWorldWin64.exe</StartProgram>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>echo F|xcopy "$(ProjectDir)..\About\About-$(ConfigurationName).xml" "$(TargetDir)..\..\About\About.xml" /C /Y /K /Q /D
-IF /I "$(ConfigurationName)" == "Release"; echo F|xcopy "$(ProjectDir)..\About\Preview.png" "$(TargetDir)..\..\About\Preview.png" /C /Y /K /Q /D
-IF /I "$(ConfigurationName)" == "Release"; echo F|xcopy "$(ProjectDir)..\LoadFolders.xml" "$(TargetDir)..\..\LoadFolders.xml" /C /Y /K /Q /D
-IF /I "$(ConfigurationName)" == "Release"; xcopy "$(ProjectDir)..\Assemblies" "$(TargetDir)..\..\Assemblies" /S /C /Y /K /I /Q /D
-IF /I "$(ConfigurationName)" == "Release"; xcopy "$(ProjectDir)..\v1.1\Assemblies" "$(TargetDir)..\..\v1.1\Assemblies" /S /C /Y /K /I /Q /D
-IF /I "$(ConfigurationName)" == "Release"; xcopy "$(ProjectDir)..\Defs" "$(TargetDir)..\..\Defs" /S /C /Y /K  /I /Q /D
-IF /I "$(ConfigurationName)" == "Release"; xcopy "$(ProjectDir)..\Patches" "$(TargetDir)..\..\Patches" /S /C /Y /K  /I /Q /D
-IF /I "$(ConfigurationName)" == "Release"; xcopy "$(ProjectDir)..\Languages" "$(TargetDir)..\..\Languages" /S /C /Y /K  /I /Q /D
-IF /I "$(ConfigurationName)" == "Release"; xcopy "$(ProjectDir)..\Sounds" "$(TargetDir)..\..\Sounds" /S /C /Y /K  /I /Q /D
-IF /I "$(ConfigurationName)" == "Release"; xcopy "$(ProjectDir)..\Textures" "$(TargetDir)..\..\Textures" /S /C /Y /K /I /Q /D
-IF /I "$(ConfigurationName)" == "Release"; IF EXIST "$(ProjectDir)..\LICENSE"; copy "$(ProjectDir)..\LICENSE" "$(TargetDir)..\..\LICENSE" /Y</PostBuildEvent>
+    <PostBuildEvent>echo "echo  F|xcopy "$(ProjectDir)..\About\About-$(ConfigurationName).xml" "$(TargetDir)..\..\About\About.xml" /C /Y /K /Q /D
+      IF /I "$(ConfigurationName)" == "Release"; echo F|xcopy "$(ProjectDir)..\About\Preview.png" "$(TargetDir)..\..\About\Preview.png" /C /Y /K /Q /D
+      IF /I "$(ConfigurationName)" == "Release"; echo F|xcopy "$(ProjectDir)..\LoadFolders.xml" "$(TargetDir)..\..\LoadFolders.xml" /C /Y /K /Q /D
+      IF /I "$(ConfigurationName)" == "Release"; xcopy "$(ProjectDir)..\Assemblies" "$(TargetDir)..\..\Assemblies" /S /C /Y /K /I /Q /D
+      IF /I "$(ConfigurationName)" == "Release"; xcopy "$(ProjectDir)..\v1.1\Assemblies" "$(TargetDir)..\..\v1.1\Assemblies" /S /C /Y /K /I /Q /D
+      IF /I "$(ConfigurationName)" == "Release"; xcopy "$(ProjectDir)..\Defs" "$(TargetDir)..\..\Defs" /S /C /Y /K  /I /Q /D
+      IF /I "$(ConfigurationName)" == "Release"; xcopy "$(ProjectDir)..\Patches" "$(TargetDir)..\..\Patches" /S /C /Y /K  /I /Q /D
+      IF /I "$(ConfigurationName)" == "Release"; xcopy "$(ProjectDir)..\Languages" "$(TargetDir)..\..\Languages" /S /C /Y /K  /I /Q /D
+      IF /I "$(ConfigurationName)" == "Release"; xcopy "$(ProjectDir)..\Sounds" "$(TargetDir)..\..\Sounds" /S /C /Y /K  /I /Q /D
+      IF /I "$(ConfigurationName)" == "Release"; xcopy "$(ProjectDir)..\Textures" "$(TargetDir)..\..\Textures" /S /C /Y /K /I /Q /D
+      IF /I "$(ConfigurationName)" == "Release"; IF EXIST "$(ProjectDir)..\LICENSE"; copy "$(ProjectDir)..\LICENSE" "$(TargetDir)..\..\LICENSE" /Y"
+</PostBuildEvent>
   </PropertyGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

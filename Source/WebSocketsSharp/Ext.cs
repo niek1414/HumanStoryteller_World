@@ -52,9 +52,9 @@ using System.IO;
 using System.IO.Compression;
 using System.Net.Sockets;
 using System.Text;
-using WebSocketSharp.Net;
+using HumanStoryteller.WebSocketsSharp.Net;
 
-namespace WebSocketSharp
+namespace HumanStoryteller.WebSocketsSharp
 {
   /// <summary>
   /// Provides a set of static methods for websocket-sharp.

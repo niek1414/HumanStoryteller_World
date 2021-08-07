@@ -1,4 +1,5 @@
 using HumanStoryteller.CheckConditions;
+using HumanStoryteller.Model.Incident;
 using HumanStoryteller.Model.Zones;
 using HumanStoryteller.Util;
 using HumanStoryteller.Util.Logging;

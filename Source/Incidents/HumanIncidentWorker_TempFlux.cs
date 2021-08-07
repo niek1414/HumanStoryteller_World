@@ -1,6 +1,7 @@
 using System;
 using HumanStoryteller.Incidents.GameConditions;
 using HumanStoryteller.Model;
+using HumanStoryteller.Model.Incident;
 using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util.Logging;
 using RimWorld;
@@ -11,15 +12,15 @@ namespace HumanStoryteller.Incidents {
     class HumanIncidentWorker_TempFlux : HumanIncidentWorker {
         public const String Name = "TempFlux";
 
-        protected override IncidentResult Execute(HumanIncidentParms parms) {
+        protected override IncidentResult Execute(HumanIncidentParams @params) {
             IncidentResult ir = new IncidentResult();
 
-            if (!(parms is HumanIncidentParams_TempFlux)) {
-                Tell.Err("Tried to execute " + GetType() + " but param type was " + parms.GetType());
+            if (!(@params is HumanIncidentParams_TempFlux)) {
+                Tell.Err("Tried to execute " + GetType() + " but param type was " + @params.GetType());
                 return ir;
             }
 
-            HumanIncidentParams_TempFlux allParams = Tell.AssertNotNull((HumanIncidentParams_TempFlux) parms, nameof(parms), GetType().Name);
+            HumanIncidentParams_TempFlux allParams = Tell.AssertNotNull((HumanIncidentParams_TempFlux) @params, nameof(@params), GetType().Name);
             Tell.Log($"Executing event {Name} with:{allParams}");
 
             Map map = (Map) allParams.GetTarget();
@@ -38,7 +39,7 @@ namespace HumanStoryteller.Incidents {
         }
     }
 
-    public class HumanIncidentParams_TempFlux : HumanIncidentParms {
+    public class HumanIncidentParams_TempFlux : HumanIncidentParams {
         public Number Duration = new Number();
         public Number TempChange = new Number(-20);
 

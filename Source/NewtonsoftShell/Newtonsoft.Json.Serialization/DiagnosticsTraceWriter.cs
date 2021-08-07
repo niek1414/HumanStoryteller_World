@@ -1,7 +1,7 @@
 using System;
 using System.Diagnostics;
 
-namespace Newtonsoft.Json.Serialization
+namespace HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Serialization
 {
 	public class DiagnosticsTraceWriter : ITraceWriter
 	{
@@ -35,7 +35,7 @@ namespace Newtonsoft.Json.Serialization
 			{
 				TraceEventCache eventCache = new TraceEventCache();
 				TraceEventType traceEventType = GetTraceEventType(level);
-				foreach (TraceListener listener in System.Diagnostics.Trace.Listeners)
+				foreach (TraceListener listener in global::System.Diagnostics.Trace.Listeners)
 				{
 					if (!listener.IsThreadSafe)
 					{
@@ -48,7 +48,7 @@ namespace Newtonsoft.Json.Serialization
 					{
 						listener.TraceEvent(eventCache, "Newtonsoft.Json", traceEventType, 0, message);
 					}
-					if (System.Diagnostics.Trace.AutoFlush)
+					if (global::System.Diagnostics.Trace.AutoFlush)
 					{
 						listener.Flush();
 					}

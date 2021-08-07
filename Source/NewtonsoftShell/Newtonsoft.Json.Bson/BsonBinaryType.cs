@@ -1,6 +1,6 @@
 using System;
 
-namespace Newtonsoft.Json.Bson
+namespace HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Bson
 {
 	internal enum BsonBinaryType : byte
 	{

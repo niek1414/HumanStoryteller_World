@@ -1,4 +1,4 @@
-namespace Newtonsoft.Json.Linq.JsonPath
+namespace HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Linq.JsonPath
 {
 	internal abstract class QueryExpression
 	{

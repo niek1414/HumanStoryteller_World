@@ -1,4 +1,4 @@
-namespace Newtonsoft.Json.Serialization
+namespace HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Serialization
 {
 	internal enum JsonContractType
 	{

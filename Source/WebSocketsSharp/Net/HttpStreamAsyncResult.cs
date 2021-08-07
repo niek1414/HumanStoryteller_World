@@ -40,7 +40,7 @@
 using System;
 using System.Threading;
 
-namespace WebSocketSharp.Net
+namespace HumanStoryteller.WebSocketsSharp.Net
 {
   internal class HttpStreamAsyncResult : IAsyncResult
   {

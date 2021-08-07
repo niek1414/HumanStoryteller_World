@@ -30,7 +30,7 @@ using System;
 using System.Collections.Specialized;
 using System.Text;
 
-namespace WebSocketSharp.Net
+namespace HumanStoryteller.WebSocketsSharp.Net
 {
   internal class AuthenticationChallenge : AuthenticationBase
   {

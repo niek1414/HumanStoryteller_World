@@ -1,4 +1,4 @@
-namespace Newtonsoft.Json.Linq
+namespace HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Linq
 {
 	public enum JTokenType
 	{

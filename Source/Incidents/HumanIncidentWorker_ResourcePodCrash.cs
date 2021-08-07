@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using HumanStoryteller.Model;
+using HumanStoryteller.Model.Incident;
 using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util.Logging;
 using RimWorld;
@@ -10,15 +11,15 @@ namespace HumanStoryteller.Incidents {
     class HumanIncidentWorker_ResourcePodCrash : HumanIncidentWorker {
         public const String Name = "ResourcePodCrash";
 
-        protected override IncidentResult Execute(HumanIncidentParms parms) {
+        protected override IncidentResult Execute(HumanIncidentParams @params) {
             IncidentResult ir = new IncidentResult();
-            if (!(parms is HumanIncidentParams_ResourcePodCrash)) {
-                Tell.Err("Tried to execute " + GetType() + " but param type was " + parms.GetType());
+            if (!(@params is HumanIncidentParams_ResourcePodCrash)) {
+                Tell.Err("Tried to execute " + GetType() + " but param type was " + @params.GetType());
                 return ir;
             }
 
             HumanIncidentParams_ResourcePodCrash allParams =
-                Tell.AssertNotNull((HumanIncidentParams_ResourcePodCrash) parms, nameof(parms), GetType().Name);
+                Tell.AssertNotNull((HumanIncidentParams_ResourcePodCrash) @params, nameof(@params), GetType().Name);
             Tell.Log($"Executing event {Name} with:{allParams}");
 
             Map map = (Map) allParams.GetTarget();
@@ -34,7 +35,7 @@ namespace HumanStoryteller.Incidents {
         }
     }
 
-    public class HumanIncidentParams_ResourcePodCrash : HumanIncidentParms {
+    public class HumanIncidentParams_ResourcePodCrash : HumanIncidentParams {
         public Item Item = new Item("", "", "", new Number(20));
         public bool InstaPlace;
         public Location Location = new Location();

@@ -1,5 +1,6 @@
 using System;
 using HumanStoryteller.Model;
+using HumanStoryteller.Model.Incident;
 using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util;
 using HumanStoryteller.Util.Logging;
@@ -9,14 +10,14 @@ namespace HumanStoryteller.Incidents {
     class HumanIncidentWorker_CoupleDecouple : HumanIncidentWorker {
         public const String Name = "CoupleDecouple";
 
-        protected override IncidentResult Execute(HumanIncidentParms parms) {
+        protected override IncidentResult Execute(HumanIncidentParams @params) {
             IncidentResult ir = new IncidentResult();
-            if (!(parms is HumanIncidentParams_CoupleDecouple)) {
-                Tell.Err("Tried to execute " + GetType() + " but param type was " + parms.GetType());
+            if (!(@params is HumanIncidentParams_CoupleDecouple)) {
+                Tell.Err("Tried to execute " + GetType() + " but param type was " + @params.GetType());
                 return ir;
             }
 
-            HumanIncidentParams_CoupleDecouple allParams = Tell.AssertNotNull((HumanIncidentParams_CoupleDecouple) parms, nameof(parms), GetType().Name);
+            HumanIncidentParams_CoupleDecouple allParams = Tell.AssertNotNull((HumanIncidentParams_CoupleDecouple) @params, nameof(@params), GetType().Name);
             Tell.Log($"Executing event {Name} with:{allParams}");
             var mapContainer = MapUtil.GetMapContainerByTile(allParams.Target.GetTileFromTarget());
             if (mapContainer == null) {
@@ -39,7 +40,7 @@ namespace HumanStoryteller.Incidents {
         }
     }
 
-    public class HumanIncidentParams_CoupleDecouple : HumanIncidentParms {
+    public class HumanIncidentParams_CoupleDecouple : HumanIncidentParams {
         public bool Couple;
         public bool Permanent;
 

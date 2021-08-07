@@ -35,7 +35,7 @@
 
 using System;
 
-namespace WebSocketSharp
+namespace HumanStoryteller.WebSocketsSharp
 {
   /// <summary>
   /// Represents the event data for the <see cref="WebSocket.OnError"/> event.

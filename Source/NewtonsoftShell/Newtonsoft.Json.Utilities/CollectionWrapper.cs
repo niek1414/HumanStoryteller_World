@@ -5,7 +5,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 
-namespace Newtonsoft.Json.Utilities
+namespace HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Utilities
 {
 	
 	

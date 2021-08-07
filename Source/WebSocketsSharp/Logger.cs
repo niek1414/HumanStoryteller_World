@@ -30,7 +30,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 
-namespace WebSocketSharp
+namespace HumanStoryteller.WebSocketsSharp
 {
   /// <summary>
   /// Provides a set of methods and properties for logging.

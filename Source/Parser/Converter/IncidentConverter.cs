@@ -1,8 +1,8 @@
 using System;
 using HumanStoryteller.Incidents;
 using HumanStoryteller.Model.StoryPart;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using HumanStoryteller.NewtonsoftShell.Newtonsoft.Json;
+using HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Linq;
 
 namespace HumanStoryteller.Parser.Converter {
     public class IncidentConverter : JsonConverter {
@@ -27,11 +27,14 @@ namespace HumanStoryteller.Parser.Converter {
             }
 
             switch (type) {
-                case HumanIncidentWorker_Root.Name:
-                    incident = new FiringHumanIncident(new HumanIncidentWorker_Root(), new HumanIncidentParams_Root());
+                case HumanIncidentWorker_LongEntry.Name:
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_LongEntry(), new HumanIncidentParams_LongEntry());
+                    break;
+                case HumanIncidentWorker_ShortEntry.Name:
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_ShortEntry(), new HumanIncidentParams_ShortEntry());
                     break;
                 case HumanIncidentWorker_Nothing.Name:
-                    incident = new FiringHumanIncident(new HumanIncidentWorker_Nothing(), new HumanIncidentParms());
+                    incident = new FiringHumanIncident(new HumanIncidentWorker_Nothing(), new HumanIncidentParams());
                     break;
                 case HumanIncidentWorker_Alphabeavers.Name:
                     incident = new FiringHumanIncident(new HumanIncidentWorker_Alphabeavers(), new HumanIncidentParams_Alphabeavers());
@@ -245,7 +248,7 @@ namespace HumanStoryteller.Parser.Converter {
                     return new FiringHumanIncident(null);
             }
 
-            serializer.Populate(jsonObject.CreateReader(), incident.Parms);
+            serializer.Populate(jsonObject.CreateReader(), incident.Params);
             return incident;
         }
     }

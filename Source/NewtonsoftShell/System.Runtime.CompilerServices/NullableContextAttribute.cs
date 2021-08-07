@@ -1,6 +1,8 @@
-using Microsoft.CodeAnalysis;
+using System;
+using System.Runtime.CompilerServices;
+using HumanStoryteller.NewtonsoftShell.Microsoft.CodeAnalysis;
 
-namespace System.Runtime.CompilerServices
+namespace HumanStoryteller.NewtonsoftShell.System.Runtime.CompilerServices
 {
 	[CompilerGenerated]
 	[Embedded]

@@ -1,6 +1,6 @@
 using System;
 using System.Linq;
-using HumanStoryteller.Model;
+using HumanStoryteller.Model.Incident;
 using HumanStoryteller.Model.PawnGroup;
 using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util;
@@ -11,16 +11,16 @@ namespace HumanStoryteller.Incidents {
     class HumanIncidentWorker_RenamePawn : HumanIncidentWorker {
         public const String Name = "RenamePawn";
 
-        protected override IncidentResult Execute(HumanIncidentParms parms) {
+        protected override IncidentResult Execute(HumanIncidentParams @params) {
             IncidentResult ir = new IncidentResult();
 
-            if (!(parms is HumanIncidentParams_RenamePawn)) {
-                Tell.Err("Tried to execute " + GetType() + " but param type was " + parms.GetType());
+            if (!(@params is HumanIncidentParams_RenamePawn)) {
+                Tell.Err("Tried to execute " + GetType() + " but param type was " + @params.GetType());
                 return ir;
             }
 
             HumanIncidentParams_RenamePawn
-                allParams = Tell.AssertNotNull((HumanIncidentParams_RenamePawn) parms, nameof(parms), GetType().Name);
+                allParams = Tell.AssertNotNull((HumanIncidentParams_RenamePawn) @params, nameof(@params), GetType().Name);
             Tell.Log($"Executing event {Name} with:{allParams}");
 
             Map map = (Map) allParams.GetTarget();
@@ -45,7 +45,7 @@ namespace HumanStoryteller.Incidents {
         }
     }
 
-    public class HumanIncidentParams_RenamePawn : HumanIncidentParms {
+    public class HumanIncidentParams_RenamePawn : HumanIncidentParams {
         public PawnGroupSelector Pawns;
         public bool UnnamedColonist;
         public string OutName = "";

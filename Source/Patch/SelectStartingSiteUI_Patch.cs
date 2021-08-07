@@ -23,7 +23,7 @@ namespace HumanStoryteller.Patch {
             if (HumanStoryteller.IsNoStory)
                 return;
 
-            var initParams = HumanStoryteller.StoryComponent.Story.StoryGraph.InitParams();
+            var initParams = HumanStoryteller.StoryComponent.StoryArc.LongStoryController.StoryParams();
             if (initParams == null) return;
 
             if (!initParams.OverrideMapLoc)

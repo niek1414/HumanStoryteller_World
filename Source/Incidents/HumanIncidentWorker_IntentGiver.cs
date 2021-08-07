@@ -5,6 +5,7 @@ using HumanStoryteller.CheckConditions;
 using HumanStoryteller.Helper.IntentHelper;
 using HumanStoryteller.Incidents.Jobs;
 using HumanStoryteller.Model;
+using HumanStoryteller.Model.Incident;
 using HumanStoryteller.Model.PawnGroup;
 using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util;
@@ -19,14 +20,14 @@ namespace HumanStoryteller.Incidents {
     class HumanIncidentWorker_IntentGiver : HumanIncidentWorker {
         public const String Name = "IntentGiver";
 
-        protected override IncidentResult Execute(HumanIncidentParms parms) {
+        protected override IncidentResult Execute(HumanIncidentParams @params) {
             IncidentResult ir = new IncidentResult();
-            if (!(parms is HumanIncidentParams_IntentGiver)) {
-                Tell.Err("Tried to execute " + GetType() + " but param type was " + parms.GetType());
+            if (!(@params is HumanIncidentParams_IntentGiver)) {
+                Tell.Err("Tried to execute " + GetType() + " but param type was " + @params.GetType());
                 return ir;
             }
 
-            HumanIncidentParams_IntentGiver allParams = Tell.AssertNotNull((HumanIncidentParams_IntentGiver) parms, nameof(parms), GetType().Name);
+            HumanIncidentParams_IntentGiver allParams = Tell.AssertNotNull((HumanIncidentParams_IntentGiver) @params, nameof(@params), GetType().Name);
             Tell.Log($"Executing event {Name} with:{allParams}");
 
             Map map = (Map) allParams.GetTarget();
@@ -147,7 +148,7 @@ namespace HumanStoryteller.Incidents {
 
                     return new LordJob_Siege(list[0].Faction, stageLoc2, num);
                 case "Joinable_Party":
-                    if (!RCellFinder.TryFindGatheringSpot(list[0], GatheringDefOf.Party, out IntVec3 result1)) {
+                    if (!RCellFinder.TryFindGatheringSpot(list[0], GatheringDefOf.Party, true, out IntVec3 result1)) {
                         Tell.Warn("Didn't find party spot.");
                         return null;
                     }
@@ -296,7 +297,7 @@ namespace HumanStoryteller.Incidents {
                         return null;
                     }
 
-                    Building_Bed buildingBed = RestUtility.FindBedFor(p12, list[0], false, false, true);
+                    Building_Bed buildingBed = RestUtility.FindBedFor(p12, list[0], false, false, GuestStatus.Guest);
                     if (buildingBed == null || !p12.CanReserve(buildingBed)) {
                         Tell.Warn("Didn't find bed", allParams.FirstStringParam);
                         return null;
@@ -313,7 +314,7 @@ namespace HumanStoryteller.Incidents {
                         return null;
                     }
 
-                    Building_Bed buildingBed2 = RestUtility.FindBedFor(p13, list[0], true, false, true);
+                    Building_Bed buildingBed2 = RestUtility.FindBedFor(p13, list[0], true, false, GuestStatus.Guest);
                     if (buildingBed2 == null || !p13.CanReserve(buildingBed2)) {
                         Tell.Warn("Didn't find bed", allParams.FirstStringParam);
                         return null;
@@ -410,7 +411,7 @@ namespace HumanStoryteller.Incidents {
                 for (int i = 0; i < pawnPath.NodesLeftCount; i++) {
                     IntVec3 intVec = pawnPath.Peek(pawnPath.NodesLeftCount - i - 1);
                     Room room = intVec.GetRoom(map);
-                    if (room != null && !room.isPrisonCell && (room.TouchesMapEdge || room.IsHuge || room.Cells.Count(x => x.Standable(map)) >= 5)) {
+                    if (room != null && !room.IsPrisonCell && (room.TouchesMapEdge || room.IsHuge || room.Cells.Count(x => x.Standable(map)) >= 5)) {
                         groupUpLoc = CellFinder.RandomClosewalkCellNear(intVec, map, 3);
                     }
                 }
@@ -424,7 +425,7 @@ namespace HumanStoryteller.Incidents {
         }
     }
 
-    public class HumanIncidentParams_IntentGiver : HumanIncidentParms {
+    public class HumanIncidentParams_IntentGiver : HumanIncidentParams {
         public PawnGroupSelector Pawns = new PawnGroupSelector();
         public string IntentType = "";
         public string FirstStringParam = "";

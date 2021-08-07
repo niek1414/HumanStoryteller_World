@@ -1,6 +1,7 @@
 using System;
 using HumanStoryteller.Incidents;
 using HumanStoryteller.Model;
+using HumanStoryteller.Model.Incident;
 using HumanStoryteller.Util.Logging;
 using Verse;
 

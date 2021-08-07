@@ -1,5 +1,6 @@
 using System;
 using HumanStoryteller.Model;
+using HumanStoryteller.Model.Incident;
 using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util.Logging;
 using RimWorld;
@@ -9,15 +10,15 @@ namespace HumanStoryteller.Incidents {
     class HumanIncidentWorker_Explosion : HumanIncidentWorker {
         public const String Name = "Explosion";
 
-        protected override IncidentResult Execute(HumanIncidentParms parms) {
+        protected override IncidentResult Execute(HumanIncidentParams @params) {
             IncidentResult ir = new IncidentResult();
-            if (!(parms is HumanIncidentParams_Explosion)) {
-                Tell.Err("Tried to execute " + GetType() + " but param type was " + parms.GetType());
+            if (!(@params is HumanIncidentParams_Explosion)) {
+                Tell.Err("Tried to execute " + GetType() + " but param type was " + @params.GetType());
                 return ir;
             }
 
             HumanIncidentParams_Explosion allParams =
-                Tell.AssertNotNull((HumanIncidentParams_Explosion) parms, nameof(parms), GetType().Name);
+                Tell.AssertNotNull((HumanIncidentParams_Explosion) @params, nameof(@params), GetType().Name);
             Tell.Log($"Executing event {Name} with:{allParams}");
 
             Map map = (Map) allParams.GetTarget();
@@ -29,13 +30,13 @@ namespace HumanStoryteller.Incidents {
 
             GenExplosion.DoExplosion(allParams.Location.GetSingleCell(map), map, allParams.Radius.GetValue(), damageDef, null);
 
-            SendLetter(parms);
+            SendLetter(@params);
 
             return ir;
         }
     }
 
-    public class HumanIncidentParams_Explosion : HumanIncidentParms {
+    public class HumanIncidentParams_Explosion : HumanIncidentParams {
         public string ExplosionType = "";
         public Number Radius = new Number(3.9f);
         public Location Location = new Location();

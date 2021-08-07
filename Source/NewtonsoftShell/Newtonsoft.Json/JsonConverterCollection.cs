@@ -1,6 +1,6 @@
 using System.Collections.ObjectModel;
 
-namespace Newtonsoft.Json
+namespace HumanStoryteller.NewtonsoftShell.Newtonsoft.Json
 {
 	
 	public class JsonConverterCollection : Collection<JsonConverter>

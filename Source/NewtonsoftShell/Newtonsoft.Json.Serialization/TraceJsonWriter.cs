@@ -1,9 +1,8 @@
 using System;
 using System.Globalization;
 using System.IO;
-using System.Numerics;
 
-namespace Newtonsoft.Json.Serialization
+namespace HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Serialization
 {
 	
 	

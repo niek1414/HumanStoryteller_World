@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace Newtonsoft.Json.Serialization
+namespace HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Serialization
 {
 	
 	

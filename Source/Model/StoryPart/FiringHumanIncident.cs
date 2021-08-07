@@ -4,33 +4,33 @@ using Verse;
 
 namespace HumanStoryteller.Model.StoryPart {
     public class FiringHumanIncident : IExposable {
-        private HumanIncidentParms _parms;
+        private HumanIncidentParams _params;
         private HumanIncidentWorker _worker;
 
         public FiringHumanIncident() {
         }
 
-        public FiringHumanIncident(HumanIncidentWorker worker, HumanIncidentParms parms = null) {
+        public FiringHumanIncident(HumanIncidentWorker worker, HumanIncidentParams @params = null) {
             _worker = Tell.AssertNotNull(worker, nameof(worker), GetType().Name);
-            if (parms != null)
-                _parms = parms;
+            if (@params != null)
+                _params = @params;
         }
 
         public override string ToString() {
             string str = "";
             if (_worker != null)
                 str += _worker.GetType().Name;
-            if (_parms != null)
-                str += " " + _parms;
+            if (_params != null)
+                str += " " + _params;
             return str;
         }
 
-        public HumanIncidentParms Parms => _parms;
+        public HumanIncidentParams Params => _params;
 
         public HumanIncidentWorker Worker => _worker;
         
         public void ExposeData() {
-            Scribe_Deep.Look(ref _parms, "parms");
+            Scribe_Deep.Look(ref _params, "params");
             Scribe_Deep.Look(ref _worker, "worker");
         }
     }

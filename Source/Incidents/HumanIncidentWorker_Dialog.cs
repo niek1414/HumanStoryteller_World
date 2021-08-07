@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using HumanStoryteller.CheckConditions;
 using HumanStoryteller.Model;
+using HumanStoryteller.Model.Incident;
 using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util.Logging;
 using RimWorld;
@@ -12,16 +13,16 @@ namespace HumanStoryteller.Incidents {
     class HumanIncidentWorker_Dialog : HumanIncidentWorker {
         public const String Name = "Dialog";
 
-        protected override IncidentResult Execute(HumanIncidentParms parms) {
+        protected override IncidentResult Execute(HumanIncidentParams @params) {
             IncidentResult ir = new IncidentResult();
 
-            if (!(parms is HumanIncidentParams_Dialog)) {
-                Tell.Err("Tried to execute " + GetType() + " but param type was " + parms.GetType());
+            if (!(@params is HumanIncidentParams_Dialog)) {
+                Tell.Err("Tried to execute " + GetType() + " but param type was " + @params.GetType());
                 return ir;
             }
 
             HumanIncidentParams_Dialog
-                allParams = Tell.AssertNotNull((HumanIncidentParams_Dialog) parms, nameof(parms), GetType().Name);
+                allParams = Tell.AssertNotNull((HumanIncidentParams_Dialog) @params, nameof(@params), GetType().Name);
             Tell.Log($"Executing event {Name} with:{allParams}");
 
             Map map = (Map) allParams.GetTarget();
@@ -29,13 +30,13 @@ namespace HumanStoryteller.Incidents {
             string message = "ShouldHaveCustomMail".Translate();
             LetterDef type = LetterDefOf.NeutralEvent;
 
-            if (parms.Letter?.Type != null) {
-                if (parms.Letter.Shake) {
+            if (@params.Letter?.Type != null) {
+                if (@params.Letter.Shake) {
                     Find.CameraDriver.shaker.DoShake(4f);
                 }
-                title = parms.Letter.Title.Get();
-                message = parms.Letter.Message.Get();
-                type = parms.Letter.Type;
+                title = @params.Letter.Title.Get();
+                message = @params.Letter.Message.Get();
+                type = @params.Letter.Type;
             }
 
             Letter l = LetterMaker.MakeLetter(title, message, type);
@@ -66,7 +67,7 @@ namespace HumanStoryteller.Incidents {
         }
     }
 
-    public class HumanIncidentParams_Dialog : HumanIncidentParms {
+    public class HumanIncidentParams_Dialog : HumanIncidentParams {
         public Number Silver = new Number(0);
         public Number Duration = new Number(1);
 

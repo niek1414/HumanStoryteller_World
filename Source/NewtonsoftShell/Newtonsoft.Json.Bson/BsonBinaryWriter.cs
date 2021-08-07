@@ -1,10 +1,10 @@
-using Newtonsoft.Json.Utilities;
 using System;
 using System.Globalization;
 using System.IO;
 using System.Text;
+using HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Utilities;
 
-namespace Newtonsoft.Json.Bson
+namespace HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Bson
 {
 	internal class BsonBinaryWriter
 	{

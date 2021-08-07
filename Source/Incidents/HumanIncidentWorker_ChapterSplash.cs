@@ -1,5 +1,6 @@
 using System;
 using HumanStoryteller.Model;
+using HumanStoryteller.Model.Incident;
 using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util.Logging;
 using HumanStoryteller.Util.Overlay;
@@ -9,15 +10,15 @@ namespace HumanStoryteller.Incidents {
     class HumanIncidentWorker_ChapterSplash : HumanIncidentWorker {
         public const String Name = "ChapterSplash";
 
-        protected override IncidentResult Execute(HumanIncidentParms parms) {
+        protected override IncidentResult Execute(HumanIncidentParams @params) {
             IncidentResult ir = new IncidentResult();
-            if (!(parms is HumanIncidentParams_ChapterSplash)) {
-                Tell.Err("Tried to execute " + GetType() + " but param type was " + parms.GetType());
+            if (!(@params is HumanIncidentParams_ChapterSplash)) {
+                Tell.Err("Tried to execute " + GetType() + " but param type was " + @params.GetType());
                 return ir;
             }
 
             HumanIncidentParams_ChapterSplash
-                allParams = Tell.AssertNotNull((HumanIncidentParams_ChapterSplash) parms, nameof(parms), GetType().Name);
+                allParams = Tell.AssertNotNull((HumanIncidentParams_ChapterSplash) @params, nameof(@params), GetType().Name);
             Tell.Log($"Executing event {Name} with:{allParams}");
             if (allParams.Title != "" || allParams.Description != "") {
                 HumanStoryteller.StoryComponent?.StoryOverlay.AddItem(new ChapterBar(allParams.Title, allParams.Description));
@@ -28,7 +29,7 @@ namespace HumanStoryteller.Incidents {
         }
     }
 
-    public class HumanIncidentParams_ChapterSplash : HumanIncidentParms {
+    public class HumanIncidentParams_ChapterSplash : HumanIncidentParams {
         public string Title = "";
         public string Description = "";
 

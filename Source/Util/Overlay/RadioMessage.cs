@@ -4,7 +4,10 @@ using UnityEngine;
 using Verse;
 
 namespace HumanStoryteller.Util.Overlay {
+    [StaticConstructorOnStartup]
     public class RadioMessage : IRadioItem, IArchivable {
+        private static readonly Texture2D NarratorIcon = ContentFinder<Texture2D>.Get("narrator-icon");
+
         private const int FadeInTime = 1;
         private const int VisibleTime = 25;
         private const int FadeOutTime = 1;
@@ -29,11 +32,7 @@ namespace HumanStoryteller.Util.Overlay {
         private int _id;
         private bool _isGone;
 
-        private Texture _narratorIcon;
-
-        public RadioMessage() {
-            _narratorIcon = ContentFinder<Texture2D>.Get("narrator-icon");
-        }
+        public RadioMessage() {}
 
         public RadioMessage(Pawn pawn, string message) : this() {
             _startingTick = GenTicks.TicksGame;
@@ -149,11 +148,11 @@ namespace HumanStoryteller.Util.Overlay {
                 bool prevPref = Prefs.HatsOnlyOnMap;
                 Prefs.HatsOnlyOnMap = false;
                 GUI.color = _pawn.relations.everSeenByPlayer ? new Color(1f, 1f, 1f, masterAlpha) : new Color(0f, 0f, 0f, masterAlpha);
-                icon = PortraitsCache.Get(_pawn, innerPort.size, new Vector3(0, 0, 0.4f), 2.5f);
+                icon = PortraitsCache.Get(_pawn, innerPort.size, Rot4.South, new Vector3(0, 0, 0.4f), 2.5f);
                 Prefs.HatsOnlyOnMap = prevPref;
             } else {
                 GUI.color = new Color(1f, 1f, 1f, masterAlpha);
-                icon = _narratorIcon;
+                icon = NarratorIcon;
             }
 
             GUI.DrawTexture(innerPort, icon);
@@ -225,12 +224,11 @@ namespace HumanStoryteller.Util.Overlay {
                     bool prevPref = Prefs.HatsOnlyOnMap;
                     Prefs.HatsOnlyOnMap = false;
                     GUI.color = _pawn.relations.everSeenByPlayer ? new Color(1f, 1f, 1f, 1f) : new Color(0f, 0f, 0f, 1f);
-                    icon = PortraitsCache.Get(_pawn, new Rect {width = 65, height = 65}.ContractedBy(1f).size, new Vector3(0, 0, 0.4f),
-                        2.5f);
+                    icon = PortraitsCache.Get(_pawn, new Rect {width = 65, height = 65}.ContractedBy(1f).size, Rot4.South, new Vector3(0, 0, 0.4f), 2.5f);
                     GUI.color = new Color(1f, 1f, 1f, 1f);
                     Prefs.HatsOnlyOnMap = prevPref;
                 } else {
-                    icon = _narratorIcon;
+                    icon = NarratorIcon;
                 }
 
                 return icon;

@@ -1,9 +1,9 @@
-using Newtonsoft.Json.Utilities;
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Utilities;
+using HumanStoryteller.NewtonsoftShell.System.Diagnostics.CodeAnalysis;
 
-namespace Newtonsoft.Json
+namespace HumanStoryteller.NewtonsoftShell.Newtonsoft.Json
 {
 	
 	

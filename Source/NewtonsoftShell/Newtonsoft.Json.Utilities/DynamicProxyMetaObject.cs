@@ -4,7 +4,7 @@ using System.Dynamic;
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace Newtonsoft.Json.Utilities
+namespace HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Utilities
 {
 	
 	

@@ -39,7 +39,7 @@
 
 using System;
 
-namespace WebSocketSharp.Net
+namespace HumanStoryteller.WebSocketsSharp.Net
 {
   internal class Chunk
   {

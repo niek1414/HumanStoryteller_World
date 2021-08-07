@@ -1,4 +1,4 @@
-namespace Newtonsoft.Json.Bson
+namespace HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Bson
 {
 	internal class BsonString : BsonValue
 	{

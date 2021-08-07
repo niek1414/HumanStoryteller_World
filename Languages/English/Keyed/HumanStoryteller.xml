@@ -84,6 +84,7 @@
     <Pick>Pick</Pick>
     <EnableCreatorTools>Enable creator tools</EnableCreatorTools>
     <EnableCreatorToolsToolTip>Enable storymaker debug connection, shows tile numbers, cell numbers, lets you copy zones and locations, and more!</EnableCreatorToolsToolTip>
-    
+    <IntegrityTest>Integrity test</IntegrityTest>
+    <IntegrityTestDesc>Load test stories to check if stories are parsed correctly.\nUse to check if a specific story cannot be parsed or that a combination of mods breaks stuff.</IntegrityTestDesc>
     
 </LanguageData>

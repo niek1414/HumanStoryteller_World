@@ -1,7 +1,7 @@
 using System;
-using System.Diagnostics.CodeAnalysis;
+using HumanStoryteller.NewtonsoftShell.System.Diagnostics.CodeAnalysis;
 
-namespace Newtonsoft.Json.Utilities
+namespace HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Utilities
 {
 	internal static class ValidationUtils
 	{

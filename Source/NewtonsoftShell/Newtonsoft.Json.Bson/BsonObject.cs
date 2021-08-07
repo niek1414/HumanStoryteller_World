@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Newtonsoft.Json.Bson
+namespace HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Bson
 {
 	internal class BsonObject : BsonToken, IEnumerable<BsonProperty>, IEnumerable
 	{

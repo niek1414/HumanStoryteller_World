@@ -1,8 +1,7 @@
 using System;
 using System.ComponentModel;
-using HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Linq;
 
-namespace Newtonsoft.Json.Linq
+namespace HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Linq
 {
 	
 	

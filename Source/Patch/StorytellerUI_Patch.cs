@@ -121,7 +121,7 @@ namespace HumanStoryteller.Patch {
                 Find.WindowStack.Add(window);
             }
 
-            Rect filter = new Rect(rect.x + 140, rect.y + 440, 300, 190);
+            Rect filter = new Rect(rect.x + 140, rect.y + 460, 300, 190);
             DrawFilter(filter);
 
             Rect stories = new Rect(rect.x + 450, rect.y, 530, 630);
@@ -212,7 +212,7 @@ namespace HumanStoryteller.Patch {
             }
 
             Text.Font = GameFont.Tiny;
-            Widgets.Label(new Rect(stories.xMax - 90, stories.yMax - 14, 90, 17),
+            Widgets.Label(new Rect(stories.xMax - 100, stories.yMax - 14, 100, 17),
                 "PickedStory".Translate() + (_selectedSummary == null ? "-" : _selectedSummary.Id.ToString()));
         }
 

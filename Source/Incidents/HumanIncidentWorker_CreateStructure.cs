@@ -1,6 +1,7 @@
 using System;
 using HumanStoryteller.CheckConditions;
 using HumanStoryteller.Model;
+using HumanStoryteller.Model.Incident;
 using HumanStoryteller.Model.StoryPart;
 using HumanStoryteller.Util;
 using HumanStoryteller.Util.Logging;
@@ -10,15 +11,15 @@ namespace HumanStoryteller.Incidents {
     class HumanIncidentWorker_CreateStructure : HumanIncidentWorker {
         public const String Name = "CreateStructure";
 
-        protected override IncidentResult Execute(HumanIncidentParms parms) {
+        protected override IncidentResult Execute(HumanIncidentParams @params) {
             IncidentResult ir = new IncidentResult();
-            if (!(parms is HumanIncidentParams_CreateStructure)) {
-                Tell.Err("Tried to execute " + GetType() + " but param type was " + parms.GetType());
+            if (!(@params is HumanIncidentParams_CreateStructure)) {
+                Tell.Err("Tried to execute " + GetType() + " but param type was " + @params.GetType());
                 return ir;
             }
 
             HumanIncidentParams_CreateStructure allParams =
-                Tell.AssertNotNull((HumanIncidentParams_CreateStructure) parms, nameof(parms), GetType().Name);
+                Tell.AssertNotNull((HumanIncidentParams_CreateStructure) @params, nameof(@params), GetType().Name);
             Tell.Log($"Executing event {Name} with:{allParams}");
 
             Map map = (Map) allParams.GetTarget();
@@ -33,13 +34,13 @@ namespace HumanStoryteller.Incidents {
                 Tell.Warn("Empty structure string, nothing will spawn!");
             }
 
-            SendLetter(parms);
+            SendLetter(@params);
 
             return ir;
         }
     }
 
-    public class HumanIncidentParams_CreateStructure : HumanIncidentParms {
+    public class HumanIncidentParams_CreateStructure : HumanIncidentParams {
         public string Structure = "";
         public Location Location = new Location();
 

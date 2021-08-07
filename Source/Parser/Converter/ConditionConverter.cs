@@ -4,11 +4,12 @@ using System.Globalization;
 using System.Linq;
 using HumanStoryteller.CheckConditions;
 using HumanStoryteller.Model;
+using HumanStoryteller.Model.Incident;
 using HumanStoryteller.Model.PawnGroup;
+using HumanStoryteller.NewtonsoftShell.Newtonsoft.Json;
+using HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Converters;
+using HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Linq;
 using HumanStoryteller.Util;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using Newtonsoft.Json.Linq;
 using RimWorld;
 using Verse;
 

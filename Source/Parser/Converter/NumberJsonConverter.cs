@@ -1,9 +1,10 @@
 using System;
 using System.Globalization;
 using HumanStoryteller.Model;
+using HumanStoryteller.Model.Incident;
+using HumanStoryteller.NewtonsoftShell.Newtonsoft.Json;
+using HumanStoryteller.NewtonsoftShell.Newtonsoft.Json.Linq;
 using HumanStoryteller.Util.Logging;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace HumanStoryteller.Parser.Converter {
     public class NumberJsonConverter : JsonConverter {
