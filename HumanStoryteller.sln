@@ -1,43 +1,42 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27004.2009
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32611.2
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwitchStories", "..\..\..\..\..\..\..\TS\TwitchStories.csproj", "{ED7D30B2-2933-4143-AE8B-658D14CB3FDD}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Elements", "Solution Elements", "{5E40AB58-070A-466D-B2E7-687C9FA2A193}"
+	ProjectSection(SolutionItems) = preProject
+		Shared.mod.props.csproj = Shared.mod.props.csproj
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Glitterworld-Prime", "..\..\..\..\..\..\..\Users\niek1\Desktop\GlitterworldPrime\Glitterworld-Prime.csproj", "{FF22CD6D-974F-4DA7-8380-AF06972AAD10}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestHumanStoryteller", "TestHumanStoryteller\TestHumanStoryteller.csproj", "{F6780427-65C1-4EE6-9D10-057E52C0F43C}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "..\..\..\..\..\..\..\Users\niek1\Desktop\RimWorld stuff\refrence 1.1\Assembly-CSharp.csproj", "{B00D6798-261A-4C5F-B3C5-29468DBE75DF}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tst", "D:\dump\tst\tst.csproj", "{4090C911-387F-45D0-8E22-702602303166}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HumanStoryteller", "Source\HumanStoryteller.csproj", "{15106BAB-3112-4919-962A-BE908408B416}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HumanStoryteller", "HumanStoryteller.csproj", "{EBB83B6C-1A7D-4247-980D-379514F94770}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		1.3_DEBUG|Any CPU = 1.3_DEBUG|Any CPU
+		1.3|Any CPU = 1.3|Any CPU
+		1.4_DEBUG|Any CPU = 1.4_DEBUG|Any CPU
+		1.4|Any CPU = 1.4|Any CPU
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{F6780427-65C1-4EE6-9D10-057E52C0F43C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F6780427-65C1-4EE6-9D10-057E52C0F43C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F6780427-65C1-4EE6-9D10-057E52C0F43C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F6780427-65C1-4EE6-9D10-057E52C0F43C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4090C911-387F-45D0-8E22-702602303166}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4090C911-387F-45D0-8E22-702602303166}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4090C911-387F-45D0-8E22-702602303166}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4090C911-387F-45D0-8E22-702602303166}.Release|Any CPU.Build.0 = Release|Any CPU
-		{15106BAB-3112-4919-962A-BE908408B416}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{15106BAB-3112-4919-962A-BE908408B416}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{15106BAB-3112-4919-962A-BE908408B416}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{15106BAB-3112-4919-962A-BE908408B416}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EBB83B6C-1A7D-4247-980D-379514F94770}.1.3_DEBUG|Any CPU.ActiveCfg = 1.3_DEBUG|Any CPU
+		{EBB83B6C-1A7D-4247-980D-379514F94770}.1.3_DEBUG|Any CPU.Build.0 = 1.3_DEBUG|Any CPU
+		{EBB83B6C-1A7D-4247-980D-379514F94770}.1.3|Any CPU.ActiveCfg = 1.3|Any CPU
+		{EBB83B6C-1A7D-4247-980D-379514F94770}.1.3|Any CPU.Build.0 = 1.3|Any CPU
+		{EBB83B6C-1A7D-4247-980D-379514F94770}.1.4_DEBUG|Any CPU.ActiveCfg = 1.4_DEBUG|Any CPU
+		{EBB83B6C-1A7D-4247-980D-379514F94770}.1.4_DEBUG|Any CPU.Build.0 = 1.4_DEBUG|Any CPU
+		{EBB83B6C-1A7D-4247-980D-379514F94770}.1.4|Any CPU.ActiveCfg = 1.4|Any CPU
+		{EBB83B6C-1A7D-4247-980D-379514F94770}.1.4|Any CPU.Build.0 = 1.4|Any CPU
+		{EBB83B6C-1A7D-4247-980D-379514F94770}.Debug|Any CPU.ActiveCfg = 1.4|Any CPU
+		{EBB83B6C-1A7D-4247-980D-379514F94770}.Debug|Any CPU.Build.0 = 1.4|Any CPU
+		{EBB83B6C-1A7D-4247-980D-379514F94770}.Release|Any CPU.ActiveCfg = 1.4|Any CPU
+		{EBB83B6C-1A7D-4247-980D-379514F94770}.Release|Any CPU.Build.0 = 1.4|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {28CF9A73-5333-4EB3-BFCC-3FBEDDA19200}
+		SolutionGuid = {290C7781-BA45-4BA6-B7D1-82C58B590ED4}
 	EndGlobalSection
 EndGlobal

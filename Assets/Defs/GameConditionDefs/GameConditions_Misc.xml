@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  <GameConditionDef>
+    <defName>TempFlux</defName>
+    <conditionClass>HumanStoryteller.Incidents.GameConditions.HumanGameCondition_TempFlux</conditionClass>
+    <label>Temperature change</label>
+    <description>An unusual change is noticeable in this region.</description>
+    <endMessage>The temperature is back to normal.</endMessage>
+  </GameConditionDef>
+</Defs>
